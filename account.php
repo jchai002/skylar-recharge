@@ -359,7 +359,7 @@ if (isset($_GET['subscription_id']) && isset($_GET['quantity']) && $_GET['subscr
 
     initPutRequest("https://api.rechargeapps.com/subscriptions/$subscriptionId", $data);
     $subscriptionById = initGetRequest("https://api.rechargeapps.com/subscriptions/$subscriptionId");
-   echo json_encode($subscriptionById['subscription']);
+    echo json_encode($subscriptionById['subscription']);
 }
 
 
