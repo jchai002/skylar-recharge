@@ -284,6 +284,7 @@ if (isset($_GET['subscription_id']) && isset($_GET['quantity']) && $_GET['subscr
     $status = $subscriptionData['subscription']['status'];
     $oldQuantity = '';
     $orderIntervalCount = '';
+    $totalItems = 0;
     foreach ($subscriptionDataProperties as $key => $value) {
         if($value['value'] == 'capri-sample'){
             $value['value'] = 'capri-subscription';
@@ -303,8 +304,10 @@ if (isset($_GET['subscription_id']) && isset($_GET['quantity']) && $_GET['subscr
             $totalItemKey = $key;
             $totalItemOldValue = $value['value'];
         }
+        if(stripos($value['name'], 'qty_') !== false){
+            $totalItems += $value['value'];
+        }
     };
-    $totalItems = ($totalItemOldValue - $oldQuantity) + $quantity;
     $properties[$totalItemKey] = array(
         "name" => "total_items",
         "value" => $totalItems
