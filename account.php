@@ -5,7 +5,6 @@ header("Access-Control-Allow-Credentials: true");
 header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
-
 /*
  * 
  * 
@@ -286,6 +285,9 @@ if (isset($_GET['subscription_id']) && isset($_GET['quantity']) && $_GET['subscr
     $oldQuantity = '';
     $orderIntervalCount = '';
     foreach ($subscriptionDataProperties as $key => $value) {
+        if($value['value'] == 'capri-sample'){
+            $value['value'] = 'capri-subscription';
+        }
         if ($value['name'] == 'qty_' . $index) {
             $oldQuantity = $value['value'];
             $value['value'] = $quantity;
@@ -303,7 +305,6 @@ if (isset($_GET['subscription_id']) && isset($_GET['quantity']) && $_GET['subscr
         }
     };
     $totalItems = ($totalItemOldValue - $oldQuantity) + $quantity;
-
     $properties[$totalItemKey] = array(
         "name" => "total_items",
         "value" => $totalItems
@@ -358,7 +359,8 @@ if (isset($_GET['subscription_id']) && isset($_GET['quantity']) && $_GET['subscr
 
     initPutRequest("https://api.rechargeapps.com/subscriptions/$subscriptionId", $data);
     $subscriptionById = initGetRequest("https://api.rechargeapps.com/subscriptions/$subscriptionId");
-    echo json_encode($subscriptionById['subscription']);
+//    echo json_encode($subscriptionById['subscription']);
+    echo "test changes";
 }
 
 
