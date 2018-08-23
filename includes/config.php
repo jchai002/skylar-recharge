@@ -3,6 +3,12 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+if(strpos(getcwd(), 'production') !== false){
+    define('ENV_DIR', 'skylar-recharge-production');
+} else {
+    define('ENV_DIR', 'skylar-recharge-staging');
+}
+
 if (!function_exists('getallheaders')){ 
     function getallheaders(){ 
         $headers = []; 
