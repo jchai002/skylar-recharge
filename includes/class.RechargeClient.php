@@ -36,7 +36,7 @@ class RechargeClient {
         }
         curl_setopt($ch, CURLOPT_URL, $url);
         $response = curl_exec($ch);
-        return json_decode($response, true);
+        return $json_decode($response, true);
     }
 
     function get($url, $data){

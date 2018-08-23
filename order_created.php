@@ -68,17 +68,37 @@ foreach($order['line_items'] as $line_item){
 		];
 	}
 }
+
+$subs_to_create = [
+	['variant_id'=>31022109635, 'frequency'=>3],
+];
 if(empty($subs_to_create)){
-	// exit;
+	exit;
 }
 
 // Get recharge version of order
-$rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
-var_dump($rc_order);
+$rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']])['orders'][0];
+if(empty($rc_order)){
+	exit;
+}
+//var_dump($rc_order);
+
+$delay_days = 17; // TODO: more if international
+$order_created_time = strtotime($order['created_at']);
+$next_charge_time = $order_created_time + ($delay_days * 24*60*60);
 
 
 foreach($subs_to_create as $sub_data){
 	// TODO: We may need to check for existing subscriptions here? Need business logic
 	// Need to consider onetime case, maybe use one-time api
-	// $rc->put()
+	$response = $rc->post('/subscriptions', [
+		'address_id' => $rc_order['address_id'],
+		'next_charge_scheduled_at' => date('Y-m-d', $next_charge_time),
+		'shopify_variant_id' => $sub_data['variant_id'],
+		'order_interval_unit' => 'month',
+		'order_interval_frequency' => $sub_data['frequency'],
+		'charge_interval_frequency' => $sub_data['frequency'],
+		'order_day_of_month' => date('d', $order_created_time),
+	]);
+	var_dump($response);
 }
