@@ -3,7 +3,7 @@
 require_once('includes/config.php');
 require_once('includes/class.RechargeClient.php');
 
-echo get_include_path();
+echo getcwd();
 
 $rc = new RechargeClient();
 
@@ -17,10 +17,16 @@ if(empty($shop_url)){
 }
 
 $data = file_get_contents('php://input');
+$cache_file = 'last_order_created.txt';
 if(empty($data)){
-	$data = file_get_contents('last_order_created.txt');
+	if(file_exists($cache_file)){
+		$data = file_get_contents($cache_file);
+	}
 } else {
-	file_put_contents('last_order_created.txt', $data);
+	file_put_contents($cache_file, $data);
+}
+if(empty($data)){
+	die("No cache file");
 }
 $order = json_decode($data);
 
