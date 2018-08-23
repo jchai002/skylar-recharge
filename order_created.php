@@ -28,7 +28,7 @@ if(empty($data)){
 if(empty($data)){
 	die("No cache file");
 }
-$order = json_decode($data);
+$order = json_decode($data, true);
 
 // Check if order:
 // - Has the right line item
