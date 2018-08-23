@@ -29,15 +29,15 @@ foreach($subscriptions as $subscription){
         continue;
     }
     $next_charge_date = date('m/d/Y', strtotime($subscription['next_charge_scheduled_at']));
-    $interval = $subscription['status'] == 'ONETIME' ? '' : $subscription['order_interval_frequency'].$subscription['order_interval_unit'];
-    $group_key = $subscription['status'].$next_charge_date.$interval;
+    $frequency = $subscription['status'] == 'ONETIME' ? '' : $subscription['order_interval_frequency'].$subscription['order_interval_unit'];
+    $group_key = $subscription['status'].$next_charge_date.$frequency;
     if(!array_key_exists($group_key, $subscription_groups)){
         $subscription_groups[$group_key] = [];
     }
     $subscription_groups[$group_key]['products'] = [
         'product_id' => $subscription['shopify_product_id'],
         'variant_id' => $subscription['shopify_variant_id'],
-        'frequency' => $subscription['order_interval_frequency'],
+        'frequency' => empty($subscription['order_interval_frequency']) ? 'onetime' : $subscription['order_interval_frequency'],
         'quantity' => $subscription['quantity'],
     ];
 }
