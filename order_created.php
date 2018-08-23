@@ -15,34 +15,24 @@ if(empty($shop_url)){
 
 $sc = new ShopifyPrivateClient($shop_url);
 
-$data = file_get_contents('php://input');
-
-// TODO: don't use cache live
-$cache_file = 'last_order_created.txt';
-if(empty($data)){
-	if(file_exists($cache_file)){
-		$data = file_get_contents($cache_file);
-	}
-	$order = json_decode($data, true);
-} else if(!empty($_REQUEST['id'])){
+if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
 } else {
-	die('temp');
+	$data = file_get_contents('php://input');
+	$order = json_decode($data);
 }
 if(empty($order)){
-	die("No cache file");
+	die('no data');
 }
-
-//var_dump($order);
 
 // Variants that are allowed to create subscriptions, eventually we won't use this but it's a good safeguard for now
 $subscription_variant_ids = ['5672401895455'];
 $ids_by_scent = [
-	'arrow' => ['variant' => 31022048003, 'product' => 8985085187],
-	'capri' => ['variant' => 5541512970271, 'product' => 443364081695],
-	'coral' => ['variant' => 26812012355, 'product' => 8215300931],
-	'isle' => ['variant' => 31022109635, 'product' => 8985117187],
-	'meadow' => ['variant' => 26812085955, 'product' => 8215317379],
+	'arrow'  => ['variant' => 31022048003,   'product' => 8985085187],
+	'capri'  => ['variant' => 5541512970271, 'product' => 443364081695],
+	'coral'  => ['variant' => 26812012355,   'product' => 8215300931],
+	'isle'   => ['variant' => 31022109635,   'product' => 8985117187],
+	'meadow' => ['variant' => 26812085955,   'product' => 8215317379],
 ];
 
 $has_subscription_line_item = false;
@@ -70,17 +60,12 @@ foreach($order['line_items'] as $line_item){
 		];
 	}
 }
-
-$subs_to_create = [
-	['ids'=>$ids_by_scent['arrow'], 'frequency'=>'3'],
-];
 if(empty($subs_to_create)){
 	exit;
 }
 
-$rc = new RechargeClient();
-
 // Get recharge version of order
+$rc = new RechargeClient();
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']])['orders'][0];
 if(empty($rc_order)){
 	exit;
@@ -94,7 +79,12 @@ $product_cache = [];
 
 foreach($subs_to_create as $sub_data){
 	// TODO: We may need to check for existing subscriptions here? Need business logic
-	$product = $sc->call('GET', '/admin/products/'.$sub_data['ids']['product'].'.json');
+	if(empty($product_cache[$sub_data['ids']['product']])){
+		$product = $sc->call('GET', '/admin/products/'.$sub_data['ids']['product'].'.json');
+		$product_cache[$product['id']] = $product;
+	} else {
+		$product = $product_cache[$product['id']];
+	}
 	foreach($product['variants'] as $variant){
 		if($variant['id'] == $sub_data['ids']['variant']){
 			break;
