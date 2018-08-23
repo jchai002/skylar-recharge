@@ -6,7 +6,7 @@ require_once('../includes/class.RechargeClient.php');
 header('Content-Type: application/json');
 if(empty($_REQUEST['customer_id'])){
     die(json_encode([
-        'success' => false
+        'success' => false,
         'errors' => [
             ['message' => 'No customer ID'],
         ]
