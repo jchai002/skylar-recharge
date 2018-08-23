@@ -17,18 +17,23 @@ if(empty($shop_url)){
 }
 
 $data = file_get_contents('php://input');
+
+// TODO: don't use cache live
 $cache_file = 'last_order_created.txt';
 if(empty($data)){
 	if(file_exists($cache_file)){
 		$data = file_get_contents($cache_file);
 	}
 } else {
+	die('temp');
 	file_put_contents($cache_file, $data);
 }
 if(empty($data)){
 	die("No cache file");
 }
 $order = json_decode($data, true);
+
+var_dump($order);
 
 // Check if order:
 // - Has the right line item
