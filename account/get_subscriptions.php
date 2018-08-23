@@ -29,14 +29,14 @@ foreach($subscriptions as $subscription){
         continue;
     }
     $next_charge_date = date('m/d/Y', strtotime($subscription['next_charge_scheduled_at']));
-    $group_key = $subscription['status'].$next_charge_date.$subscription['shipping_interval_frequency'].$subscription['order_interval_unit'];
+    $group_key = $subscription['status'].$next_charge_date.$subscription['order_interval_frequency'].$subscription['order_interval_unit'];
     if(!array_key_exists($group_key, $subscription_groups)){
         $subscription_groups[$group_key] = [];
     }
     $subscription_groups[$group_key]['products'] = [
         'product_id' => $subscription['shopify_product_id'],
         'variant_id' => $subscription['shopify_variant_id'],
-        'frequency' => $subscription['shipping_interval_frequency'],
+        'frequency' => $subscription['order_interval_frequency'],
         'quantity' => $subscription['quantity'],
     ];
 }
