@@ -23,7 +23,7 @@ foreach($subscriptions as $subscription){
     if(!in_array($subscription['status'], ['ACTIVE', 'ONETIME'])){
         continue;
     }
-    $next_charge_date = date('m/d/Y', strtotime($subscription['next_charge_date']);
+    $next_charge_date = date('m/d/Y', strtotime($subscription['next_charge_date']));
     $group_key = $subscription['status'].$next_charge_date.$subscription['frequency'].$subscription['order_interval_unit'];
     if(!array_key_exists($group_key, $subscription_groups)){
         $subscription_groups[$group_key] = [];
