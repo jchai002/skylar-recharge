@@ -17,6 +17,7 @@ $rc = new RechargeClient();
 $subscriptions = $rc->get('/subscriptions', [
     'shopify_customer_id' => $_REQUEST['customer_id'],
 ]);
+var_dump($subscriptions);
 
 $subscription_groups = [];
 foreach($subscriptions as $subscription){
