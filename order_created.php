@@ -70,7 +70,7 @@ foreach($order['line_items'] as $line_item){
 }
 
 $subs_to_create = [
-	['variant_id'=>31022109635, 'frequency'=>3],
+	['variant_id'=>31022109635, 'frequency'=>'onetime'],
 ];
 if(empty($subs_to_create)){
 	exit;
@@ -90,16 +90,24 @@ $next_charge_time = $order_created_time + ($delay_days * 24*60*60);
 
 foreach($subs_to_create as $sub_data){
 	// TODO: We may need to check for existing subscriptions here? Need business logic
-	// Need to consider onetime case, maybe use one-time api
-	$response = $rc->post('/subscriptions', [
-		'address_id' => $rc_order['address_id'],
-		'next_charge_scheduled_at' => date('Y-m-d', $next_charge_time),
-		'shopify_variant_id' => $sub_data['variant_id'],
-		'quantity' => 1,
-		'order_interval_unit' => 'month',
-		'order_interval_frequency' => $sub_data['frequency'],
-		'charge_interval_frequency' => $sub_data['frequency'],
-		'order_day_of_month' => date('d', $order_created_time),
-	]);
+	if($sub_data['frequency'] == 'onetime'){
+		$response = $rc->post('/onetimes/address/'.$rc_order['address_id'], [
+			'address_id' => $rc_order['address_id'],
+			'next_charge_scheduled_at' => date('Y-m-d', $next_charge_time),
+			'shopify_variant_id' => $sub_data['variant_id'],
+			'quantity' => 1,
+		]);
+	} else {
+		$response = $rc->post('/subscriptions', [
+			'address_id' => $rc_order['address_id'],
+			'next_charge_scheduled_at' => date('Y-m-d', $next_charge_time),
+			'shopify_variant_id' => $sub_data['variant_id'],
+			'quantity' => 1,
+			'order_interval_unit' => 'month',
+			'order_interval_frequency' => $sub_data['frequency'],
+			'charge_interval_frequency' => $sub_data['frequency'],
+			'order_day_of_month' => date('d', $order_created_time),
+		]);
+	}
 	var_dump($response);
 }
