@@ -66,13 +66,13 @@ foreach($order['line_items'] as $line_item){
 	if(empty($sub_scent) || empty($sub_frequency)){
 		$subs_to_create[] = [
 			'ids' => $ids_by_scent[$sub_scent],
-			'frequency' => $sub_frequency
+			'frequency' => $sub_frequency,
 		];
 	}
 }
 
 $subs_to_create = [
-	['ids'=>$ids_by_scent['isle'], 'frequency'=>'onetime'],
+	['ids'=>$ids_by_scent['arrow'], 'frequency'=>'3'],
 ];
 if(empty($subs_to_create)){
 	exit;
