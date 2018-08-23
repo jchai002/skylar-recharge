@@ -31,7 +31,7 @@ if(empty($data)){
 }
 $order = json_decode($data, true);
 
-var_dump($order);
+//var_dump($order);
 
 // Variants that are allowed to create subscriptions, eventually we won't use this but it's a good safeguard for now
 $subscription_variant_ids = ['5672401895455'];
