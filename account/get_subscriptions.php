@@ -25,11 +25,12 @@ var_dump($subscriptions);
 
 $subscription_groups = [];
 foreach($subscriptions as $subscription){
-    if(!in_array($subscription['status'], ['ACTIVE', 'ONETIME'])){
+    if(!in_array($subscription['status'], ['ACTIVE', 'ONETIME']) || empty($subscription['next_charge_scheduled_at'])){
         continue;
     }
     $next_charge_date = date('m/d/Y', strtotime($subscription['next_charge_scheduled_at']));
-    $group_key = $subscription['status'].$next_charge_date.$subscription['order_interval_frequency'].$subscription['order_interval_unit'];
+    $interval = $subscription['status'] == 'ONETIME' ? '' : $subscription['order_interval_frequency'].$subscription['order_interval_unit'];
+    $group_key = $subscription['status'].$next_charge_date.$interval;
     if(!array_key_exists($group_key, $subscription_groups)){
         $subscription_groups[$group_key] = [];
     }
