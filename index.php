@@ -121,6 +121,9 @@ if(!in_array($order_id, $string)){
     $orders = initGetRequest("https://api.rechargeapps.com/orders?shopify_order_id=$order_id");
     if (!empty($orders['orders'][0]['line_items'])) {
         foreach ($orders['orders'][0]['line_items'] as $lineItem) {
+            // 738567520343 - "Full Size Skylar Scent"
+            // 738394865751 - "Full Size Skylar Scent"
+            // 738567323735 - "Scent Subscription"
             if ($lineItem['shopify_product_id'] == '738567520343' || $lineItem['shopify_product_id'] == '738394865751' || $lineItem['shopify_product_id'] == '738567323735') {
                 $subscriptionId = $lineItem['subscription_id'];
                 $subscriptionData = initGetRequest("https://api.rechargeapps.com/subscriptions/$subscriptionId");
