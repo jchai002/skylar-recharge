@@ -3,8 +3,6 @@
 require_once('includes/config.php');
 require_once('includes/class.RechargeClient.php');
 
-echo getcwd();
-
 $rc = new RechargeClient();
 
 $headers = getallheaders();
@@ -35,13 +33,52 @@ $order = json_decode($data, true);
 
 var_dump($order);
 
-// Check if order:
-// - Has the right line item
-// - Has the cart attribute
-
-$subscription_product_ids = [];
+// Variants that are allowed to create subscriptions, eventually we won't use this but it's a good safeguard for now
+$subscription_variant_ids = ['5672401895455'];
+$variant_ids_by_scent = [
+	'arrow' => 31022048003,
+	'capri' => 5541512970271,
+	'coral' => 26812012355,
+	'isle' => 31022109635,
+	'meadow' => 26812085955,
+];
 
 $has_subscription_line_item = false;
+$subs_to_create = [];
 foreach($order['line_items'] as $line_item){
+	if(!in_array($line_item['variant_id'], $subscription_variant_ids)){
+		continue;
+	}
+	if(empty($line_item['properties'])){
+		continue;
+	}
+	$sub_scent = $sub_frequency = null;
+	foreach($line_item['properties'] as $property){
+		if($property['name'] == '_sub_frequency'){
+			$sub_frequency = intval($property['value']);
+		}
+		if($property['name'] == '_sub_scent' && !empty($variant_ids_by_scent[$property['value']])){
+			$sub_scent = intval($property['value']);
+		}
+	}
+	if(empty($sub_scent) || empty($sub_frequency)){
+		$subs_to_create[] = [
+			'variant_id' => $variant_ids_by_scent[$sub_scent],
+			'frequency' => $sub_frequency
+		];
+	}
+}
+if(empty($subs_to_create)){
+	// exit;
+}
 
+// Get recharge version of order
+$rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
+var_dump($rc_order);
+
+
+foreach($subs_to_create as $sub_data){
+	// TODO: We may need to check for existing subscriptions here? Need business logic
+	// Need to consider onetime case, maybe use one-time api
+	// $rc->put()
 }
