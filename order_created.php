@@ -95,6 +95,7 @@ foreach($subs_to_create as $sub_data){
 		'address_id' => $rc_order['address_id'],
 		'next_charge_scheduled_at' => date('Y-m-d', $next_charge_time),
 		'shopify_variant_id' => $sub_data['variant_id'],
+		'quantity' => 1,
 		'order_interval_unit' => 'month',
 		'order_interval_frequency' => $sub_data['frequency'],
 		'charge_interval_frequency' => $sub_data['frequency'],
