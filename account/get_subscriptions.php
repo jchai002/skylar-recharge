@@ -18,8 +18,9 @@ $subscriptions = $rc->get('/subscriptions', [
     'shopify_customer_id' => $_REQUEST['customer_id'],
 ]);
 if(empty($subscriptions['subscriptions'])){
-	$subscriptions = $subscriptions['subscriptions'];
+	die(json_encode($subscriptions));
 }
+$subscriptions = $subscriptions['subscriptions'];
 var_dump($subscriptions);
 
 $subscription_groups = [];
