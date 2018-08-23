@@ -111,7 +111,7 @@ foreach($subs_to_create as $sub_data){
 			'shopify_variant_id' => $sub_data['ids']['variant'],
 			'quantity' => 1,
 			'price' => $variant['price'],
-			'title' => $product['title']." ".$variant['title'],
+			'product_title' => $product['title']." ".$variant['title'],
 		]);
 	} else {
 		$response = $rc->post('/subscriptions', [
@@ -123,7 +123,7 @@ foreach($subs_to_create as $sub_data){
 			'order_interval_frequency' => $sub_data['frequency'],
 			'charge_interval_frequency' => $sub_data['frequency'],
 			'order_day_of_month' => date('d', $order_created_time),
-			'title' => $product['title']." ".$variant['title'],
+			'product_title' => $product['title']." ".$variant['title'],
 		]);
 	}
 	var_dump($response);

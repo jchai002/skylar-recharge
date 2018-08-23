@@ -6,7 +6,6 @@ class RechargeClient {
         $method = strtoupper($method);
         $ch = curl_init();
         $url = 'https://api.rechargeapps.com/'.trim($url,'/');
-        echo $url;
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => TRUE,
             CURLOPT_HTTPHEADER => [
