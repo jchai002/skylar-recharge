@@ -77,7 +77,7 @@ foreach($subscription_groups as $group_key => $subscription_group){
 	} else {
 		$subscription_group['title'] = $subscription_group['onetime'] ? 'Scheduled Order' : 'Scent Auto Renewal';
 	}
-	$subscription_group['ids'] = implode(',',array_column($subscription_group['items'], 'id'));
+	$subscription_group['id'] = $subscription_group['ids'] = implode(',',array_column($subscription_group['items'], 'id'));
 	$subscription_group['total_quantity'] = array_sum(array_column($subscription_group['items'], 'quantity'));
 	$subscription_group['total_price'] = number_format(array_sum(array_column($subscription_group['items'], 'price')), 2);
 	$subscription_groups[$group_key] = $subscription_group;
