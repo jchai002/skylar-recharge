@@ -34,12 +34,14 @@ if(empty($subscriptions['subscriptions'])){
 $subscriptions = $subscriptions['subscriptions'];
 $customer_subscription_ids = array_column($subscriptions, 'id');
 
+$updated_subscriptions = [];
 foreach($subscription_ids as $subscription_id){
+	$updated_subscription = [];
 	if(!in_array($subscription_id, $customer_subscription_ids)){
 		continue;
 	}
 	if(!empty($_REQUEST['shipdate'])){
-		$rc->post('/subscriptions/'.$subscription_id.'/set_next_charge_date', [
+		$updated_subscription = $rc->post('/subscriptions/'.$subscription_id.'/set_next_charge_date', [
 			'date' => date('Y-m-d', strtotime($_REQUEST['shipdate'])),
 		]);
 	}
@@ -52,6 +54,14 @@ foreach($subscription_ids as $subscription_id){
 		// May need to update price as well here
 	}
 	if(!empty($data)){
-		$rc->put('/subscriptions/'.$subscription_id, $data);
+		$updated_subscription = $rc->put('/subscriptions/'.$subscription_id, $data);
+	}
+	if(!empty($updated_subscription)){
+		$updated_subscriptions[] = $updated_subscription;
 	}
 }
+
+echo json_encode([
+	'success' => true,
+	'subscriptions' => $updated_subscriptions,
+]);
