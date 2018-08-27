@@ -34,7 +34,8 @@ foreach($subscriptions as $subscription){
     if(!array_key_exists($group_key, $subscription_groups)){
         $subscription_groups[$group_key] = [];
     }
-    $subscription_groups[$group_key]['products'] = [
+    $subscription_groups[$group_key]['subscriptions'] = [
+    	'id' => $subscription['id'],
         'product_id' => $subscription['shopify_product_id'],
         'variant_id' => $subscription['shopify_variant_id'],
         'frequency' => empty($subscription['order_interval_frequency']) ? 'onetime' : $subscription['order_interval_frequency'],
