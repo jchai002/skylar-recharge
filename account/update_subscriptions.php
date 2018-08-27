@@ -50,10 +50,10 @@ foreach($subscription_ids as $subscription_id){
 	if(!empty($_REQUEST['shipdate'])){
 		$updated_subscription = $rc->post('/subscriptions/'.$subscription_id.'/set_next_charge_date', [
 			'date' => date('Y-m-d', strtotime($_REQUEST['shipdate'])),
-		]);
+		])['subscription'];
 	}
 	if(!empty($data)){
-		$updated_subscription = $rc->put('/subscriptions/'.$subscription_id, $data);
+		$updated_subscription = $rc->put('/subscriptions/'.$subscription_id, $data)['subscription'];
 	}
 	if(!empty($updated_subscription)){
 		foreach($subscriptions as $index=>$subscription){
