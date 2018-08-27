@@ -35,7 +35,7 @@ foreach($subscriptions as $subscription){
     if(!array_key_exists($group_key, $subscription_groups)){
         $subscription_groups[$group_key] = [];
     }
-    $subscription_groups[$group_key]['subscriptions'] = [
+    $subscription_groups[$group_key]['subscriptions'][] = [
     	'id' => $subscription['id'],
         'product_id' => $subscription['shopify_product_id'],
         'variant_id' => $subscription['shopify_variant_id'],
@@ -44,4 +44,4 @@ foreach($subscriptions as $subscription){
     ];
 }
 
-echo json_encode($subscription_groups);
+echo json_encode(['subscriptions' => $subscription_groups]);
