@@ -34,7 +34,14 @@ if(empty($subscriptions['subscriptions'])){
 $subscriptions = $subscriptions['subscriptions'];
 $customer_subscription_ids = array_column($subscriptions, 'id');
 
-$updated_subscriptions = [];
+$data = [];
+if(!empty($_REQUEST['frequency'])){
+	$data['order_interval_frequency'] = $data['charge_interval_frequency'] = intval($_REQUEST['frequency']);
+}
+if(!empty($_REQUEST['quantity'])){
+	$data['quantity'] = intval($_REQUEST['quantity']);
+	// May need to update price as well here
+}
 foreach($subscription_ids as $subscription_id){
 	$updated_subscription = [];
 	if(!in_array($subscription_id, $customer_subscription_ids)){
@@ -45,23 +52,29 @@ foreach($subscription_ids as $subscription_id){
 			'date' => date('Y-m-d', strtotime($_REQUEST['shipdate'])),
 		]);
 	}
-	$data = [];
-	if(!empty($_REQUEST['frequency'])){
-		$data['order_interval_frequency'] = $data['charge_interval_frequency'] = intval($_REQUEST['frequency']);
-	}
-	if(!empty($_REQUEST['quantity'])){
-		$data['quantity'] = intval($_REQUEST['quantity']);
-		// May need to update price as well here
-	}
 	if(!empty($data)){
 		$updated_subscription = $rc->put('/subscriptions/'.$subscription_id, $data);
 	}
 	if(!empty($updated_subscription)){
-		$updated_subscriptions[] = $updated_subscription;
+		foreach($subscriptions as $index=>$subscription){
+			if($subscription['id'] == $updated_subscription['id']){
+				$subscriptions[$index] = $updated_subscription;
+			}
+		}
 	}
+}
+
+$addresses = [];
+$addresses_res = $rc->get('/customers/'.$subscriptions[0]['customer_id'].'/addresses');
+if(empty($addresses_res['addresses'])){
+	die(json_encode($subscriptions));
+}
+foreach($addresses_res['addresses'] as $address_res){
+	$addresses[$address_res['id']] = $address_res;
 }
 
 echo json_encode([
 	'success' => true,
-	'subscriptions' => $updated_subscriptions,
+	'subscriptions' => group_subscriptions($subscriptions, $addresses),
+	'subscriptions_raw' => $subscriptions,
 ]);
