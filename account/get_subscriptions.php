@@ -64,6 +64,7 @@ foreach($subscriptions as $subscription){
         'quantity' => $subscription['quantity'],
 		'product_title' => $subscription['product_title'],
 		'variant_title' => $subscription['variant_title'],
+		'title' => trim($subscription['product_title'].' ' .$subscription['variant_title']),
 		'price' => $subscription['price'],
     ];
 }
