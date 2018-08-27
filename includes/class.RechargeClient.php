@@ -38,19 +38,19 @@ class RechargeClient {
         return json_decode($response, true);
     }
 
-    function get($url, $data){
+    function get($url, $data=[]){
         return $this->call($url, $data, 'GET');
     }
 
-    function post($url, $data){
+    function post($url, $data=[]){
         return $this->call($url, $data, 'POST');
     }
 
-    function put($url, $data){
+    function put($url, $data=[]){
         return $this->call($url, $data, 'PUT');
     }
 
-    function delete($url, $data){
+    function delete($url, $data=[]){
         return $this->call($url, $data, 'DELETE');
     }
 

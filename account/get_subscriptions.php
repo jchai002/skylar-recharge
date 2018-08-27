@@ -15,6 +15,7 @@ if(empty($_REQUEST['customer_id'])){
 }
 
 $rc = new RechargeClient();
+
 $subscriptions = $rc->get('/subscriptions', [
     'shopify_customer_id' => $_REQUEST['customer_id'],
 ]);
@@ -22,7 +23,17 @@ if(empty($subscriptions['subscriptions'])){
 	die(json_encode($subscriptions));
 }
 $subscriptions = $subscriptions['subscriptions'];
-//var_dump($subscriptions);
+var_dump($subscriptions);
+
+$addresses = [];
+$addresses_res = $rc->get('/customers/'.$subscriptions[0]['customer_id'].'/addresses');
+if(empty($addresses_res['addresses'])){
+	die(json_encode($subscriptions));
+}
+foreach($addresses_res['addresses'] as $address_res){
+	$addresses[$address_res['id']] = $address_res;
+}
+var_dump($addresses);
 
 $subscription_groups = [];
 foreach($subscriptions as $subscription){
