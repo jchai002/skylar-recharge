@@ -50,4 +50,7 @@ foreach($subscription_ids as $subscription_id){
 		$data['quantity'] = intval($_REQUEST['quantity']);
 		// May need to update price as well here
 	}
+	if(!empty($data)){
+		$rc->put('/subscriptions/'.$subscription_id, $data);
+	}
 }
