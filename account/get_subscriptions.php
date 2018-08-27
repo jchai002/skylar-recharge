@@ -32,7 +32,7 @@ foreach($subscriptions as $subscription){
     $next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
     $next_charge_date = date('m/d/Y', $next_charge_time);
     $frequency = $subscription['status'] == 'ONETIME' ? '' : $subscription['order_interval_frequency'].$subscription['order_interval_unit'];
-    $group_key = $subscription['status'].$next_charge_date.$frequency;
+    $group_key = $subscription['status'].$next_charge_date.$frequency.$subscription['address_id'];
     if(!array_key_exists($group_key, $subscription_groups)){
         $subscription_groups[$group_key] = [
         	'subscriptions' => [],
@@ -45,6 +45,7 @@ foreach($subscriptions as $subscription){
     }
     $subscription_groups[$group_key]['items'][] = [
     	'id' => $subscription['id'],
+		'address_id' => $subscription['address_id'],
         'product_id' => $subscription['shopify_product_id'],
         'variant_id' => $subscription['shopify_variant_id'],
         'frequency' => empty($subscription['order_interval_frequency']) ? 'onetime' : $subscription['order_interval_frequency'],
@@ -64,7 +65,7 @@ foreach($subscription_groups as $group_key => $subscription_group){
 		$subscription_group['title'] = $subscription_group['onetime'] ? 'Scheduled Order' : 'Scent Auto Renewal';
 	}
 	$subscription_group['total_quantity'] = array_sum(array_column($subscription_group, 'quantity'));
-	$subscription_group['total_price'] = array_sum(array_column($subscription_group, 'price'));
+	$subscription_group['total_price'] = number_format(array_sum(array_column($subscription_group, 'price')), 2);
 	$subscription_groups[$group_key] = $subscription_group;
 }
 
