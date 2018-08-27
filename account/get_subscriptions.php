@@ -4,6 +4,7 @@ require_once('../includes/class.ShopifyClient.php');
 require_once('../includes/class.RechargeClient.php');
 
 header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
 if(empty($_REQUEST['customer_id'])){
     die(json_encode([
         'success' => false,
