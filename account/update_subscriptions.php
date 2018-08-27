@@ -5,6 +5,7 @@ require_once('../includes/class.RechargeClient.php');
 
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
+header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
 if(empty($_REQUEST['customer_id'])){
 	die(json_encode([
 		'success' => false,
