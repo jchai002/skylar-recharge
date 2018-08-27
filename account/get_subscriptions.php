@@ -49,6 +49,8 @@ foreach($subscriptions as $subscription){
         'variant_id' => $subscription['shopify_variant_id'],
         'frequency' => empty($subscription['order_interval_frequency']) ? 'onetime' : $subscription['order_interval_frequency'],
         'quantity' => $subscription['quantity'],
+		'product_title' => $subscription['product_title'],
+		'variant_title' => $subscription['variant_title'],
     ];
 }
 
