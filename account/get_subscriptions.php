@@ -58,6 +58,7 @@ foreach($subscriptions as $subscription){
 foreach($subscription_groups as $group_key => $subscription_group){
 	if(count($subscription_group['items']) == 1 && !empty($subscription_group['items'][0]['product_title'])){
 		$subscription_group['title'] = trim($subscription_group['items'][0]['product_title'].$subscription_group['items'][0]['variant_title']);
+		$subscription_group['title'] .= $subscription_group['onetime'] ? ' Order' : ' Auto Renewal';
 	} else {
 		$subscription_group['title'] = $subscription_group['onetime'] ? 'Scheduled Order' : 'Scent Auto Renewal';
 	}
