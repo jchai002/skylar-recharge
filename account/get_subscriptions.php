@@ -23,7 +23,7 @@ if(empty($subscriptions['subscriptions'])){
 	die(json_encode($subscriptions));
 }
 $subscriptions = $subscriptions['subscriptions'];
-var_dump($subscriptions);
+//var_dump($subscriptions);
 
 $addresses = [];
 $addresses_res = $rc->get('/customers/'.$subscriptions[0]['customer_id'].'/addresses');
@@ -33,7 +33,7 @@ if(empty($addresses_res['addresses'])){
 foreach($addresses_res['addresses'] as $address_res){
 	$addresses[$address_res['id']] = $address_res;
 }
-var_dump($addresses);
+//var_dump($addresses);
 
 $subscription_groups = [];
 foreach($subscriptions as $subscription){
@@ -52,11 +52,12 @@ foreach($subscriptions as $subscription){
 			'onetime' => $subscription['status'] == 'ONETIME',
 			'next_charge_date' => $next_charge_date,
 			'next_charge_time' => $next_charge_time,
+			'address_id' => $subscription['address_id'],
+			'address' => $addresses[$subscription['address_id']],
 		];
     }
     $subscription_groups[$group_key]['items'][] = [
     	'id' => $subscription['id'],
-		'address_id' => $subscription['address_id'],
         'product_id' => $subscription['shopify_product_id'],
         'variant_id' => $subscription['shopify_variant_id'],
         'frequency' => empty($subscription['order_interval_frequency']) ? 'onetime' : $subscription['order_interval_frequency'],
