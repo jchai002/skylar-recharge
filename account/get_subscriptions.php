@@ -33,7 +33,12 @@ foreach($subscriptions as $subscription){
     $frequency = $subscription['status'] == 'ONETIME' ? '' : $subscription['order_interval_frequency'].$subscription['order_interval_unit'];
     $group_key = $subscription['status'].$next_charge_date.$frequency;
     if(!array_key_exists($group_key, $subscription_groups)){
-        $subscription_groups[$group_key] = [];
+        $subscription_groups[$group_key] = [
+        	'subscriptions' => [],
+			'status' => $subscription['status'],
+			'frequency' => $frequency,
+			'next_charge_date' => $next_charge_date,
+		];
     }
     $subscription_groups[$group_key]['subscriptions'][] = [
     	'id' => $subscription['id'],
