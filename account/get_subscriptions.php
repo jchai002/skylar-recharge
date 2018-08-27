@@ -22,7 +22,7 @@ if(empty($subscriptions['subscriptions'])){
 	die(json_encode($subscriptions));
 }
 $subscriptions = $subscriptions['subscriptions'];
-var_dump($subscriptions);
+//var_dump($subscriptions);
 
 $subscription_groups = [];
 foreach($subscriptions as $subscription){
