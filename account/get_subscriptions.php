@@ -29,7 +29,8 @@ foreach($subscriptions as $subscription){
     if(!in_array($subscription['status'], ['ACTIVE', 'ONETIME']) || empty($subscription['next_charge_scheduled_at'])){
         continue;
     }
-    $next_charge_date = date('m/d/Y', strtotime($subscription['next_charge_scheduled_at']));
+    $next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
+    $next_charge_date = date('m/d/Y', $next_charge_time);
     $frequency = $subscription['status'] == 'ONETIME' ? '' : $subscription['order_interval_frequency'].$subscription['order_interval_unit'];
     $group_key = $subscription['status'].$next_charge_date.$frequency;
     if(!array_key_exists($group_key, $subscription_groups)){
@@ -37,10 +38,12 @@ foreach($subscriptions as $subscription){
         	'subscriptions' => [],
 			'status' => $subscription['status'],
 			'frequency' => $frequency,
+			'onetime' => $subscription['status'] == 'ONETIME',
 			'next_charge_date' => $next_charge_date,
+			'next_charge_time' => $next_charge_time,
 		];
     }
-    $subscription_groups[$group_key]['subscriptions'][] = [
+    $subscription_groups[$group_key]['items'][] = [
     	'id' => $subscription['id'],
         'product_id' => $subscription['shopify_product_id'],
         'variant_id' => $subscription['shopify_variant_id'],
@@ -49,4 +52,21 @@ foreach($subscriptions as $subscription){
     ];
 }
 
-echo json_encode(['subscriptions' => $subscription_groups]);
+// Dynamic title generation
+foreach($subscription_groups as $group_key => $subscription_group){
+	if(count($subscription_group['items']) == 1 && !empty($subscription_group['items'][0]['product_title'])){
+		$subscription_group['title'] = trim($subscription_group['items'][0]['product_title'].$subscription_group['items'][0]['variant_title']);
+	} else {
+		$subscription_group['title'] = $subscription_group['onetime'] ? 'Scheduled Order' : 'Scent Auto Renewal';
+	}
+	$subscription_groups[$group_key] = $subscription_group;
+}
+
+uasort($subscription_groups, function($a, $b){
+	if($a['next_charge_time'] == $b['next_charge_time']){
+		return 0;
+	}
+	return $a['next_charge_time'] > $b['next_charge_time'] ? 1 : -1;
+});
+
+echo json_encode(['subscriptions' => array_values($subscription_groups)]);
