@@ -46,8 +46,13 @@ var_dump($_REQUEST['scent_code']);
 var_dump($ids_by_scent);
 if(!empty($_REQUEST['scent_code']) && array_key_exists($_REQUEST['scent_code'], $ids_by_scent)){
 	// Special logic for 'default' subs. Swap one full size bottle for another. Could expand this to work across other products/variants
-	$sc = new ShopifyClient();
-	$product = $sc->call('GET', '/admin/products/'.$ids_by_scent[$_REQUEST['scent_code']]['product'].'.json');
+	$sc = new ShopifyPrivateClient();
+	try {
+		$product = $sc->call('GET', '/admin/products/'.$ids_by_scent[$_REQUEST['scent_code']]['product'].'.json');
+	} catch(ShopifyApiException $e){
+		var_dump($e);
+		die();
+	}
 	$data['shopify_variant_id'] = $ids_by_scent['variant'];
 	$data['product_title'] = $product['title'];
 	foreach($product['variants'] as $variant){
