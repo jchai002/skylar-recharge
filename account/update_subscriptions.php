@@ -42,8 +42,6 @@ if(!empty($_REQUEST['frequency'])){
 if(!empty($_REQUEST['quantity'])){
 	$data['quantity'] = intval($_REQUEST['quantity']);
 }
-var_dump($_REQUEST['scent_code']);
-var_dump($ids_by_scent);
 if(!empty($_REQUEST['scent_code']) && array_key_exists($_REQUEST['scent_code'], $ids_by_scent)){
 	// Special logic for 'default' subs. Swap one full size bottle for another. Could expand this to work across other products/variants
 	$scent_code = $_REQUEST['scent_code'];
@@ -58,7 +56,7 @@ if(!empty($_REQUEST['scent_code']) && array_key_exists($_REQUEST['scent_code'], 
 		}
 	}
 }
-var_dump($data);
+//var_dump($data);
 // TODO: Pricing rules
 // TODO: Check discount
 foreach($subscription_ids as $subscription_id){
@@ -82,7 +80,7 @@ foreach($subscription_ids as $subscription_id){
 		}
 		$updated_subscription = $updated_subscription_res['subscription'];
 	}
-	var_dump($updated_subscription);
+//	var_dump($updated_subscription);
 	if(!empty($updated_subscription)){
 		foreach($subscriptions as $index=>$subscription){
 			if($subscription['id'] == $updated_subscription['id']){
