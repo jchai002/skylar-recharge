@@ -54,12 +54,16 @@ foreach($subscription_ids as $subscription_id){
 		$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/set_next_charge_date', [
 			'date' => date('Y-m-d', strtotime($_REQUEST['shipdate'])),
 		]);
-		var_dump($updated_subscription_res);
+		if(empty($updated_subscription_res['subscription'])){
+			continue;
+		}
 		$updated_subscription = $updated_subscription_res['subscription'];
 	}
 	if(!empty($data)){
 		$updated_subscription_res = $rc->put('/subscriptions/'.$subscription_id, $data);
-		var_dump($updated_subscription_res);
+		if(empty($updated_subscription_res['subscription'])){
+			continue;
+		}
 		$updated_subscription = $updated_subscription_res['subscription'];
 	}
 	if(!empty($updated_subscription)){
