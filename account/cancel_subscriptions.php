@@ -68,7 +68,8 @@ foreach($addresses_res['addresses'] as $address_res){
 
 // Remove discount
 if(!empty($address_id)){
-	$rc->put('/discounts/'.$sample_discount_code.'/remove', ['address_id'=>$address_id]);
+	$response = $rc->put('/discounts/'.$sample_discount_code.'/remove', ['address_id'=>$address_id]);
+	var_dump($response);
 }
 
 echo json_encode([

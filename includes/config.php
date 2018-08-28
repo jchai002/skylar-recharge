@@ -47,7 +47,6 @@ function group_subscriptions($subscriptions, $addresses){
 		$group_key = $subscription['status'].$next_charge_date.$frequency.$subscription['address_id'];
 		if(!array_key_exists($group_key, $subscription_groups)){
 			$subscription_groups[$group_key] = [
-				'subscriptions' => [],
 				'status' => $subscription['status'],
 				'frequency' => $frequency,
 				'order_interval_frequency' => $subscription['order_interval_frequency'],
