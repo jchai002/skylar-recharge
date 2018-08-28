@@ -43,6 +43,7 @@ foreach($subscription_ids as $subscription_id){
 	}
 
 	$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/cancel', ['cancellation_reason ' => $reason]);
+	var_dump($updated_subscription_res);
 	if(empty($updated_subscription_res['subscription'])){
 		continue;
 	}
@@ -69,7 +70,6 @@ foreach($addresses_res['addresses'] as $address_res){
 // Remove discount
 if(!empty($address_id)){
 	$response = $rc->put('/discounts/'.$sample_discount_code.'/remove', ['address_id'=>$address_id]);
-	var_dump($response);
 }
 
 echo json_encode([
