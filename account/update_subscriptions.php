@@ -37,6 +37,7 @@ $customer_subscription_ids = array_column($subscriptions, 'id');
 $data = [];
 if(!empty($_REQUEST['frequency'])){
 	$data['order_interval_frequency'] = $data['charge_interval_frequency'] = intval($_REQUEST['frequency']);
+	$data['interval_unit_type'] = 'month';
 }
 if(!empty($_REQUEST['quantity'])){
 	$data['quantity'] = intval($_REQUEST['quantity']);
