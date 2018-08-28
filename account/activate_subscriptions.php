@@ -42,7 +42,7 @@ foreach($subscription_ids as $subscription_id){
 		continue;
 	}
 
-	$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/activate');
+	$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/activate', ['status' => 'ACTIVE']);
 	if(empty($updated_subscription_res['subscription'])){
 		continue;
 	}
