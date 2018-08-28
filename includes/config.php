@@ -114,5 +114,8 @@ function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant
 			'variant_title' => $shopify_variant['title'],
 		]);
 	}
+	if(empty($response['subscription'])){
+		var_dump($response);
+	}
 	return $response['subscription'];
 }
