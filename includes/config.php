@@ -9,6 +9,16 @@ if(strpos(getcwd(), 'production') !== false){
     define('ENV_DIR', 'skylar-recharge-staging');
 }
 
+// Variants that are allowed to create subscriptions, eventually we won't use this but it's a good safeguard for now
+$subscription_variant_ids = ['5672401895455'];
+$ids_by_scent = [
+	'arrow'  => ['variant' => 31022048003,   'product' => 8985085187],
+	'capri'  => ['variant' => 5541512970271, 'product' => 443364081695],
+	'coral'  => ['variant' => 26812012355,   'product' => 8215300931],
+	'isle'   => ['variant' => 31022109635,   'product' => 8985117187],
+	'meadow' => ['variant' => 26812085955,   'product' => 8215317379],
+];
+
 if (!function_exists('getallheaders')){ 
     function getallheaders(){ 
         $headers = []; 
@@ -20,7 +30,7 @@ if (!function_exists('getallheaders')){
        return $headers; 
     } 
 }
-
+// Might be better to just group them by address ID
 function group_subscriptions($subscriptions, $addresses){
 	$subscription_groups = [];
 	foreach($subscriptions as $subscription){

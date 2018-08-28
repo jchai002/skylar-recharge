@@ -41,8 +41,20 @@ if(!empty($_REQUEST['frequency'])){
 }
 if(!empty($_REQUEST['quantity'])){
 	$data['quantity'] = intval($_REQUEST['quantity']);
-	// TODO: Pricing rules
 }
+if(!empty($_REQUEST['scent_code']) && in_array($_REQUEST['scent_code'], $ids_by_scent)){
+	// Special logic for 'default' subs. Swap one full size bottle for another. Could expand this to work across other products/variants
+	$product = $sc->call('GET', '/admin/products/'.$ids_by_scent[$_REQUEST['scent_code']]['product'].'.json');
+	$data['shopify_variant_id'] = $ids_by_scent['variant'];
+	$data['product_title'] = $product['title'];
+	foreach($product['variants'] as $variant){
+		if($variant['id'] == $ids_by_scent[$_REQUEST['scent_code']]['variant']){
+			$data['variant_title'] = $variant['title'];
+			break;
+		}
+	}
+}
+// TODO: Pricing rules
 // TODO: Check discount
 foreach($subscription_ids as $subscription_id){
 	$updated_subscription = [];
