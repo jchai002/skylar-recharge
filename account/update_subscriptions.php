@@ -42,6 +42,7 @@ if(!empty($_REQUEST['quantity'])){
 	$data['quantity'] = intval($_REQUEST['quantity']);
 	// TODO: Pricing rules
 }
+var_dump($data);
 // TODO: Check discount
 foreach($subscription_ids as $subscription_id){
 	$updated_subscription = [];
