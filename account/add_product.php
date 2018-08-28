@@ -82,6 +82,7 @@ $frequency = $subscription['status'] == 'ONETIME' ? 'onetime' : $subscription['o
 $new_subscription = add_subscription($rc, $product, $variant, $subscription['address_id'], strtotime($subscription['next_charge_scheduled_at']), 1, $frequency);
 if(!empty($new_subscription)){
 	$subscriptions[] = $new_subscription;
+	$subscription_ids[] = $new_subscription['id'];
 }
 
 $addresses = [];
@@ -97,4 +98,5 @@ echo json_encode([
 	'success' => !empty($new_subscription),
 	'subscriptions' => group_subscriptions($subscriptions, $addresses),
 	'subscriptions_raw' => $subscriptions,
+	'show_ids' => implode(',',$subscription_ids),
 ]);
