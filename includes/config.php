@@ -20,6 +20,11 @@ $ids_by_scent = [
 	'isle'   => ['variant' => 31022109635,   'product' => 8985117187],
 	'meadow' => ['variant' => 26812085955,   'product' => 8215317379],
 ];
+$multi_bottle_discounts = [
+	2 => 36,
+	3 => 56,
+	4 => 112,
+];
 
 if (!function_exists('getallheaders')){ 
     function getallheaders(){ 
@@ -79,7 +84,7 @@ function group_subscriptions($subscriptions, $addresses){
 		}
 		$subscription_group['id'] = $subscription_group['ids'] = implode(',',array_column($subscription_group['items'], 'id'));
 		$subscription_group['total_quantity'] = array_sum(array_column($subscription_group['items'], 'quantity'));
-		$subscription_group['total_price'] = number_format(array_sum(array_column($subscription_group['items'], 'price')), 2);
+		$subscription_group['total_price'] = $subscription_group['raw_price'] = number_format(array_sum(array_column($subscription_group['items'], 'price')), 2);
 		$subscription_groups[$group_key] = $subscription_group;
 	}
 
@@ -121,4 +126,102 @@ function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant
 		var_dump($response);
 	}
 	return $response['subscription'];
+}
+
+function calculate_discount($charge){
+	$fullsize_count = 0;
+}
+
+function calculate_multi_bottle_discount($fullsize_count){
+	global $multi_bottle_discounts;
+	if($fullsize_count  <= 1){
+		return 0;
+	}
+	if(array_key_exists($fullsize_count, $multi_bottle_discounts)){
+		$discount = $multi_bottle_discounts[$fullsize_count];
+	} else {
+		$last_quantity = 1;
+		$discount = 0;
+		foreach($multi_bottle_discounts as $quantity => $discount){
+			if($fullsize_count < $quantity){
+				$discount = $multi_bottle_discounts[$last_quantity];
+				break;
+			}
+			$last_quantity = $quantity;
+		}
+	}
+	return $discount;
+}
+function calculate_single_bottle_cost($quantity, $onetime){
+	$base_bottle_cost = 78;
+	$subscribe_savings = .15;
+	$discount = calculate_multi_bottle_discount($quantity);
+
+	if($onetime){
+		return ($quantity*$base_bottle_cost - $discount);
+	} else {
+		return ($quantity*$base_bottle_cost - $discount) * (1 - $subscribe_savings);
+	}
+}
+
+function align_subscriptions_to_addresses(RechargeClient $rc, $subscriptions){
+
+}
+function group_subscriptions_by_type($subscriptions, $ignore_address = false){
+	$subscription_groups = [];
+	foreach($subscriptions as $subscription){
+		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
+		$next_charge_date = date('m/d/Y', $next_charge_time);
+		$frequency = $subscription['status'] == 'ONETIME' ? '' : $subscription['order_interval_frequency'].$subscription['order_interval_unit'];
+		$group_key = $subscription['status'].$next_charge_date.$frequency.$subscription['address_id'];
+		if(!array_key_exists($group_key, $subscription_groups)){
+			$subscription_groups[$group_key] = [
+				'status' => $subscription['status'],
+				'frequency' => $frequency,
+				'order_interval_frequency' => $subscription['order_interval_frequency'],
+				'onetime' => $subscription['status'] == 'ONETIME',
+				'next_charge_date' => $next_charge_date,
+				'next_charge_time' => $next_charge_time,
+				'address_ids' => [],
+				'address_id' => $subscription['address_id'],
+				'variant_quantities' => [],
+			];
+		}
+		$subscription_groups[$group_key]['items'][] = [
+			'id' => $subscription['id'],
+			'product_id' => $subscription['shopify_product_id'],
+			'variant_id' => $subscription['shopify_variant_id'],
+			'quantity' => $subscription['quantity'],
+			'product_title' => $subscription['product_title'],
+			'variant_title' => $subscription['variant_title'],
+			'title' => trim($subscription['product_title'] . ' ' .$subscription['variant_title']),
+			'price' => $subscription['price'],
+		];
+		if(!array_key_exists($subscription['shopify_variant_id'], $subscription_groups[$group_key]['variant_quantities'])){
+			$subscription_groups[$group_key]['variant_quantities'][$subscription['shopify_variant_id']] = 0;
+		}
+		$subscription_groups[$group_key]['variant_quantities'][$subscription['shopify_variant_id']] += $subscription['quantity'];
+	}
+
+	// Dynamic title generation, counts, totals
+	foreach($subscription_groups as $group_key => $subscription_group){
+		if(count($subscription_group['items']) == 1 && !empty($subscription_group['items'][0]['product_title'])){
+			$subscription_group['title'] = trim($subscription_group['items'][0]['product_title'].' '.$subscription_group['items'][0]['variant_title']);
+			$subscription_group['title'] .= $subscription_group['onetime'] ? ' Order' : ' Auto Renewal';
+		} else {
+			$subscription_group['title'] = $subscription_group['onetime'] ? 'Scheduled Order' : 'Scent Auto Renewal';
+		}
+		$subscription_group['id'] = $subscription_group['ids'] = implode(',',array_column($subscription_group['items'], 'id'));
+		$subscription_group['total_quantity'] = array_sum(array_column($subscription_group['items'], 'quantity'));
+		$subscription_group['total_price'] = $subscription_group['raw_price'] = number_format(array_sum(array_column($subscription_group['items'], 'price')), 2);
+		$subscription_groups[$group_key] = $subscription_group;
+	}
+
+	uasort($subscription_groups, function($a, $b){
+		if($a['next_charge_time'] == $b['next_charge_time']){
+			return 0;
+		}
+		return $a['next_charge_time'] > $b['next_charge_time'] ? 1 : -1;
+	});
+	return array_values($subscription_groups);
 }
