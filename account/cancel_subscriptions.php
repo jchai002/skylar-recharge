@@ -43,7 +43,6 @@ foreach($subscription_ids as $subscription_id){
 	}
 
 	$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/cancel', ['cancellation_reason' => $reason]);
-	var_dump($updated_subscription_res);
 	if(empty($updated_subscription_res['subscription'])){
 		continue;
 	}
