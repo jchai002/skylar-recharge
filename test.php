@@ -12,3 +12,5 @@ if(!empty($charges['charges'])){
 	$charges = $charges['charges'];
 }
 var_dump($charges);
+
+$res = $rc->post('/charges/'.$charges[0]['id'].'/discounts/SAMPLE25/apply');
