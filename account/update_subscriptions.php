@@ -54,6 +54,7 @@ if(!empty($_REQUEST['scent_code']) && in_array($_REQUEST['scent_code'], $ids_by_
 		}
 	}
 }
+var_dump($data);
 // TODO: Pricing rules
 // TODO: Check discount
 foreach($subscription_ids as $subscription_id){
@@ -77,6 +78,7 @@ foreach($subscription_ids as $subscription_id){
 		}
 		$updated_subscription = $updated_subscription_res['subscription'];
 	}
+	var_dump($updated_subscription);
 	if(!empty($updated_subscription)){
 		foreach($subscriptions as $index=>$subscription){
 			if($subscription['id'] == $updated_subscription['id']){
