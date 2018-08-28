@@ -61,7 +61,7 @@ function group_subscriptions($subscriptions, $addresses){
 			'quantity' => $subscription['quantity'],
 			'product_title' => $subscription['product_title'],
 			'variant_title' => $subscription['variant_title'],
-			'title' => trim($subscription['product_title'].' ' .$subscription['variant_title']),
+			'title' => trim($subscription['product_title'] . ' ' .$subscription['variant_title']),
 			'price' => $subscription['price'],
 		];
 	}
@@ -69,7 +69,7 @@ function group_subscriptions($subscriptions, $addresses){
 // Dynamic title generation, counts, totals
 	foreach($subscription_groups as $group_key => $subscription_group){
 		if(count($subscription_group['items']) == 1 && !empty($subscription_group['items'][0]['product_title'])){
-			$subscription_group['title'] = trim($subscription_group['items'][0]['product_title'].$subscription_group['items'][0]['variant_title']);
+			$subscription_group['title'] = trim($subscription_group['items'][0]['product_title'].' '.$subscription_group['items'][0]['variant_title']);
 			$subscription_group['title'] .= $subscription_group['onetime'] ? ' Order' : ' Auto Renewal';
 		} else {
 			$subscription_group['title'] = $subscription_group['onetime'] ? 'Scheduled Order' : 'Scent Auto Renewal';
