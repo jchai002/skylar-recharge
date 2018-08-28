@@ -36,9 +36,11 @@ if (!function_exists('getallheaders')){
 function group_subscriptions($subscriptions, $addresses){
 	$subscription_groups = [];
 	foreach($subscriptions as $subscription){
-		if(!in_array($subscription['status'], ['ACTIVE', 'ONETIME']) || empty($subscription['next_charge_scheduled_at'])){
+		/*
+		if(!in_array($subscription['status'], ['ACTIVE', 'ONETIME', ]) || empty($subscription['next_charge_scheduled_at'])){
 			continue;
 		}
+		*/
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
 		$next_charge_date = date('m/d/Y', $next_charge_time);
 		$frequency = $subscription['status'] == 'ONETIME' ? '' : $subscription['order_interval_frequency'].$subscription['order_interval_unit'];
