@@ -118,5 +118,10 @@ foreach($subs_to_create as $sub_data){
 			'variant_title' => $variant['title'],
 		]);
 	}
+	$subscription_id = $response['subscription']['id'];
 	var_dump($response);
 }
+// Add sample discount to address
+$discount_code = 'SAMPLE25';
+$response = $rc->post('/addresses/'.$rc_order['address_id'].'/discounts/'.$discount_code.'/apply');
+var_dump($response);

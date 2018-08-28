@@ -40,8 +40,9 @@ if(!empty($_REQUEST['frequency'])){
 }
 if(!empty($_REQUEST['quantity'])){
 	$data['quantity'] = intval($_REQUEST['quantity']);
-	// May need to update price as well here
+	// TODO: Pricing rules
 }
+// TODO: Check discount
 foreach($subscription_ids as $subscription_id){
 	$updated_subscription = [];
 	if(!in_array($subscription_id, $customer_subscription_ids)){
@@ -54,6 +55,7 @@ foreach($subscription_ids as $subscription_id){
 	}
 	if(!empty($data)){
 		$updated_subscription = $rc->put('/subscriptions/'.$subscription_id, $data)['subscription'];
+		var_dump($updated_subscription);
 	}
 	if(!empty($updated_subscription)){
 		foreach($subscriptions as $index=>$subscription){
