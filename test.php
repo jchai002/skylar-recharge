@@ -5,7 +5,8 @@ require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 
-$charges = $rc->get('/charges', ['subscription_id' => 21200731]);
+//$charges = $rc->get('/charges', ['subscription_id' => 21200731]);
+$charges = $rc->get('/charges', ['customer_id' => 12965232]);
 if(!empty($charges['charges'])){
 	$charges = $charges['charges'];
 }
