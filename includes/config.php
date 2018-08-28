@@ -88,3 +88,31 @@ function group_subscriptions($subscriptions, $addresses){
 	});
 	return array_values($subscription_groups);
 }
+
+function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant, $address_id, $next_charge_time, $quantity = 1, $frequency='3', $frequency_unit='month'){
+	if($frequency == 'onetime'){
+		$response = $rc->post('/onetimes/address/'.$address_id, [
+			'address_id' => $address_id,
+			'next_charge_scheduled_at' => date('Y-m-d', $next_charge_time),
+			'shopify_variant_id' => $shopify_variant['id'],
+			'quantity' => $quantity,
+			'price' => $shopify_variant['price'],
+			'product_title' => $shopify_product['title'],
+			'variant_title' => $shopify_variant['title'],
+		]);
+	} else {
+		$response = $rc->post('/subscriptions', [
+			'address_id' => $address_id,
+			'next_charge_scheduled_at' => date('Y-m-d', $next_charge_time),
+			'shopify_variant_id' => $shopify_variant['id'],
+			'quantity' => $quantity,
+			'order_interval_unit' => $frequency_unit,
+			'order_interval_frequency' => $frequency,
+			'charge_interval_frequency' => $frequency,
+			'order_day_of_month' => date('d', $next_charge_time),
+			'product_title' => $shopify_product['title'],
+			'variant_title' => $shopify_variant['title'],
+		]);
+	}
+	return $response['subscription'];
+}
