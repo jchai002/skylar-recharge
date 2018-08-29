@@ -160,6 +160,7 @@ function get_charge_discount_code(RechargeClient $rc, $discount_amount){
 	$page_size = 250;
 	$page = 1;
 	do {
+		echo "here".$page;
 		$res = $rc->get('/discounts', [
 			'discount_type' => 'fixed',
 			'status' => 'enabled',
