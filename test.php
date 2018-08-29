@@ -6,7 +6,8 @@ require_once('includes/class.RechargeClient.php');
 $rc = new RechargeClient();
 $res = $rc->get('/charges/count', ['status' => 'QUEUED']);
 var_dump($res);
-die();
+
+ini_set('memory_limit','16M');
 
 //$charges = $rc->get('/charges', ['subscription_id' => 21200731]);
 //$charges = $rc->get('/charges', ['customer_id' => 12965232]);
