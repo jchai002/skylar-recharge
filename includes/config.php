@@ -128,9 +128,7 @@ function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant
 	return $response['subscription'];
 }
 
-$standard_discount_codes = [
-	[],
-];
+$standard_discount_codes = [];
 
 function apply_discount_code(RechargeClient $rc, $charge, $code){
 	if(!empty($charge['discount_codes'])){
