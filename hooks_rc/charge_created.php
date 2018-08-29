@@ -31,10 +31,10 @@ foreach($charge['line_items'] as $line_item){
 }
 
 $discount_factors = calculate_discount_factors($charge);
+var_dump($discount_factors);
 $discount_amount = calculate_discount_amount($charge, $discount_factors);
-if(empty($discount_factors)){
-	exit;
-}
+var_dump($discount_amount);
 
 $code = get_charge_discount_code($rc, $discount_amount);
+var_dump($code);
 apply_discount_code($rc, $charge, $code);
