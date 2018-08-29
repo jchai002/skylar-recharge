@@ -7,8 +7,6 @@ $rc = new RechargeClient();
 $res = $rc->get('/charges/count', ['status' => 'QUEUED']);
 var_dump($res);
 
-//ini_set('memory_limit','64M');
-
 //$charges = $rc->get('/charges', ['subscription_id' => 21200731]);
 //$charges = $rc->get('/charges', ['customer_id' => 12965232]);
 $all_charges = [];

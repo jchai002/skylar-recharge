@@ -134,7 +134,7 @@ $standard_discount_codes = [
 
 function apply_discount_code(RechargeClient $rc, $charge, $code){
 	if(!empty($charge['discount_codes'])){
-		if($charge['discount_codes'][0]['amount'] == $discount_amount){
+		if($charge['discount_codes'][0]['code'] == $code){
 			return true;
 		}
 		// Remove existing discount code
@@ -155,7 +155,7 @@ function apply_discount_code(RechargeClient $rc, $charge, $code){
 function get_charge_discount_code(RechargeClient $rc, $discount_amount){
 	global $standard_discount_codes;
 	// See if we've got one saved locally
-	if(array_key_exists($discount_amount, $standard_discount_codes)){
+	if(array_key_exists(strval($discount_amount), $standard_discount_codes)){
 		return $standard_discount_codes[$discount_amount];
 	}
 	// See if one exists via api
