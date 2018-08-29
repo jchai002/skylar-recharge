@@ -7,18 +7,20 @@ $rc = new RechargeClient();
 $res = $rc->get('/charges/count', ['status' => 'QUEUED']);
 var_dump($res);
 
-ini_set('memory_limit','64M');
+//ini_set('memory_limit','64M');
 
 //$charges = $rc->get('/charges', ['subscription_id' => 21200731]);
 //$charges = $rc->get('/charges', ['customer_id' => 12965232]);
 $all_charges = [];
+$page = 1;
 do{
-	$res = $rc->get('/charges', ['status' => 'QUEUED', 'limit' => '250', 'page' => 2]);
+	$res = $rc->get('/charges', ['status' => 'QUEUED', 'limit' => '250', 'page' => $page]);
 	if(empty($res['charges'])){
 		break;
 	}
 	$charges = $res['charges'];
 	$all_charges = array_merge($all_charges, $charges);
+	$page++;
 } while(count($charges) >= 250);
 
 foreach($all_charges as $charge){
