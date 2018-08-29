@@ -8,8 +8,6 @@ $rc = new RechargeClient();
 // get $charge from webhook
 if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/charges/'.$_REQUEST['id']);
-	var_dump($res);
-	exit;
 } else {
 	$data = file_get_contents('php://input');
 	if(!empty($data)){
