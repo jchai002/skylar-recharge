@@ -4,7 +4,7 @@ require_once('../includes/class.RechargeClient.php');
 
 
 // get $charge from webhook
-foreach($charge['line_item'] as $line_item){
+foreach($charge['line_items'] as $line_item){
 	if($line_item['shopify_product_id'] == 738567323735 || $line_item['shopify_product_id'] == 738567520343){
 		exit;
 	}
