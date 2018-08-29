@@ -9,7 +9,8 @@ var_dump($rc->post('/webhooks/22575/test'));
 
 //$charges = $rc->get('/charges', ['subscription_id' => 21200731]);
 //$charges = $rc->get('/charges', ['customer_id' => 12965232]);
-$charges = $rc->get('/charges', ['status' => 'QUEUED', 'limit' => 250]);
+$charges = $rc->get('/charges', ['status' => 'QUEUED', 'limit' => '250']);
+var_dump($charges);
 if(!empty($charges['charges'])){
 	$charges = $charges['charges'];
 }
