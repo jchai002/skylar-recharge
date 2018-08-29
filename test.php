@@ -11,4 +11,12 @@ $charges = $rc->get('/charges');
 if(!empty($charges['charges'])){
 	$charges = $charges['charges'];
 }
-var_dump($charges);
+foreach($charges as $charge){
+	foreach($charge['line_item'] as $line_item){
+		if($line_item['shopify_product_id'] == 738567323735 || $line_item['shopify_product_id'] == 738567520343){
+			continue;
+		}
+		var_dump($charge);
+	}
+}
+//var_dump($charges);
