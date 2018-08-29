@@ -3,7 +3,25 @@ require_once('../includes/config.php');
 require_once('../includes/class.RechargeClient.php');
 
 
+
+$rc = new RechargeClient();
 // get $charge from webhook
+if(!empty($_REQUEST['id'])){
+	$res = $rc->get('/charges/'.$_REQUEST['id']);
+	var_dump($res);
+	exit;
+} else {
+	$data = file_get_contents('php://input');
+	if(!empty($data)){
+		$res = json_decode($data);
+	}
+}
+if(empty($res['charge'])){
+	exit;
+}
+$charge = $res['charge'];
+
+
 if($charge['status'] != 'QUEUED'){
 	exit;
 }
@@ -20,6 +38,5 @@ if(empty($discount_factors)){
 	exit;
 }
 
-$rc = new RechargeClient();
 $code = get_charge_discount_code($rc, $discount_amount);
 apply_discount_code($rc, $charge, $code);
