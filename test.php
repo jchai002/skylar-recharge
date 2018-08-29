@@ -4,6 +4,16 @@ require_once('includes/class.ShopifyClient.php');
 require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
+
+$res = $rc->get('/discounts', [
+	'discount_type' => 'fixed',
+	'status' => 'enabled',
+	'limit' => 250,
+]);
+
+die();
+
+
 $res = $rc->get('/charges/count', ['status' => 'QUEUED']);
 var_dump($res);
 
