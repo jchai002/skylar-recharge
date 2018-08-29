@@ -7,8 +7,11 @@ $hooks = $rc->get("/webhooks");
 $hooks = $hooks['webhooks'];
 
 $needed_hooks = [
-	'topic' => 'charge/created',
-	'address' => 'https://ec2production.skylar.com/hooks_rc/charge_created.php',
+	[
+		'topic' => 'charge/created',
+//		'address' => 'https://ec2production.skylar.com/hooks_rc/charge_created.php',
+		'address' => 'http://requestbin.fullcontact.com/1hf7qff1',
+	],
 ];
 
 foreach($needed_hooks as $needed_hook){
@@ -17,6 +20,6 @@ foreach($needed_hooks as $needed_hook){
 			continue 2;
 		}
 	}
-	echo "Need to add: ";
-	var_dump($needed_hook);
+	$res = $rc->post('/webhooks', $needed_hook);
+	echo "Created: "; var_dump($res);
 }

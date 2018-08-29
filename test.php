@@ -4,8 +4,6 @@ require_once('includes/class.ShopifyClient.php');
 require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
-$webhooks = $rc->get("/webhooks");
-var_dump($webhooks);
 
 //$charges = $rc->get('/charges', ['subscription_id' => 21200731]);
 //$charges = $rc->get('/charges', ['customer_id' => 12965232]);
