@@ -10,6 +10,7 @@ $res = $rc->get('/discounts', [
 	'status' => 'enabled',
 	'limit' => 250,
 ]);
+var_dump($res);
 
 die();
 
