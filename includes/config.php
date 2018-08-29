@@ -160,9 +160,8 @@ function get_charge_discount_code(RechargeClient $rc, $discount_amount){
 	$page_size = 250;
 	$page = 1;
 	do {
-		echo "here".$page;
 		$res = $rc->get('/discounts', [
-			'discount_type' => 'fixed',
+			'discount_type' => 'fixed_amount',
 			'status' => 'enabled',
 			'limit' => $page_size,
 		]);
@@ -171,9 +170,7 @@ function get_charge_discount_code(RechargeClient $rc, $discount_amount){
 			break;
 		}
 		$discounts = $res['discounts'];
-		var_dump($res);
 		foreach($discounts as $discount){
-			var_dump($discount);
 			if(
 				$discount['value'] != $discount_amount
 				|| strpos($discount['code'], 'AUTOGEN_') === false
