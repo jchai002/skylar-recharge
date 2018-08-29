@@ -5,6 +5,8 @@ require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 
+var_dump($rc->post('/webhooks/22575/test'));
+
 //$charges = $rc->get('/charges', ['subscription_id' => 21200731]);
 //$charges = $rc->get('/charges', ['customer_id' => 12965232]);
 $charges = $rc->get('/charges', ['status' => 'QUEUED']);
