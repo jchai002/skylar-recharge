@@ -8,7 +8,7 @@ if($charge['status'] != 'QUEUED'){
 	exit;
 }
 foreach($charge['line_items'] as $line_item){
-	if($line_item['shopify_product_id'] == 738567323735 || $line_item['shopify_product_id'] == 738567520343){
+	if(in_array($line_item['shopify_product_id'], [738567323735, 738567520343, 738394865751])){
 		exit;
 	}
 }
