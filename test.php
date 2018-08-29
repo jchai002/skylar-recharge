@@ -14,7 +14,7 @@ if(!empty($charges['charges'])){
 foreach($charges as $charge){
 	foreach($charge['line_items'] as $line_item){
 		if($line_item['shopify_product_id'] == 738567323735 || $line_item['shopify_product_id'] == 738567520343){
-			continue;
+			continue 2;
 		}
 		var_dump($charge);
 	}
