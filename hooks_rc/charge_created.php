@@ -8,6 +8,7 @@ if($charge['status'] != 'QUEUED'){
 	exit;
 }
 foreach($charge['line_items'] as $line_item){
+	// don't do it for old sample products
 	if(in_array($line_item['shopify_product_id'], [738567323735, 738567520343, 738394865751])){
 		exit;
 	}
