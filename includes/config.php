@@ -171,6 +171,7 @@ function get_charge_discount_code(RechargeClient $rc, $discount_amount){
 			break;
 		}
 		$discounts = $res['discounts'];
+		var_dump($res);
 		foreach($discounts as $discount){
 			var_dump($discount);
 			if(
