@@ -173,6 +173,7 @@ function get_charge_discount_code(RechargeClient $rc, $discount_amount){
 		}
 		$discounts = $res['discounts'];
 		foreach($discounts as $discount){
+			var_dump($discount);
 			if(
 				$discount['value'] != $discount_amount
 				|| strpos($discount['code'], 'AUTOGEN_') === false
@@ -197,6 +198,7 @@ function get_charge_discount_code(RechargeClient $rc, $discount_amount){
 		'value' => $discount_amount,
 		'discount_type' => 'fixed_amount',
 	]);
+//	var_dump($discount);
 	return $code;
 }
 
