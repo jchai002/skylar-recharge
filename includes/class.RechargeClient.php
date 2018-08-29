@@ -1,8 +1,12 @@
 <?php
 class RechargeClient {
-    private $authToken = '069f9828d19cdfea4f5a73f43d28a891257dab5e5c03afc9f68a1e0e';
+    private $authToken;
 
-    function call($url, $data = [], $method='GET'){
+    public function __construct(){
+		$this->authToken = $_ENV['RECHARGE_API_TOKEN'];
+	}
+
+	function call($url, $data = [], $method='GET'){
         $method = strtoupper($method);
         $ch = curl_init();
         $url = 'https://api.rechargeapps.com/'.trim($url,'/');

@@ -1,6 +1,6 @@
 <?php
-define('SHOPIFY_APP_KEY','d8dd3bf93f4ff0684194ff423cf03f11');
-define('SHOPIFY_APP_SECRET','5630f12911135794f6058f2706026e06');
+define('SHOPIFY_APP_KEY',$_ENV['SHOPIFY_APP_KEY']);
+define('SHOPIFY_APP_SECRET',$_ENV['SHOPIFY_APP_SECRET']);
 define('SHOPIFY_SCOPE',implode(',',[
 	'read_content',
 	'write_content',
