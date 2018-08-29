@@ -7,7 +7,7 @@ $rc = new RechargeClient();
 
 //$charges = $rc->get('/charges', ['subscription_id' => 21200731]);
 //$charges = $rc->get('/charges', ['customer_id' => 12965232]);
-$charges = $rc->get('/charges');
+$charges = $rc->get('/charges', ['status' => 'QUEUED']);
 if(!empty($charges['charges'])){
 	$charges = $charges['charges'];
 }
