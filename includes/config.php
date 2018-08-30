@@ -164,7 +164,7 @@ function get_charge_discount_code(PDO $db, RechargeClient $rc, $discount_amount)
 		return $standard_discount_codes[$discount_amount];
 	}
 	// See if one exists via api
-	$stmt = $db->prepare("SELECT code FROM recharge_discounts WHERE autogent=1 AND enabled=1 AND type='fixed_amount' AND value=?");
+	$stmt = $db->prepare("SELECT code FROM recharge_discounts WHERE autogen=1 AND enabled=1 AND type='fixed_amount' AND value=?");
 	$stmt->execute([$discount_amount*100]);
 	if($stmt->rowCount() > 0){
 		return $stmt->fetchColumn();
