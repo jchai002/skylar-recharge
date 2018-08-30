@@ -14,6 +14,8 @@ if(strpos(getcwd(), 'production') !== false){
     define('ENV_DIR', 'skylar-recharge-staging');
 }
 
+$db = new PDO("mysql:host=".$_ENV['DB_HOST'].";dbname=".$_ENV['DB_NAME'].";charset=UTF8", $_ENV['DB_USER'], $_ENV['DB_PASS']);
+
 $sample_discount_code = 'SAMPLE25';
 
 // Variants that are allowed to create subscriptions, eventually we won't use this but it's a good safeguard for now
@@ -155,50 +157,32 @@ function apply_discount_code(RechargeClient $rc, $charge, $code){
 	return true;
 }
 
-function get_charge_discount_code(RechargeClient $rc, $discount_amount){
+function get_charge_discount_code(PDO $db, RechargeClient $rc, $discount_amount){
 	global $standard_discount_codes;
 	// See if we've got one saved locally
 	if(array_key_exists(strval($discount_amount), $standard_discount_codes)){
 		return $standard_discount_codes[$discount_amount];
 	}
 	// See if one exists via api
-	$page_size = 250;
-	$page = 1;
-	do {
-		$res = $rc->get('/discounts', [
-			'discount_type' => 'fixed_amount',
-			'status' => 'enabled',
-			'limit' => $page_size,
-		]);
-		if(empty($res['discounts'])){
-			var_dump($res);
-			break;
-		}
-		$discounts = $res['discounts'];
-		foreach($discounts as $discount){
-			if(
-				$discount['value'] != $discount_amount
-				|| strpos($discount['code'], 'AUTOGEN_') === false
-				|| $discount['applies_to_product_type'] != 'ALL'
-				|| $discount['duration'] != 'forever'
-				|| !empty($discount['applies_to'])
-				|| !empty($discount['applies_to_id'])
-				|| !empty($discount['once_per_customer'])
-				|| !empty($discount['usage_limit'])
-			){
-				continue;
-			}
-			return $discount['code'];
-		}
-		$page++;
-	} while(count($discounts) >= 250);
+	$stmt = $db->prepare("SELECT code FROM recharge_discounts WHERE autogent=1 AND enabled=1 AND type='fixed_amount' AND value=?");
+	$stmt->execute([$discount_amount*100]);
+	if($stmt->rowCount() > 0){
+		return $stmt->fetchColumn();
+	}
 
 	// Create a new discount code for this use case
 	$code = 'AUTOGEN_'.rand(1000000,9999999);
-	$discount = $rc->post('/discounts',[
+	$res = $rc->post('/discounts',[
 		'code' => $code,
 		'value' => $discount_amount,
 		'discount_type' => 'fixed_amount',
+	]);
+	$discount = $res['discount'];
+	$stmt = $db->prepare("INSERT INTO recharge_discounts (rc_id, code, value, type, enabled, autogen) VALUES (:rc_id, :code, :value, 'fixed_amount', 1, 1)");
+	$stmt->execute([
+		'rc_id' => $discount['id'],
+		'code' => $code,
+		'value' => $discount_amount*100
 	]);
 //	var_dump($discount);
 	return $code;

@@ -5,8 +5,6 @@ require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 
-var_dump($rc->get('/discounts/count'));
-die();
 
 $res = $rc->get('/discounts', [
 	'discount_type' => 'fixed_amount',
