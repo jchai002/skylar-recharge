@@ -5,6 +5,7 @@ require_once('../includes/class.RechargeClient.php');
 $rc = new RechargeClient();
 $hooks = $rc->get("/webhooks");
 $hooks = $hooks['webhooks'];
+var_dump($hooks);
 
 $needed_hooks = [
 	[
