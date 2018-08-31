@@ -11,7 +11,7 @@ $page = 1;
 if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'created_at_max' => '2018-08-30']);
 } else {
-	$res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'customer_id' => $_REQUEST['id']]);
+	$res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'address_id' => $_REQUEST['id']]);
 }
 
 $product_cache = [];
