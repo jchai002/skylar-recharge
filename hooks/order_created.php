@@ -68,9 +68,10 @@ foreach($order['line_items'] as $line_item){
 }
 var_dump($sample_credit);
 if(!empty($sample_credit)){
-	$rc->put('/addresses/'.$rc_order['address_id'], [
+	$res = $rc->put('/addresses/'.$rc_order['address_id'], [
 		'cart_attributes' => ['_sample_credit' => $sample_credit],
 	]);
+	var_dump($res);
 }
 if(empty($subs_to_create)){
 	die('no subs to create');
