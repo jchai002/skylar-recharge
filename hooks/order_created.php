@@ -72,7 +72,7 @@ if(!empty($sample_credit)){
 	]);
 }
 if(empty($subs_to_create)){
-	exit;
+	die('no subs to create');
 }
 
 $delay_days = 17; // TODO: more if international
