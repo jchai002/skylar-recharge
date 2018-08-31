@@ -21,10 +21,6 @@ $needed_hooks = [
 		'address' => 'https://ec2production.skylar.com/hooks_rc/address_updated.php',
 	],
 	[
-		'topic' => 'address/updated',
-		'address' => 'https://recharge-request-bin.herokuapp.com/tbul1mtb',
-	],
-	[
 		'topic' => 'subscription/created',
 		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_all.php',
 	],
