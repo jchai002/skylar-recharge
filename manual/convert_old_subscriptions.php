@@ -5,6 +5,7 @@ require_once('../includes/class.ShopifyClient.php');
 require_once('../includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
+$sc = new ShopifyPrivateClient();
 
 $page = 1;
 
