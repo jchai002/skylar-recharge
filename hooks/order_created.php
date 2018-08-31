@@ -18,7 +18,7 @@ if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
 } else {
 	$data = file_get_contents('php://input');
-	$order = json_decode($data);
+	$order = json_decode($data, true);
 }
 if(empty($order)){
 	die('no data');
@@ -81,6 +81,7 @@ do {
 	$next_charge_time = $order_created_time + (($delay_days+$offset) * 24*60*60);
 	$offset++;
 } while(!in_array(date('N', $next_charge_time), [6,7]));
+
 $product_cache = [];
 
 foreach($subs_to_create as $sub_data){
