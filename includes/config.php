@@ -89,6 +89,7 @@ function group_subscriptions($subscriptions, $addresses){
 			'title' => trim($subscription['product_title'] . ' ' .$subscription['variant_title']),
 			'price' => $subscription['price'],
 			'total_price' => $subscription['price']*$subscription['quantity'],
+			'raw' => $subscription,
 		];
 	}
 
