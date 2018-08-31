@@ -249,22 +249,22 @@ function calculate_discount_factors($charge){
 function calculate_price_lines($subscription_group){
 	global $ids_by_scent;
 	$scent_variant_ids = array_column($ids_by_scent, 'variant');
-	$carry_price = $subscription_group['total_amount'];
+	$carry_price = $subscription_group['total_price'];
 	$price_lines = [
 		['title' => 'Regular Price', 'type' => 'regular_price', 'amount' => $carry_price],
 	];
 
 	// Multi Bottle Discount
 	$fullsize_count = 0;
-	foreach($subscription_group['items'] as $line_item){
-		if(in_array($line_item['shopify_variant_id'], $scent_variant_ids)){
-			$fullsize_count += $line_item['quantity'];
+	foreach($subscription_group['items'] as $item){
+		if(in_array($item['variant_id'], $scent_variant_ids)){
+			$fullsize_count += $item['quantity'];
 		}
 	}
 	$bottle_discount = calculate_multi_bottle_discount($fullsize_count);
 	if($bottle_discount > 0){
 		$carry_price -= $bottle_discount;
-		$price_lines[] = ['Added Scent Savings', 'type' => 'multibottle', 'amount' => $carry_price];
+		$price_lines[] = ['Added scent'.($bottle_discount != 1 ? 's' : '').' savings', 'type' => 'multibottle', 'amount' => $carry_price];
 	}
 
 	// Sample Credit
