@@ -88,7 +88,7 @@ $offset = 0;
 do {
 	$next_charge_time = $order_created_time + (($delay_days+$offset) * 24*60*60);
 	$offset++;
-} while(!in_array(date('N', $next_charge_time), [6,7]));
+} while(in_array(date('N', $next_charge_time), [6,7]));
 
 $product_cache = [];
 
