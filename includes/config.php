@@ -46,6 +46,14 @@ if (!function_exists('getallheaders')){
        return $headers; 
     } 
 }
+function log_event(PDO $db, $type, $message){
+	$stmt = $db->prepare("INSERT INTO event_log (type, message, date_created) VALUES (:type, :message, :date_created)");
+	$stmt->execute([
+		'type' => $type,
+		'message' => $message,
+		'date_created' => date('Y-m-d H:i:s'),
+	]);
+}
 // Might be better to just group them by address ID
 function group_subscriptions($subscriptions, $addresses){
 	$subscription_groups = [];

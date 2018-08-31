@@ -9,7 +9,7 @@ $rc = new RechargeClient();
 $res = $rc->get('/addresses/15901834');
 $address = $res['address'];
 
-$ch = curl_init('https://ec2staging.skylar.com/hooks_rc/address_updated.php?id=15901834');
+$ch = curl_init('https://ec2staging.skylar.com/hooks_rc/address_updated.php');
 curl_setopt_array($ch, [
 	CURLOPT_RETURNTRANSFER =>  true,
 	CURLOPT_POST => true,

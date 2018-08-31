@@ -10,6 +10,7 @@ if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/addresses/'.$_REQUEST['id']);
 } else {
 	$data = file_get_contents('php://input');
+	log_event($db, 'log', $data);
 	if(!empty($data)){
 		$res = json_decode($data, true);
 	}
