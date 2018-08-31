@@ -60,7 +60,7 @@ foreach($order['line_items'] as $line_item){
 			$sub_scent = $property['value'];
 		}
 	}
-	if(empty($sub_scent) || empty($sub_frequency)){
+	if(!empty($sub_scent) || !empty($sub_frequency)){
 		$subs_to_create[] = [
 			'ids' => $ids_by_scent[$sub_scent],
 			'frequency' => $sub_frequency,
