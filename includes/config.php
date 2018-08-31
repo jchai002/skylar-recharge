@@ -283,7 +283,7 @@ function calculate_price_lines($subscription_group){
 
 	if(!$subscription_group['onetime']){
 		$carry_price *= .85;
-		$price_lines[] = ['title' => '15% subscribe and save', 'type' => 'subscription', 'amount' => $carry_price];
+		$price_lines[] = ['title' => 'Subscribe and save 15%', 'type' => 'subscription', 'amount' => $carry_price];
 	}
 
 	return $price_lines;
