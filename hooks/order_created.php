@@ -68,8 +68,11 @@ foreach($order['line_items'] as $line_item){
 }
 var_dump($sample_credit);
 if(!empty($sample_credit)){
+	$res = $rc->get('/addresses/'.$rc_order['address_id']);
+	$address = $res['address'];
+	$address['cart_attributes'][] = ['name' => '_sample_credit', 'value' => $sample_credit];
 	$res = $rc->put('/addresses/'.$rc_order['address_id'], [
-		'cart_attributes' => ['name' => '_sample_credit', 'value' => $sample_credit],
+		'cart_attributes' => $address['cart_attributes'],
 	]);
 	var_dump($res);
 }

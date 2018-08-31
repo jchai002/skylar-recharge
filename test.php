@@ -5,7 +5,11 @@ require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 
-$rc->delete('/webhooks/22732');
+$res = $rc->put('/addresses/16048888', [
+	'cart_attributes' => [['name' => '_sample_credit', 'value' => 20]],
+]);
+var_dump($res);
+
 die();
 
 $res = $rc->get('/addresses/15901834');
