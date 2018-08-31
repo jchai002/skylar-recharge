@@ -8,7 +8,7 @@ $rc = new RechargeClient();
 
 $page = 1;
 
-if(!empty($_REQUEST['id'])){
+if(empty($_REQUEST['id'])){
 	$res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'created_at_max' => '2018-08-30']);
 } else {
 	$res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'address_id' => $_REQUEST['id']]);
