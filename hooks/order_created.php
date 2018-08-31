@@ -76,11 +76,14 @@ if(empty($subs_to_create)){
 
 $delay_days = 17; // TODO: more if international
 $order_created_time = strtotime($order['created_at']);
-$next_charge_time = $order_created_time + ($delay_days * 24*60*60);
+$offset = 0;
+do {
+	$next_charge_time = $order_created_time + (($delay_days+$offset) * 24*60*60);
+	$offset++;
+} while(!in_array(date('N', $next_charge_time), [6,7]));
 $product_cache = [];
 
 foreach($subs_to_create as $sub_data){
-	// TODO: We may need to check for existing subscriptions here? Need business logic
 	if(empty($product_cache[$sub_data['ids']['product']])){
 		$product = $sc->call('GET', '/admin/products/'.$sub_data['ids']['product'].'.json');
 		$product_cache[$product['id']] = $product;

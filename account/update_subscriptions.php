@@ -56,11 +56,6 @@ if(!empty($_REQUEST['scent_code']) && array_key_exists($_REQUEST['scent_code'], 
 	}
 }
 //var_dump($data);
-// TODO: Pricing rules
-// TODO: Check discount
-
-// Apply pricing rules
-
 
 foreach($subscription_ids as $subscription_id){
 	$updated_subscription = [];

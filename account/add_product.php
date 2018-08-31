@@ -76,9 +76,6 @@ if(empty($subscription)){
 }
 $frequency = $subscription['status'] == 'ONETIME' ? 'onetime' : $subscription['order_interval_frequency'];
 
-// TODO: Pricing rules
-// TODO: Check discount
-
 $new_subscription = add_subscription($rc, $product, $variant, $subscription['address_id'], strtotime($subscription['next_charge_scheduled_at']), 1, $frequency);
 if(!empty($new_subscription)){
 	$subscriptions[] = $new_subscription;

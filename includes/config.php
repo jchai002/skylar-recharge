@@ -239,7 +239,6 @@ function calculate_discount_factors($charge){
 		}
 	}
 
-	// TODO: How to check if there isn't one already applied?
 	// Subscription Discount
 	if($charge['type'] == 'RECURRING'){
 		$discount_factors[] = ['key' => 'subscribe_and_save', 'type' => 'percent', 'amount' => .15];
