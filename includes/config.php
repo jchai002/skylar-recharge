@@ -271,7 +271,7 @@ function calculate_price_lines($subscription_group){
 	// Sample Credit
 	$sample_credit = 0;
 	foreach($subscription_group['address']['cart_attributes'] as $cart_attribute){
-		if($cart_attribute == '_sample_credit' && !empty($cart_attribute['value'])){
+		if($cart_attribute['name'] == '_sample_credit' && !empty($cart_attribute['value'])){
 			$sample_credit = $cart_attribute['value'];
 			break;
 		}
