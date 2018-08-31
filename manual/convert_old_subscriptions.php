@@ -69,7 +69,8 @@ foreach($res['subscriptions'] as $subscription){
 		}
 
 		echo "add_subscription(\$rc, ".$product['id'].", ".$variant['id'].", {$subscription['address_id']}, ".strtotime($subscription['next_charge_scheduled_at']).", $quantity, $frequency);".PHP_EOL;
-//		add_subscription($rc, $product, $variant, $subscription['address_id'], strtotime($subscription['next_charge_scheduled_at']), $quantity, $frequency);
+//		$res = add_subscription($rc, $product, $variant, $subscription['address_id'], strtotime($subscription['next_charge_scheduled_at']), $quantity, $frequency);
+//		log_event($db, 'SUBSCRIPTION', $res, 'CREATED', $subscription, 'Subscription upgraded from old style', 'api');
 
 	}
 
@@ -95,9 +96,11 @@ foreach($res['subscriptions'] as $subscription){
 			$res = $rc->put('/addresses/'.$subscription['address_id'], [
 				'cart_attributes' => $address['cart_attributes'],
 			]);
+//			log_event($db, 'DISCOUNT', $res, 'ADDED', $subscription, 'Discount added from old subscription', 'api');
 		}
 	}
 	// Remove old sub
 	echo '$rc->post(\'/subscriptions/'.$subscription['id'].'/cancel\', [\'reason\'=>\'subscription auto upgraded\']);'.PHP_EOL;
-//	$rc->post('/subscriptions/'.$subscription['id'].'/cancel', ['reason'=>'subscription auto upgraded']);
+//	$res = $rc->post('/subscriptions/'.$subscription['id'].'/cancel', ['reason'=>'subscription auto upgraded']);
+//	log_event($db, 'SUBSCRIPTION', $res, 'DELETED', $subscription, 'Subscription upgraded from old style', 'api');
 }
