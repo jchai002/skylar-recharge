@@ -88,6 +88,7 @@ function group_subscriptions($subscriptions, $addresses){
 			'variant_title' => $subscription['variant_title'],
 			'title' => trim($subscription['product_title'] . ' ' .$subscription['variant_title']),
 			'price' => $subscription['price'],
+			'total_price' => $subscription['price']*$subscription['quantity'],
 		];
 	}
 
@@ -101,7 +102,7 @@ function group_subscriptions($subscriptions, $addresses){
 		}
 		$subscription_group['id'] = $subscription_group['ids'] = implode(',',array_column($subscription_group['items'], 'id'));
 		$subscription_group['total_quantity'] = array_sum(array_column($subscription_group['items'], 'quantity'));
-		$subscription_group['total_price'] = $subscription_group['raw_price'] = number_format(array_sum(array_column($subscription_group['items'], 'price')), 2);
+		$subscription_group['total_price'] = $subscription_group['raw_price'] = number_format(array_sum(array_column($subscription_group['items'], 'total_price')), 2);
 		$subscription_group['price_lines'] = calculate_price_lines($subscription_group);
 		$subscription_groups[$group_key] = $subscription_group;
 	}
