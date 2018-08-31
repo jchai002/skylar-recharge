@@ -7,7 +7,7 @@ $webhooks_required = [
 	// Sync order
 	[
 		'type'=>'orders/created',
-		'address' => 'https://ec2production.skylar.com/hooks_rc/charge_created.php',
+		'address' => 'https://ec2production.skylar.com/hooks/order_created.php',
 	],
 ];
 
