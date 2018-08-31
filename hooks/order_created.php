@@ -28,7 +28,7 @@ $rc = new RechargeClient();
 
 // Get recharge version of order
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']])['orders'][0];
-var_dump($rc_order);
+//var_dump($rc_order);
 if(empty($rc_order)){
 	die('no rc order');
 }
@@ -74,6 +74,7 @@ if(!empty($sample_credit)){
 if(empty($subs_to_create)){
 	die('no subs to create');
 }
+var_dump($subs_to_create);
 
 $delay_days = 17; // TODO: more if international
 $order_created_time = strtotime($order['created_at']);
