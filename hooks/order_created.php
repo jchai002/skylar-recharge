@@ -28,7 +28,7 @@ $rc = new RechargeClient();
 
 // Get recharge version of order
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']])['orders'][0];
-//var_dump($rc_order);
+var_dump($rc_order);
 if(empty($rc_order)){
 	exit;
 }
