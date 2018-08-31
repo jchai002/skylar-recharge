@@ -38,7 +38,6 @@ $subs_to_create = [];
 $sample_credit = 0;
 foreach($order['line_items'] as $line_item){
 	// TEMP: Skip for old sub type
-	var_dump($line_item);
 	if(in_array($line_item['variant_id'], [738567520343,738394865751,738567323735])){
 		die('variant '.$line_item['variant_id']);
 	}
@@ -67,6 +66,7 @@ foreach($order['line_items'] as $line_item){
 		];
 	}
 }
+var_dump($sample_credit);
 if(!empty($sample_credit)){
 	$rc->put('/addresses/'.$rc_order['address_id'], [
 		'cart_attributes' => ['_sample_credit' => $sample_credit],
@@ -75,7 +75,6 @@ if(!empty($sample_credit)){
 if(empty($subs_to_create)){
 	die('no subs to create');
 }
-var_dump($subs_to_create);
 
 $delay_days = 17; // TODO: more if international
 $order_created_time = strtotime($order['created_at']);
