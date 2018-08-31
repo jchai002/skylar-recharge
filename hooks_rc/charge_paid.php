@@ -19,7 +19,9 @@ if(empty($res['charge'])){
 }
 $charge = $res['charge'];
 
-$address = $rc->get('/addresses/'.$charge['address_id']);
+$res = $rc->get('/addresses/'.$charge['address_id']);
+var_dump($res);
+$address = $res['address'];
 
 $cart_attributes = [];
 foreach($address['cart_attributes'] as $cart_attribute){
