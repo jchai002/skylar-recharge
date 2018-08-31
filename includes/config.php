@@ -265,7 +265,7 @@ function calculate_price_lines($subscription_group){
 	$bottle_discount = calculate_multi_bottle_discount($fullsize_count);
 	if($bottle_discount > 0){
 		$carry_price -= $bottle_discount;
-		$price_lines[] = ['Added scent'.($bottle_discount != 1 ? 's' : '').' savings', 'type' => 'multibottle', 'amount' => $carry_price];
+		$price_lines[] = ['title' => 'Added scent'.($bottle_discount != 1 ? 's' : '').' savings', 'type' => 'multibottle', 'amount' => $carry_price];
 	}
 
 	// Sample Credit
@@ -278,12 +278,12 @@ function calculate_price_lines($subscription_group){
 	}
 	if(!empty($sample_credit)){
 		$carry_price -= $sample_credit;
-		$price_lines[] = [$sample_credit.' credit auto applied', 'type' => 'sample_credit', 'amount' => $carry_price];
+		$price_lines[] = ['title' => $sample_credit.' credit auto applied', 'type' => 'sample_credit', 'amount' => $carry_price];
 	}
 
 	if(!$subscription_group['onetime']){
 		$carry_price *= .85;
-		$price_lines[] = ['15% Subscribe and save', 'type' => 'subscription', 'amount' => $carry_price];
+		$price_lines[] = ['title' => '15% Subscribe and save', 'type' => 'subscription', 'amount' => $carry_price];
 	}
 
 	return $price_lines;
