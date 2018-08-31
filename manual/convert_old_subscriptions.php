@@ -32,6 +32,8 @@ foreach($res['subscriptions'] as $subscription){
 		continue;
 	}
 
+	$frequency = $subscription['order_interval_frequency'] == '1' ? 'onetime' : $subscription['order_interval_frequency'];
+
 	for($i = 1; $i <= $old_properties['total_items']; $i++){
 		if(empty($old_properties['handle_'.$i])){
 			continue;
@@ -66,12 +68,36 @@ foreach($res['subscriptions'] as $subscription){
 			$quantity = 1;
 		}
 
-		$frequency = $subscription['order_interval_frequency'] == '1' ? 'onetime' : $subscription['order_interval_frequency'];
-
-		echo "add_subscription(\$rc, ".$product['id'].", ".$variant['id'].", {$subscription['address_id']}, ".strtotime($subscription['next_charge_scheduled_at']).", $quantity, $frequency)".PHP_EOL;
+		echo "add_subscription(\$rc, ".$product['id'].", ".$variant['id'].", {$subscription['address_id']}, ".strtotime($subscription['next_charge_scheduled_at']).", $quantity, $frequency);".PHP_EOL;
 //		add_subscription($rc, $product, $variant, $subscription['address_id'], strtotime($subscription['next_charge_scheduled_at']), $quantity, $frequency);
+
+	}
+
+	// Check if we need to add sample discount
+	$add_sample_discount =
+		$old_properties['total_items'] == 1 && $frequency == 'onetime' && $subscription['price'] < 78
+		|| $old_properties['total_items'] == 1 && $frequency != 'onetime' && $subscription['price'] < 66.3
+		|| $old_properties['total_items'] == 2 && $frequency == 'onetime' && $subscription['price'] < 120
+		|| $old_properties['total_items'] == 2 && $frequency != 'onetime' && $subscription['price'] < 102
+		|| $old_properties['total_items'] == 3 && $frequency == 'onetime' && $subscription['price'] < 178
+		|| $old_properties['total_items'] == 3 && $frequency != 'onetime' && $subscription['price'] < 151.3
+		|| $old_properties['total_items'] == 4 && $frequency == 'onetime' && $subscription['price'] < 200
+		|| $old_properties['total_items'] == 4 && $frequency != 'onetime' && $subscription['price'] < 170;
+
+	if($add_sample_discount){
+		echo "Add sample discount".PHP_EOL;
+	}
+	if($add_sample_discount && false){
+		$res = $rc->get('/addresses/'.$subscription['address_id']);
+		$address = $res['address'];
+		if(!in_array('_sample_credit',array_column($address['cart_attributes'], 'name'))){
+			$address['cart_attributes'][] = ['name' => '_sample_credit', 'value' => 20];
+			$res = $rc->put('/addresses/'.$subscription['address_id'], [
+				'cart_attributes' => $address['cart_attributes'],
+			]);
+		}
 	}
 	// Remove old sub
-	echo '$rc->post(\'/subscriptions/'.$subscription['id'].'/cancel\', [\'reason\'=>\'subscription auto upgraded\']);';
+	echo '$rc->post(\'/subscriptions/'.$subscription['id'].'/cancel\', [\'reason\'=>\'subscription auto upgraded\']);'.PHP_EOL;
 //	$rc->post('/subscriptions/'.$subscription['id'].'/cancel', ['reason'=>'subscription auto upgraded']);
 }
