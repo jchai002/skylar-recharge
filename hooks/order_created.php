@@ -18,6 +18,7 @@ if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
 } else {
 	$data = file_get_contents('php://input');
+	log_event($db, 'log', $data);
 	$order = json_decode($data, true);
 }
 if(empty($order)){
