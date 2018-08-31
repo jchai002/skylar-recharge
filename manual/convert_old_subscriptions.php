@@ -31,12 +31,11 @@ foreach($res['subscriptions'] as $subscription){
 		continue;
 	}
 
-	for($i = 0; $i < $old_properties['total_items']; $i++){
-		$handle = $old_properties['handle_'.$i];
-		if(empty($handle)){
+	for($i = 1; $i <= $old_properties['total_items']; $i++){
+		if(empty($old_properties['handle_'.$i])){
 			continue;
 		}
-		$handle = strtok($handle, '-');
+		$handle = strtok($old_properties['handle_'.$i], '-');
 		$ids = $ids_by_scent[$handle];
 		if(empty($ids)){
 			echo "Couldn't find ids for handle ".$handle;
