@@ -46,11 +46,15 @@ if (!function_exists('getallheaders')){
        return $headers; 
     } 
 }
-function log_event(PDO $db, $type, $message){
-	$stmt = $db->prepare("INSERT INTO event_log (type, message, date_created) VALUES (:type, :message, :date_created)");
+function log_event(PDO $db, $category='', $value='', $action='', $value2='', $note='', $actor=''){
+	$stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2, note, actor, date_created) VALUES (:category, :action, :value, :value2, :note, :actor, :date_created)");
 	$stmt->execute([
-		'type' => $type,
-		'message' => $message,
+		'category' => $category,
+		'action' => $action,
+		'value' => $value,
+		'value2' => $value2,
+		'note' => $note,
+		'actor' => $actor,
 		'date_created' => date('Y-m-d H:i:s'),
 	]);
 }
