@@ -278,7 +278,7 @@ function calculate_price_lines($subscription_group){
 	}
 	if(!empty($sample_credit)){
 		$carry_price -= $sample_credit;
-		$price_lines[] = ['title' => $sample_credit.' credit auto applied', 'type' => 'sample_credit', 'amount' => $carry_price];
+		$price_lines[] = ['title' => '$'.$sample_credit.' credit auto applied', 'type' => 'sample_credit', 'amount' => $carry_price];
 	}
 
 	if(!$subscription_group['onetime']){
