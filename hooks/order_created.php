@@ -38,6 +38,7 @@ $subs_to_create = [];
 $sample_credit = 0;
 foreach($order['line_items'] as $line_item){
 	// TEMP: Skip for old sub type
+	var_dump($line_item);
 	if(in_array($line_item['variant_id'], [738567520343,738394865751,738567323735])){
 		die('variant '.$line_item['variant_id']);
 	}
