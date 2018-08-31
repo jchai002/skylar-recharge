@@ -2,29 +2,31 @@
 require_once('../includes/config.php');
 require_once('../includes/class.RechargeClient.php');
 
+// Remove sample discount from address if they have one
+
 $rc = new RechargeClient();
 // get $charge from webhook
 if(!empty($_REQUEST['id'])){
-	// cheaty since we're just using it to look up the charge
-	$subscription = ['id' => $_REQUEST['id']];
+	$res = $rc->get('/addresses/'.$_REQUEST['id']);
 } else {
 	$data = file_get_contents('php://input');
 	if(!empty($data)){
 		$res = json_decode($data);
 	}
-	if(empty($res['subscription'])){
-		exit;
-	}
-	$subscription = $res['subscription'];
 }
+if(empty($res['address'])){
+	exit;
+}
+$address = $res['address'];
 
 // Get next charge for this subscription
 $res = $rc->get('/charges', [
-	'subscription_id' => $subscription['id'],
+	'customer_id' => $address['customer_id'],
 	'status' => 'QUEUED',
 ]);
 if(empty($res['charges'])){
 	exit;
 }
 $charges = $res['charges'];
+
 update_charge_discounts($db, $rc, $charges);

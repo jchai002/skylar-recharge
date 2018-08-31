@@ -67,6 +67,7 @@ foreach($addresses_res['addresses'] as $address_res){
 }
 
 // Remove discount
+// TODO: Remove CREDIT for discount from cart
 if(!empty($address_id)){
 	$response = $rc->put('/discounts/'.$sample_discount_code.'/remove', ['address_id'=>$address_id]);
 }

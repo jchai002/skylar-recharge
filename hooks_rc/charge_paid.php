@@ -20,19 +20,19 @@ if(empty($res['charge'])){
 $charge = $res['charge'];
 
 $res = $rc->get('/addresses/'.$charge['address_id']);
-var_dump($res);
+//var_dump($res);
 $address = $res['address'];
 
 $cart_attributes = [];
 foreach($address['cart_attributes'] as $cart_attribute){
-	if($cart_attribute['name'] == '_sample_discount'){
+	if($cart_attribute['name'] == '_sample_credit'){
 		continue;
 	}
 	$cart_attributes[] = $cart_attribute;
 }
-
+var_dump($cart_attributes);
 $res = $rc->put('/addresses/'.$address['id'], [
 	'cart_attributes' => $cart_attributes
 ]);
 
-var_dump($res);
+// Will trigger address_updated

@@ -258,3 +258,26 @@ function calculate_multi_bottle_discount($fullsize_count){
 	}
 	return $discount;
 }
+
+function update_charge_discounts(PDO $db, RechargeClient $rc, $charges){
+	foreach($charges as $charge){
+		if($charge['status'] != 'QUEUED'){
+			exit;
+		}
+		foreach($charge['line_items'] as $line_item){
+			// don't do it for old sample products
+			if(in_array($line_item['shopify_product_id'], [738567323735, 738567520343, 738394865751])){
+				return false;
+			}
+		}
+
+		$discount_factors = calculate_discount_factors($charge);
+		var_dump($discount_factors);
+		$discount_amount = calculate_discount_amount($charge, $discount_factors);
+		var_dump($discount_amount);
+
+		$code = get_charge_discount_code($db, $rc, $discount_amount);
+		var_dump($code);
+		apply_discount_code($rc, $charge, $code);
+	}
+}

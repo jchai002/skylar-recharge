@@ -9,8 +9,31 @@ $hooks = $hooks['webhooks'];
 $needed_hooks = [
 	[
 		'topic' => 'charge/created',
-//		'address' => 'https://ec2production.skylar.com/hooks_rc/charge_created.php',
-		'address' => 'http://requestbin.fullcontact.com/1hf7qff1',
+		'address' => 'https://ec2production.skylar.com/hooks_rc/charge_created.php',
+	],
+	[
+		'topic' => 'charge/paid',
+		'address' => 'https://ec2production.skylar.com/hooks_rc/charge_paid.php',
+	],
+	[
+		'topic' => 'address/updated',
+		'address' => 'https://ec2production.skylar.com/hooks_rc/address_updated.php',
+	],
+	[
+		'topic' => 'subscription/created',
+		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_all.php',
+	],
+	[
+		'topic' => 'subscription/updated',
+		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_all.php',
+	],
+	[
+		'topic' => 'subscription/activated',
+		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_all.php',
+	],
+	[
+		'topic' => 'subscription/cancelled',
+		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_all.php',
 	],
 ];
 
