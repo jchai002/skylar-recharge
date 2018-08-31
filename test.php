@@ -6,6 +6,18 @@ require_once('includes/class.RechargeClient.php');
 $rc = new RechargeClient();
 
 
+$res = $rc->get('/charges', [
+	'subscription_id' => 21200731,
+	'status' => 'QUEUED',
+]);
+var_dump($res);
+if(empty($res['charges'])){
+	exit;
+}
+
+die();
+
+
 $res = $rc->get('/discounts', [
 	'discount_type' => 'fixed_amount',
 	'status' => 'enabled',

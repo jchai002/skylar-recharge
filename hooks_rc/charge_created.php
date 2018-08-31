@@ -35,6 +35,7 @@ var_dump($discount_factors);
 $discount_amount = calculate_discount_amount($charge, $discount_factors);
 var_dump($discount_amount);
 
+// TODO: Need to handle tracking sample discount
 $code = get_charge_discount_code($db, $rc, $discount_amount);
 var_dump($code);
 apply_discount_code($rc, $charge, $code);

@@ -20,6 +20,8 @@ $sample_discount_code = 'SAMPLE25';
 
 // Variants that are allowed to create subscriptions, eventually we won't use this but it's a good safeguard for now
 $subscription_variant_ids = ['5672401895455'];
+$sample_credit_variant_ids = ['5672401895455'];
+
 $ids_by_scent = [
 	'arrow'  => ['variant' => 31022048003,   'product' => 8985085187],
 	'capri'  => ['variant' => 5541512970271, 'product' => 443364081695],

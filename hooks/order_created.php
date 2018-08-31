@@ -1,5 +1,4 @@
 <?php
-
 require_once('../includes/config.php');
 require_once('../includes/class.ShopifyClient.php');
 require_once('../includes/class.RechargeClient.php');
@@ -24,10 +23,26 @@ if(!empty($_REQUEST['id'])){
 if(empty($order)){
 	die('no data');
 }
+$rc = new RechargeClient();
+
+// Get recharge version of order
+$rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']])['orders'][0];
+//var_dump($rc_order);
+if(empty($rc_order)){
+	exit;
+}
 
 $has_subscription_line_item = false;
 $subs_to_create = [];
+$sample_credit = 0;
 foreach($order['line_items'] as $line_item){
+	// TEMP: Skip for old sub type
+	if(in_array($line_item['variant_id'], [738567520343,738394865751,738567323735])){
+		exit;
+	}
+	if(in_array($line_item['variant_id'], $sample_credit_variant_ids)){
+		$sample_credit = $line_item['price'];
+	}
 	if(!in_array($line_item['variant_id'], $subscription_variant_ids)){
 		continue;
 	}
@@ -50,17 +65,14 @@ foreach($order['line_items'] as $line_item){
 		];
 	}
 }
+if(!empty($sample_credit)){
+	$rc->put('/addresses/'.$rc_order['address_id'], [
+		'cart_attributes' => ['_sample_credit' => $sample_credit],
+	]);
+}
 if(empty($subs_to_create)){
 	exit;
 }
-
-// Get recharge version of order
-$rc = new RechargeClient();
-$rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']])['orders'][0];
-if(empty($rc_order)){
-	exit;
-}
-//var_dump($rc_order);
 
 $delay_days = 17; // TODO: more if international
 $order_created_time = strtotime($order['created_at']);
@@ -111,6 +123,3 @@ foreach($subs_to_create as $sub_data){
 	$subscription_id = $response['subscription']['id'];
 	var_dump($response);
 }
-// Add sample discount to address
-$response = $rc->post('/addresses/'.$rc_order['address_id'].'/discounts/'.$sample_discount_code.'/apply');
-var_dump($response);
