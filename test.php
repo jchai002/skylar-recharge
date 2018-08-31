@@ -6,6 +6,22 @@ require_once('includes/class.RechargeClient.php');
 $rc = new RechargeClient();
 
 
+$res = $rc->get('/addresses/15901834');
+$address = $res['address'];
+
+$ch = curl_init('https://ec2staging.skylar.com/hooks_rc/address_updated.php?id=15901834');
+curl_setopt_array($ch, [
+	CURLOPT_RETURNTRANSFER =>  true,
+	CURLOPT_POST => true,
+	CURLOPT_POSTFIELDS => json_encode($res),
+]);
+echo curl_exec($ch);
+
+
+
+die();
+
+
 $res = $rc->get('/charges', [
 	'subscription_id' => 21200731,
 	'status' => 'QUEUED',

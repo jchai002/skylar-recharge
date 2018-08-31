@@ -11,7 +11,7 @@ if(!empty($_REQUEST['id'])){
 } else {
 	$data = file_get_contents('php://input');
 	if(!empty($data)){
-		$res = json_decode($data);
+		$res = json_decode($data, true);
 	}
 }
 if(empty($res['address'])){
