@@ -66,10 +66,19 @@ foreach($addresses_res['addresses'] as $address_res){
 	$addresses[$address_res['id']] = $address_res;
 }
 
-// Remove discount
-// TODO: Remove CREDIT for discount from cart
+// Remove sample credit from address
 if(!empty($address_id)){
-	$response = $rc->put('/discounts/'.$sample_discount_code.'/remove', ['address_id'=>$address_id]);
+	$cart_attributes = [];
+	foreach($addresses[$address_id]['cart_attributes'] as $cart_attribute){
+		if($cart_attribute['name'] == '_sample_discount'){
+			continue;
+		}
+		$cart_attributes[] = $cart_attribute;
+	}
+	$res = $rc->put('/addresses/'.$address_id, [
+		'cart_attributes' => $cart_attributes,
+	]);
+	$addresses[$address_id] = $res['address'];
 }
 
 echo json_encode([

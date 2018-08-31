@@ -102,6 +102,7 @@ function group_subscriptions($subscriptions, $addresses){
 		$subscription_group['id'] = $subscription_group['ids'] = implode(',',array_column($subscription_group['items'], 'id'));
 		$subscription_group['total_quantity'] = array_sum(array_column($subscription_group['items'], 'quantity'));
 		$subscription_group['total_price'] = $subscription_group['raw_price'] = number_format(array_sum(array_column($subscription_group['items'], 'price')), 2);
+		$subscription_group['price_lines'] = calculate_price_lines($subscription_group);
 		$subscription_groups[$group_key] = $subscription_group;
 	}
 
@@ -243,6 +244,49 @@ function calculate_discount_factors($charge){
 		$discount_factors[] = ['key' => 'subscribe_and_save', 'type' => 'percent', 'amount' => .15];
 	}
 	return $discount_factors;
+}
+
+function calculate_price_lines($subscription_group){
+	global $ids_by_scent;
+	$scent_variant_ids = array_column($ids_by_scent, 'variant');
+	$carry_price = $subscription_group['total_amount'];
+	$price_lines = [
+		['title' => 'Regular Price', 'type' => 'regular_price', 'amount' => $carry_price],
+	];
+
+	// Multi Bottle Discount
+	$fullsize_count = 0;
+	foreach($subscription_group['items'] as $line_item){
+		if(in_array($line_item['shopify_variant_id'], $scent_variant_ids)){
+			$fullsize_count += $line_item['quantity'];
+		}
+	}
+	$bottle_discount = calculate_multi_bottle_discount($fullsize_count);
+	if($bottle_discount > 0){
+		$carry_price -= $bottle_discount;
+		$price_lines[] = ['Added Scent Savings', 'type' => 'multibottle', 'amount' => $carry_price];
+	}
+
+	// Sample Credit
+	$sample_credit = 0;
+	foreach($subscription_group['address']['cart_attributes'] as $cart_attribute){
+		if($cart_attribute == '_sample_credit' && !empty($cart_attribute['value'])){
+			$sample_credit = $cart_attribute['value'];
+			break;
+		}
+	}
+	if(!empty($sample_credit)){
+		$carry_price -= $sample_credit;
+		$price_lines[] = [$sample_credit.' credit auto applied', 'type' => 'sample_credit', 'amount' => $carry_price];
+	}
+
+	if(!$subscription_group['onetime']){
+		$carry_price *= .85;
+		$price_lines[] = ['15% Subscribe and save', 'type' => 'subscription', 'amount' => $carry_price];
+	}
+
+	return $price_lines;
+
 }
 
 function calculate_multi_bottle_discount($fullsize_count){
