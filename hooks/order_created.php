@@ -30,7 +30,7 @@ $rc = new RechargeClient();
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']])['orders'][0];
 var_dump($rc_order);
 if(empty($rc_order)){
-	exit;
+	die('no rc order');
 }
 
 $has_subscription_line_item = false;
@@ -39,7 +39,7 @@ $sample_credit = 0;
 foreach($order['line_items'] as $line_item){
 	// TEMP: Skip for old sub type
 	if(in_array($line_item['variant_id'], [738567520343,738394865751,738567323735])){
-		exit;
+		die('variant '.$line_item['variant_id']);
 	}
 	if(in_array($line_item['variant_id'], $sample_credit_variant_ids)){
 		$sample_credit = $line_item['price'];
