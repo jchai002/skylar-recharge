@@ -124,6 +124,7 @@ foreach($subs_to_create as $sub_data){
 			'product_title' => $product['title'],
 			'variant_title' => $variant['title'],
 		]);
+		$subscription = $response['onetime'];
 	} else {
 		$response = $rc->post('/subscriptions', [
 			'address_id' => $rc_order['address_id'],
@@ -137,7 +138,8 @@ foreach($subs_to_create as $sub_data){
 			'product_title' => $product['title'],
 			'variant_title' => $variant['title'],
 		]);
+		$subscription = $response['subscription'];
 	}
-	$subscription_id = $response['subscription']['id'];
+	$subscription_id = $subscription['id'];
 	var_dump($response);
 }
