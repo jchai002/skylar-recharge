@@ -14,6 +14,8 @@ if(empty($shop_url)){
 
 $sc = new ShopifyPrivateClient($shop_url);
 
+$_REQUEST['id'] = 592719413335;
+
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
 } else {
@@ -45,9 +47,11 @@ foreach($order['line_items'] as $line_item){
 		$sample_credit = $line_item['price'];
 	}
 	if(!in_array($line_item['variant_id'], $subscription_variant_ids)){
+		echo "skipping, not in subscription_variant_ids".PHP_EOL;
 		continue;
 	}
 	if(empty($line_item['properties'])){
+		echo "skipping, no properties".PHP_EOL;
 		continue;
 	}
 	$sub_scent = $sub_frequency = null;
@@ -64,6 +68,8 @@ foreach($order['line_items'] as $line_item){
 			'ids' => $ids_by_scent[$sub_scent],
 			'frequency' => $sub_frequency,
 		];
+	} else {
+		echo "doesn't have scent and freq";
 	}
 }
 var_dump($sample_credit);
