@@ -24,43 +24,50 @@ if(empty($_REQUEST['subscription_ids'])){
 $subscription_ids = explode(',',$_REQUEST['subscription_ids']);
 
 $rc = new RechargeClient();
-$subscriptions = $rc->get('/subscriptions', [
+$res = $rc->get('/subscriptions', [
 	'shopify_customer_id' => $_REQUEST['customer_id'],
 ]);
-if(empty($subscriptions['subscriptions'])){
-	die(json_encode($subscriptions));
+if(empty($res['subscriptions'])){
+	die(json_encode($res));
 }
-$subscriptions = $subscriptions['subscriptions'];
-$customer_subscription_ids = array_column($subscriptions, 'id');
+$subscriptions = $res['subscriptions'];
+$address_id = $res['subscriptions'][0]['address_id'];
+$customer_id = $res['subscriptions'][0]['customer_id'];
+$subscriptions_by_id = [];
+foreach($res['subscriptions'] as $subscription){
+	$subscriptions_by_id[$subscription['id']] = $subscription;
+}
 
 $reason = empty($_REQUEST['reason']) ? 'N/A' : $_REQUEST['reason'];
 
 $address_id = 0;
 foreach($subscription_ids as $subscription_id){
 	$updated_subscription = [];
-	if(!in_array($subscription_id, $customer_subscription_ids)){
+	if(!array_key_exists($subscription_id, $subscriptions_by_id)){
 		continue;
 	}
 
-	$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/cancel', ['cancellation_reason' => $reason]);
-	if(empty($updated_subscription_res['subscription'])){
-		continue;
-	}
-	$updated_subscription = $updated_subscription_res['subscription'];
+	$subscription = $subscriptions_by_id[$subscription_id];
+	$address_id = $subscription['address_id'];
+	$customer_id = $subscription['customer_id'];
 
-	foreach($subscriptions as $index => $subscription){
-		if($subscription['id'] == $updated_subscription['id']){
-			$subscriptions[$index] = $updated_subscription;
-			$address_id = $updated_subscription['address_id'];
-			break;
+	if($subscription['status'] == 'ACTIVE'){
+		$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/cancel', ['cancellation_reason' => $reason]);
+		if(empty($updated_subscription_res['subscription'])){
+			continue;
 		}
+		$subscriptions_by_id[$subscription['id']] = $updated_subscription_res['subscription'];
+	} else if($subscription['status'] == 'ONETIME') {
+		$rc->delete('/onetimes/'.$subscription['id']);
+		unset($subscriptions_by_id[$subscription['id']]);
 	}
+
 }
 
 $addresses = [];
-$addresses_res = $rc->get('/customers/'.$subscriptions[0]['customer_id'].'/addresses');
+$addresses_res = $rc->get('/customers/'.$customer_id.'/addresses');
 if(empty($addresses_res['addresses'])){
-	die(json_encode($subscriptions));
+	die(json_encode($subscriptions_by_id));
 }
 foreach($addresses_res['addresses'] as $address_res){
 	$addresses[$address_res['id']] = $address_res;
@@ -83,6 +90,6 @@ if(!empty($address_id)){
 
 echo json_encode([
 	'success' => true,
-	'subscriptions' => group_subscriptions($subscriptions, $addresses),
-	'subscriptions_raw' => $subscriptions,
+	'subscriptions' => group_subscriptions($subscriptions_by_id, $addresses),
+	'subscriptions_raw' => array_values($subscriptions_by_id),
 ]);

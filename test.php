@@ -5,6 +5,15 @@ require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 
+
+//$res = $rc->get('/addresses/16050958');
+$res = $rc->get('/subscriptions/', ['address_id' => 16050958]);
+
+var_dump($res);
+
+
+die();
+
 $res = $rc->put('/addresses/16048888', [
 	'cart_attributes' => [['name' => '_sample_credit', 'value' => 20]],
 ]);
