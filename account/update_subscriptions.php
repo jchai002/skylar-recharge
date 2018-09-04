@@ -61,6 +61,7 @@ if(!empty($_REQUEST['scent_code']) && array_key_exists($_REQUEST['scent_code'], 
 }
 //var_dump($data);
 
+$remove_ids = [];
 foreach($subscription_ids as $subscription_id){
 	$updated_subscription = [];
 	if(!in_array($subscription_id, $customer_subscription_ids)){
@@ -80,7 +81,11 @@ foreach($subscription_ids as $subscription_id){
 		if(empty($updated_subscription_res['subscription'])){
 			continue;
 		}
-		$updated_subscription = $updated_subscription_res['subscription'];
+		if(!empty($updated_subscription_res['subscription'])){
+			$updated_subscription = $updated_subscription_res['subscription'];
+		} else {
+			$remove_ids[] = $subscription_id;
+		}
 	}
 //	var_dump($updated_subscription);
 	if(!empty($updated_subscription)){
@@ -91,6 +96,7 @@ foreach($subscription_ids as $subscription_id){
 		}
 	}
 }
+$subscription_ids = array_diff($subscription_ids, $remove_ids);
 
 $addresses = [];
 $addresses_res = $rc->get('/customers/'.$subscriptions[0]['customer_id'].'/addresses');
@@ -105,4 +111,5 @@ echo json_encode([
 	'success' => true,
 	'subscriptions' => group_subscriptions($subscriptions, $addresses),
 	'subscriptions_raw' => $subscriptions,
+	'show_ids' => implode(',',$subscription_ids),
 ]);
