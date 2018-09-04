@@ -83,6 +83,7 @@ function group_subscriptions($subscriptions, $addresses){
 		}
 		if(!array_key_exists($group_key, $subscription_groups)){
 			$subscription_groups[$group_key] = [
+				'group_key' => $group_key,
 				'status' => $subscription['status'],
 				'frequency' => $frequency,
 				'order_interval_frequency' => $subscription['order_interval_frequency'],
