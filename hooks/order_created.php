@@ -14,8 +14,6 @@ if(empty($shop_url)){
 
 $sc = new ShopifyPrivateClient($shop_url);
 
-$_REQUEST['id'] = 592719413335;
-
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
 } else {
