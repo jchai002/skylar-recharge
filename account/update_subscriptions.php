@@ -41,7 +41,7 @@ if(!empty($_REQUEST['frequency'])){
 if(array_key_exists('quantity', $_REQUEST)){
 	$data['quantity'] = intval($_REQUEST['quantity']);
 	if(empty($data['quantity'])){
-		header('Location: cancel_subscriptions.php?reason=Quantity Reduced');
+		header('Location: cancel_subscriptions.php?reason=Quantity Reduced&'.http_build_query($_REQUEST));
 		die();
 	}
 }
