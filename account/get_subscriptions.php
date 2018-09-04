@@ -38,4 +38,5 @@ foreach($addresses_res['addresses'] as $address_res){
 echo json_encode([
 	'success' => true,
 	'subscriptions' => group_subscriptions($subscriptions, $addresses),
+	'subscriptions_raw' => $subscriptions,
 ]);
