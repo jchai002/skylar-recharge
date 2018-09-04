@@ -272,7 +272,7 @@ function calculate_price_lines($subscription_group){
 	global $ids_by_scent;
 	$scent_variant_ids = array_column($ids_by_scent, 'variant');
 	$carry_price = str_replace(',','',$subscription_group['total_price']);
-	$carry_price = number_format($carry_price, $carry_price % 1 ? 2 : 0);
+	$carry_price = number_format($carry_price, $carry_price % 1 == 0 ? 0 : 2);
 	$price_lines = [
 		['title' => 'Regular Price', 'type' => 'regular_price', 'amount' => $carry_price],
 	];
@@ -287,7 +287,7 @@ function calculate_price_lines($subscription_group){
 	$bottle_discount = calculate_multi_bottle_discount($fullsize_count);
 	if($bottle_discount > 0){
 		$carry_price -= $bottle_discount;
-		$carry_price = number_format($carry_price, $carry_price % 1 ? 2 : 0);
+		$carry_price = number_format($carry_price, $carry_price % 1 == 0 ? 0 : 2);
 		$price_lines[] = ['title' => 'Added scent'.($bottle_discount != 1 ? 's' : '').' savings', 'type' => 'multibottle', 'amount' => $carry_price];
 	}
 
@@ -301,13 +301,13 @@ function calculate_price_lines($subscription_group){
 	}
 	if(!empty($sample_credit)){
 		$carry_price -= $sample_credit;
-		$carry_price = number_format($carry_price, $carry_price % 1 ? 2 : 0);
+		$carry_price = number_format($carry_price, $carry_price % 1 == 0 ? 0 : 2);
 		$price_lines[] = ['title' => '$'.$sample_credit.' credit auto applied', 'type' => 'sample_credit', 'amount' => $carry_price];
 	}
 
 	if(!$subscription_group['onetime']){
 		$carry_price *= .85;
-		$carry_price = number_format($carry_price, $carry_price % 1 ? 2 : 0);
+		$carry_price = number_format($carry_price, $carry_price % 1 == 0 ? 0 : 2);
 		$price_lines[] = ['title' => 'Subscribe and save 15%', 'type' => 'subscription', 'amount' => $carry_price];
 	}
 
