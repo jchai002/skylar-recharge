@@ -271,7 +271,7 @@ function calculate_discount_factors($charge){
 function calculate_price_lines($subscription_group){
 	global $ids_by_scent;
 	$scent_variant_ids = array_column($ids_by_scent, 'variant');
-	$carry_price = number_format(str_replace(',','',$subscription_group['total_price']), 2);
+	$carry_price = str_replace(',','',$subscription_group['total_price']);
 	$carry_price = number_format($carry_price, $carry_price % 1 ? 2 : 0);
 	$price_lines = [
 		['title' => 'Regular Price', 'type' => 'regular_price', 'amount' => $carry_price],
