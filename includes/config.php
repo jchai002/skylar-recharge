@@ -94,6 +94,11 @@ function group_subscriptions($subscriptions, $addresses){
 				'sample_credit' => $sample_credit,
 			];
 		}
+		// Fix recharge bug
+		$price = $subscription['price'];
+		if(empty($price)){
+			$price = 78;
+		}
 		$subscription_groups[$group_key]['items'][] = [
 			'id' => $subscription['id'],
 			'product_id' => $subscription['shopify_product_id'],
@@ -102,8 +107,8 @@ function group_subscriptions($subscriptions, $addresses){
 			'product_title' => $subscription['product_title'],
 			'variant_title' => $subscription['variant_title'],
 			'title' => trim($subscription['product_title'] . ' ' .$subscription['variant_title']),
-			'price' => $subscription['price'],
-			'total_price' => $subscription['price']*$subscription['quantity'],
+			'price' => $price,
+			'total_price' => $price*$subscription['quantity'],
 			'raw' => $subscription,
 		];
 	}
