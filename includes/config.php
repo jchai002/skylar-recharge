@@ -77,7 +77,7 @@ function group_subscriptions($subscriptions, $addresses){
 		$sample_credit = 0;
 		foreach($addresses[$subscription['address_id']]['cart_attributes'] as $cart_attribute){
 			if($cart_attribute['name'] == '_sample_credit' && is_numeric($cart_attribute['value'])){
-				$sample_credit = $cart_attribute['value'];
+				$sample_credit = number_format($cart_attribute['value'], 0);
 			}
 		}
 		if(!array_key_exists($group_key, $subscription_groups)){
