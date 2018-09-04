@@ -38,7 +38,7 @@ if(!empty($_REQUEST['frequency'])){
 	$data['order_interval_frequency'] = $data['charge_interval_frequency'] = intval($_REQUEST['frequency']);
 	$data['interval_unit_type'] = 'month';
 }
-if(!empty($_REQUEST['quantity'])){
+if(array_key_exists('quantity', $_REQUEST)){
 	$data['quantity'] = intval($_REQUEST['quantity']);
 }
 if(!empty($_REQUEST['scent_code']) && array_key_exists($_REQUEST['scent_code'], $ids_by_scent)){
