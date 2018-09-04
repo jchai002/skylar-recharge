@@ -5,6 +5,13 @@ require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 
+$rc->delete('/subscriptions/21612802');
+$rc->delete('/subscriptions/21612793');
+$res = $rc->delete('/subscriptions/21612712');
+var_dump($res);
+
+die();
+
 
 //$res = $rc->get('/addresses/16050958');
 $res = $rc->get('/subscriptions/', ['address_id' => 16050958]);

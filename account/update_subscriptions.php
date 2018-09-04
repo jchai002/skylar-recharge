@@ -40,6 +40,9 @@ if(!empty($_REQUEST['frequency'])){
 }
 if(array_key_exists('quantity', $_REQUEST)){
 	$data['quantity'] = intval($_REQUEST['quantity']);
+	if(empty($data['quantity'])){
+		header('Location: cancel_subscriptions.php?reason=Quantity Reduced');
+	}
 }
 if(!empty($_REQUEST['scent_code']) && array_key_exists($_REQUEST['scent_code'], $ids_by_scent)){
 	// Special logic for 'default' subs. Swap one full size bottle for another. Could expand this to work across other products/variants
