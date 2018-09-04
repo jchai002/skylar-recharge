@@ -111,5 +111,5 @@ echo json_encode([
 	'success' => true,
 	'subscriptions' => group_subscriptions($subscriptions, $addresses),
 	'subscriptions_raw' => $subscriptions,
-	'show_ids' => implode(',',$subscription_ids),
+//	'show_ids' => implode(',',$subscription_ids),
 ]);
