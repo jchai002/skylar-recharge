@@ -267,12 +267,14 @@ function calculate_discount_factors($charge){
 	}
 	return $discount_factors;
 }
-
-function calculate_price_lines($subscription_group){
-	global $ids_by_scent;
+if(!function_exists('is_decimal')){
 	function is_decimal($val){
 		return is_numeric($val) && floor($val) != $val;
 	}
+}
+
+function calculate_price_lines($subscription_group){
+	global $ids_by_scent;
 	$scent_variant_ids = array_column($ids_by_scent, 'variant');
 	$carry_price = floatval(str_replace(',','',$subscription_group['total_price']));
 	$price_lines = [
