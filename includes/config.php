@@ -67,10 +67,19 @@ function group_subscriptions($subscriptions, $addresses){
 			continue;
 		}
 		*/
+		if($subscription['status'] == 'ONETIME' && empty($subscription['next_charge_scheduled_at'])){
+			continue;
+		}
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
 		$next_charge_date = date('m/d/Y', $next_charge_time);
 		$frequency = $subscription['status'] == 'ONETIME' ? '' : $subscription['order_interval_frequency'].$subscription['order_interval_unit'];
 		$group_key = $subscription['status'].$next_charge_date.$frequency.$subscription['address_id'];
+		$sample_credit = 0;
+		foreach($addresses[$subscription['address_id']]['cart_attributes'] as $cart_attribute){
+			if($cart_attribute['name'] == '_sample_credit' && is_numeric($cart_attribute['value'])){
+				$sample_credit = $cart_attribute['value'];
+			}
+		}
 		if(!array_key_exists($group_key, $subscription_groups)){
 			$subscription_groups[$group_key] = [
 				'status' => $subscription['status'],
@@ -81,6 +90,7 @@ function group_subscriptions($subscriptions, $addresses){
 				'next_charge_time' => $next_charge_time,
 				'address_id' => $subscription['address_id'],
 				'address' => $addresses[$subscription['address_id']],
+				'sample_credit' => $sample_credit,
 			];
 		}
 		$subscription_groups[$group_key]['items'][] = [
