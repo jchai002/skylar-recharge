@@ -42,6 +42,7 @@ if(array_key_exists('quantity', $_REQUEST)){
 	$data['quantity'] = intval($_REQUEST['quantity']);
 	if(empty($data['quantity'])){
 		header('Location: cancel_subscriptions.php?reason=Quantity Reduced');
+		die();
 	}
 }
 if(!empty($_REQUEST['scent_code']) && array_key_exists($_REQUEST['scent_code'], $ids_by_scent)){
