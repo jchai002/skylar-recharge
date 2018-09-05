@@ -14,6 +14,7 @@ if(!empty($_REQUEST['address_id'])){
 	if(!empty($res['address'])){
 		$_REQUEST['customer_id'] = $res['address']['customer_id'];
 	}
+	var_dump($res);
 }
 if(empty($_REQUEST['customer_id'])){
     die(json_encode([
