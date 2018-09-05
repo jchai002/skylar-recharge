@@ -8,20 +8,24 @@ header("Access-Control-Allow-Origin: *");
 
 $rc = new RechargeClient();
 $sc = new ShopifyPrivateClient();
+if(!empty($_REQUEST['rc_customer_id'])){
+	$subscriptions = $rc->get('/subscriptions', [
+		'customer_id' => $_REQUEST['rc_customer_id'],
+	]);
+} else {
+	if(empty($_REQUEST['customer_id'])){
+		die(json_encode([
+			'success' => false,
+			'errors' => [
+				['message' => 'No customer ID'],
+			]
+		]));
+	}
 
-if(empty($_REQUEST['customer_id'])){
-    die(json_encode([
-        'success' => false,
-        'errors' => [
-            ['message' => 'No customer ID'],
-        ]
-    ]));
+	$subscriptions = $rc->get('/subscriptions', [
+		'shopify_customer_id' => $_REQUEST['customer_id'],
+	]);
 }
-
-
-$subscriptions = $rc->get('/subscriptions', [
-    'shopify_customer_id' => $_REQUEST['customer_id'],
-]);
 if(empty($subscriptions['subscriptions'])){
 	die(json_encode($subscriptions));
 }
