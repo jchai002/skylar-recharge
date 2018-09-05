@@ -5,9 +5,7 @@ require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 
-$rc->delete('/subscriptions/21612802');
-$rc->delete('/subscriptions/21612793');
-$res = $rc->delete('/subscriptions/21612712');
+$res = $rc->delete('/subscriptions/21649522');
 var_dump($res);
 
 die();
