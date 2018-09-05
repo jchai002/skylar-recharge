@@ -28,7 +28,7 @@ if(empty($subscriptions['subscriptions'])){
 $subscriptions = $subscriptions['subscriptions'];
 //var_dump($subscriptions);
 
-upgrade_check($sc, $rc, $db, $subscriptions);
+$subscriptions = upgrade_check($sc, $rc, $db, $subscriptions);
 
 $addresses = [];
 $addresses_res = $rc->get('/customers/'.$subscriptions[0]['customer_id'].'/addresses');
@@ -51,7 +51,6 @@ function upgrade_check(ShopifyPrivateClient $sc, RechargeClient $rc, PDO $db, $s
 	global $ids_by_scent;
 
 	$product_cache = [];
-	$subs_to_add = [];
 	$subscription_variant_ids = [];
 	foreach($subscriptions as $subscription){
 		// Check if there is a subscription needing an upgrade
@@ -117,6 +116,9 @@ function upgrade_check(ShopifyPrivateClient $sc, RechargeClient $rc, PDO $db, $s
 		$handle = strtok($old_properties['handle_' . $i], '-');
 		$ids = $ids_by_scent[$handle];
 		if(empty($ids)){
+			continue;
+		}
+		if(in_array($ids['variant'], $subscription_variant_ids)){
 			continue;
 		}
 
