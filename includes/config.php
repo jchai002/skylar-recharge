@@ -149,6 +149,10 @@ function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant
 			'product_title' => $shopify_product['title'],
 			'variant_title' => $shopify_variant['title'],
 		]);
+		if(empty($response['onetime'])){
+			var_dump($response);
+		}
+		$subscription = $response['onetime'];
 	} else {
 		$response = $rc->post('/subscriptions', [
 			'address_id' => $address_id,
@@ -162,11 +166,12 @@ function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant
 			'product_title' => $shopify_product['title'],
 			'variant_title' => $shopify_variant['title'],
 		]);
+		if(empty($response['subscription'])){
+			var_dump($response);
+		}
+		$subscription = $response['subscription'];
 	}
-	if(empty($response['subscription'])){
-		var_dump($response);
-	}
-	return $response['subscription'];
+	return $subscription;
 }
 
 $standard_discount_codes = [];
