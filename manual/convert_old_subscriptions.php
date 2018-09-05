@@ -53,7 +53,7 @@ do {
 			}
 			foreach($product['variants'] as $variant){
 				if($variant['id'] == $ids['variant']){
-					continue;
+					break;
 				}
 			}
 			if(empty($product) || empty($variant)){
