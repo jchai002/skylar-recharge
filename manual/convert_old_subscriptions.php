@@ -80,7 +80,7 @@ do {
 
 			echo "add_subscription(\$rc, ".$product['id'].", ".$variant['id'].", {$subscription['address_id']}, ".strtotime($subscription['next_charge_scheduled_at']).", $quantity, $frequency);".PHP_EOL;
 			$res = add_subscription($rc, $product, $variant, $subscription['address_id'], strtotime($subscription['next_charge_scheduled_at']), $quantity, $frequency);
-//			log_event($db, 'SUBSCRIPTION', json_encode($res), 'CREATED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
+			log_event($db, 'SUBSCRIPTION', json_encode($res), 'CREATED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
 		}
 
 		// Check if we need to add sample discount
@@ -105,7 +105,7 @@ do {
 				$res = $rc->put('/addresses/'.$subscription['address_id'], [
 					'cart_attributes' => $address['cart_attributes'],
 				]);
-//			log_event($db, 'DISCOUNT', json_encode($res), 'ADDED', json_encode($subscription), 'Discount added from old subscription', 'api');
+			log_event($db, 'DISCOUNT', json_encode($res), 'ADDED', json_encode($subscription), 'Discount added from old subscription', 'api');
 			}
 		}
 		// Remove old sub
@@ -115,7 +115,7 @@ do {
 //		var_dump($rc->post('/subscriptions/'.$subscription['id'].'/cancel', ['cancellation_reason'=>'subscription auto upgraded']));
 		echo '$rc->delete(\'/subscriptions/'.$subscription['id'].');'.PHP_EOL;
 		$res = $rc->delete('/subscriptions/'.$subscription['id']);
-//		log_event($db, 'SUBSCRIPTION', json_encode($res), 'DELETED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
+		log_event($db, 'SUBSCRIPTION', json_encode($res), 'DELETED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
 		sleep(5);
 	}
 	$page++;
