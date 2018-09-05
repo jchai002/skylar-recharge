@@ -138,7 +138,7 @@ function group_subscriptions($subscriptions, $addresses){
 	return array_values($subscription_groups);
 }
 
-function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant, $address_id, $next_charge_time, $quantity = 1, $frequency='3', $frequency_unit='month'){
+function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant, $address_id, $next_charge_time, $quantity = 1, $frequency='3', $frequency_unit='month', $status='ACTIVE'){
 	if($frequency == 'onetime'){
 		$response = $rc->post('/onetimes/address/'.$address_id, [
 			'address_id' => $address_id,
@@ -165,6 +165,7 @@ function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant
 			'order_day_of_month' => date('d', $next_charge_time),
 			'product_title' => $shopify_product['title'],
 			'variant_title' => $shopify_variant['title'],
+			'status' => $status,
 		]);
 		if(empty($response['subscription'])){
 			var_dump($response);
