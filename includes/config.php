@@ -68,6 +68,10 @@ function group_subscriptions($subscriptions, $addresses){
 			continue;
 		}
 		*/
+		// Sample palette
+		if($subscription['shopify_product_id'] == '470601367583'){
+			continue;
+		}
 		if($subscription['status'] == 'ONETIME' && empty($subscription['next_charge_scheduled_at'])){
 			continue;
 		}
