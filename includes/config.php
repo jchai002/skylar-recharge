@@ -270,7 +270,7 @@ function calculate_discount_factors(RechargeClient $rc, $charge){
 	// Subscription Discount
 	$onetime = false;
 	foreach($charge['line_items'] as $line_item){
-		$res = $rc->get("/subscription/".$line_item['subscription_id']);
+		$res = $rc->get("/subscriptions/".$line_item['subscription_id']);
 		if($res['subscription']['status'] == 'ONETIME'){
 			$onetime = true;
 			break;
