@@ -45,6 +45,20 @@ if(array_key_exists('quantity', $_REQUEST)){
 		die();
 	}
 }
+if(!empty($_REQUEST['product_id']) && !empty($_REQUEST['variant_id'])){
+	$sc = new ShopifyPrivateClient();
+	$product_id = intval($_REQUEST['product_id']);
+	$variant_id = intval($_REQUEST['variant_id']);
+	$product = $sc->call('GET', '/admin/products/'.$product_id.'.json');
+	$data['shopify_variant_id'] = $variant_id;
+	$data['product_title'] = $product['title'];
+	foreach($product['variants'] as $variant){
+		if($variant['id'] == $variant_id){
+			$data['variant_title'] = $variant['title'];
+			break;
+		}
+	}
+}
 if(!empty($_REQUEST['scent_code']) && array_key_exists($_REQUEST['scent_code'], $ids_by_scent)){
 	// Special logic for 'default' subs. Swap one full size bottle for another. Could expand this to work across other products/variants
 	$scent_code = $_REQUEST['scent_code'];
