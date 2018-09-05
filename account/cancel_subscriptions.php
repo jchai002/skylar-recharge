@@ -61,7 +61,6 @@ foreach($subscription_ids as $subscription_id){
 				$subscriptions_by_id[$subscription_id] = $updated_subscription_res['subscription'];
 			}
 		}
-		$subscriptions_by_id[$subscription['id']] = $updated_subscription_res['subscription'];
 	} else if($subscription['status'] == 'ONETIME') {
 		$rc->delete('/onetimes/'.$subscription['id']);
 		unset($subscriptions_by_id[$subscription['id']]);
