@@ -14,6 +14,7 @@ if(empty($_REQUEST['id'])){
 
 $page = 1;
 do {
+	echo "Starting page $page".PHP_EOL;
 	$sub_res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'created_at_max' => '2018-09-05']);
 	$product_cache = [];
 	foreach($sub_res['subscriptions'] as $subscription){
@@ -28,7 +29,7 @@ do {
 		}
 
 		if(empty($old_properties['total_items'])){
-			echo "Couldn't find total_items for sub ".$subscription['id'];
+			echo "Couldn't find total_items for sub ".$subscription['id'].PHP_EOL;
 			continue;
 		}
 
@@ -41,7 +42,7 @@ do {
 			$handle = strtok($old_properties['handle_'.$i], '-');
 			$ids = $ids_by_scent[$handle];
 			if(empty($ids)){
-				echo "Couldn't find ids for handle ".$handle;
+				echo "Couldn't find ids for handle ".$handle.PHP_EOL;
 				continue;
 			}
 
@@ -56,7 +57,7 @@ do {
 				}
 			}
 			if(empty($product) || empty($variant)){
-				echo "Missing product / variant";
+				echo "Missing product / variant".PHP_EOL;
 				var_dump($handle);
 				var_dump($ids);
 				var_dump($product);
@@ -69,8 +70,8 @@ do {
 			}
 
 			echo "add_subscription(\$rc, ".$product['id'].", ".$variant['id'].", {$subscription['address_id']}, ".strtotime($subscription['next_charge_scheduled_at']).", $quantity, $frequency);".PHP_EOL;
-//		$res = add_subscription($rc, $product, $variant, $subscription['address_id'], strtotime($subscription['next_charge_scheduled_at']), $quantity, $frequency);
-//		log_event($db, 'SUBSCRIPTION', $res, 'CREATED', $subscription, 'Subscription upgraded from old style', 'api');
+		$res = add_subscription($rc, $product, $variant, $subscription['address_id'], strtotime($subscription['next_charge_scheduled_at']), $quantity, $frequency);
+		log_event($db, 'SUBSCRIPTION', $res, 'CREATED', $subscription, 'Subscription upgraded from old style', 'api');
 
 		}
 
@@ -96,12 +97,13 @@ do {
 				$res = $rc->put('/addresses/'.$subscription['address_id'], [
 					'cart_attributes' => $address['cart_attributes'],
 				]);
-//			log_event($db, 'DISCOUNT', $res, 'ADDED', $subscription, 'Discount added from old subscription', 'api');
+			log_event($db, 'DISCOUNT', $res, 'ADDED', $subscription, 'Discount added from old subscription', 'api');
 			}
 		}
 		// Remove old sub
 		echo '$rc->post(\'/subscriptions/'.$subscription['id'].'/cancel\', [\'reason\'=>\'subscription auto upgraded\']);'.PHP_EOL;
-//	$res = $rc->post('/subscriptions/'.$subscription['id'].'/cancel', ['reason'=>'subscription auto upgraded']);
-//	log_event($db, 'SUBSCRIPTION', $res, 'DELETED', $subscription, 'Subscription upgraded from old style', 'api');
+	$res = $rc->post('/subscriptions/'.$subscription['id'].'/cancel', ['reason'=>'subscription auto upgraded']);
+	log_event($db, 'SUBSCRIPTION', $res, 'DELETED', $subscription, 'Subscription upgraded from old style', 'api');
 	}
+	$page++;
 } while(count($sub_res['subscriptions']) >= 250);
