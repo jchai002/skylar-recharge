@@ -105,7 +105,8 @@ do {
 		}
 		// Remove old sub
 		echo '$rc->delete(\'/subscriptions/'.$subscription['id'].');'.PHP_EOL;
-		$res = $rc->delete('/subscriptions/'.$subscription['id']);
+		$rc->post('/subscriptions/'.$subscription['id'].'/cancel', ['reason'=>'subscription auto upgraded']);
+//		$res = $rc->delete('/subscriptions/'.$subscription['id']);
 		log_event($db, 'SUBSCRIPTION', json_encode($res), 'DELETED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
 		sleep(2);
 	}
