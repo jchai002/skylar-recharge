@@ -9,13 +9,6 @@ header("Access-Control-Allow-Origin: *");
 $rc = new RechargeClient();
 $sc = new ShopifyPrivateClient();
 
-if(!empty($_REQUEST['address_id'])){
-	$res = $rc->get('/addresses/'.intval($_REQUEST['address_id']));
-	if(!empty($res['address'])){
-		$_REQUEST['customer_id'] = $res['address']['customer_id'];
-	}
-	var_dump($res);
-}
 if(empty($_REQUEST['customer_id'])){
     die(json_encode([
         'success' => false,
