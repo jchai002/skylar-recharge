@@ -104,6 +104,7 @@ do {
 		echo '$rc->delete(\'/subscriptions/'.$subscription['id'].'\', [\'reason\'=>\'subscription auto upgraded\']);'.PHP_EOL;
 	$res = $rc->delete('/subscriptions/'.$subscription['id']);
 	log_event($db, 'SUBSCRIPTION', json_encode($res), 'DELETED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
+	sleep(2);
 	}
 	$page++;
 } while(count($sub_res['subscriptions']) >= 250);
