@@ -5,7 +5,19 @@ require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 
-$res = $rc->get('/subscriptions/', ['address_id' => 16134307]);
+
+//$res = $rc->get('/subscriptions/', ['address_id' => 16042009]);
+$res = $rc->get('/charges/', ['subscription_id' => 21668425]);
+//$res = $rc->delete('/subscriptions/21661339');
+var_dump($res);
+
+
+
+
+
+die();
+
+$res = $rc->get('/subscriptions/', ['address_id' => 16130191]);
 $subscriptions = $res['subscriptions'];
 foreach($subscriptions as $subscription){
 	$res = $rc->get('/charges/', ['subscription_id' => $subscription['id'], 'status' => 'QUEUED']);

@@ -15,13 +15,19 @@ if(empty($_REQUEST['id'])){
 $page = 1;
 do {
 	echo "Starting page $page".PHP_EOL;
-	$sub_res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'created_at_max' => '2018-09-05']);
+	$sub_res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'status' => 'ACTIVE']);
 	$product_cache = [];
 	foreach($sub_res['subscriptions'] as $subscription){
 		$old_product_id = $subscription['shopify_product_id'];
 		if(!in_array($old_product_id, [738567323735, 738567520343, 738394865751]) || date('Y-m-d', strtotime($subscription['next_charge_scheduled_at'])) == '2018-09-05'){
 			continue;
 		}
+		if(empty(strtotime($subscription['next_charge_scheduled_at']))){
+			var_dump($subscription);
+			die();
+			continue;
+		}
+		var_dump($subscription);
 
 		$old_properties = [];
 		foreach($subscription['properties'] as $property){
