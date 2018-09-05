@@ -5,6 +5,16 @@ require_once('../includes/class.RechargeClient.php');
 
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
+
+$rc = new RechargeClient();
+$sc = new ShopifyPrivateClient();
+
+if(!empty($_REQUEST['address_id'])){
+	$res = $rc->get('/addresses/'.intval($_REQUEST['address_id']));
+	if(!empty($res['address'])){
+		$_REQUEST['customer_id'] = $res['address']['customer_id'];
+	}
+}
 if(empty($_REQUEST['customer_id'])){
     die(json_encode([
         'success' => false,
@@ -14,8 +24,6 @@ if(empty($_REQUEST['customer_id'])){
     ]));
 }
 
-$rc = new RechargeClient();
-$sc = new ShopifyPrivateClient();
 
 $subscriptions = $rc->get('/subscriptions', [
     'shopify_customer_id' => $_REQUEST['customer_id'],
