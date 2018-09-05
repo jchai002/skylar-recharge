@@ -10,7 +10,7 @@ $sc = new ShopifyPrivateClient();
 $page = 1;
 do {
 	echo "Starting page $page" . PHP_EOL;
-	$sub_res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'created_at_max' => '2018-09-05']); // status?
+	$sub_res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'created_at_max' => '2018-09-05']);
 
 	$products_by_address = [];
 	$addresses_needing_discount = [];
