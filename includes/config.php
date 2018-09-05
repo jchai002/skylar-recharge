@@ -244,7 +244,7 @@ function calculate_discount_amount($charge, $discount_factors){
 	return $gross_price - $net_price;
 }
 
-function calculate_discount_factors($charge){
+function calculate_discount_factors(RechargeClient $rc, $charge){
 	global $ids_by_scent;
 	$discount_factors = [];
 	$scent_variant_ids = array_column($ids_by_scent, 'variant');
@@ -268,7 +268,15 @@ function calculate_discount_factors($charge){
 	}
 
 	// Subscription Discount
-	if($charge['type'] == 'RECURRING'){
+	$onetime = false;
+	foreach($charge['line_items'] as $line_item){
+		$res = $rc->get("/subscription/".$line_item['subscription_id']);
+		if($res['subscription']['status'] == 'ONETIME'){
+			$onetime = true;
+			break;
+		}
+	}
+	if(!$onetime){
 		$discount_factors[] = ['key' => 'subscribe_and_save', 'type' => 'percent', 'amount' => .15];
 	}
 	return $discount_factors;
@@ -345,6 +353,7 @@ function calculate_multi_bottle_discount($fullsize_count){
 }
 
 function update_charge_discounts(PDO $db, RechargeClient $rc, $charges){
+
 	foreach($charges as $charge){
 		if($charge['status'] != 'QUEUED'){
 			exit;
@@ -356,7 +365,7 @@ function update_charge_discounts(PDO $db, RechargeClient $rc, $charges){
 			}
 		}
 
-		$discount_factors = calculate_discount_factors($charge);
+		$discount_factors = calculate_discount_factors($rc, $charge);
 		var_dump($discount_factors);
 		$discount_amount = calculate_discount_amount($charge, $discount_factors);
 		var_dump($discount_amount);

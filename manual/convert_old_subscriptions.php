@@ -19,7 +19,7 @@ do {
 	$product_cache = [];
 	foreach($sub_res['subscriptions'] as $subscription){
 		$old_product_id = $subscription['shopify_product_id'];
-		if(!in_array($old_product_id, [738567323735, 738567520343, 738394865751])){
+		if(!in_array($old_product_id, [738567323735, 738567520343, 738394865751]) || date('Y-m-d', strtotime($subscription['next_charge_scheduled_at'])) == '2018-09-05'){
 			continue;
 		}
 
@@ -74,8 +74,7 @@ do {
 
 			echo "add_subscription(\$rc, ".$product['id'].", ".$variant['id'].", {$subscription['address_id']}, ".strtotime($subscription['next_charge_scheduled_at']).", $quantity, $frequency);".PHP_EOL;
 			$res = add_subscription($rc, $product, $variant, $subscription['address_id'], strtotime($subscription['next_charge_scheduled_at']), $quantity, $frequency);
-			log_event($db, 'SUBSCRIPTION', json_encode($res), 'CREATED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
-
+//			log_event($db, 'SUBSCRIPTION', json_encode($res), 'CREATED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
 		}
 
 		// Check if we need to add sample discount
@@ -104,11 +103,14 @@ do {
 			}
 		}
 		// Remove old sub
+
+//		var_dump($rc->post('/subscriptions/'.$subscription['id'].'/set_next_charge_date', ['date'=>'2019-09-05']));
+//		echo '$rc->post(\'/subscriptions/'.$subscription['id'].'/cancel\', [\'cancellation_reason\'=>\'subscription auto upgraded\']);'.PHP_EOL;
+//		var_dump($rc->post('/subscriptions/'.$subscription['id'].'/cancel', ['cancellation_reason'=>'subscription auto upgraded']));
 		echo '$rc->delete(\'/subscriptions/'.$subscription['id'].');'.PHP_EOL;
-		$rc->post('/subscriptions/'.$subscription['id'].'/cancel', ['reason'=>'subscription auto upgraded']);
-//		$res = $rc->delete('/subscriptions/'.$subscription['id']);
-		log_event($db, 'SUBSCRIPTION', json_encode($res), 'DELETED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
-		sleep(2);
+		$res = $rc->delete('/subscriptions/'.$subscription['id']);
+//		log_event($db, 'SUBSCRIPTION', json_encode($res), 'DELETED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
+		sleep(5);
 	}
 	$page++;
 } while(count($sub_res['subscriptions']) >= 250);

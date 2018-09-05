@@ -5,8 +5,23 @@ require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 
-$res = $rc->delete('/subscriptions/21650269');
-var_dump($res);
+$res = $rc->get('/subscriptions/', ['address_id' => 16142671]);
+$subscriptions = $res['subscriptions'];
+foreach($subscriptions as $subscription){
+	$res = $rc->get('/charges/', ['subscription_id' => $subscription['id'], 'status' => 'QUEUED']);
+	if(!empty($res['charges'])){
+		$charge = $res['charges'][0];
+		var_dump($charge);
+		$discount_factors = calculate_discount_factors($charge);
+		var_dump($discount_factors);
+		$discount_amount = calculate_discount_amount($charge, $discount_factors);
+		var_dump($discount_amount);
+
+		$code = get_charge_discount_code($db, $rc, $discount_amount);
+		var_dump($code);
+	}
+//	var_dump($res);
+}
 
 die();
 
