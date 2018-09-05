@@ -21,7 +21,8 @@ do {
 				echo "Rollie Fix".PHP_EOL;
 				$rc->put('/subscriptions/'.$subscription['id'], [
 					'shopify_variant_id' => $ids['variant'],
-					'variant_title' => 'Full Size (1.7 oz)'
+					'variant_title' => 'Full Size (1.7 oz)',
+					'price' => 78,
 				]);
 				break;
 			}

@@ -86,7 +86,7 @@ function group_subscriptions($subscriptions, $addresses){
 				'group_key' => $group_key,
 				'status' => $subscription['status'],
 				'frequency' => $frequency,
-				'order_interval_frequency' => $subscription['order_interval_frequency'],
+				'order_interval_frequency' => empty($subscription['order_interval_frequency']) ? 'onetime' : $subscription['order_interval_frequency'],
 				'onetime' => $subscription['status'] == 'ONETIME',
 				'next_charge_date' => $next_charge_date,
 				'next_charge_time' => $next_charge_time,
