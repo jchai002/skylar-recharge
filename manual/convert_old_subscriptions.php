@@ -97,7 +97,7 @@ do {
 		if($add_sample_discount){
 			echo "Add sample discount".PHP_EOL;
 		}
-		if($add_sample_discount && false){
+		if($add_sample_discount){
 			$res = $rc->get('/addresses/'.$subscription['address_id']);
 			$address = $res['address'];
 			if(!in_array('_sample_credit',array_column($address['cart_attributes'], 'name'))){
