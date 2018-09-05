@@ -112,32 +112,6 @@ foreach($subs_to_create as $sub_data){
 		continue;
 	}
 
-	if($sub_data['frequency'] == 'onetime'){
-		$response = $rc->post('/onetimes/address/'.$rc_order['address_id'], [
-			'address_id' => $rc_order['address_id'],
-			'next_charge_scheduled_at' => date('Y-m-d', $next_charge_time),
-			'shopify_variant_id' => $sub_data['ids']['variant'],
-			'quantity' => 1,
-			'price' => $variant['price'],
-			'product_title' => $product['title'],
-			'variant_title' => $variant['title'],
-		]);
-		$subscription = $response['onetime'];
-	} else {
-		$response = $rc->post('/subscriptions', [
-			'address_id' => $rc_order['address_id'],
-			'next_charge_scheduled_at' => date('Y-m-d', $next_charge_time),
-			'shopify_variant_id' => $sub_data['ids']['variant'],
-			'quantity' => 1,
-			'order_interval_unit' => 'month',
-			'order_interval_frequency' => $sub_data['frequency'],
-			'charge_interval_frequency' => $sub_data['frequency'],
-			'order_day_of_month' => date('d', $next_charge_time),
-			'product_title' => $product['title'],
-			'variant_title' => $variant['title'],
-		]);
-		$subscription = $response['subscription'];
-	}
+	$subscription = add_subscription($rc, $product, $variant, $rc_order['address_id'], $next_charge_time, 1, $sub_data['frequency']);
 	$subscription_id = $subscription['id'];
-	var_dump($response);
 }
