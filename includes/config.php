@@ -146,7 +146,7 @@ function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant
 			'shopify_variant_id' => $shopify_variant['id'],
 			'quantity' => $quantity,
 			'price' => $shopify_variant['price'],
-			'product_title' => $shopify_product['title'].' '.$shopify_variant['title'], // Temp fix for recharge, variant_title not working
+			'product_title' => $shopify_product['title'],
 			'variant_title' => $shopify_variant['title'],
 		]);
 		if(empty($response['onetime'])){
