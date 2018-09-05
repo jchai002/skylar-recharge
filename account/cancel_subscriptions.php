@@ -52,9 +52,14 @@ foreach($subscription_ids as $subscription_id){
 	$customer_id = $subscription['customer_id'];
 
 	if($subscription['status'] == 'ACTIVE'){
-		$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/cancel', ['cancellation_reason' => $reason]);
-		if(empty($updated_subscription_res['subscription'])){
-			continue;
+		if($reason == 'Quantity Reduced'){
+			$rc->delete('/subscriptions/'.$subscription['id']);
+			unset($subscriptions_by_id[$subscription['id']]);
+		} else {
+			$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/cancel', ['cancellation_reason' => $reason]);
+			if(!empty($updated_subscription_res['subscription'])){
+				$subscriptions_by_id[$subscription_id] = $updated_subscription_res['subscription'];
+			}
 		}
 		$subscriptions_by_id[$subscription['id']] = $updated_subscription_res['subscription'];
 	} else if($subscription['status'] == 'ONETIME') {
