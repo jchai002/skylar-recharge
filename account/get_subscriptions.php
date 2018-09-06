@@ -147,7 +147,7 @@ function upgrade_check(ShopifyPrivateClient $sc, RechargeClient $rc, PDO $db, $s
 		}
 
 		$new_subscription = add_subscription($rc, $product, $variant, $old_subscription['address_id'], strtotime($old_subscription['next_charge_scheduled_at']), $quantity, $frequency);
-		log_event($db, 'SUBSCRIPTION', json_encode($res), 'CREATED', json_encode($old_subscription), 'Subscription upgraded from old style', 'api');
+		log_event($db, 'SUBSCRIPTION', json_encode($new_subscription), 'CREATED', json_encode($old_subscription), 'Subscription upgraded from old style', 'api');
 		$subscriptions[] = $new_subscription;
 	}
 	$res = $rc->delete('/subscriptions/'.$old_subscription['id']);
