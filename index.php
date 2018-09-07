@@ -6,7 +6,7 @@
  * maven 
  * 
  */
-
+die();
 $authToken = '069f9828d19cdfea4f5a73f43d28a891257dab5e5c03afc9f68a1e0e';
 
 function initGetRequest($url) {
