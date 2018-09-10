@@ -6,6 +6,7 @@ $sc = new ShopifyClient();
 
 $order = $sc->get('/orders/'.$_REQUEST['id'].'.json');
 
+var_dump($sc);
 var_dump($_REQUEST);
 var_dump($order);
 die();
