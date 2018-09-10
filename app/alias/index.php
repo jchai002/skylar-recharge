@@ -6,4 +6,7 @@ $sc = new ShopifyClient();
 
 $order = $sc->get('/admin/orders/'.$_REQUEST['id'].'.json');
 
+var_dump($order);
+die();
+
 header("Location: https://skylar.com/account?c=".$order['customer_id']);
