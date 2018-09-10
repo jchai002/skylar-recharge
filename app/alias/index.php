@@ -1,6 +1,6 @@
 <?php
-require_once('../includes/config.php');
-require_once('../includes/class.ShopifyClient.php');
+require_once('../../includes/config.php');
+require_once('../../includes/class.ShopifyClient.php');
 
 echo ENV_DIR;
 
