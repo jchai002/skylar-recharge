@@ -1,6 +1,16 @@
 <?php
-define('SHOPIFY_APP_KEY',$_ENV['SHOPIFY_APP_KEY']);
-define('SHOPIFY_APP_SECRET',$_ENV['SHOPIFY_APP_SECRET']);
+if(!empty($_ENV['SHOPIFY_APP_TOKEN'])){
+	define('SHOPIFY_PRIVATE_APP_KEY',$_ENV['SHOPIFY_PRIVATE_APP_KEY']);
+	define('SHOPIFY_PRIVATE_APP_SECRET',$_ENV['SHOPIFY_PRIVATE_APP_SECRET']);
+	define('SHOPIFY_APP_KEY', $_ENV['SHOPIFY_APP_KEY']);
+	define('SHOPIFY_APP_SECRET',$_ENV['SHOPIFY_APP_SECRET']);
+	define('SHOPIFY_APP_TOKEN',$_ENV['SHOPIFY_APP_TOKEN']);
+} else {
+	define('SHOPIFY_PRIVATE_APP_KEY',$_ENV['SHOPIFY_APP_KEY']);
+	define('SHOPIFY_PRIVATE_APP_SECRET',$_ENV['SHOPIFY_APP_SECRET']);
+	define('SHOPIFY_APP_KEY', $_ENV['SHOPIFY_APP_KEY']);
+	define('SHOPIFY_APP_SECRET',$_ENV['SHOPIFY_APP_SECRET']);
+}
 define('SHOPIFY_SCOPE',implode(',',[
 	'read_content',
 	'write_content',
@@ -33,7 +43,7 @@ class ShopifyClient {
         'maven-and-muse.myshopify.com' => '',
     ];
 
-	public function __construct($shop_domain = '', $token = '', $api_key = SHOPIFY_APP_KEY, $secret = SHOPIFY_APP_SECRET) {
+	public function __construct($shop_domain = '', $token = '', $api_key = SHOPIFY_APP_KEY, $secret = SHOPIFY_APP_SECRET){
 		$this->name = "ShopifyClient";
 		$this->shop_domain = $shop_domain;
 		if(empty($this->shop_domain)){
@@ -221,7 +231,7 @@ class ShopifyClient {
 }
 class ShopifyPrivateClient extends ShopifyClient {
 
-	public function __construct($shop_domain = 'maven-and-muse.myshopify.com', $token = '', $api_key = SHOPIFY_APP_KEY, $secret = SHOPIFY_APP_SECRET) {
+	public function __construct($shop_domain = 'maven-and-muse.myshopify.com', $token = '', $api_key = SHOPIFY_PRIVATE_APP_KEY, $secret = SHOPIFY_PRIVATE_APP_SECRET){
 		parent::__construct($shop_domain, $token, $api_key, $secret);
 		$this->name = "ShopifyPrivateClient";
 	}
