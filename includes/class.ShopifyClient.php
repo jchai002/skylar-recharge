@@ -52,6 +52,9 @@ class ShopifyClient {
 			}
 		}
 		$this->token = $token;
+		if(empty($this->token) && defined('SHOPIFY_APP_TOKEN')){
+			$this->token = SHOPIFY_APP_TOKEN;
+		}
 		if(empty($this->token)){
 			if(array_key_exists($this->shop_domain, ShopifyClient::$token_lookup)){
 				$this->token = ShopifyClient::$token_lookup[$this->shop_domain];
@@ -128,6 +131,22 @@ class ShopifyClient {
 			throw new ShopifyApiException($method, $path, $params, $this->last_response_headers, $response);
 
 		return (is_array($response) and (count($response) > 0)) ? array_shift($response) : $response;
+	}
+
+	public function get($path, $params = []){
+		return $this->call("GET", $path, $params);
+	}
+
+	public function post($path, $params = []){
+		return $this->call("POST", $path, $params);
+	}
+
+	public function put($path, $params = []){
+		return $this->call("PUT", $path, $params);
+	}
+
+	public function delete($path, $params = []){
+		return $this->call("DELETE", $path, $params);
 	}
 
 	public function validateSignature($query)

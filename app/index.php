@@ -2,13 +2,9 @@
 require_once('../includes/config.php');
 require_once('../includes/class.ShopifyClient.php');
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+echo "Skylar Shopify App - Created by Tim";
 
-$sc = new ShopifyClient();
-
-echo SHOPIFY_APP_KEY;
-
+die();
 if(isset($_GET['code'])) {
 	echo $sc->getAccessToken($_GET['code']);
 	exit;
