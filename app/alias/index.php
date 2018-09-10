@@ -4,7 +4,7 @@ require_once('../../includes/class.ShopifyClient.php');
 
 $sc = new ShopifyClient();
 
-$order = $sc->get('/orders/'.$_REQUEST['id'].'.json');
+$order = $sc->get('/admin/orders/'.$_REQUEST['id'].'.json');
 
 var_dump($sc);
 var_dump($_REQUEST);
