@@ -7,6 +7,8 @@ ini_set('display_errors', 1);
 
 $sc = new ShopifyClient();
 
+echo SHOPIFY_APP_KEY;
+
 if(isset($_GET['code'])) {
 	echo $sc->getAccessToken($_GET['code']);
 	exit;
