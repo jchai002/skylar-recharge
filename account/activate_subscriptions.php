@@ -5,6 +5,7 @@ require_once('../includes/class.RechargeClient.php');
 
 header('Content-Type: application/json');
 header("Access-Control-Allow-Origin: *");
+$messages = [];
 if(empty($_REQUEST['customer_id'])){
 	die(json_encode([
 		'success' => false,
@@ -22,7 +23,6 @@ if(empty($_REQUEST['subscription_ids'])){
 	]));
 }
 $subscription_ids = explode(',',$_REQUEST['subscription_ids']);
-$messages = [];
 
 $rc = new RechargeClient();
 $subscriptions = $rc->get('/subscriptions', [
