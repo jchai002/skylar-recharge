@@ -19,8 +19,8 @@ $db = new PDO("mysql:host=".$_ENV['DB_HOST'].";dbname=".$_ENV['DB_NAME'].";chars
 $sample_discount_code = 'SAMPLE25';
 
 // Variants that are allowed to create subscriptions, eventually we won't use this but it's a good safeguard for now
-$subscription_variant_ids = ['5672401895455', '5672401895455'];
-$sample_credit_variant_ids = ['5672401895455', '5672401895455'];
+$subscription_variant_ids = ['5672401895455', '12613449515095'];
+$sample_credit_variant_ids = ['5672401895455', '12613449515095'];
 
 $ids_by_scent = [
 	'arrow'  => ['variant' => 31022048003,     'product' => 8985085187],
