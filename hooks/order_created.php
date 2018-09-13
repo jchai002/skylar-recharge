@@ -36,6 +36,8 @@ if(empty($rc_order)){
 $has_subscription_line_item = false;
 $subs_to_create = [];
 $sample_credit = 0;
+var_dump($sample_credit_variant_ids);
+var_dump(array_column($order['line_items'], 'variant_id'));
 foreach($order['line_items'] as $line_item){
 	// TEMP: Skip for old sub type
 	if(in_array($line_item['variant_id'], [738567520343,738394865751,738567323735])){
