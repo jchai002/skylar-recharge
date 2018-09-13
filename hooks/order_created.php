@@ -42,6 +42,7 @@ foreach($order['line_items'] as $line_item){
 		die('variant '.$line_item['variant_id']);
 	}
 	if(in_array($line_item['variant_id'], $sample_credit_variant_ids)){
+		echo "Crediting sample paletted: ".$line_item['price'].PHP_EOL;
 		$sample_credit = $line_item['price'];
 	}
 	if(!in_array($line_item['variant_id'], $subscription_variant_ids)){
