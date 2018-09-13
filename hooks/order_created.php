@@ -45,8 +45,8 @@ foreach($order['line_items'] as $line_item){
 		$sample_credit = $line_item['price'];
 	}
 	if(!in_array($line_item['variant_id'], $subscription_variant_ids)){
-		echo "skipping, not in subscription_variant_ids".PHP_EOL;
-		continue;
+//		echo "skipping, not in subscription_variant_ids".PHP_EOL;
+//		continue;
 	}
 	if(empty($line_item['properties'])){
 		echo "skipping, no properties".PHP_EOL;
