@@ -15,6 +15,7 @@ if(!empty($_REQUEST['id'])){
 	}
 }
 if(empty($res['charge'])){
+	var_dump($res);
 	exit;
 }
 $charge = $res['charge'];

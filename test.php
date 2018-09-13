@@ -4,9 +4,8 @@ require_once('includes/class.ShopifyClient.php');
 require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
-
-//$res = $rc->get('/subscriptions', ['customer_id' => 15240553]);
 /*
+$res = $rc->get('/subscriptions', ['customer_id' => 15240553]);
 foreach($res['subscriptions'] as $subscription){
 	if($subscription['shopify_product_id'] == '8215317379'){
 		$res = $rc->delete('/subscriptions/'.$subscription['id']);
@@ -14,11 +13,11 @@ foreach($res['subscriptions'] as $subscription){
 }
 */
 //var_dump($res);
-$res = $rc->get('/addresses/16756126');
+//$res = $rc->get('/addresses/16756126');
 //var_dump($res);
 //$res = $rc->get('/customers/14587855');
 //$res = $rc->get('/subscriptions/', ['address_id' => 16042009]);
-//$res = $rc->get('/charges/', ['subscription_id' => 21668425]);
+$res = $rc->get('/charges/', ['customer_id' => 14587855]);
 //$res = $rc->delete('/subscriptions/22190467');
 var_dump($res);
 
