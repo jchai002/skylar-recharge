@@ -74,9 +74,9 @@ foreach($order['line_items'] as $line_item){
 	}
 }
 var_dump($sample_credit);
+$res = $rc->get('/addresses/'.$rc_order['address_id']);
+$address = $res['address'];
 if(!empty($sample_credit)){
-	$res = $rc->get('/addresses/'.$rc_order['address_id']);
-	$address = $res['address'];
 	if(!in_array('_sample_credit',array_column($address['cart_attributes'], 'name'))){
 		$address['cart_attributes'][] = ['name' => '_sample_credit', 'value' => $sample_credit];
 		$res = $rc->put('/addresses/'.$rc_order['address_id'], [
@@ -88,6 +88,8 @@ if(!empty($sample_credit)){
 if(empty($subs_to_create)){
 	die('no subs to create');
 }
+
+if($address)
 
 $delay_days = 17; // TODO: more if international
 $order_created_time = strtotime($order['created_at']);

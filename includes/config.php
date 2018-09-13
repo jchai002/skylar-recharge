@@ -201,7 +201,8 @@ function apply_discount_code(RechargeClient $rc, $charge, $code){
 		]);
 	}
 	// Add discount code
-	$rc->post('/charges/'.$charge['id'].'/discounts/'.$code.'/apply');
+	$res = $rc->post('/charges/'.$charge['id'].'/discounts/'.$code.'/apply');
+	var_dump($res);
 	return true;
 }
 

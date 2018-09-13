@@ -5,14 +5,16 @@ require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 
-$res = $rc->get('/subscriptions', ['customer_id' => 15240553]);
+//$res = $rc->get('/subscriptions', ['customer_id' => 15240553]);
+/*
 foreach($res['subscriptions'] as $subscription){
 	if($subscription['shopify_product_id'] == '8215317379'){
 		$res = $rc->delete('/subscriptions/'.$subscription['id']);
 	}
 }
+*/
 //var_dump($res);
-//$res = $rc->get('/addresses/16756126 ');
+$res = $rc->get('/addresses/16756126');
 //var_dump($res);
 //$res = $rc->get('/customers/14587855');
 //$res = $rc->get('/subscriptions/', ['address_id' => 16042009]);
