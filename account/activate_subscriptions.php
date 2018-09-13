@@ -47,6 +47,15 @@ foreach($subscription_ids as $subscription_id){
 		continue;
 	}
 	$updated_subscription = $updated_subscription_res['subscription'];
+	$next_charge_time = strtotime($updated_subscription['next_charge_scheduled_at']);
+	if(empty($next_charge_time) || $next_charge_time < time()){
+		// Fix for recharge bug where next charge time can be null
+		$next_charge_time = offset_date_skip_weekend(strtotime('+17 days'));
+		$res = $rc->post('/subscriptions/'.$subscription_id.'/set_next_charge_date', ['date' => date('Y-m-d')]);
+		if(!empty($res['subscription'])){
+			$updated_subscription = $res['updated_subscription'];
+		}
+	}
 
 	foreach($subscriptions as $index => $subscription){
 		if($subscription['id'] == $updated_subscription['id']){

@@ -379,3 +379,10 @@ function update_charge_discounts(PDO $db, RechargeClient $rc, $charges){
 		apply_discount_code($rc, $charge, $code);
 	}
 }
+
+function offset_date_skip_weekend($time){
+	while(in_array(date('N', $time), [6,7])){ // While it's a weekend
+		$time += 24*60*60; //  Add a day
+	}
+	return $time;
+}
