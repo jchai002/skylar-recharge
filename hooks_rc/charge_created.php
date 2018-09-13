@@ -14,8 +14,8 @@ if(!empty($_REQUEST['id'])){
 		$res = json_decode($data, true);
 	}
 }
+var_dump($res);
 if(empty($res['charge'])){
-	var_dump($res);
 	exit;
 }
 $charge = $res['charge'];
