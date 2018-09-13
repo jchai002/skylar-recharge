@@ -22,6 +22,7 @@ if(empty($_REQUEST['subscription_ids'])){
 	]));
 }
 $subscription_ids = explode(',',$_REQUEST['subscription_ids']);
+$messages = [];
 
 $rc = new RechargeClient();
 $subscriptions = $rc->get('/subscriptions', [
@@ -48,10 +49,12 @@ foreach($subscription_ids as $subscription_id){
 	}
 	$updated_subscription = $updated_subscription_res['subscription'];
 	$next_charge_time = strtotime($updated_subscription['next_charge_scheduled_at']);
+	$messages[] = ['next_charge_date'=>$updated_subscription['next_charge_scheduled_at']];
 	if(empty($next_charge_time) || $next_charge_time < time()){
 		// Fix for recharge bug where next charge time can be null
 		$next_charge_time = offset_date_skip_weekend(strtotime('+17 days'));
 		$res = $rc->post('/subscriptions/'.$subscription_id.'/set_next_charge_date', ['date' => date('Y-m-d')]);
+		$messages[] = ['set_next_charge_date'=>$res];
 		if(!empty($res['subscription'])){
 			$updated_subscription = $res['updated_subscription'];
 		}
@@ -76,6 +79,7 @@ foreach($addresses_res['addresses'] as $address_res){
 }
 
 echo json_encode([
+	'messages' => $messages,
 	'success' => true,
 	'subscriptions' => group_subscriptions($subscriptions, $addresses),
 	'subscriptions_raw' => $subscriptions,
