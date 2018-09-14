@@ -39,7 +39,15 @@ class RechargeClient {
         }
         curl_setopt($ch, CURLOPT_URL, $url);
         $response = curl_exec($ch);
-        return json_decode($response, true);
+        $response = json_decode($response, true);
+
+        if(!empty($response['warning']) && $response['warning'] == 'too many requests' && empty($data['retry'])){
+        	$data['retry'] = 1;
+        	sleep(2);
+        	$this->call($url, $data, $method);
+		}
+
+        return $response;
     }
 
     function get($url, $data=[]){
