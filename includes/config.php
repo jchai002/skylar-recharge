@@ -38,14 +38,14 @@ $multi_bottle_discounts = [
 
 if (!function_exists('getallheaders')){ 
     function getallheaders(){ 
-        $headers = []; 
-       foreach ($_SERVER as $name => $value){ 
-           if (substr($name, 0, 5) == 'HTTP_'){ 
-               $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value; 
-           } 
-       } 
-       return $headers; 
-    } 
+        $headers = [];
+       foreach ($_SERVER as $name => $value){
+           if (substr($name, 0, 5) == 'HTTP_'){
+               $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+           }
+       }
+       return $headers;
+    }
 }
 function log_event(PDO $db, $category='', $value='', $action='', $value2='', $note='', $actor=''){
 	$stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2, note, actor, date_created) VALUES (:category, :action, :value, :value2, :note, :actor, :date_created)");
@@ -365,12 +365,12 @@ function update_charge_discounts(PDO $db, RechargeClient $rc, $charges){
 
 	foreach($charges as $charge){
 		if($charge['status'] != 'QUEUED'){
-			exit;
+			continue;
 		}
 		foreach($charge['line_items'] as $line_item){
 			// don't do it for old sample products
 			if(in_array($line_item['shopify_product_id'], [738567323735, 738567520343, 738394865751])){
-				return false;
+				continue 2;
 			}
 		}
 
