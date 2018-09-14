@@ -44,7 +44,7 @@ class RechargeClient {
         if(!empty($response['warning']) && $response['warning'] == 'too many requests' && empty($data['retry'])){
         	$data['retry'] = 1;
         	sleep(5);
-        	$this->call($url, $data, $method);
+        	return $this->call($url, $data, $method);
 		}
 
         return $response;
