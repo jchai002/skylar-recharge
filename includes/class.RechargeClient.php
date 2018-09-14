@@ -9,6 +9,7 @@ class RechargeClient {
 	function call($url, $data = [], $method='GET'){
         $method = strtoupper($method);
         $ch = curl_init();
+        $original_url = $url;
         $url = 'https://api.rechargeapps.com/'.trim($url,'/');
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => TRUE,
@@ -44,7 +45,7 @@ class RechargeClient {
         if(!empty($response['warning']) && $response['warning'] == 'too many requests' && empty($data['retry'])){
         	$data['retry'] = 1;
         	sleep(5);
-        	return $this->call($url, $data, $method);
+        	return $this->call($original_url, $data, $method);
 		}
 
         return $response;
