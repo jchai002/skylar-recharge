@@ -43,21 +43,25 @@ foreach($res['subscriptions'] as $subscription){
 }
 if($rc_order['type'] == "RECURRING"){
 	foreach($rc_order['line_items'] as $line_item){
-		// TEMP: Skip for old sub type
 		if(in_array($line_item['shopify_variant_id'], [738567520343,738394865751,738567323735])){
+			echo $line_item['shopify_variant_id'].PHP_EOL;
 			continue;
 		}
-		if(empty($line_item['subscription_id']) || array_key_exists($line_item['subscription_id'], $subscriptions)){
+		if(empty($line_item['subscription_id']) || empty($subscriptions[$line_item['subscription_id']])){
+			echo $line_item['subscription_id']." not in subscriptions ".$rc_order['address_id'].PHP_EOL;
 			continue;
 		}
 		$subscription = $subscriptions[$line_item['subscription_id']];
+		echo $subscription['status'].PHP_EOL;
 		if($subscription['status'] == 'ONETIME'){
-			$order_tags[] = 'Type: One-time';
+			$order_tags[] = 'Sub Type: One-time';
 		} else {
-			$order_tags[] = 'Type: Recurring';
+			$order_tags[] = 'Sub Type: Recurring';
 		}
 		$update_order = true;
 	}
+} else {
+	echo $rc_order['type'].PHP_EOL;
 }
 if($update_order){
 	$order_tags = array_unique($order_tags);
