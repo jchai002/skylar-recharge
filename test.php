@@ -16,8 +16,8 @@ foreach($res['subscriptions'] as $subscription){
 //$res = $rc->get('/addresses/16393009');
 //var_dump($res);
 //$res = $rc->get('/customers/14587855');
-//$res = $rc->get('/subscriptions/', ['address_id' => 16042009]);
-$res = $rc->get('/charges/', ['customer_id' => 14954506]);
+$res = $rc->get('/subscriptions/', ['address_id' => 16192600]);
+//$res = $rc->get('/charges/', ['customer_id' => 14954506]);
 //$res = $rc->delete('/subscriptions/22190467');
 var_dump($res);
 

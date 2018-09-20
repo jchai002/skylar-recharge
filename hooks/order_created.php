@@ -33,6 +33,41 @@ if(empty($rc_order)){
 	die('no rc order');
 }
 
+// Tag orders that aren't samples as either onetime or subscription, with subscription
+$order_tags = explode(',',$order['tags']);
+$res = $rc->get('/subscriptions/', ['address_id' => $rc_order['address_id']]);
+$subscriptions = [];
+$update_order = false;
+foreach($res['subscriptions'] as $subscription){
+	$subscriptions[$subscription['id']] = $subscription;
+}
+if($rc_order['type'] == "RECURRING"){
+	foreach($rc_order['line_items'] as $line_item){
+		// TEMP: Skip for old sub type
+		if(in_array($line_item['shopify_variant_id'], [738567520343,738394865751,738567323735])){
+			continue;
+		}
+		if(empty($line_item['subscription_id']) || array_key_exists($line_item['subscription_id'], $subscriptions)){
+			continue;
+		}
+		$subscription = $subscriptions[$line_item['subscription_id']];
+		if($subscription['status'] == 'ONETIME'){
+			$order_tags[] = 'Type: One-time';
+		} else {
+			$order_tags[] = 'Type: Recurring';
+		}
+		$update_order = true;
+	}
+}
+if($update_order){
+	$order_tags = array_unique($order_tags);
+	$sc->call("PUT", "/admin/orders/".$order['id'].'.json', ['order' => [
+		'id' => $order['id'],
+		'tags' => implode(',', $order_tags),
+	]]);
+}
+
+// Get subs we need to create for this order
 $has_subscription_line_item = false;
 $subs_to_create = [];
 $sample_credit = 0;
