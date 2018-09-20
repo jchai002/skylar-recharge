@@ -50,10 +50,11 @@ do {
 				echo $subscription['status'].PHP_EOL;
 				if($subscription['status'] == 'ONETIME'){
 					$order_tags[] = 'Sub Type: One-time';
+					$update_order = true;
 				} else {
 					$order_tags[] = 'Sub Type: Recurring';
+					$update_order = true;
 				}
-				$update_order = true;
 			}
 		} else {
 			echo $rc_order['type'].PHP_EOL;
@@ -67,8 +68,8 @@ do {
 				'id' => $order['id'],
 				'tags' => implode(',', $order_tags),
 			]]);
-			var_dump($res);
+//			var_dump($res);
+			echo "Tags updated".PHP_EOL;
 		}
-		die();
 	}
 } while(count($orders) <= 250);

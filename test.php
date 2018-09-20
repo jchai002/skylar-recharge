@@ -16,12 +16,19 @@ foreach($res['subscriptions'] as $subscription){
 //$res = $rc->get('/addresses/16393009');
 //var_dump($res);
 //$res = $rc->get('/customers/14587855');
-$res = $rc->get('/subscriptions/', ['address_id' => 16192600]);
+//$res = $rc->get('/subscriptions/', ['address_id' => 16224292]);
 //$res = $rc->get('/charges/', ['customer_id' => 14954506]);
 //$res = $rc->delete('/subscriptions/22190467');
-var_dump($res);
+//var_dump($res);
 
+//die();
 
+$res = $rc->get('/charges/', ['customer_id' => 14820031]);
+foreach($res['charges'] as $charge){
+	var_dump($charge);
+	$discount_factors = calculate_discount_factors($rc, $charge);
+	var_dump($discount_factors);
+}
 
 
 

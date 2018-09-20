@@ -63,14 +63,14 @@ if($rc_order['type'] == "RECURRING"){
 } else {
 	echo $rc_order['type'].PHP_EOL;
 }
-var_dump($update_order);
+//var_dump($update_order);
 if($update_order){
 	$order_tags = array_unique($order_tags);
 	$res = $sc->call("PUT", "/admin/orders/".$order['id'].'.json', ['order' => [
 		'id' => $order['id'],
 		'tags' => implode(',', $order_tags),
 	]]);
-	var_dump($res);
+//	var_dump($res);
 }
 
 // Get subs we need to create for this order
