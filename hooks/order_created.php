@@ -63,6 +63,7 @@ if($rc_order['type'] == "RECURRING"){
 } else {
 	echo $rc_order['type'].PHP_EOL;
 }
+var_dump($order_tags);
 if($update_order){
 	$order_tags = array_unique($order_tags);
 	$sc->call("PUT", "/admin/orders/".$order['id'].'.json', ['order' => [
