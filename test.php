@@ -28,6 +28,10 @@ foreach($res['charges'] as $charge){
 	var_dump($charge);
 	$discount_factors = calculate_discount_factors($rc, $charge);
 	var_dump($discount_factors);
+	$discount_amount = calculate_discount_amount($charge, $discount_factors);
+	var_dump($discount_amount);
+	$code = get_charge_discount_code($db, $rc, $discount_amount);
+	var_dump($code);
 }
 
 
