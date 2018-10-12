@@ -10,9 +10,12 @@ do {
 	$filters = [
 		'limit' => 250,
 		'created_at_min' => '2018-09-04T00:00:00',
+		'order' => 'created_at asc'
 	];
 	if(!empty($orders)){
 		$filters['since_id'] = end($orders)['id'];
+	} else {
+//		$filters['since_id'] = 609137295447;
 	}
 	echo "Getting orders".PHP_EOL;
 	$orders = $sc->call("GET", "/admin/orders.json", $filters);
