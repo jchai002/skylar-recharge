@@ -27,7 +27,12 @@ if(!empty($_REQUEST['rc_customer_id'])){
 	]);
 }
 if(empty($subscriptions['subscriptions'])){
-	die(json_encode($subscriptions));
+	die(json_encode([
+		'success' => true,
+		'subscriptions' => [],
+		'subscriptions_raw' => $subscriptions,
+	]));
+//	die(json_encode($subscriptions));
 }
 $subscriptions = $subscriptions['subscriptions'];
 //var_dump($subscriptions);
