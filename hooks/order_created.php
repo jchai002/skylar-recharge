@@ -11,7 +11,6 @@ if(!empty($headers['X-Shopify-Shop-Domain'])){
 if(empty($shop_url)){
 	$shop_url = 'maven-and-muse.myshopify.com';
 }
-
 $sc = new ShopifyPrivateClient($shop_url);
 
 if(!empty($_REQUEST['id'])){
