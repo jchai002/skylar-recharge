@@ -6,8 +6,8 @@ require_once('../includes/config.php');
 $webhooks_required = [
 	// Sync order
 	[
-		'type'=>'orders/created',
-		'address' => 'https://ec2production.skylar.com/hooks/order_create.php',
+		'type'=>'orders/create',
+		'address' => 'https://ec2production.skylar.com/hooks/order_created.php',
 	],
 	// Gift notification
 	[
