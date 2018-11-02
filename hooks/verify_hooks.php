@@ -11,7 +11,7 @@ $webhooks_required = [
 	],
 	// Gift notification
 	[
-		'type'=>'fulfillment_events/create',
+		'type'=>'fulfillments/update',
 		'address' => 'https://ec2production.skylar.com/hooks/order_delivered.php',
 	],
 ];
