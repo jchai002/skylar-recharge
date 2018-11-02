@@ -9,6 +9,11 @@ $webhooks_required = [
 		'type'=>'orders/created',
 		'address' => 'https://ec2production.skylar.com/hooks/order_created.php',
 	],
+	// Gift notification
+	[
+		'type'=>'fulfillments/update',
+		'address' => 'https://ec2production.skylar.com/hooks/order_created.php',
+	],
 ];
 
 require_once('../includes/class.ShopifyClient.php');

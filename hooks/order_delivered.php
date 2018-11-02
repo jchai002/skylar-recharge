@@ -4,8 +4,6 @@ require_once('../includes/class.ShopifyClient.php');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
-//$klaviyo = new Klaviyo($_ENV['KLAVIYO_API_KEY']);
-
 $headers = getallheaders();
 $shop_url = null;
 if(!empty($headers['X-Shopify-Shop-Domain'])){
@@ -20,7 +18,11 @@ if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
 } else {
 	$data = file_get_contents('php://input');
-	$order = json_decode($data, true);
+	$fulfillment_event = json_decode($data, true);
+	if($fulfillment_event['status'] != 'delivered'){
+		die();
+	}
+	$order = $sc->call('GET', '/admin/orders/'.intval($fulfillment_event['order_id']).'.json');
 }
 
 $cart_attributes = [];
