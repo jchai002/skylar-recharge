@@ -2,7 +2,7 @@
 require_once('../includes/config.php');
 require_once('../includes/class.ShopifyClient.php');
 
-echo "Skylar Shopify App - Created by Tim";
+//echo "Skylar Shopify App - Created by Tim";
 
 //die();
 $sc = new ShopifyClient();
