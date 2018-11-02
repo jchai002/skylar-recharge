@@ -32,7 +32,7 @@ if(empty($cart_attributes['gift_message']) || empty($cart_attributes['gift_messa
 }
 
 
-$ch = curl_init("https://a.klaviyo.com/api/v1/email-template/QuHgYA/send");
+$ch = curl_init("https://a.klaviyo.com/api/v1/email-template/QhhkqG/send");
 curl_setopt_array($ch, [
 	CURLOPT_RETURNTRANSFER => true,
 	CURLOPT_POST => true,
@@ -40,7 +40,7 @@ curl_setopt_array($ch, [
 		'api_key' => 'pk_4c31e0386c15cca46c19dac063c013054c',
 		'from_email' => 'hello@skylar.com',
 		'from_name' => 'Skylar',
-		'subject' => 'Order Reminder Test',
+//		'subject' => 'Order Reminder Test',
 		'to' => json_encode([
 			['email' => $cart_attributes['gift_message_email']]
 		]),
