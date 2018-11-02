@@ -32,7 +32,7 @@ if(empty($cart_attributes['gift_message']) || empty($cart_attributes['gift_messa
 }
 
 
-$ch = curl_init("https://a.klaviyo.com/api/v1/email-template/QhhkqG/send");
+$ch = curl_init("https://a.klaviyo.com/api/v1/email-template/LTNqPw/send");
 curl_setopt_array($ch, [
 	CURLOPT_RETURNTRANSFER => true,
 	CURLOPT_POST => true,
