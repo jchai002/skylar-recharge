@@ -40,7 +40,7 @@ curl_setopt_array($ch, [
 		'api_key' => 'pk_4c31e0386c15cca46c19dac063c013054c',
 		'from_email' => 'hello@skylar.com',
 		'from_name' => 'Skylar',
-//		'subject' => 'Order Reminder Test',
+		'subject' => 'Order Reminder Test',
 		'to' => json_encode([
 			['email' => $cart_attributes['gift_message_email']]
 		]),
