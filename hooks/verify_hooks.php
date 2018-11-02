@@ -19,6 +19,8 @@ $webhooks_required = [
 require_once('../includes/class.ShopifyClient.php');
 $sc = new ShopifyPrivateClient();
 
+print_r($sc->call("GET", "/admin/oauth/access_scopes.json"));
+
 $webhooks = $sc->call("GET", "/admin/webhooks.json");
 
 print_r($webhooks);
