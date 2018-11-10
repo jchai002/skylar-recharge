@@ -76,7 +76,7 @@ function upgrade_check(ShopifyPrivateClient $sc, RechargeClient $rc, PDO $db, $s
 				}
 			}
 		}
-		if($subscription['status'] != 'ACTIVE' && $onetime){
+		if($subscription['status'] != 'ACTIVE'){
 			continue;
 		}
 		$old_subscription = $subscription;
