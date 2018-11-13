@@ -82,25 +82,49 @@ foreach($subscription_ids as $subscription_id){
 		continue;
 	}
 	if(!empty($_REQUEST['shipdate'])){
-		$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/set_next_charge_date', [
-			'date' => date('Y-m-d', strtotime($_REQUEST['shipdate'])),
-		]);
-		if(empty($updated_subscription_res['subscription'])){
-			$errors[] = $updated_subscription_res;
-			continue;
+		if(!empty($_REQUEST['onetime'])){
+			$updated_subscription_res = $rc->post('/onetimes/'.$subscription_id, [
+				'next_charge_scheduled_at' => date('Y-m-d', strtotime($_REQUEST['shipdate'])),
+			]);
+			if(empty($updated_subscription_res['onetime'])){
+				$errors[] = $updated_subscription_res;
+				continue;
+			}
+			$updated_subscription = $updated_subscription_res['onetime'];
+		} else {
+			$updated_subscription_res = $rc->post('/subscriptions/'.$subscription_id.'/set_next_charge_date', [
+				'date' => date('Y-m-d', strtotime($_REQUEST['shipdate'])),
+			]);
+			if(empty($updated_subscription_res['subscription'])){
+				$errors[] = $updated_subscription_res;
+				continue;
+			}
+			$updated_subscription = $updated_subscription_res['subscription'];
 		}
-		$updated_subscription = $updated_subscription_res['subscription'];
 	}
 	if(!empty($data)){
-		$updated_subscription_res = $rc->put('/subscriptions/'.$subscription_id, $data);
-		if(empty($updated_subscription_res['subscription'])){
-			$errors[] = $updated_subscription_res;
-			continue;
-		}
-		if(!empty($updated_subscription_res['subscription'])){
-			$updated_subscription = $updated_subscription_res['subscription'];
+		if(!empty($_REQUEST['onetime'])){
+			$updated_subscription_res = $rc->put('/onetime/'.$subscription_id, $data);
+			if(empty($updated_subscription_res['onetime'])){
+				$errors[] = $updated_subscription_res;
+				continue;
+			}
+			if(!empty($updated_subscription_res['onetime'])){
+				$updated_subscription = $updated_subscription_res['onetime'];
+			} else {
+				$remove_ids[] = $subscription_id;
+			}
 		} else {
-			$remove_ids[] = $subscription_id;
+			$updated_subscription_res = $rc->put('/subscriptions/'.$subscription_id, $data);
+			if(empty($updated_subscription_res['subscription'])){
+				$errors[] = $updated_subscription_res;
+				continue;
+			}
+			if(!empty($updated_subscription_res['subscription'])){
+				$updated_subscription = $updated_subscription_res['subscription'];
+			} else {
+				$remove_ids[] = $subscription_id;
+			}
 		}
 	}
 //	var_dump($updated_subscription);
