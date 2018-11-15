@@ -1,13 +1,23 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
-require_once('../includes/config.php');
+require_once(__DIR__.'/../includes/config.php');
 
 $webhooks_required = [
 	// Sync order
 	[
 		'type'=>'orders/create',
 		'address' => 'https://ec2production.skylar.com/hooks/order_created.php',
+	],
+	// Sync product
+	[
+		'type'=>'products/create',
+		'address' => 'https://ec2production.skylar.com/hooks/product_updated.php',
+	],
+	// Sync product
+	[
+		'type'=>'products/update',
+		'address' => 'https://ec2production.skylar.com/hooks/product_updated.php',
 	],
 	// Gift notification
 	[
@@ -16,10 +26,10 @@ $webhooks_required = [
 	],
 ];
 
-require_once('../includes/class.ShopifyClient.php');
-$sc = new ShopifyPrivateClient();
+$sc = new ShopifyClient();
 
 print_r($sc->call("GET", "/admin/oauth/access_scopes.json"));
+
 
 $webhooks = $sc->call("GET", "/admin/webhooks.json");
 

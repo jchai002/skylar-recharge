@@ -2,6 +2,10 @@
 
 require_once dirname(__FILE__).'/../vendor/autoload.php';
 
+spl_autoload_register(function($class){
+	require_once(__DIR__.'/class.'.$class.'.php');
+});
+
 $dotenv = new Dotenv\Dotenv(__DIR__.'/..');
 $dotenv->load();
 
@@ -48,6 +52,7 @@ if (!function_exists('getallheaders')){
     }
 }
 function log_event(PDO $db, $category='', $value='', $action='', $value2='', $note='', $actor=''){
+	return;
 	$stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2, note, actor, date_created) VALUES (:category, :action, :value, :value2, :note, :actor, :date_created)");
 	$stmt->execute([
 		'category' => $category,
@@ -244,6 +249,13 @@ function calculate_discount_amount($charge, $discount_factors){
 	}
 	$net_price = $gross_price;
 	foreach($discount_factors as $discount_factor){
+		if($discount_factor['key'] == 'subscribe_and_save'){
+			foreach($charge['line_items'] as $line_item){
+				if($line_item['price'] < 78){
+
+				}
+			}
+		}
 		if($discount_factor['type'] == 'subtract'){
 			$net_price -= $discount_factor['amount'];
 		} else if($discount_factor['type'] == 'percent'){
@@ -253,6 +265,7 @@ function calculate_discount_amount($charge, $discount_factors){
 	return $gross_price - $net_price;
 }
 
+// TODO: Allow per-line-item discounts
 function calculate_discount_factors(RechargeClient $rc, $charge){
 	global $ids_by_scent;
 	$discount_factors = [];
@@ -396,4 +409,34 @@ function offset_date_skip_weekend($time){
 		$time += 24*60*60; //  Add a day
 	}
 	return $time;
+}
+
+function insert_update_product(PDO $db, $shopify_product){
+	$now = date('Y-m-d H:i:s');
+	$stmt = $db->prepare("INSERT INTO products
+(shopify_id, handle, title, tags, updated_at)
+VALUES (:shopify_id, :handle, :title, :tags, :updated_at)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, tags=:tags, updated_at=:updated_at");
+	$stmt->execute([
+		'shopify_id' => $shopify_product['id'],
+		'handle' => $shopify_product['handle'],
+		'title' => $shopify_product['title'],
+		'tags' => $shopify_product['tags'],
+		'updated_at' => $now,
+	]);
+	$product_id = $db->lastInsertId();
+	$stmt = $db->prepare("INSERT INTO variants
+(product_id, shopify_id, title, price, updated_at)
+VALUES (:product_id, :shopify_id, :title, :price, :updated_at)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, updated_at=:updated_at");
+	foreach($shopify_product['variants'] as $shopify_variant){
+		$stmt->execute([
+			'product_id' => $product_id,
+			'shopify_id' => $shopify_variant['id'],
+			'title' => $shopify_variant['title'],
+			'price' => $shopify_variant['price'],
+			'updated_at' => $now,
+		]);
+	}
+	return $product_id;
 }
