@@ -258,11 +258,12 @@ function calculate_discount_amount($charge, $discount_factors){
 	return $gross_price - $net_price;
 }
 
-// TODO: Allow per-line-item discounts
-function calculate_discount_factors(RechargeClient $rc, $charge){
+function calculate_discount_factors(PDO $db, RechargeClient $rc, $charge){
 	global $ids_by_scent;
 	$discount_factors = [];
 	$scent_variant_ids = array_column($ids_by_scent, 'variant');
+
+	$stmt_get_price = $db->prepare("SELECT price FROM variants WHERE shopify_id = ?");
 
 	// Multi Bottle Discount
 	$fullsize_count = 0;
@@ -284,7 +285,6 @@ function calculate_discount_factors(RechargeClient $rc, $charge){
 	}
 
 	// Subscription Discount
-	$onetime = false;
 	foreach($charge['line_items'] as $line_item){
 		$res = $rc->get("/subscriptions/".$line_item['subscription_id']);
 		if(empty($res['subscription'])){
@@ -293,12 +293,16 @@ function calculate_discount_factors(RechargeClient $rc, $charge){
 			continue;
 		}
 		if($res['subscription']['status'] == 'ONETIME'){
-			$onetime = true;
-			break;
+			continue;
 		}
-	}
-	if(!$onetime){
-		$discount_factors[] = ['key' => 'subscribe_and_save', 'type' => 'percent', 'amount' => .15];
+		$stmt_get_price->execute([$line_item['shopify_variant_id']]);
+		$price = $stmt_get_price->fetchColumn();
+		if($line_item['price'] < $price){
+			continue;
+		}
+		if($res['subscription']['status'] != 'ONETIME'){
+			$discount_factors[] = ['key' => 'subscribe_and_save', 'type' => 'subtract', 'amount' => $line_item['price']*$line_item['quantity']*.15];
+		}
 	}
 	return $discount_factors;
 }
@@ -386,13 +390,13 @@ function update_charge_discounts(PDO $db, RechargeClient $rc, $charges){
 			}
 		}
 
-		$discount_factors = calculate_discount_factors($rc, $charge);
-		var_dump($discount_factors);
+		$discount_factors = calculate_discount_factors($db, $rc, $charge);
+//		var_dump($discount_factors);
 		$discount_amount = calculate_discount_amount($charge, $discount_factors);
-		var_dump($discount_amount);
+//		var_dump($discount_amount);
 
 		$code = get_charge_discount_code($db, $rc, $discount_amount);
-		var_dump($code);
+//		var_dump($code);
 		apply_discount_code($rc, $charge, $code);
 	}
 }

@@ -28,7 +28,7 @@ $res = $rc->get('/charges/', ['customer_id' => 12965232]);
 $output = [];
 foreach($res['charges'] as $charge){
 	$output_line = [$charge];
-	$discount_factors = calculate_discount_factors($rc, $charge);
+	$discount_factors = calculate_discount_factors($db, $rc, $charge);
 	$output_line[] = $discount_factors;
 	$discount_amount = calculate_discount_amount($charge, $discount_factors);
 	$output_line[] = $discount_amount;
@@ -49,7 +49,7 @@ foreach($subscriptions as $subscription){
 	if(!empty($res['charges'])){
 		$charge = $res['charges'][0];
 		var_dump($charge);
-		$discount_factors = calculate_discount_factors($rc, $charge);
+		$discount_factors = calculate_discount_factors($db, $rc, $charge);
 		var_dump($discount_factors);
 		$discount_amount = calculate_discount_amount($charge, $discount_factors);
 		var_dump($discount_amount);
