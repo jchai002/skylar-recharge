@@ -255,7 +255,7 @@ function calculate_discount_amount($charge, $discount_factors){
 			$net_price *= (1 - $discount_factor['amount']);
 		}
 	}
-	return $gross_price - $net_price;
+	return round($gross_price - $net_price, 2);
 }
 
 function calculate_discount_factors(PDO $db, RechargeClient $rc, $charge){
