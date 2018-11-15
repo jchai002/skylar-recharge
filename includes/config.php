@@ -249,13 +249,6 @@ function calculate_discount_amount($charge, $discount_factors){
 	}
 	$net_price = $gross_price;
 	foreach($discount_factors as $discount_factor){
-		if($discount_factor['key'] == 'subscribe_and_save'){
-			foreach($charge['line_items'] as $line_item){
-				if($line_item['price'] < 78){
-
-				}
-			}
-		}
 		if($discount_factor['type'] == 'subtract'){
 			$net_price -= $discount_factor['amount'];
 		} else if($discount_factor['type'] == 'percent'){
