@@ -285,6 +285,8 @@ function calculate_discount_factors(PDO $db, RechargeClient $rc, $charge){
 	}
 
 	// Subscription Discount
+	$line_item_total = 0;
+	$subscription_item_total = 0;
 	foreach($charge['line_items'] as $line_item){
 		$res = $rc->get("/subscriptions/".$line_item['subscription_id']);
 		if(empty($res['subscription'])){
@@ -297,12 +299,17 @@ function calculate_discount_factors(PDO $db, RechargeClient $rc, $charge){
 		}
 		$stmt_get_price->execute([$line_item['shopify_variant_id']]);
 		$price = $stmt_get_price->fetchColumn();
+		$line_item_total += $line_item['price']*$line_item['quantity'];
 		if($line_item['price'] < $price){
 			continue;
 		}
 		if($res['subscription']['status'] != 'ONETIME'){
-			$discount_factors[] = ['key' => 'subscribe_and_save', 'type' => 'subtract', 'amount' => $line_item['price']*$line_item['quantity']*.15];
+			$subscription_item_total += $line_item['price']*$line_item['quantity'];
 		}
+	}
+	$order_subscription_percent = divide($subscription_item_total, $line_item_total);
+	if($order_subscription_percent > 0){
+		$discount_factors[] = ['key' => 'subscribe_and_save', 'type' => 'percent', 'amount' => $order_subscription_percent*.15];
 	}
 	return $discount_factors;
 }
@@ -437,3 +444,11 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, updat
 	}
 	return $product_id;
 }
+if(!function_exists('divide')){
+	function divide($numerator, $denominator){
+		if(empty($denominator)){
+			return 0;
+		}
+		return $numerator/$denominator;
+	}
+};
