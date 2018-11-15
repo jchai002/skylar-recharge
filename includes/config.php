@@ -287,14 +287,12 @@ function calculate_discount_factors(PDO $db, RechargeClient $rc, $charge){
 	// Subscription Discount
 	$line_item_total = 0;
 	$subscription_item_total = 0;
+	$notes = [];
 	foreach($charge['line_items'] as $line_item){
 		$res = $rc->get("/subscriptions/".$line_item['subscription_id']);
 		if(empty($res['subscription'])){
 			echo "No subscription!";
 			var_dump($res);
-			continue;
-		}
-		if($res['subscription']['status'] == 'ONETIME'){
 			continue;
 		}
 		$stmt_get_price->execute([$line_item['shopify_variant_id']]);
@@ -309,7 +307,7 @@ function calculate_discount_factors(PDO $db, RechargeClient $rc, $charge){
 	}
 	$order_subscription_percent = divide($subscription_item_total, $line_item_total);
 	if($order_subscription_percent > 0){
-		$discount_factors[] = ['key' => 'subscribe_and_save', 'type' => 'percent', 'amount' => $order_subscription_percent*.15];
+		$discount_factors[] = ['key' => 'subscribe_and_save', 'type' => 'percent', 'amount' => $order_subscription_percent*.15, 'notes' => $notes];
 	}
 	return $discount_factors;
 }
