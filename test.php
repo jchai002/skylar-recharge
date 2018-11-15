@@ -24,16 +24,18 @@ foreach($res['subscriptions'] as $subscription){
 //die();
 
 $res = $rc->get('/charges/', ['customer_id' => 14820031]);
+$output = [];
 foreach($res['charges'] as $charge){
-	var_dump($charge);
+	$output_line = [$charge];
 	$discount_factors = calculate_discount_factors($rc, $charge);
-	var_dump($discount_factors);
+	$output_line[] = $discount_factors;
 	$discount_amount = calculate_discount_amount($charge, $discount_factors);
-	var_dump($discount_amount);
+	$output_line[] = $discount_amount;
 	$code = get_charge_discount_code($db, $rc, $discount_amount);
-	var_dump($code);
+	$output_line[] = $code;
+	$output[] = $output_line;
 }
-
+echo json_encode($output);
 
 
 die();
