@@ -13,9 +13,9 @@ foreach($res['subscriptions'] as $subscription){
 }
 */
 //var_dump($res);
-$res = $rc->get('/addresses/18278415');
-var_dump($res);
-die();
+//$res = $rc->get('/addresses/18278415');
+//var_dump($res);
+//die();
 //$res = $rc->get('/customers/14587855');
 //$res = $rc->get('/subscriptions/', ['address_id' => 16224292]);
 //$res = $rc->get('/charges/', ['customer_id' => 14954506]);
@@ -24,7 +24,7 @@ die();
 
 //die();
 
-$res = $rc->get('/charges/', ['customer_id' => 14820031]);
+$res = $rc->get('/charges/', ['customer_id' => 12965232]);
 $output = [];
 foreach($res['charges'] as $charge){
 	$output_line = [$charge];
