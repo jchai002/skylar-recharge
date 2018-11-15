@@ -266,7 +266,7 @@ function calculate_discount_factors(RechargeClient $rc, $charge){
 
 	// Multi Bottle Discount
 	$fullsize_count = 0;
-	var_dump($charge);
+//	var_dump($charge);
 	foreach($charge['line_items'] as $line_item){
 		if(in_array($line_item['shopify_variant_id'], $scent_variant_ids)){
 			$fullsize_count += $line_item['quantity'];
