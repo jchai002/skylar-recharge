@@ -36,6 +36,7 @@ foreach($res['charges'] as $charge){
 	$output_line[] = $code;
 	$output[] = $output_line;
 }
+header('Content-Type: application/json');
 echo json_encode($output);
 
 
