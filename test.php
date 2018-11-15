@@ -4,6 +4,7 @@ require_once('includes/class.ShopifyClient.php');
 require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
+$output = [];
 /*
 $res = $rc->get('/subscriptions', ['customer_id' => 15240553]);
 foreach($res['subscriptions'] as $subscription){
@@ -17,7 +18,7 @@ foreach($res['subscriptions'] as $subscription){
 //var_dump($res);
 //die();
 //$res = $rc->get('/customers/14587855');
-//$res = $rc->get('/subscriptions/', ['address_id' => 16224292]);
+$output[] = $rc->get('/subscriptions/', ['address_id' => 18278415]);
 //$res = $rc->get('/charges/', ['customer_id' => 14954506]);
 //$res = $rc->delete('/subscriptions/22190467');
 //var_dump($res);
@@ -25,8 +26,10 @@ foreach($res['subscriptions'] as $subscription){
 //die();
 
 $res = $rc->get('/charges/', ['customer_id' => 12965232]);
-$output = [];
 foreach($res['charges'] as $charge){
+	if($charge['status'] == 'REFUNDED'){
+		continue;
+	}
 	$output_line = [$charge];
 	$discount_factors = calculate_discount_factors($db, $rc, $charge);
 	$output_line[] = $discount_factors;
