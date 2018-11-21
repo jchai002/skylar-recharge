@@ -9,6 +9,11 @@ $webhooks_required = [
 		'type'=>'orders/create',
 		'address' => 'https://ec2production.skylar.com/hooks/order_created.php',
 	],
+	// Sync order
+	[
+		'type'=>'orders/update',
+		'address' => 'https://ec2production.skylar.com/hooks/order_updated.php',
+	],
 	// Sync product
 	[
 		'type'=>'products/create',
