@@ -42,8 +42,6 @@ $percent_change = [
 
 echo "Percent Change: ".$percent_change['count']." | ".$percent_change['revenue'].PHP_EOL;
 
-$percent_change['count'] = -41.234235;
-
 $message_threshold = date('Y-m-d H:i:s', strtotime('-30 minutes'));
 $stmt = $db->query("SELECT 1 FROM alert_logs WHERE alert_id=$alert_id AND message_sent=1 AND date_created >= '$message_threshold'");
 $smother_message = $stmt->rowCount() > 0;
@@ -54,7 +52,7 @@ if($percent_change['count'] < -40 || $percent_change['revenue'] < -40){
 	$to = implode(', ',[
 		'tim@timnolansolutions.com',
 		'sarah@skylar.com',
-	//	'cat@skylar.com',
+		'cat@skylar.com',
 	]);
 	$msg = "Order count has changed by " . number_format($percent_change['count'],2) . "% over the last hour.
 Revenue has changed by " . number_format($percent_change['revenue'],2) . "% over the last hour.";
@@ -68,7 +66,7 @@ Revenue has changed by " . number_format($percent_change['revenue'],2) . "% over
 		echo "Smothering Alert";
 	} else {
 		echo "Sending Alert: ".PHP_EOL.$msg.PHP_EOL;
-		mail($to, "TEST ALERT: Sales Decline", $msg
+		mail($to, "ALERT: Sales Decline", $msg
 	//		,implode("\r\n",$headers)
 		);
 		$alert_sent = true;
