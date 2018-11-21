@@ -459,6 +459,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_
 		'created_at' => $shopify_order['created_at'],
 		'updated_at' => $shopify_order['updated_at'],
 	]);
+	return $db->lastInsertId();
 }
 if(!function_exists('divide')){
 	function divide($numerator, $denominator){

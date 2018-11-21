@@ -24,7 +24,7 @@ if(empty($order)){
 	die('no data');
 }
 
-insert_update_order($db, $order);
+echo insert_update_order($db, $order);
 
 $rc = new RechargeClient();
 
