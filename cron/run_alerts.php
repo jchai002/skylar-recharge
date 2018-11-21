@@ -82,4 +82,4 @@ $stmt->execute([
 	'message_smothered' => $smother_message ? 1 : 0,
 	'date_created' => date('Y-m-d H:i:s'),
 ]);
-print_r($db->errorInfo());
+print_r($stmt->errorInfo());
