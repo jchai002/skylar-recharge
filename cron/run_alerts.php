@@ -1,6 +1,8 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
+$alert_id = 1;
+
 $normalize_factor = 1;
 
 $start_date = date('Y-m-d H:i:00', strtotime('-'.(1+$normalize_factor).' hours'));
@@ -42,6 +44,12 @@ echo "Percent Change: ".$percent_change['count']." | ".$percent_change['revenue'
 
 $percent_change['count'] = -41.234235;
 
+$message_threshold = date('Y-m-d H:i:s', strtotime('-30 minutes'));
+$stmt = $db->query("SELECT 1 FROM alert_logs WHERE alert_id=$alert_id AND message_sent=1 AND date_created >= '$message_threshold'");
+$smother_message = $stmt->rowCount() > 0;
+
+$alert_sent = false;
+$msg = null;
 if($percent_change['count'] < -40 || $percent_change['revenue'] < -40){
 	$to = implode(', ',[
 		'tim@timnolansolutions.com',
@@ -56,8 +64,22 @@ Revenue has changed by " . number_format($percent_change['revenue'],2) . "% over
 		'X-Mailer' => 'PHP/' . phpversion(),
 	];
 
-	echo "Sending Alert: ".$msg.PHP_EOL;
-
-	mail($to, "ALERT: Sales Decline", $msg, implode("\r\n",$headers));
+	if($smother_message){
+		echo "Smothering Alert";
+	} else {
+		echo "Sending Alert: ".PHP_EOL.$msg.PHP_EOL;
+		mail($to, "ALERT: Sales Decline", $msg
+	//		,implode("\r\n",$headers)
+		);
+		$alert_sent = true;
+	}
 }
 
+$stmt = $db->prepare("INSERT INTO alert_logs (alert_id, message, message_sent, message_smothered, date_created) VALUES ($alert_id, :message, :message_sent, :message_smothered, :date_created)");
+$stmt->execute([
+	'message' => $msg,
+	'message_sent' => $alert_sent ? 1 : 0,
+	'message_smothered' => $smother_message ? 1 : 0,
+	'date_created' => date('Y-m-d H:i:s'),
+]);
+print_r($db->errorInfo());
