@@ -448,15 +448,16 @@ function insert_update_order(PDO $db, $shopify_order){
 	$now = date('Y-m-d H:i:s');
 	$stmt = $db->prepare("INSERT INTO orders
 (shopify_id, app_id, cart_token, `number`, total_price, created_at, updated_at)
-VALUES (:shopify_id, :app_id, :cart_token, :number, :total_price, :now, :now)
-ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_token, `number`=:number, updated_at=:now");
+VALUES (:shopify_id, :app_id, :cart_token, :number, :total_price, :created_at, :updated_at)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_token, `number`=:number, updated_at=:updated_at");
 	$stmt->execute([
 		'shopify_id' => $shopify_order['id'],
 		'app_id' => $shopify_order['app_id'],
 		'cart_token' => $shopify_order['cart_token'],
 		'number' => $shopify_order['number'],
 		'total_price' => $shopify_order['total_price'],
-		'now' => $now,
+		'created_at' => $shopify_order['created_at'],
+		'updated_at' => $shopify_order['updated_at'],
 	]);
 }
 if(!function_exists('divide')){
