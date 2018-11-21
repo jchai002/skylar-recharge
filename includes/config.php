@@ -284,6 +284,8 @@ function calculate_discount_factors(PDO $db, RechargeClient $rc, $charge){
 		}
 	}
 
+	// Scent Club Discount
+
 	// Subscription Discount
 	$line_item_total = 0;
 	$subscription_item_total = 0;

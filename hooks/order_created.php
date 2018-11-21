@@ -11,7 +11,7 @@ if(!empty($headers['X-Shopify-Shop-Domain'])){
 if(empty($shop_url)){
 	$shop_url = 'maven-and-muse.myshopify.com';
 }
-$sc = new ShopifyPrivateClient($shop_url);
+$sc = new ShopifyClient($shop_url);
 
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
