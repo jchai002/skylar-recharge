@@ -51,7 +51,7 @@ if($percent_change['count'] < -40 || $percent_change['revenue'] < -40){
 	$msg = "Order count has changed by " . number_format($percent_change['count'],2) . "% over the last hour.
 Revenue has changed by " . number_format($percent_change['revenue'],2) . "% over the last hour.";
 	$headers = [
-		'From' => 'alerts@skylar.com',
+		'From' => 'Skylar Alerts <alerts@skylar.com>',
 		'Reply-To' => 'tim@timnolansolutions.com',
 		'X-Mailer' => 'PHP/' . phpversion(),
 	];
