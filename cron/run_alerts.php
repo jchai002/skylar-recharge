@@ -53,7 +53,7 @@ $msg = null;
 if($percent_change['count'] < -40 || $percent_change['revenue'] < -40){
 	$to = implode(', ',[
 		'tim@timnolansolutions.com',
-	//	'sarah@skylar.com',
+		'sarah@skylar.com',
 	//	'cat@skylar.com',
 	]);
 	$msg = "Order count has changed by " . number_format($percent_change['count'],2) . "% over the last hour.
@@ -68,7 +68,7 @@ Revenue has changed by " . number_format($percent_change['revenue'],2) . "% over
 		echo "Smothering Alert";
 	} else {
 		echo "Sending Alert: ".PHP_EOL.$msg.PHP_EOL;
-		mail($to, "ALERT: Sales Decline", $msg
+		mail($to, "TEST ALERT: Sales Decline", $msg
 	//		,implode("\r\n",$headers)
 		);
 		$alert_sent = true;
