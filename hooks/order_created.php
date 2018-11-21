@@ -23,6 +23,9 @@ if(!empty($_REQUEST['id'])){
 if(empty($order)){
 	die('no data');
 }
+
+insert_update_order($db, $order);
+
 $rc = new RechargeClient();
 
 // Get recharge version of order
