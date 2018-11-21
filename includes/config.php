@@ -2,6 +2,8 @@
 
 require_once dirname(__FILE__).'/../vendor/autoload.php';
 
+date_default_timezone_set('America/Los_Angeles');
+
 spl_autoload_register(function($class){
 	require_once(__DIR__.'/class.'.$class.'.php');
 });
@@ -456,8 +458,8 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_
 		'cart_token' => $shopify_order['cart_token'],
 		'number' => $shopify_order['number'],
 		'total_price' => $shopify_order['total_price'],
-		'created_at' => $shopify_order['created_at'],
-		'updated_at' => $shopify_order['updated_at'],
+		'created_at' => date("Y-m-d H:i:s", strtotime($shopify_order['created_at'])),
+		'updated_at' => date("Y-m-d H:i:s", strtotime($shopify_order['updated_at'])),
 	]);
 	if($db->errorInfo()[0] != 0){
 		$error = $db->errorInfo();
