@@ -22,5 +22,5 @@ if(!empty($_REQUEST['id'])){
 if(empty($order)){
 	die('no data');
 }
-print_r($order);
+//print_r($order);
 echo insert_update_order($db, $order);
