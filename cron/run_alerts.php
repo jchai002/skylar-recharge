@@ -66,9 +66,11 @@ Revenue has changed by " . number_format($percent_change['revenue'],2) . "% over
 		echo "Smothering Alert";
 	} else {
 		echo "Sending Alert: ".PHP_EOL.$msg.PHP_EOL;
+		/*
 		mail($to, "ALERT: Sales Decline", $msg
 	//		,implode("\r\n",$headers)
 		);
+		*/
 		$alert_sent = true;
 	}
 }
