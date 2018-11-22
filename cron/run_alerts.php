@@ -3,7 +3,12 @@ require_once(__DIR__.'/../includes/config.php');
 
 $alert_id = 1;
 
-$normalize_factor = 1;
+$normalize_factor = 24;
+
+$hour = date('G');
+if($hour < 6 || $hour > 20){
+	die();
+}
 
 $start_date = date('Y-m-d H:i:00', strtotime('-'.(1+$normalize_factor).' hours'));
 $end_date = date('Y-m-d H:i:00', strtotime('-1 hour'));
@@ -48,7 +53,7 @@ $smother_message = $stmt->rowCount() > 0;
 
 $alert_sent = false;
 $msg = null;
-if($percent_change['count'] < -60 || $percent_change['revenue'] < -60){
+if($percent_change['count'] < -50 || $percent_change['revenue'] < -50){
 	$to = implode(', ',[
 		'tim@timnolansolutions.com',
 		'sarah@skylar.com',
