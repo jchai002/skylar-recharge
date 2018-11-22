@@ -48,7 +48,7 @@ $smother_message = $stmt->rowCount() > 0;
 
 $alert_sent = false;
 $msg = null;
-if($percent_change['count'] < -40 || $percent_change['revenue'] < -40){
+if($percent_change['count'] < -60 || $percent_change['revenue'] < -60){
 	$to = implode(', ',[
 		'tim@timnolansolutions.com',
 		'sarah@skylar.com',
@@ -66,11 +66,11 @@ Revenue has changed by " . number_format($percent_change['revenue'],2) . "% over
 		echo "Smothering Alert";
 	} else {
 		echo "Sending Alert: ".PHP_EOL.$msg.PHP_EOL;
-		/*
+
 		mail($to, "ALERT: Sales Decline", $msg
 	//		,implode("\r\n",$headers)
 		);
-		*/
+
 		$alert_sent = true;
 	}
 }
