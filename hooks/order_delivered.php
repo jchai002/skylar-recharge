@@ -49,13 +49,14 @@ curl_setopt_array($ch, [
 	]),
 ]);
 $res = curl_exec($ch);
-var_dump($res);
 $stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2, note) VALUES ('KLAVIYO', 'SUBSCRIBE', :email, :list, :response)");
 $stmt->execute([
 	'email' => $cart_attributes['gift_message_email'],
 	'list' => 'HSQctC',
 	'response' => $res,
 ]);
+$res = json_decode($res, true);
+var_dump($res);
 
 $ch = curl_init("https://a.klaviyo.com/api/v1/email-template/LTNqPw/send");
 curl_setopt_array($ch, [
@@ -82,5 +83,5 @@ $stmt->execute([
 	'message' => $cart_attributes['gift_message'],
 	'response' => $res,
 ]);
-$res = json_decode($res);
+$res = json_decode($res, true);
 var_dump($res);
