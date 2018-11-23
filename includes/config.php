@@ -461,8 +461,8 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_
 		'created_at' => date("Y-m-d H:i:s", strtotime($shopify_order['created_at'])),
 		'updated_at' => date("Y-m-d H:i:s", strtotime($shopify_order['updated_at'])),
 	]);
-	if($stmt->errorInfo()[0] != 0){
-		$error = $db->errorInfo();
+	$error = $stmt->errorInfo();
+	if($error[0] != 0){
 		$stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2) VALUES (:category, :action, :value, :value2)");
 		$stmt->execute([
 			'category' => 'DB',

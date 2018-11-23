@@ -33,6 +33,29 @@ if(empty($cart_attributes['gift_message']) || empty($cart_attributes['gift_messa
 	die();
 }
 
+$ch = curl_init('https://a.klaviyo.com/api/v2/list/HSQctC/subscribe');
+
+curl_setopt_array($ch, [
+	CURLOPT_RETURNTRANSFER => true,
+	CURLOPT_POST => true,
+	CURLOPT_POSTFIELDS => json_encode([
+		'api_key' => 'pk_4c31e0386c15cca46c19dac063c013054c',
+		'profiles' => [
+			[
+				'email' => $cart_attributes['gift_message_email'],
+				'$source' => 'Gift Message'
+			]
+		],
+	]),
+]);
+$res = curl_exec($ch);
+var_dump($res);
+$stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2, note) VALUES ('KLAVIYO', 'SUBSCRIBE', :email, :list, :response)");
+$stmt->execute([
+	'email' => $cart_attributes['gift_message_email'],
+	'list' => 'HSQctC',
+	'response' => $res,
+]);
 
 $ch = curl_init("https://a.klaviyo.com/api/v1/email-template/LTNqPw/send");
 curl_setopt_array($ch, [
@@ -44,7 +67,8 @@ curl_setopt_array($ch, [
 		'from_name' => 'Skylar',
 		'subject' => 'Your Gift Has Arrived!',
 		'to' => json_encode([
-			['email' => $cart_attributes['gift_message_email']]
+			['email' => $cart_attributes['gift_message_email']],
+			['email' => 'tim@timnolansolutions.com'],
 		]),
 		'context' => json_encode([
 			'gift_message' => $cart_attributes['gift_message'],
@@ -52,5 +76,11 @@ curl_setopt_array($ch, [
 	]
 ]);
 $res = curl_exec($ch);
+$stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2, note) VALUES ('KLAVIYO', 'EMAIL_SENT', :email, :message, :response)");
+$stmt->execute([
+	'email' => $cart_attributes['gift_message_email'],
+	'message' => $cart_attributes['gift_message'],
+	'response' => $res,
+]);
 $res = json_decode($res);
 var_dump($res);
