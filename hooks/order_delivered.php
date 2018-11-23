@@ -47,6 +47,10 @@ curl_setopt_array($ch, [
 			]
 		],
 	]),
+	CURLOPT_HTTPHEADER => [
+		'api-key: pk_4c31e0386c15cca46c19dac063c013054c',
+		'Content-Type: application/json',
+	],
 ]);
 $res = curl_exec($ch);
 $stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2, note) VALUES ('KLAVIYO', 'SUBSCRIBE', :email, :list, :response)");
