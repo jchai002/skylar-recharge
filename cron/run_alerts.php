@@ -3,7 +3,7 @@ require_once(__DIR__.'/../includes/config.php');
 
 $alert_id = 1;
 
-$normalize_factor = 24;
+$normalize_factor = 1;
 
 $hour = date('G');
 if($hour < 6 || $hour > 20){
