@@ -25,7 +25,36 @@ if(empty($order)){
 }
 
 echo insert_update_order($db, $order);
+print_r($order);
 
+/*
+if($order['count'] < -50 || $percent_change['revenue'] < -50){
+	$to = implode(', ',[
+		'tim@timnolansolutions.com',
+		'sarah@skylar.com',
+		'cat@skylar.com',
+	]);
+	$msg = "Order count has changed by " . number_format($percent_change['count'],2) . "% over the last hour.
+Revenue has changed by " . number_format($percent_change['revenue'],2) . "% over the last hour.";
+	$headers = [
+		'From' => 'Skylar Alerts <alerts@skylar.com>',
+		'Reply-To' => 'tim@timnolansolutions.com',
+		'X-Mailer' => 'PHP/' . phpversion(),
+	];
+
+	if($smother_message){
+		echo "Smothering Alert";
+	} else {
+		echo "Sending Alert: ".PHP_EOL.$msg.PHP_EOL;
+
+		mail($to, "ALERT: Sales Decline", $msg
+		//		,implode("\r\n",$headers)
+		);
+
+		$alert_sent = true;
+	}
+}
+*/
 $rc = new RechargeClient();
 
 // Get recharge version of order
