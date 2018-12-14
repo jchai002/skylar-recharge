@@ -29,12 +29,12 @@ echo insert_update_order($db, $order);
 $rc = new RechargeClient();
 
 // Get recharge version of order
-$rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']])['orders'];
+$rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
 var_dump($rc_order);
-if(empty($rc_order[0])){
+if(empty($rc_order['orders'][0])){
 	die('no rc order');
 }
-$rc_order = $rc_order[0];
+$rc_order = $rc_order['orders'][0];
 
 // Tag orders that aren't samples as either onetime or subscription, with subscription
 $order_tags = explode(',',$order['tags']);
