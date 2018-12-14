@@ -25,7 +25,6 @@ if(empty($order)){
 }
 
 echo insert_update_order($db, $order);
-print_r($order);
 
 $alert_id = 2;
 $smother_message = false;
