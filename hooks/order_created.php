@@ -36,7 +36,7 @@ if($order['subtotal_price'] <= 0){
 //		'sarah@skylar.com',
 //		'cat@skylar.com',
 	]);
-	$msg = "Received Order with $0 subtotal price: ".print_r($order, true);
+	$msg = "Received Order with $0 subtotal price: ".PHP_EOL.print_r($order, true);
 	$headers = [
 		'From' => 'Skylar Alerts <alerts@skylar.com>',
 		'Reply-To' => 'tim@timnolansolutions.com',
@@ -49,7 +49,7 @@ if($order['subtotal_price'] <= 0){
 		echo "Sending Alert: ".PHP_EOL.$msg.PHP_EOL;
 
 		mail($to, "ALERT: $0 Order", $msg
-		//		,implode("\r\n",$headers)
+//				,implode("\r\n",$headers)
 		);
 
 		$alert_sent = true;
