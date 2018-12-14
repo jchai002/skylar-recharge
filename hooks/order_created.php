@@ -27,15 +27,17 @@ if(empty($order)){
 echo insert_update_order($db, $order);
 print_r($order);
 
-/*
-if($order['count'] < -50 || $percent_change['revenue'] < -50){
+$alert_id = 2;
+$smother_message = false;
+$alert_sent = false;
+$msg = null;
+if($order['subtotal_price'] <= 0){
 	$to = implode(', ',[
 		'tim@timnolansolutions.com',
-		'sarah@skylar.com',
-		'cat@skylar.com',
+//		'sarah@skylar.com',
+//		'cat@skylar.com',
 	]);
-	$msg = "Order count has changed by " . number_format($percent_change['count'],2) . "% over the last hour.
-Revenue has changed by " . number_format($percent_change['revenue'],2) . "% over the last hour.";
+	$msg = "Received Order with $0 subtotal price: ".print_r($order, true);
 	$headers = [
 		'From' => 'Skylar Alerts <alerts@skylar.com>',
 		'Reply-To' => 'tim@timnolansolutions.com',
@@ -47,14 +49,22 @@ Revenue has changed by " . number_format($percent_change['revenue'],2) . "% over
 	} else {
 		echo "Sending Alert: ".PHP_EOL.$msg.PHP_EOL;
 
-		mail($to, "ALERT: Sales Decline", $msg
+		mail($to, "ALERT: $0 Order", $msg
 		//		,implode("\r\n",$headers)
 		);
 
 		$alert_sent = true;
 	}
+	$stmt = $db->prepare("INSERT INTO alert_logs (alert_id, message, message_sent, message_smothered, date_created) VALUES ($alert_id, :message, :message_sent, :message_smothered, :date_created)");
+	$stmt->execute([
+		'message' => $msg,
+		'message_sent' => $alert_sent ? 1 : 0,
+		'message_smothered' => $smother_message ? 1 : 0,
+		'date_created' => date('Y-m-d H:i:s'),
+	]);
 }
-*/
+
+
 $rc = new RechargeClient();
 
 // Get recharge version of order
