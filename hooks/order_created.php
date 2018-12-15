@@ -30,13 +30,13 @@ $alert_id = 2;
 $smother_message = false;
 $alert_sent = false;
 $msg = null;
-if($order['subtotal_price'] <= 0){
+if($order['total_line_items_price'] <= 0){
 	$to = implode(', ',[
 		'tim@timnolansolutions.com',
 //		'sarah@skylar.com',
 //		'cat@skylar.com',
 	]);
-	$msg = "Received Order with $0 subtotal price: ".PHP_EOL.print_r($order, true);
+	$msg = "Received Order with $0 total_line_items_price price: ".PHP_EOL.print_r($order, true);
 	$headers = [
 		'From' => 'Skylar Alerts <alerts@skylar.com>',
 		'Reply-To' => 'tim@timnolansolutions.com',
