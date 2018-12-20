@@ -5,8 +5,9 @@ require_once(__DIR__.'/../includes/config.php');
 
 $sc = new ShopifyClient();
 
-$sc->put("/admin/orders/.json",['order' => [
-	'id' => '',
+$order_id = null;
+$sc->put("/admin/orders/$order_id.json",['order' => [
+	'id' => $order_id,
 	'note_attributes' => [
 		'metrilo_uid' => '',
 		'gift_message_email' => '',

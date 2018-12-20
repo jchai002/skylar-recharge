@@ -83,7 +83,7 @@ foreach($subscription_ids as $subscription_id){
 	}
 	if(!empty($_REQUEST['shipdate'])){
 		if(!empty($_REQUEST['onetime'])){
-			$updated_subscription_res = $rc->post('/onetimes/'.$subscription_id, [
+			$updated_subscription_res = $rc->put('/onetimes/'.$subscription_id, [
 				'next_charge_scheduled_at' => date('Y-m-d', strtotime($_REQUEST['shipdate'])),
 			]);
 			if(empty($updated_subscription_res['onetime'])){
