@@ -5,7 +5,7 @@ $sc = new ShopifyClient();
 
 $order = $sc->get("/admin/orders/841985818711.json");
 
-print_r($order);
+echo json_encode($order);
 
 // First determine if the order has the scent club product
 
