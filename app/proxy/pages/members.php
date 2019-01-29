@@ -37,25 +37,57 @@ img {
 			<a href="#TODO">shop all products</a>
 		</div>
 		<div class="sc-recommended-products">
-			<div class="sc-recommended-product">
-				{% assign product = all_products['arrow'] %}
-				{% include 'product-thumbnail-flex' %}
+			<?php foreach(range(1,3) as $index) { ?>
+				<div class="sc-recommended-product">
+					{% assign product = all_products['arrow'] %}
+					{% include 'product-thumbnail-flex' %}
+				</div>
+			<?php } ?>
+		</div>
+	</div>
+	<div class="sc-members-section">
+		<div class="sc-tile-container">
+			<div class="sc-tile"></div>
+			<div class="sc-tile-container">
+				<div class="sc-tile"></div>
+				<div class="sc-tile"></div>
 			</div>
-			<div class="sc-recommended-product">
-				{% assign product = all_products['arrow'] %}
-				{% include 'product-thumbnail-flex' %}
+		</div>
+		<div class="sc-tile-container">
+			<div class="sc-tile-container">
+				<div class="sc-tile"></div>
+				<div class="sc-tile"></div>
 			</div>
-			<div class="sc-recommended-product">
-				{% assign product = all_products['arrow'] %}
-				{% include 'product-thumbnail-flex' %}
-			</div>
+			<div class="sc-tile"></div>
 		</div>
 	</div>
 	<div class="sc-members-section sc-section-bg">
-
+		<div class="sc-section-title">Meet the Skylar Community</div>
+		<div class="sc-community-row">
+			<div class="sc-community-link">Join Skylar Circle</div>
+			<div class="sc-community-link">Post on Skylar Forums</div>
+		</div>
+		<div class="sc-community-row">
+			<div class="sc-community-link">Vote for New Scents</div>
+			<div class="sc-community-link">Write a Review</div>
+		</div>
 	</div>
 	<div class="sc-members-section">
-
+		<div class="sc-section-title">Shop & Save 10%</div>
+		<div class="sc-collection-controls">
+			<div class="sc-collection-control">Filter By</div>
+			<div class="sc-collection-control">Sort By</div>
+		</div>
+		<div class="sc-collection-products">
+			<?php foreach(range(1,3) as $index) {
+				foreach(['arrow', 'capri', 'coral', 'isle', 'meadow', 'willow'] as $handle){ ?>
+					<div class="sc-recommended-product">
+						{% assign product = all_products['<?=$handle?>'] %}
+						{% include 'product-thumbnail-flex' %}
+					</div>
+				<?php }
+			} ?>
+		</div>
 	</div>
 </div>
 <script></script>
