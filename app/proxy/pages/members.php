@@ -21,6 +21,20 @@ img {
 .sc-recommended-products {
 	display: flex;
 }
+.sc-recommended-product {
+	flex: 0 1 33%;
+}
+.sc-collection-products {
+	display: flex;
+	flex-wrap: wrap;
+}
+.sc-collection-products {
+	display: flex;
+	flex-wrap: wrap;
+}
+.sc-collection-product {
+	flex: 0 1 25%;
+}
 </style>
 <div class="sc-members-container">
 	<div class="sc-members-hero">
@@ -81,7 +95,7 @@ img {
 		<div class="sc-collection-products">
 			<?php foreach(range(1,3) as $index) {
 				foreach(['arrow', 'capri', 'coral', 'isle', 'meadow', 'willow'] as $handle){ ?>
-					<div class="sc-recommended-product">
+					<div class="sc-collection-product">
 						{% assign product = all_products['<?=$handle?>'] %}
 						{% include 'product-thumbnail-flex' %}
 					</div>
