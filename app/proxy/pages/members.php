@@ -4,20 +4,23 @@ header('Content-Type: application/liquid');
 {% assign scent_club_product = all_products['scent-club'] %}
 {{ 'blackdiamond.css' | asset_url | stylesheet_tag }}
 <style>
-	.sc-script {
-		font-family: "BlackDiamond", "Brush Script MT", "Brush Script Std", cursive;
-	}
-	img {
-		display: inline-block;
-	}
-	.action_button.inverted {
-		background: #FFF;
-		border: 1px solid #000;
-		color: #000;
-	}
-	.sc-section-bg {
-		background-color: #f8f3f1;
-	}
+.sc-script {
+	font-family: "BlackDiamond", "Brush Script MT", "Brush Script Std", cursive;
+}
+img {
+	display: inline-block;
+}
+.action_button.inverted {
+	background: #FFF;
+	border: 1px solid #000;
+	color: #000;
+}
+.sc-section-bg {
+	background-color: #f8f3f1;
+}
+.sc-recommended-products {
+	display: flex;
+}
 </style>
 <div class="sc-members-container">
 	<div class="sc-members-hero">
@@ -34,6 +37,14 @@ header('Content-Type: application/liquid');
 			<a href="#TODO">shop all products</a>
 		</div>
 		<div class="sc-recommended-products">
+			<div class="sc-recommended-product">
+				{% assign product = all_products['arrow'] %}
+				{% include 'product-thumbnail-flex' %}
+			</div>
+			<div class="sc-recommended-product">
+				{% assign product = all_products['arrow'] %}
+				{% include 'product-thumbnail-flex' %}
+			</div>
 			<div class="sc-recommended-product">
 				{% assign product = all_products['arrow'] %}
 				{% include 'product-thumbnail-flex' %}
