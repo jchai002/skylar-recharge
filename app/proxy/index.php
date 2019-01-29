@@ -1,3 +1,5 @@
 <?php
 
-require '../account.liquid';
+?>
+
+Test
