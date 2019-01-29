@@ -4,8 +4,15 @@ require_once dirname(__FILE__).'/../../vendor/autoload.php';
 
 $router = new Router();
 
+$router->route('//i', function() {
+	require('pages/members.php');
+	return true;
+});
+
 $path = str_replace('/app/proxy', '', parse_url($_SERVER['REQUEST_URI'])['path']);
 
-//$res = $router->execute($_SERVER['REQUEST_URI']);
+$res = $router->execute($path);
 
-echo $path;
+if(!$res){
+	echo "Page Not Found";
+}
