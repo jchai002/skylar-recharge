@@ -3,5 +3,8 @@
     "vlucas/phpdotenv": "^2.5",
     "klaviyo/php-sdk": "dev-master",
     "stripe/stripe-php": "^6.29"
+  },
+  "autoload": {
+    "psr-4": { "": "src/" }
   }
 }
