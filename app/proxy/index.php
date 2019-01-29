@@ -7,3 +7,5 @@ $router = new Router();
 //$res = $router->execute($_SERVER['REQUEST_URI']);
 
 echo $_SERVER['REQUEST_URI'];
+
+var_dump($_REQUEST);
