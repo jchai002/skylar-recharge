@@ -15,6 +15,10 @@ img {
 	border: 1px solid #000;
 	color: #000;
 }
+.sc-members-hero {
+	background: url('{{ "sc-member-hero.png" | file_url }}');
+	background-size: cover;
+}
 .sc-section-bg {
 	background-color: #f8f3f1;
 }
