@@ -3,62 +3,13 @@ header('Content-Type: application/liquid');
 ?>
 {% assign scent_club_product = all_products['scent-club'] %}
 {{ 'blackdiamond.css' | asset_url | stylesheet_tag }}
+{{ 'sc-member-portal.css' | asset_url | stylesheet_tag }}
 <style>
 .sc-script {
 	font-family: "BlackDiamond", "Brush Script MT", "Brush Script Std", cursive;
 }
-img {
-	display: inline-block;
-}
-.action_button.inverted {
-	background: #FFF;
-	border: 1px solid #000;
-	color: #000;
-}
 .sc-members-hero {
 	background: url('{{ "sc-member-hero.png" | file_url }}');
-	background-size: cover;
-	text-align: center;
-	padding: 40px 20px;
-}
-.sc-hero-title {
-	font-size: 36px;
-	font-weight: 600;
-	line-height: 1;
-}
-.sc-hero-subtitle {
-	font-size: 20px;
-	line-height: 28px;
-	max-width: 400px;
-	margin: 20px auto;
-}
-.sc-members-section {
-	padding: 40px 0;
-}
-.sc-section-title {
-	font-size: 31px;
-	color: #2E2E2E;
-	text-align: center;
-}
-.sc-section-bg {
-	background-color: #f8f3f1;
-}
-.sc-recommended-products {
-	display: flex;
-}
-.sc-recommended-product {
-	flex: 0 1 33%;
-}
-.sc-collection-products {
-	display: flex;
-	flex-wrap: wrap;
-}
-.sc-collection-products {
-	display: flex;
-	flex-wrap: wrap;
-}
-.sc-collection-product {
-	flex: 0 1 25%;
 }
 </style>
 <div class="sc-members-container">
