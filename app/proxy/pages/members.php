@@ -29,6 +29,8 @@ img {
 .sc-hero-subtitle {
 	font-size: 20px;
 	line-height: 28px;
+	max-width: 400px;
+	margin: 20px auto;
 }
 .sc-section-bg {
 	background-color: #f8f3f1;
