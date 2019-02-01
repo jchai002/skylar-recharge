@@ -32,6 +32,14 @@ img {
 	max-width: 400px;
 	margin: 20px auto;
 }
+.sc-members-section {
+	padding: 40px 0;
+}
+.sc-section-title {
+	font-size: 31px;
+	color: #2E2E2E;
+	text-align: center;
+}
 .sc-section-bg {
 	background-color: #f8f3f1;
 }
