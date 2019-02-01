@@ -18,6 +18,13 @@ img {
 .sc-members-hero {
 	background: url('{{ "sc-member-hero.png" | file_url }}');
 	background-size: cover;
+	text-align: center;
+	padding: 40px 20px;
+}
+.sc-hero-title {
+	font-size: 36px;
+	font-weight: 600;
+	line-height: 1;
 }
 .sc-section-bg {
 	background-color: #f8f3f1;
