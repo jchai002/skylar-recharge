@@ -19,6 +19,10 @@ img {
 	background: url('{{ "sc-member-hero.png" | file_url }}');
 	background-size: cover;
 }
+.sc-hero-subtitle {
+	font-size: 20px;
+	line-height: 28px;
+}
 .sc-section-bg {
 	background-color: #f8f3f1;
 }
