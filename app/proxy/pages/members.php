@@ -3,7 +3,7 @@ header('Content-Type: application/liquid');
 ?>
 {% assign scent_club_product = all_products['scent-club'] %}
 {{ 'blackdiamond.css' | asset_url | stylesheet_tag }}
-{{ 'sc-member-portal.css' | asset_url | stylesheet_tag }}
+{{ 'sc-member-portal.scss' | asset_url | stylesheet_tag }}
 <style>
 .sc-script {
 	font-family: "BlackDiamond", "Brush Script MT", "Brush Script Std", cursive;
