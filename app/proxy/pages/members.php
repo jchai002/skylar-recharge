@@ -26,6 +26,10 @@ img {
 	font-weight: 600;
 	line-height: 1;
 }
+.sc-hero-subtitle {
+	font-size: 20px;
+	line-height: 28px;
+}
 .sc-section-bg {
 	background-color: #f8f3f1;
 }
