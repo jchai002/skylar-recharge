@@ -7,6 +7,6 @@ header('Content-Type: application/liquid');
 {% else %}
 {% layout 'sc-redirect' %}
 <script>
-	location.href = "/account/login?next="+location.href;
+	location.href = "/account/login?next="+location.pathname;
 </script>
 {% endif %}
