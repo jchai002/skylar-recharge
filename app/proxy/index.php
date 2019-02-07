@@ -34,7 +34,7 @@ function require_customer_id($customer_id = 0){
 	if(empty($customer_id)){
 		echo "
 {% layout 'sc-redirect' %}
-{% if customer is nil %}
+{% if customer == nil %}
 <script>
     location.href = '/account/login?next='+location.pathname;
 </script>
