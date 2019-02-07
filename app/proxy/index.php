@@ -43,7 +43,7 @@ function require_customer_id($customer_id, $callback_if_true){
 {% endif %}";
 		return false;
 	}
-	echo "{% if customer is nil %}
+	echo "{% if customer == nil %}
 	{% layout 'sc-redirect' %}
 	<script>
 		location.href = '/account/login?next='+location.pathname;
