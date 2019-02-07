@@ -5,17 +5,15 @@ require_once dirname(__FILE__).'/../../vendor/autoload.php';
 $router = new Router();
 
 $router->route('/members/i', function() {
-	if(!require_customer_id($_REQUEST['c'])){
-		return true;
-	}
-	require('pages/members.php');
+	require_customer_id($_REQUEST['c'], function(){
+		require('pages/members.php');
+	});
 	return true;
 });
 $router->route('/subscriptions/i', function() {
-	if(!require_customer_id($_REQUEST['c'])){
-		return true;
-	}
-	require('pages/subscriptions.php');
+	require_customer_id($_REQUEST['c'], function(){
+		require('pages/subscriptions.php');
+	});
 	return true;
 });
 
@@ -29,7 +27,7 @@ if(!$res){
 
 // Functionality Needed
 
-function require_customer_id($customer_id = 0){
+function require_customer_id($customer_id, $callback_if_true){
 	header('Content-Type: application/liquid');
 	if(empty($customer_id)){
 		echo "
@@ -45,6 +43,18 @@ function require_customer_id($customer_id = 0){
 {% endif %}";
 		return false;
 	}
+	echo "{% if customer is nil %}
+	{% layout 'sc-redirect' %}
+	<script>
+		location.href = '/account/login?next='+location.pathname;
+	</script>
+	{% elsif customer.id != $customer_id %}
+	<script>
+		location.search = location.search.replace('c=".$customer_id."','c={{customer.id}}');
+	</script>
+	{% else %}";
+	$callback_if_true();
+	echo "{% endif %}";
 	return true;
 }
 
