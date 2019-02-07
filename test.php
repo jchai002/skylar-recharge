@@ -4,6 +4,100 @@ require_once('includes/class.ShopifyClient.php');
 require_once('includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
+$rc_customer_id = 12965232;
+$rc_address_id = 18278415;
+
+/*
+$res = $rc->put('/subscriptions/36415620', [
+	'price' => 10,
+]);
+
+print_r($res);
+die();
+
+$res = $rc->post('/subscriptions', [
+	'address_id' => 18278415,
+	'next_charge_scheduled_at' => date('Y-m-d', strtotime('april 4 2019')),
+	'product_title' => 'Test Subscription',
+	'variant_title' => '',
+	'price' => 0,
+	'quantity' => 1,
+	'shopify_variant_id' => 19519443370071,
+	'order_interval_unit' => 'month',
+	'order_interval_frequency' => '1',
+	'charge_interval_frequency' => '3',
+	'order_day_of_month' => '4',
+]);
+
+print_r($res);
+*/
+
+$res = $rc->get('/orders', [
+	'customer_id' => $rc_customer_id,
+	'status' => 'QUEUED',
+]);
+$orders = $res['orders'];
+//print_r($orders);
+$res = $rc->get('/subscriptions', [
+	'customer_id' => $rc_customer_id,
+	'status' => 'ACTIVE',
+]);
+$subscriptions = $res['subscriptions'];
+//print_r($subscriptions);
+
+generate_subscription_schedule($orders, $subscriptions);
+$swaps = [
+	['year' => 2019, 'month' => 5, 'subscription_id' => 36415620],
+];
+
+
+// TODO: Integrate SC Swaps
+// TODO: Test with prepaid orders
+function sc_schedule_swaps($schedule, $swaps){
+
+}
+function generate_subscription_schedule($orders, $subscriptions, $max_time = null){
+	$schedule = [];
+
+	$max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
+
+	foreach($orders as $order){
+		$order_time = strtotime($order['scheduled_at']);
+		if($order_time > $max_time){
+			continue;
+		}
+		$date = date('Y-m-d', $order_time);
+		if(empty($schedule[$date])){
+			$schedule[$date] = [];
+		}
+		$schedule[$date][] = $order;
+	}
+
+	foreach($subscriptions as $subscription){
+		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
+
+		while($next_charge_time < $max_time){
+			$date = date('Y-m-d', $next_charge_time);
+			if(empty($schedule[$date])){
+				$schedule[$date] = [];
+			}
+			$schedule[$date][] = $subscription;
+			$next_charge_time = strtotime($date.' +'.$subscription['order_interval_frequency'].' '.$subscription['order_interval_unit']);
+			if($subscription['order_interval_unit'] == 'month' && !empty($subscription['order_day_of_month'])){
+				$next_charge_time = strtotime(date('Y-m-'.$subscription['order_day_of_month'], $next_charge_time));
+			} else if($subscription['order_interval_unit'] == 'week' && !empty($subscription['order_day_of_week'])){
+				// TODO if needed
+			}
+		}
+	}
+
+	ksort($schedule);
+
+	return $schedule;
+}
+
+die();
+
 $output = [];
 /*
 $res = $rc->get('/subscriptions', ['customer_id' => 15240553]);
@@ -43,7 +137,6 @@ header('Content-Type: application/json');
 echo json_encode($output);
 
 
-die();
 
 $res = $rc->get('/subscriptions/', ['address_id' => 16130191]);
 $subscriptions = $res['subscriptions'];
