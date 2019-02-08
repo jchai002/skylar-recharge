@@ -4,7 +4,7 @@ require_once dirname(__FILE__).'/../../vendor/autoload.php';
 
 $router = new Router();
 
-$router->route('/members/i', function() {
+$router->route('/(?:members)?/i', function() {
 	require_customer_id($_REQUEST['c'], function(){
 		require('pages/members.php');
 	});
