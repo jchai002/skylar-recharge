@@ -19,7 +19,13 @@ $router->route('/subscriptions/i', function() {
 
 $path = str_replace('/app/proxy/', '', parse_url($_SERVER['REQUEST_URI'])['path']);
 
-$res = $router->execute($path);
+if(empty($path)){
+	require_customer_id($_REQUEST['c'], function(){
+		require('pages/index.php');
+	});
+} else {
+	$res = $router->execute($path);
+}
 
 if(!$res){
 	echo $path." Not Found";
