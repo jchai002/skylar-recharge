@@ -23,6 +23,7 @@ if(empty($path)){
 	require_customer_id($_REQUEST['c'], function(){
 		require('pages/index.php');
 	});
+	$res = true;
 } else {
 	$res = $router->execute($path);
 }
