@@ -3,12 +3,14 @@ header('Content-Type: application/liquid');
 $upcoming_box = [
 	'scent_club_product' => true,
 	'items' => [
-		'handle' => 'scent-club-2019-march',
-		'price' => 2500,
-		'price_formatted' => '$25',
-		'order_interval_frequency' => 1,
-		'order_interval_unit' => 'month',
-		'next_charge_scheduled_at' => strtotime('4th of next month'),
+		[
+			'handle' => 'scent-club-2019-march',
+			'price' => 2500,
+			'price_formatted' => '$25',
+			'order_interval_frequency' => 1,
+			'order_interval_unit' => 'month',
+			'next_charge_scheduled_at' => strtotime('4th of next month'),
+		],
 	],
 ];
 ?>
