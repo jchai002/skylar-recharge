@@ -25,7 +25,7 @@ $upcoming_box = [
 				<div class="sc-portal-tile sc-box-item">
 					<div>
 						<div class="sc-item-image">
-							<img class="lazyload" data-src="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
+							<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
 						</div>
 						<div>
 							<div class="sc-item-title">{{ box_product.title }}</div>
