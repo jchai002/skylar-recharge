@@ -1,9 +1,9 @@
 <?php
 header('Content-Type: application/liquid');
 $upcoming_box = [
-	'scent_club_product' => true,
 	'items' => [
 		[
+			'scent_club_product' => true,
 			'handle' => 'scent-club-2019-march',
 			'price' => 2500,
 			'price_formatted' => '$25',
