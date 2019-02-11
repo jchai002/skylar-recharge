@@ -25,11 +25,11 @@ $upcoming_box = [
 			<?php foreach($upcoming_box['items'] as $item){ ?>
 				{% assign box_product = all_products['<?=$item['handle']?>'] %}
 				<div class="sc-box-item">
-					<div>
+					<div class="sc-item-summary">
 						<div class="sc-item-image">
 							<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
 						</div>
-						<div class="sc-item-">
+						<div>
 							<div class="sc-item-title">{{ box_product.title }}</div>
 							<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 							<?php if($item['scent_club_product']){ ?>
