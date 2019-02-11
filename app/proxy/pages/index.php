@@ -29,7 +29,7 @@ $upcoming_box = [
 						<div class="sc-item-image">
 							<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
 						</div>
-						<div>
+						<div class="sc-item-">
 							<div class="sc-item-title">{{ box_product.title }}</div>
 							<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 							<?php if($item['scent_club_product']){ ?>
@@ -37,7 +37,7 @@ $upcoming_box = [
 							<?php } ?>
 						</div>
 					</div>
-					<div>
+					<div class="sc-item-details">
 						<div>
 							<div class="sc-item-detail-label">Total</div>
 							<div class="sc-item-detail-value"><?=$item['price_formatted']?></div>
