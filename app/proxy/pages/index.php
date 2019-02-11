@@ -25,13 +25,13 @@ $upcoming_box = [
 				<div class="sc-portal-tile sc-box-item">
 					<div>
 						<div class="sc-item-image">
-							<img class="lazyload" data-src="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x"
+							<img class="lazyload" data-src="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
 						</div>
 						<div>
 							<div class="sc-item-title">{{ box_product.title }}</div>
 							<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 							<?php if($item['scent_club_product']){ ?>
-								<div class="sc-item-link"><a href="/products/{{ box_product.handle }}">Explore This Month's Scent</div>
+								<div class="sc-item-link"><a href="/products/{{ box_product.handle }}">Explore This Month's Scent</a></div>
 							<?php } ?>
 						</div>
 					</div>
