@@ -9,7 +9,7 @@ $upcoming_box = [
 			'price_formatted' => '$25',
 			'order_interval_frequency' => 1,
 			'order_interval_unit' => 'month',
-			'next_charge_scheduled_at' => strtotime('4th of next month'),
+			'next_charge_scheduled_at' => strtotime('next month day 4'),
 		],
 	],
 ];
@@ -24,7 +24,7 @@ $upcoming_box = [
 		<div class="sc-portal-nextbox">
 			<?php foreach($upcoming_box['items'] as $item){ ?>
 				{% assign box_product = all_products['<?=$item['handle']?>'] %}
-				<div class="sc-portal-tile sc-box-item">
+				<div class="sc-box-item">
 					<div>
 						<div class="sc-item-image">
 							<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
