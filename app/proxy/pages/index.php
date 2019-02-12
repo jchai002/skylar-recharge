@@ -164,6 +164,12 @@ $recommended_products = [
                         }
                     },
                     {
+                        breakpoint: 600,
+                        settings: {
+                            slidesToShow: 1.7,
+                        }
+                    },
+                    {
                         breakpoint: 450,
                         settings: {
                             slidesToShow: 1.5,
