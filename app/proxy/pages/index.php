@@ -158,13 +158,13 @@ $recommended_products = [
                 dots: true,
                 responsive: [
                     {
-                        breakpoint: 700,
+                        breakpoint: 850,
                         settings: {
                             slidesToShow: 2.2,
                         }
                     },
                     {
-                        breakpoint: 600,
+                        breakpoint: 700,
                         settings: {
                             slidesToShow: 1.7,
                         }
