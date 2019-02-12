@@ -101,7 +101,7 @@ $recommended_products = [
 			<div class="sc-product-carousel">
 				<?php foreach($recommended_products as $product){ ?>
 					{% assign product = all_products['<?=$product['handle']?>'] %}
-					{% include sc-product-thumbnail %]
+					{% include 'sc-product-thumbnail' %]
 					<?php /*
 					{% assign box_product = all_products['<?=$product['handle']?>'] %}
 					{% assign subscription_price = box_product.price_min | times: 9 | divided_by: 10 %}
