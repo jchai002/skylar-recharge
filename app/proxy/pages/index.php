@@ -112,8 +112,8 @@ $recommended_products = [
 						<div class="sc-product-title">{{ box_product.title }}</div>
 						{% if box_product.metafields.tag_p_grid.text != blank %}<div class="sc-product-subtitle">{{ box_product.metafields.tag_p_grid.text | replace : ", ", " ‧ " }}</div>{% endif %}
 						<div class="sc-price-line">
-							<span class="savings-price">{{ subscription_price | money_without_trailing_zeros }}</span>
-							<span class="main-price">{{ compare_at_price | money }}</span>
+							<span class="main-price">{{ subscription_price | money_without_trailing_zeros }}</span>
+							<span class="savings-price">{{ compare_at_price | money }}</span>
 						</div>
 					</div>
 				<?php } ?>
