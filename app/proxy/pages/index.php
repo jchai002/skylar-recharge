@@ -108,7 +108,7 @@ $recommended_products = [
 					{% assign compare_at_price = box_product.price_max %}
 					{% endif %}
 					<div class="sc-product-tile">
-						<div class="sc-product-image"><img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 240x240 }} 1x, {{ box_product.images.first | img_url: 480x480 }} 2x" /></div>
+						<div class="sc-product-image"><img class="lazyload" data-srcset="{{ box_product.images.first | img_url: '240x240' }} 1x, {{ box_product.images.first | img_url: '480x480' }} 2x" /></div>
 						<div class="sc-product-title">{{ box_product.title }}</div>
 						{% if product.metafields.tag_p_grid.text != blank %}<div class="sc-product-subtitle">{{ product.metafields.tag_p_grid.text | replace : ", ", " ‧ " }}</div>{% endif %}
 						<div class="sc-price-line">
