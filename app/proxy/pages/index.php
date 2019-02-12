@@ -97,7 +97,7 @@ $recommended_products = [
 			<a href="#essentials">The Essentials</a>
 		</div>
 	</div>
-	<div class="sc-product-section">
+	<div class="sc-product-section" id="recommendations">
 		<div class="sc-section-title">Recommendations based on your profile</div>
 		<div class="sc-product-carousel">
 			<?php shuffle($recommended_products);
@@ -107,7 +107,7 @@ $recommended_products = [
 			<?php } ?>
 		</div>
 	</div>
-	<div class="sc-product-section">
+	<div class="sc-product-section" id="layering">
 		<div class="sc-section-title">Layering</div>
 		<div class="sc-product-carousel">
 			<?php shuffle($recommended_products);
@@ -117,7 +117,7 @@ $recommended_products = [
 			<?php } ?>
 		</div>
 	</div>
-	<div class="sc-product-section">
+	<div class="sc-product-section" id="best-sellers">
 		<div class="sc-section-title">Best Sellers</div>
 		<div class="sc-product-carousel">
 			<?php shuffle($recommended_products);
@@ -127,7 +127,7 @@ $recommended_products = [
 			<?php } ?>
 		</div>
 	</div>
-	<div class="sc-product-section">
+	<div class="sc-product-section" id="essentials">
 		<div class="sc-section-title">The Essentials</div>
 			<div class="sc-product-carousel">
 				<?php shuffle($recommended_products);
@@ -140,6 +140,10 @@ $recommended_products = [
 </div>
 <script>
 	$(document).ready(function(){
+	    $('.sc-section-menu a').click(function(e){
+	        e.preventDefault();
+            $('html,body').animate({scrollTop: $($(this).attr('href')).offset().top-140},'slow');
+		});
         $('.add-to-box').click(function(){
             var btn = $(this);
             btn.attr('disabled', 'disabled').addClass('disabled');
