@@ -12,6 +12,13 @@ $upcoming_box = [
 			'next_charge_scheduled_at' => strtotime('next month day 4'),
 		],
 	],
+	'discounts' => [
+		'title' => 'Test',
+		'value' => '500',
+		'value_formatted' => '$5',
+	],
+	'total' => '2000',
+	'total_formatted' => '$20',
 ];
 ?>
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
@@ -30,10 +37,13 @@ $upcoming_box = [
 							<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
 						</div>
 						<div>
-							<div class="sc-item-title">{{ box_product.title }}</div>
-							<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 							<?php if($item['scent_club_product']){ ?>
+								<div class="sc-item-title">Monthly Scent Club</div>
+								<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 								<div class="sc-item-link"><a href="/products/{{ box_product.handle }}">Explore This Month's Scent</a></div>
+							<?php } else { ?>
+								<div class="sc-item-title">{{ box_product.title }}</div>
+								<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 							<?php } ?>
 						</div>
 					</div>
@@ -59,6 +69,18 @@ $upcoming_box = [
 					</div>
 				</div>
 			<?php } ?>
+			<div class="sc-box-discounts">
+				<?php foreach($upcoming_box['discounts'] as $discount){ ?>
+					<div class="sc-box-discount">
+						<div class="sc-discount-title"><?=$discount['title']?>:</div>
+						<div class="sc-discount-value"><?=$discount['value_formatted']?></div>
+					</div>
+				<?php } ?>
+				<div class="sc-discount-link">Got a discount code?</div>
+			</div>
+			<div class="sc-box-total">
+				Grand Total: <?=$upcoming_box['total_formatted']?>
+			</div>
 		</div>
 	</div>
 </div>
