@@ -100,6 +100,9 @@ $recommended_products = [
 			<div class="sc-section-title">Recommendations based on your profile</div>
 			<div class="sc-product-carousel">
 				<?php foreach($recommended_products as $product){ ?>
+					{% assign product = all_products['<?=$product['handle']?>'] %}
+					{% include sc-product-thumbnail %]
+					<?php /*
 					{% assign box_product = all_products['<?=$product['handle']?>'] %}
 					{% assign subscription_price = box_product.price_min | times: 9 | divided_by: 10 %}
 					{% if box_product.compare_at_price != blank %}
@@ -116,13 +119,48 @@ $recommended_products = [
 							<span class="savings-price">{{ compare_at_price | money }}</span>
 						</div>
 					</div>
-				<?php } ?>
+				<?php */} ?>
 			</div>
 		</div>
 	</div>
 </div>
 <script>
 	$(document).ready(function(){
-	    optional_
+        optional_scripts.onload('slick', function(){
+            $('.sc-product-carousel').slick({
+                slidesToShow: 3,
+                centerPadding: '100px',
+                focusOnSelect: true,
+                infinite: false,
+                arrows: false,
+                dots: true,
+                responsive: [
+                    {
+                        breakpoint: 550,
+                        settings: {
+                            slidesToShow: 2.2,
+                        }
+                    },
+                    {
+                        breakpoint: 450,
+                        settings: {
+                            slidesToShow: 1.8,
+                        }
+                    },
+                    {
+                        breakpoint: 400,
+                        settings: {
+                            slidesToShow: 1.5,
+                        }
+                    },
+                    {
+                        breakpoint: 350,
+                        settings: {
+                            slidesToShow: 1.3,
+                        }
+                    },
+                ],
+            });
+        });
 	});
 </script>
