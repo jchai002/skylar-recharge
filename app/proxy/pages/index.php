@@ -109,12 +109,12 @@ $recommended_products = [
 					{% endif %}
 					<div class="sc-product-tile">
 						<div class="sc-product-image"><img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 240x240 }} 1x, {{ box_product.images.first | img_url: 480x480 }} 2x" /></div>
-					</div>
-					<div class="sc-product-title">{{ box_product.title }}</div>
-					{% if product.metafields.tag_p_grid.text != blank %}<div class="sc-product-subtitle">{{ product.metafields.tag_p_grid.text | replace : ", ", " ‧ " }}</div>{% endif %}
-					<div class="sc-price-line">
-						<span class="savings-price">{{ subscription_price | money_without_trailing_zeros }}</span>
-						<span class="main-price">{{ compare_at_price | money }}</span>
+						<div class="sc-product-title">{{ box_product.title }}</div>
+						{% if product.metafields.tag_p_grid.text != blank %}<div class="sc-product-subtitle">{{ product.metafields.tag_p_grid.text | replace : ", ", " ‧ " }}</div>{% endif %}
+						<div class="sc-price-line">
+							<span class="savings-price">{{ subscription_price | money_without_trailing_zeros }}</span>
+							<span class="main-price">{{ compare_at_price | money }}</span>
+						</div>
 					</div>
 				<?php } ?>
 			</div>
