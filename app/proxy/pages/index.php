@@ -123,6 +123,6 @@ $recommended_products = [
 </div>
 <script>
 	$(document).ready(function(){
-
-	})
+	    optional_
+	});
 </script>

@@ -8,7 +8,7 @@ class Router {
 	}
 
 	public function execute($uri) {
-		if(empty($url) || $url == '/'){
+		if(empty($uri) || $uri == '/'){
 			if(array_key_exists('',$this->routes)){
 				$res = call_user_func($this->routes['']);
 				if(!empty($res)){
