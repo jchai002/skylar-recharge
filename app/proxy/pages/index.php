@@ -100,7 +100,8 @@ $recommended_products = [
 	<div class="sc-product-section">
 		<div class="sc-section-title">Recommendations based on your profile</div>
 		<div class="sc-product-carousel">
-			<?php foreach($recommended_products as $product){ ?>
+			<?php shuffle($recommended_products);
+			foreach($recommended_products as $product){ ?>
 				{% assign box_product = all_products['<?=$product['handle']?>'] %}
 				{% include 'sc-product-tile' %}
 			<?php } ?>
@@ -109,7 +110,8 @@ $recommended_products = [
 	<div class="sc-product-section">
 		<div class="sc-section-title">Layering</div>
 		<div class="sc-product-carousel">
-			<?php foreach($recommended_products as $product){ ?>
+			<?php shuffle($recommended_products);
+			foreach($recommended_products as $product){ ?>
 				{% assign box_product = all_products['<?=$product['handle']?>'] %}
 				{% include 'sc-product-tile' %}
 			<?php } ?>
@@ -118,7 +120,8 @@ $recommended_products = [
 	<div class="sc-product-section">
 		<div class="sc-section-title">Best Sellers</div>
 		<div class="sc-product-carousel">
-			<?php foreach($recommended_products as $product){ ?>
+			<?php shuffle($recommended_products);
+			foreach($recommended_products as $product){ ?>
 				{% assign box_product = all_products['<?=$product['handle']?>'] %}
 				{% include 'sc-product-tile' %}
 			<?php } ?>
@@ -126,8 +129,9 @@ $recommended_products = [
 	</div>
 	<div class="sc-product-section">
 		<div class="sc-section-title">The Essentials</div>
-		<div class="sc-product-carousel">
-			<?php foreach($recommended_products as $product){ ?>
+			<div class="sc-product-carousel">
+				<?php shuffle($recommended_products);
+				foreach($recommended_products as $product){ ?>
 				{% assign box_product = all_products['<?=$product['handle']?>'] %}
 				{% include 'sc-product-tile' %}
 			<?php } ?>
