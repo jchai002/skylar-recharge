@@ -12,11 +12,11 @@ $upcoming_box = [
 			'next_charge_scheduled_at' => strtotime('next month day 4'),
 		],
 	],
-	'discounts' => [
+	'discounts' => [[
 		'title' => 'Test',
 		'value' => '500',
 		'value_formatted' => '$5',
-	],
+	]],
 	'total' => '2000',
 	'total_formatted' => '$20',
 ];
