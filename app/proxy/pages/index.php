@@ -101,25 +101,35 @@ $recommended_products = [
 			<div class="sc-product-carousel">
 				<?php foreach($recommended_products as $product){ ?>
 					{% assign product = all_products['<?=$product['handle']?>'] %}
-					{% include 'sc-product-thumbnail' %}
-					<?php /*
-					{% assign box_product = all_products['<?=$product['handle']?>'] %}
-					{% assign subscription_price = box_product.price_min | times: 9 | divided_by: 10 %}
-					{% if box_product.compare_at_price != blank %}
-					{% assign compare_at_price = box_product.compare_at_price %}
-					{% else %}
-					{% assign compare_at_price = box_product.price_max %}
-					{% endif %}
-					<div class="sc-product-tile">
-						<div class="sc-product-image"><img class="lazyload" data-srcset="{{ box_product.images.first | img_url: '240x240' }} 1x, {{ box_product.images.first | img_url: '480x480' }} 2x" /></div>
-						<div class="sc-product-title">{{ box_product.title }}</div>
-						{% if box_product.metafields.tag_p_grid.text != blank %}<div class="sc-product-subtitle">{{ box_product.metafields.tag_p_grid.text | replace : ", ", " ‧ " }}</div>{% endif %}
-						<div class="sc-price-line">
-							<span class="main-price">{{ subscription_price | money_without_trailing_zeros }}</span>
-							<span class="savings-price">{{ compare_at_price | money }}</span>
-						</div>
-					</div>
-				<?php */} ?>
+					{% include 'sc-product-tile' %}
+				<?php } ?>
+			</div>
+		</div>
+		<div class="sc-product-section">
+			<div class="sc-section-title">Recommendations based on your profile</div>
+			<div class="sc-product-carousel">
+				<?php foreach($recommended_products as $product){ ?>
+					{% assign product = all_products['<?=$product['handle']?>'] %}
+					{% include 'sc-product-tile' %}
+				<?php } ?>
+			</div>
+		</div>
+		<div class="sc-product-section">
+			<div class="sc-section-title">Best Sellers</div>
+			<div class="sc-product-carousel">
+				<?php foreach($recommended_products as $product){ ?>
+					{% assign product = all_products['<?=$product['handle']?>'] %}
+					{% include 'sc-product-tile' %}
+				<?php } ?>
+			</div>
+		</div>
+		<div class="sc-product-section">
+			<div class="sc-section-title">The Essentials</div>
+			<div class="sc-product-carousel">
+				<?php foreach($recommended_products as $product){ ?>
+					{% assign product = all_products['<?=$product['handle']?>'] %}
+					{% include 'sc-product-tile' %}
+				<?php } ?>
 			</div>
 		</div>
 	</div>
