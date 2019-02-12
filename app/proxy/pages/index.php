@@ -20,6 +20,14 @@ $upcoming_box = [
 	'total' => '2000',
 	'total_formatted' => '$20',
 ];
+$recommended_products = [
+	['handle' => 'arrow'],
+	['handle' => 'capri'],
+	['handle' => 'coral'],
+	['handle' => 'isle'],
+	['handle' => 'meadow'],
+	['handle' => 'willow'],
+];
 ?>
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page">
@@ -76,10 +84,39 @@ $upcoming_box = [
 						<div class="sc-discount-value"><?=$discount['value_formatted']?></div>
 					</div>
 				<?php } ?>
-				<div class="sc-discount-link">Got a discount code?</div>
+				<div class="sc-discount-link">Got a promo code?</div>
 			</div>
 			<div class="sc-box-total">
 				Grand Total: <?=$upcoming_box['total_formatted']?>
+			</div>
+		</div>
+		<div class="sc-section-menu">
+			<a href="#recommendations">Your Profile Recommendations</a>
+			<a href="#layering">Layering</a>
+			<a href="#best-sellers">Best Sellers</a>
+			<a href="#essentials">The Essentials</a>
+		</div>
+		<div class="sc-product-section">
+			<div class="sc-section-title">Recommendations based on your profile</div>
+			<div class="sc-product-carousel">
+				<?php foreach($recommended_products as $product){ ?>
+					{% assign box_product = all_products['<?=$product['handle']?>'] %}
+					{% assign subscription_price = box_product.price_min | times: 9 | divided_by: 10 %}
+					{% if box_product.compare_at_price != blank %}
+					{% assign compare_at_price = box_product.compare_at_price %}
+					{% else %}
+					{% assign compare_at_price = box_product.price_max %}
+					{% endif %}
+					<div class="sc-product-tile">
+						<div class="sc-product-image"><img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 240x240 }} 1x, {{ box_product.images.first | img_url: 480x480 }} 2x" /></div>
+					</div>
+					<div class="sc-product-title">{{ box_product.title }}</div>
+					{% if product.metafields.tag_p_grid.text != blank %}<div class="sc-product-subtitle">{{ product.metafields.tag_p_grid.text | replace : ", ", " ‧ " }}</div>{% endif %}
+					<div class="sc-price-line">
+						<span class="savings-price">{{ box_product.price | money_without_trailing_zeros }}</span>
+						<span class="main-price">{{ compare_at_price | money }}</span>
+					</div>
+				<?php } ?>
 			</div>
 		</div>
 	</div>
