@@ -138,6 +138,7 @@ $recommended_products = [
 		</div>
 	</div>
 </div>
+{{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
 	$(document).ready(function(){
 	    $('.sc-section-menu a').click(function(e){
