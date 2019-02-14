@@ -171,7 +171,7 @@ $recommended_products = [
                     {
                         breakpoint: 1200,
                         settings: {
-                            slidesToShow: 2.3,
+                            slidesToShow: 2.2,
                         }
                     },
                     {
