@@ -82,6 +82,9 @@ $upcoming_shipments = [
 					</div>
 				<?php } ?>
 			</div>
+			<div class="sc-load-more">
+				<a href="#" class="action_button">Load More</a>
+			</div>
 		</div>
 	</div>
 </div>
