@@ -37,7 +37,7 @@ $upcoming_shipments = [
 						<span class="sc-box-shiplabel">Shipping Date</span>
 						<span class="sc-box-date"><?=$upcoming_shipment['ship_date']?></span>
 					</div>
-					<?php foreach($upcoming_box['items'] as $item){ ?>
+					<?php foreach($upcoming_shipment['items'] as $item){ ?>
 						{% assign box_product = all_products['<?=$item['handle']?>'] %}
 						<div class="sc-box-item">
 							<div class="sc-item-summary">
