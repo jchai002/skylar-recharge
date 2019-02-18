@@ -155,7 +155,7 @@ $recommended_products = [
         });
         optional_scripts.onload('slick', function(){
             $('.sc-product-carousel').slick({
-                slidesToShow: 3.2,
+                slidesToShow: 3,
                 centerPadding: '100px',
                 focusOnSelect: true,
                 infinite: false,
