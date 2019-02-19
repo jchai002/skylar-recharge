@@ -19,9 +19,6 @@ if(strpos(getcwd(), 'production') !== false){
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 }
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 $db = new PDO("mysql:host=".$_ENV['DB_HOST'].";dbname=".$_ENV['DB_NAME'].";charset=UTF8", $_ENV['DB_USER'], $_ENV['DB_PASS']);
 
