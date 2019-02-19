@@ -50,7 +50,7 @@ if(!empty($rc_customer_id)){
 	$orders = [];
 }
 //print_r($orders);
-generate_subscription_schedule($orders, $subscriptions);
+$upcoming_shipments = generate_subscription_schedule($orders, $subscriptions);
 ?>
 {% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
