@@ -47,6 +47,7 @@ if(!empty($rc_customer_id)){
 		'customer_id' => $rc_customer_id,
 	]);
 	foreach($res['onetimes'] as $onetime){
+		// Fix for api returning non-onetimes
 		if($onetime['status'] == 'ONETIME'){
 			$onetimes[] = $onetime;
 		}
