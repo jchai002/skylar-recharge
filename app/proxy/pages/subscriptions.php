@@ -46,7 +46,7 @@ if(!empty($rc_customer_id)){
 	]);
 	$onetimes = $res['onetimes'];
 } else {
-	$onetimes = []
+	$onetimes = [];
 	$orders = [];
 }
 global $db;
