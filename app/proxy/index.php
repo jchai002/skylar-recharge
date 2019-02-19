@@ -19,9 +19,3 @@ if(!$res){
 function substitute_product($order_id){
 	//
 }
-
-function generate_subscription_schedule($rc_customer_id, $duration=12){
-	// get prepaid/scheduled orders, combine with:
-	// iterate over each month of duration
-		// iterate over subscription and check if it will drop in that month, checking expire_after_specific_number_of_charges
-}
