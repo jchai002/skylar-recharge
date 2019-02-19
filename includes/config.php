@@ -531,9 +531,6 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 	}
 	foreach($onetimes as $onetime){
 		$order_time = strtotime($onetime['next_charge_scheduled_at']);
-		if(empty($order_time)){
-			continue;
-		}
 		if($order_time < time()){
 			continue;
 		}
