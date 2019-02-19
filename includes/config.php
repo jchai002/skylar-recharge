@@ -495,9 +495,14 @@ function generate_subscription_schedule($orders, $subscriptions, $max_time = nul
 		}
 		$date = date('Y-m-d', $order_time);
 		if(empty($schedule[$date])){
-			$schedule[$date] = [];
+			$schedule[$date] = [
+				'items' => [],
+				'ship_date_time' => strtotime($date),
+				'discounts' => [],
+				'total' => 0,
+			];
 		}
-		$schedule[$date][] = $order;
+		$schedule[$date]['items'][] = $order;
 	}
 	foreach($subscriptions as $subscription){
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
@@ -505,9 +510,14 @@ function generate_subscription_schedule($orders, $subscriptions, $max_time = nul
 		while($next_charge_time < $max_time){
 			$date = date('Y-m-d', $next_charge_time);
 			if(empty($schedule[$date])){
-				$schedule[$date] = [];
+				$schedule[$date] = [
+					'items' => [],
+					'ship_date_time' => strtotime($date),
+					'discounts' => [],
+					'total' => 0,
+				];
 			}
-			$schedule[$date][] = $subscription;
+			$schedule[$date]['items'][] = $subscription;
 			$next_charge_time = strtotime($date.' +'.$subscription['order_interval_frequency'].' '.$subscription['order_interval_unit']);
 			if($subscription['order_interval_unit'] == 'month' && !empty($subscription['order_day_of_month'])){
 				$next_charge_time = strtotime(date('Y-m-'.$subscription['order_day_of_month'], $next_charge_time));
