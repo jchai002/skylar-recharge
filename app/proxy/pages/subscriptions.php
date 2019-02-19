@@ -48,7 +48,6 @@ if(!empty($rc_customer_id)){
 //print_r($orders);
 $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions);
 ?>
-<?php print_r($upcoming_shipments); ?>
 {% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
@@ -65,7 +64,7 @@ $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions);
 					<div class="sc-upcoming-shipment">
 						<div class="sc-box-info">
 							<span class="sc-box-shiplabel">Shipping Date</span>
-							<span class="sc-box-date"><?=$upcoming_shipment['ship_date']?></span>
+							<span class="sc-box-date"><?=date('j d', $upcoming_shipment['ship_date_time']) ?></span>
 						</div>
 						<?php foreach($upcoming_shipment['items'] as $item){ ?>
 							{% assign box_product = all_products['<?=$item['handle']?>'] %}
