@@ -530,7 +530,7 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 		$schedule[$date]['items'][] = $order;
 	}
 	foreach($onetimes as $onetime){
-		$order_time = strtotime($onetime['scheduled_at']);
+		$order_time = strtotime($onetime['next_charge_scheduled_at']);
 		if($order_time > $max_time){
 			continue;
 		}
