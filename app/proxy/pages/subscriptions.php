@@ -50,7 +50,7 @@ if(!empty($rc_customer_id)){
 	$orders = [];
 }
 //print_r($orders);
-//generate_subscription_schedule($orders, $subscriptions);
+$upcoming_shipments = generate_subscription_schedule($orders, $subscriptions);
 ?>
 {% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
@@ -61,6 +61,7 @@ if(!empty($rc_customer_id)){
 			<div class="sc-portal-title">Manage Membership</div>
 			<div class="sc-portal-subtitle">Update Shipping Date and Frequency</div>
 			<div class="sc-portal-box-list">
+				<?php print_r($upcoming_shipments); ?>
 				<?php foreach($upcoming_shipments as $index=>$upcoming_shipment){ ?>
 					<div class="sc-upcoming-shipment">
 						<div class="sc-box-info">

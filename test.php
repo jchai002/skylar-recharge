@@ -45,7 +45,7 @@ $res = $rc->get('/subscriptions', [
 $subscriptions = $res['subscriptions'];
 //print_r($subscriptions);
 
-generate_subscription_schedule($orders, $subscriptions);
+$schedule = generate_subscription_schedule($orders, $subscriptions);
 $swaps = [
 	['year' => 2019, 'month' => 5, 'subscription_id' => 36415620],
 ];
