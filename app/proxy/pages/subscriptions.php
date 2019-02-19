@@ -35,6 +35,8 @@ if(!empty($subscriptions)){
 		$rc_customer_id = $customer['id'];
 	}
 }
+$onetimes = [];
+$orders = [];
 if(!empty($rc_customer_id)){
 	$res = $rc->get('/orders', [
 		'customer_id' => $rc_customer_id,
@@ -43,12 +45,12 @@ if(!empty($rc_customer_id)){
 	$orders = $res['orders'];
 	$res = $rc->get('/onetimes', [
 		'customer_id' => $rc_customer_id,
-		'status' => 'ONETIME',
 	]);
-	$onetimes = $res['onetimes'];
-} else {
-	$onetimes = [];
-	$orders = [];
+	foreach($res['onetimes'] as $onetime){
+		if($onetime['status'] == 'ONETIME'){
+			$onetimes[] = $onetime;
+		}
+	}
 }
 global $db;
 $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, $onetimes, strtotime(date('Y-m-t',strtotime('+3 months'))));
