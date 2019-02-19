@@ -61,7 +61,10 @@ $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions);
 			<div class="sc-portal-title">Manage Membership</div>
 			<div class="sc-portal-subtitle">Update Shipping Date and Frequency</div>
 			<div class="sc-portal-box-list">
-				<?php foreach($upcoming_shipments as $index=>$upcoming_shipment){ ?>
+				<?php $index = -1;
+				foreach($upcoming_shipments as $upcoming_shipment){
+					$index++;
+					?>
 					<div class="sc-upcoming-shipment">
 						<div class="sc-box-info">
 							<span class="sc-box-shiplabel">Shipping Date</span>
