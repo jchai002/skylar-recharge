@@ -49,7 +49,7 @@ $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions);
 $products_by_id = [];
 $stmt = $db->prepare("SELECT * FROM products WHERE shopify_product_id=?");
 foreach($upcoming_shipments as $upcoming_shipment){
-	foreach($upcoming_shipment['item'] as $item){
+	foreach($upcoming_shipment['items'] as $item){
 		if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
 			$stmt->execute([$item['shopify_product_id']]);
 			$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
