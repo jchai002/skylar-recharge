@@ -56,8 +56,8 @@ foreach($upcoming_shipments as $upcoming_shipment){
 		}
 	}
 }
-print_r($upcoming_shipments);
 ?>
+<!-- <?print_r($upcoming_shipments);?> -->
 {% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
@@ -89,8 +89,8 @@ print_r($upcoming_shipments);
 											<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 											<div class="sc-swap-link"><a href="#">Swap Scent</a></div>
 										<?php } else { ?>
-											<div class="sc-item-title">{{ box_product.title }}</div>
-											<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
+											<div class="sc-item-title"><?=$item['product_title']?></div>
+											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 										<?php } ?>
 									</div>
 								</div>
