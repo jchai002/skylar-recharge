@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/liquid');
 $upcoming_box = [
 	'items' => [
 		[
