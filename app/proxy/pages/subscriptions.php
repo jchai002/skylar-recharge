@@ -112,7 +112,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 									</div>
 									<div>
 										<div class="sc-item-detail-label">Next Charge</div>
-										<div class="sc-item-detail-value"><?=date('F j, Y', $item['next_charge_scheduled_at'])?></div>
+										<div class="sc-item-detail-value"><?=date('F j, Y', strtotime($item['next_charge_scheduled_at']))?></div>
 									</div>
 								</div>
 							</div>
