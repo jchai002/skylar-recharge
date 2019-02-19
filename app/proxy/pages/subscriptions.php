@@ -1,5 +1,5 @@
 <?php
-header('Content-Type: application/liquid');
+//header('Content-Type: application/liquid');
 $upcoming_shipments = [
 	[
 		'ship_date_time' => strtotime(''),
