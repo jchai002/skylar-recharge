@@ -61,13 +61,13 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	foreach($upcoming_shipment['items'] as $item){
 		if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
 			$stmt->execute([$item['shopify_product_id']]);
+			print_r($stmt->errorInfo());
 			$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
 		}
 	}
 }
 ?>
 <!-- <?php print_r($products_by_id);?> -->
-<!-- <?php print_r($onetimes);?> -->
 {% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
