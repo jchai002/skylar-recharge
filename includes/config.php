@@ -421,14 +421,14 @@ function offset_date_skip_weekend($time){
 function insert_update_product(PDO $db, $shopify_product){
 	$now = date('Y-m-d H:i:s');
 	$stmt = $db->prepare("INSERT INTO products
-(shopify_id, handle, title, type, tags, updated_at)
-VALUES (:shopify_id, :handle, :title, :type, :tags, :updated_at)
+(shopify_id, handle, title, product_type, tags, updated_at)
+VALUES (:shopify_id, :handle, :title, :product_type, :tags, :updated_at)
 ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, tags=:tags, updated_at=:updated_at");
 	$stmt->execute([
 		'shopify_id' => $shopify_product['id'],
 		'handle' => $shopify_product['handle'],
 		'title' => $shopify_product['title'],
-		'type' => $shopify_product['product_type'],
+		'product_type' => $shopify_product['product_type'],
 		'tags' => $shopify_product['tags'],
 		'updated_at' => $now,
 	]);
@@ -552,5 +552,5 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 	return $schedule;
 }
 function is_scent_club($product){
-	return $product['type'] == 'Scent Club';
+	return $product['product_type'] == 'Scent Club';
 }
