@@ -56,12 +56,11 @@ if(!empty($rc_customer_id)){
 global $db;
 $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, $onetimes, strtotime(date('Y-m-t',strtotime('+3 months'))));
 $products_by_id = [];
-$stmt = $db->prepare("SELECT * FROM products WHERE shopify_product_id=?");
+$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 foreach($upcoming_shipments as $upcoming_shipment){
 	foreach($upcoming_shipment['items'] as $item){
 		if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
 			$stmt->execute([$item['shopify_product_id']]);
-			print_r($stmt->errorInfo());
 			$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
 		}
 	}
