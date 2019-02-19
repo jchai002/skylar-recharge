@@ -432,7 +432,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, tag
 		'tags' => $shopify_product['tags'],
 		'updated_at' => $now,
 	]);
-	print_r($shopify_product);
+//	print_r($shopify_product);
 	$product_id = $db->lastInsertId();
 	$stmt = $db->prepare("INSERT INTO variants
 (product_id, shopify_id, title, price, updated_at)
@@ -486,7 +486,7 @@ if(!function_exists('divide')){
 };
 
 // Start Scent Club
-function generate_subscription_schedule($orders, $subscriptions, $max_time = null){
+function generate_subscription_schedule($orders, $subscriptions, $onetimes = [], $max_time = null){
 	$schedule = [];
 
 	$max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
