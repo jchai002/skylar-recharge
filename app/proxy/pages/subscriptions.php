@@ -43,6 +43,7 @@ if(!empty($rc_customer_id)){
 	$orders = $res['orders'];
 	$res = $rc->get('/onetimes', [
 		'customer_id' => $rc_customer_id,
+		'status' => 'ONETIME',
 	]);
 	$onetimes = $res['onetimes'];
 } else {
