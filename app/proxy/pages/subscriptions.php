@@ -1,23 +1,4 @@
 <?php
-$upcoming_shipments = [
-	[
-		'ship_date_time' => strtotime(''),
-		'items' => [
-			[
-				'handle' => 'scent-club-2019-march',
-				'price' => 2500,
-				'order_interval_frequency' => 1,
-				'order_interval_unit' => 'month',
-				'next_charge_scheduled_at' => strtotime('next month day 4'),
-			],
-		],
-		'discounts' => [[
-			'title' => 'Test',
-			'value' => '500',
-		]],
-		'total' => '2000',
-	],
-];
 global $rc;
 $res = $rc->get('/subscriptions', [
 	'shopify_customer_id' => $_REQUEST['c'],
@@ -97,7 +78,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-title">Monthly Scent Club</div>
 											<!-- TODO: Swap in right scent, use that title -->
 											<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
-											<a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a>
+											<div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
 										<?php } else { ?>
 											<div class="sc-item-title"><?=$item['product_title']?></div>
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
