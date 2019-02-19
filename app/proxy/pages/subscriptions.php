@@ -51,8 +51,7 @@ if(!empty($rc_customer_id)){
 //print_r($orders);
 $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions);
 ?>
-<?php //print_r($upcoming_shipments); ?>
-<?/*
+<?php print_r($upcoming_shipments); ?>
 {% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
