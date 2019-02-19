@@ -2,6 +2,7 @@
 header('Content-Type: application/liquid');
 $upcoming_shipments = [
 	[
+		'ship_date_time' => strtotime(''),
 		'items' => [
 			[
 				'scent_club_product' => true,
