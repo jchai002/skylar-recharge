@@ -23,6 +23,34 @@ $upcoming_shipments = [
 		'total_formatted' => '$20',
 	],
 ];
+global $rc;
+$res = $rc->get('/subscriptions', [
+	'shopify_customer_id' => $_REQUEST['c'],
+	'status' => 'ACTIVE',
+]);
+$subscriptions = $res['subscriptions'];
+if(!empty($subscriptions)){
+	$rc_customer_id = $subscriptions[0]['customer_id'];
+} else {
+	$res = $rc->get('/customers', [
+		'shopify_customer_id' => $_REQUEST['c'],
+	]);
+	$customer = $res['customers'];
+	if(!empty($customer)){
+		$rc_customer_id = $customer['id'];
+	}
+}
+if(!empty($rc_customer_id)){
+	$res = $rc->get('/orders', [
+		'customer_id' => $rc_customer_id,
+		'status' => 'QUEUED',
+	]);
+	$orders = $res['orders'];
+} else {
+	$orders = [];
+}
+//print_r($orders);
+generate_subscription_schedule($orders, $subscriptions);
 ?>
 {% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
