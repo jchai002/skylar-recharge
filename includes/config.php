@@ -534,6 +534,9 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 		if(empty($order_time)){
 			continue;
 		}
+		if($order_time < time()){
+			continue;
+		}
 		if($order_time > $max_time){
 			continue;
 		}
