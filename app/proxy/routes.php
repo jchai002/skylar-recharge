@@ -21,7 +21,7 @@ $router->route('/subscriptions/i', function() {
 });
 
 function require_customer_id($customer_id, $callback_if_true){
-	//header('Content-Type: application/liquid');
+	header('Content-Type: application/liquid');
 	if(empty($customer_id)){
 		echo "
 {% layout 'sc-redirect' %}
