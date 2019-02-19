@@ -428,6 +428,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, tag
 		'shopify_id' => $shopify_product['id'],
 		'handle' => $shopify_product['handle'],
 		'title' => $shopify_product['title'],
+		'type' => $shopify_product['product_type'],
 		'tags' => $shopify_product['tags'],
 		'updated_at' => $now,
 	]);
