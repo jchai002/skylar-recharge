@@ -96,7 +96,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 										<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
 											<div class="sc-item-title">Monthly Scent Club</div>
 											<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
-											<div class="sc-swap-link"><a href="#"><img src="{{ 'icon-swap.svg' | file_img_url }}" /> <span>Swap Scent</span></a></div>
+											<div class="sc-swap-link"><a href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
 										<?php } else { ?>
 											<div class="sc-item-title"><?=$item['product_title']?></div>
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
