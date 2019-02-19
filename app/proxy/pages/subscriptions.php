@@ -73,7 +73,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 					<div class="sc-upcoming-shipment">
 						<div class="sc-box-info">
 							<span class="sc-box-shiplabel">Shipping Date</span>
-							<span class="sc-box-date"><?=date('j d', $upcoming_shipment['ship_date_time']) ?></span>
+							<span class="sc-box-date"><?=date('F j', $upcoming_shipment['ship_date_time']) ?></span>
 						</div>
 						<?php foreach($upcoming_shipment['items'] as $item){ ?>
 							{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
