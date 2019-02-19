@@ -95,6 +95,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 									</div>
 									<div>
 										<?= $products_by_id[$item['shopify_product_id']]['type']?>
+										<?php print_r($products_by_id[$item['shopify_product_id']]) ?>
 										<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
 											<div class="sc-item-title">Monthly Scent Club</div>
 											<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
