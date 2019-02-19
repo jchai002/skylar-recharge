@@ -2,25 +2,26 @@
 
 $router = new Router();
 $router->route('',function(){
-	require_customer_id($_REQUEST['c'], function(){
+	require_customer_id(function(){
 		require('pages/index.php');
 	});
 	return true;
 });
 $router->route('/members/i', function() {
-	require_customer_id($_REQUEST['c'], function(){
+	require_customer_id(function(){
 		require('pages/members.php');
 	});
 	return true;
 });
 $router->route('/subscriptions/i', function() {
-	require_customer_id($_REQUEST['c'], function(){
+	require_customer_id(function(){
 		require('pages/subscriptions.php');
 	});
 	return true;
 });
 
-function require_customer_id($customer_id, $callback_if_true){
+function require_customer_id($callback_if_true){
+	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
 	header('Content-Type: application/liquid');
 	if(empty($customer_id)){
 		echo "
