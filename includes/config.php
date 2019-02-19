@@ -21,6 +21,7 @@ if(strpos(getcwd(), 'production') !== false){
 }
 
 $db = new PDO("mysql:host=".$_ENV['DB_HOST'].";dbname=".$_ENV['DB_NAME'].";charset=UTF8", $_ENV['DB_USER'], $_ENV['DB_PASS']);
+$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
 $sample_discount_code = 'SAMPLE25';
 
@@ -420,8 +421,8 @@ function offset_date_skip_weekend($time){
 function insert_update_product(PDO $db, $shopify_product){
 	$now = date('Y-m-d H:i:s');
 	$stmt = $db->prepare("INSERT INTO products
-(shopify_id, handle, title, tags, updated_at)
-VALUES (:shopify_id, :handle, :title, :tags, :updated_at)
+(shopify_id, handle, title, type, tags, updated_at)
+VALUES (:shopify_id, :handle, :type, :title, :tags, :updated_at)
 ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, tags=:tags, updated_at=:updated_at");
 	$stmt->execute([
 		'shopify_id' => $shopify_product['id'],
@@ -498,7 +499,7 @@ function generate_subscription_schedule($orders, $subscriptions, $max_time = nul
 			$schedule[$date] = [
 				'items' => [],
 				'ship_date_time' => strtotime($date),
-				'discounts' => [],
+				'discounts' => [], // TODO
 				'total' => 0,
 			];
 		}
@@ -513,7 +514,7 @@ function generate_subscription_schedule($orders, $subscriptions, $max_time = nul
 				$schedule[$date] = [
 					'items' => [],
 					'ship_date_time' => strtotime($date),
-					'discounts' => [],
+					'discounts' => [], // TODO
 					'total' => 0,
 				];
 			}
@@ -528,4 +529,7 @@ function generate_subscription_schedule($orders, $subscriptions, $max_time = nul
 	}
 	ksort($schedule);
 	return $schedule;
+}
+function is_scent_club($product){
+	return $product['type'] == 'Scent Club';
 }

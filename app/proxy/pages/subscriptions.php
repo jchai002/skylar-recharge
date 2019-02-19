@@ -4,7 +4,6 @@ $upcoming_shipments = [
 		'ship_date_time' => strtotime(''),
 		'items' => [
 			[
-				'scent_club_product' => true,
 				'handle' => 'scent-club-2019-march',
 				'price' => 2500,
 				'order_interval_frequency' => 1,
@@ -45,8 +44,18 @@ if(!empty($rc_customer_id)){
 } else {
 	$orders = [];
 }
-//print_r($orders);
+global $db;
 $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions);
+$products_by_id = [];
+$stmt = $db->prepare("SELECT * FROM products WHERE shopify_product_id=?");
+foreach($upcoming_shipments as $upcoming_shipment){
+	foreach($upcoming_shipment['item'] as $item){
+		if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
+			$stmt->execute([$item['shopify_product_id']]);
+			$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
+		}
+	}
+}
 ?>
 {% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
@@ -67,14 +76,14 @@ $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions);
 							<span class="sc-box-date"><?=date('j d', $upcoming_shipment['ship_date_time']) ?></span>
 						</div>
 						<?php foreach($upcoming_shipment['items'] as $item){ ?>
-							{% assign box_product = all_products['<?=$item['handle']?>'] %}
+							{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
 							<div class="sc-box-item">
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
 										<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
 									</div>
 									<div>
-										<?php if($item['scent_club_product']){ ?>
+										<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
 											<div class="sc-item-title">Monthly Scent Club</div>
 											<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 											<div class="sc-swap-link"><a href="#">Swap Scent</a></div>
