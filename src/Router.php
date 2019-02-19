@@ -17,6 +17,9 @@ class Router {
 			}
 		}
 		foreach ($this->routes as $pattern => $callback) {
+			if(empty($pattern)){
+				continue;
+			}
 			if (preg_match($pattern, $uri, $params) === 1) {
 				array_shift($params);
 				$res = call_user_func_array($callback, array_values($params));
