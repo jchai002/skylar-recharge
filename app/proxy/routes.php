@@ -27,11 +27,11 @@ function require_customer_id($customer_id, $callback_if_true){
 {% layout 'sc-redirect' %}
 {% if customer == nil %}
 <script>
-    location.href = '/account/login?next='+location.pathname;
+    //location.href = '/account/login?next='+location.pathname;
 </script>
 {% else %}
 <script>
-    location.search = (location.search.length < 1 ? '?' : location.search+'&') + 'c={{ customer.id }}';
+    //location.search = (location.search.length < 1 ? '?' : location.search+'&') + 'c={{ customer.id }}';
 </script>
 {% endif %}";
 		return false;
@@ -39,11 +39,11 @@ function require_customer_id($customer_id, $callback_if_true){
 	echo "{% if customer == nil %}
 	{% layout 'sc-redirect' %}
 	<script>
-		location.href = '/account/login?next='+location.pathname;
+		//location.href = '/account/login?next='+location.pathname;
 	</script>
 	{% elsif customer.id != $customer_id %}
 	<script>
-		location.search = location.search.replace('c=".$customer_id."','c={{customer.id}}');
+		//location.search = location.search.replace('c=".$customer_id."','c={{customer.id}}');
 	</script>
 	{% else %}";
 	$callback_if_true();
