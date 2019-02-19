@@ -491,22 +491,6 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 
 	$max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
 
-	foreach($orders as $order){
-		$order_time = strtotime($order['scheduled_at']);
-		if($order_time > $max_time){
-			continue;
-		}
-		$date = date('Y-m-d', $order_time);
-		if(empty($schedule[$date])){
-			$schedule[$date] = [
-				'items' => [],
-				'ship_date_time' => strtotime($date),
-				'discounts' => [], // TODO
-				'total' => 0,
-			];
-		}
-		$schedule[$date]['items'][] = $order;
-	}
 	foreach($subscriptions as $subscription){
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
 
@@ -528,6 +512,38 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 				// TODO if needed
 			}
 		}
+	}
+	foreach($orders as $order){
+		$order_time = strtotime($order['scheduled_at']);
+		if($order_time > $max_time){
+			continue;
+		}
+		$date = date('Y-m-d', $order_time);
+		if(empty($schedule[$date])){
+			$schedule[$date] = [
+				'items' => [],
+				'ship_date_time' => strtotime($date),
+				'discounts' => [], // TODO
+				'total' => 0,
+			];
+		}
+		$schedule[$date]['items'][] = $order;
+	}
+	foreach($onetimes as $onetime){
+		$order_time = strtotime($onetime['scheduled_at']);
+		if($order_time > $max_time){
+			continue;
+		}
+		$date = date('Y-m-d', $order_time);
+		if(empty($schedule[$date])){
+			$schedule[$date] = [
+				'items' => [],
+				'ship_date_time' => strtotime($date),
+				'discounts' => [], // TODO
+				'total' => 0,
+			];
+		}
+		$schedule[$date]['items'][] = $onetime;
 	}
 	ksort($schedule);
 	return $schedule;
