@@ -41,11 +41,16 @@ if(!empty($rc_customer_id)){
 		'status' => 'QUEUED',
 	]);
 	$orders = $res['orders'];
+	$res = $rc->get('/onetimes', [
+		'customer_id' => $rc_customer_id,
+	]);
+	$onetimes = $res['onetimes'];
 } else {
+	$onetimes = []
 	$orders = [];
 }
 global $db;
-$upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, strtotime(date('Y-m-t',strtotime('+3 months'))));
+$upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, $onetimes, strtotime(date('Y-m-t',strtotime('+3 months'))));
 $products_by_id = [];
 $stmt = $db->prepare("SELECT * FROM products WHERE shopify_product_id=?");
 foreach($upcoming_shipments as $upcoming_shipment){
