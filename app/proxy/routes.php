@@ -25,7 +25,7 @@ function require_customer_id($callback_if_true){
 	header('Content-Type: application/liquid');
 	if(empty($customer_id)){
 		echo "
-{% layout 'sc-redirect' %}
+{% layout 'scredirect' %}
 {% if customer == nil %}
 <script>
     //location.href = '/account/login?next='+location.pathname;
@@ -38,7 +38,7 @@ function require_customer_id($callback_if_true){
 		return false;
 	}
 	echo "{% if customer == nil %}
-{% layout 'sc-redirect' %}
+{% layout 'scredirect' %}
 	<script>
 		//location.href = '/account/login?next='+location.pathname;
 	</script>
