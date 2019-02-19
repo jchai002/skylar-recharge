@@ -2,6 +2,10 @@
 
 require_once dirname(__FILE__).'/../../includes/config.php';
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Right now, assume they are a scent club member
 $scent_club_active = true;
 
