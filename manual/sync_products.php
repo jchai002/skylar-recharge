@@ -15,6 +15,6 @@ do {
 	]);
 
 	foreach($products as $product){
-		insert_update_product($db, $product);
+		echo insert_update_product($db, $product);
 	}
 } while(count($products) >= $page_size);
