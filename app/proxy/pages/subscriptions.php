@@ -94,6 +94,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 										<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
 									</div>
 									<div>
+										<?= $products_by_id[$item['shopify_product_id']]['type']?>
 										<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
 											<div class="sc-item-title">Monthly Scent Club</div>
 											<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
