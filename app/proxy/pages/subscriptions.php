@@ -7,7 +7,6 @@ $upcoming_shipments = [
 				'scent_club_product' => true,
 				'handle' => 'scent-club-2019-march',
 				'price' => 2500,
-				'price_formatted' => '$25',
 				'order_interval_frequency' => 1,
 				'order_interval_unit' => 'month',
 				'next_charge_scheduled_at' => strtotime('next month day 4'),
@@ -16,10 +15,8 @@ $upcoming_shipments = [
 		'discounts' => [[
 			'title' => 'Test',
 			'value' => '500',
-			'value_formatted' => '$5',
 		]],
 		'total' => '2000',
-		'total_formatted' => '$20',
 	],
 ];
 global $rc;
@@ -92,7 +89,7 @@ $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions);
 									<?php if($index == 0){ ?>
 										<div>
 											<div class="sc-item-detail-label">Total</div>
-											<div class="sc-item-detail-value"><?=$item['price_formatted']?></div>
+											<div class="sc-item-detail-value">{{ <?=$item['price'] ?> | money_without_trailing_zeroes }}</div>
 										</div>
 									<?php } ?>
 									<div>
