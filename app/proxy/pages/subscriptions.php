@@ -51,7 +51,10 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	}
 }
 ?>
-<?php if(empty($more)){ // For ajax ?>
+// For ajax
+<?php if(!empty($more)){ ?>
+{% template 'raw' %}
+<?php } else { ?>
 <!-- <?php print_r($products_by_id);?> -->
 {% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
