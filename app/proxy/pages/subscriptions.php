@@ -135,9 +135,11 @@ foreach($upcoming_shipments as $upcoming_shipment){
 			method: 'GET',
 			data: {
 			    months: months,
+				c: '{{ customer.id }}',
 			},
 			success: function(data){
-			    $('.sc-portal-content').html(data);
+			    console.log(data);
+			    //$('.sc-portal-content').html(data);
 			}
 		});
 	}
