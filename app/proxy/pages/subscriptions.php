@@ -1,4 +1,7 @@
 <?php
+if(!empty($_REQUEST['months'])){
+	$more = intval($_REQUEST['months']);
+}
 global $rc;
 $res = $rc->get('/subscriptions', [
 	'shopify_customer_id' => $_REQUEST['c'],
@@ -35,7 +38,8 @@ if(!empty($rc_customer_id)){
 	}
 }
 global $db;
-$upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, $onetimes, strtotime(date('Y-m-t',strtotime('+3 months'))));
+$months = empty($more) ? 3 : $more;
+$upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, $onetimes, strtotime(date('Y-m-t',strtotime("+$months months"))));
 $products_by_id = [];
 $stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 foreach($upcoming_shipments as $upcoming_shipment){
@@ -47,12 +51,14 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	}
 }
 ?>
+<?php if(empty($more)){ // For ajax ?>
 <!-- <?php print_r($products_by_id);?> -->
 {% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
 	{% include 'sc-member-nav' %}
 	<div class="sc-portal-content">
+		<?php } ?>
 		<div class="sc-portal-innercontainer">
 			<div class="sc-portal-title">Manage Membership</div>
 			<div class="sc-portal-subtitle">Update Shipping Date and Frequency</div>
@@ -115,11 +121,25 @@ foreach($upcoming_shipments as $upcoming_shipment){
 				<?php } ?>
 			</div>
 			<div class="sc-load-more">
-				<a href="#" class="action_button">Load More</a>
+				<a href="#" class="action_button" onclick="load_more(<?=$months+3?>); return false;">Load More</a>
 			</div>
 		</div>
+		<?php if(empty($more)){ ?>
 	</div>
 </div>
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
+	function load_more(months){
+	    $.ajax({
+			url: '/tools/skylar/subscriptions'
+			method: 'GET',
+			data: {
+			    months: months,
+			},
+			success: function(data){
+			    $('.sc-portal-content').html(data);
+			}
+		});
+	}
 </script>
+<?php } ?>

@@ -19,12 +19,6 @@ $router->route('/subscriptions/i', function() {
 	});
 	return true;
 });
-$router->route('/subscriptions\/more/i', function() {
-	require_customer_id(function(){
-		require('pages/more_subscriptions.php');
-	});
-	return true;
-});
 
 function require_customer_id($callback_if_true){
 	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
