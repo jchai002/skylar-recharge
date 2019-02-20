@@ -131,7 +131,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 <script>
 	function load_more(months){
 	    $.ajax({
-			url: '/tools/skylar/subscriptions'
+			url: '/tools/skylar/subscriptions',
 			method: 'GET',
 			data: {
 			    months: months,
