@@ -76,7 +76,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 						</div>
 						<?php foreach($upcoming_shipment['items'] as $item){ ?>
 							{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
-							<div class="sc-box-item">
+							<div class="sc-box-item" data-id="<?=$upcoming_shipment['id']?>" data-handle="<?=$products_by_id[$item['shopify_product_id']]['handle']?>">
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
 										<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
