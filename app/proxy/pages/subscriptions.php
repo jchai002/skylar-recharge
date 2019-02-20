@@ -141,8 +141,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 				c: '{{ customer.id }}',
 			},
 			success: function(data){
-			    console.log(data);
-			    //$('.sc-portal-content').html(data);
+			    $('.sc-portal-content').html(data);
 			}
 		});
 	}
