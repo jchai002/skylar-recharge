@@ -51,7 +51,6 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	}
 }
 ?>
-// For ajax
 <?php if(!empty($more)){ ?>
 {% layout 'raw' %}
 <?php } else { ?>
