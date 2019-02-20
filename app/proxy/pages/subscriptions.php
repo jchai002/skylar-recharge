@@ -53,7 +53,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 ?>
 // For ajax
 <?php if(!empty($more)){ ?>
-{% layoutssssssss 'raw' %}
+{% layouts 'raw' %}
 <?php } else { ?>
 <!-- <?php print_r($products_by_id);?> -->
 {% assign portal_page = 'subscriptions' %}
