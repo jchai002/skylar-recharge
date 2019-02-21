@@ -76,17 +76,19 @@ foreach($upcoming_shipments as $upcoming_shipment){
 						</div>
 						<?php foreach($upcoming_shipment['items'] as $item){ ?>
 							{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
-							<div class="sc-box-item" data-id="<?=$upcoming_shipment['id']?>" data-handle="<?=$products_by_id[$item['shopify_product_id']]['handle']?>">
+							<div class="sc-box-item" data-id="<?=$item['id']?>" data-handle="<?=$products_by_id[$item['shopify_product_id']]['handle']?>" data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>">
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
 										<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
 									</div>
 									<div>
-										<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
+										<?php if(is_scent_club_month($products_by_id[$item['shopify_product_id']])){ ?>
 											<div class="sc-item-title">Monthly Scent Club</div>
-											<!-- TODO: Swap in right scent, use that title -->
 											<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 											<div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
+										<?php } else if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
+											<div class="sc-item-title">Monthly Scent Club</div>
+											<div class="sc-item-subtitle"></div>
 										<?php } else { ?>
 											<div class="sc-item-title"><?=$item['product_title']?></div>
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
