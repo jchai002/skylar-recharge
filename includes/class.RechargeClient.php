@@ -13,9 +13,10 @@ class RechargeClient {
         $url = 'https://api.rechargeapps.com/'.trim($url,'/');
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => TRUE,
+			CURLOPT_HEADER => TRUE,
             CURLOPT_HTTPHEADER => [
                 'x-recharge-access-token: ' . $this->authToken,
-                'Content-Type: application/json'
+                'Content-Type: application/json',
             ],
         ]);
         if($method == 'GET'){
@@ -40,7 +41,14 @@ class RechargeClient {
         }
         curl_setopt($ch, CURLOPT_URL, $url);
         $response = curl_exec($ch);
-        $response = json_decode($response, true);
+
+		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+		$header = substr($response, 0, $header_size);
+		$body = substr($response, $header_size);
+
+		//echo $header;
+
+        $response = json_decode($body, true);
 
         if(!empty($response['warning']) && $response['warning'] == 'too many requests' && empty($data['retry'])){
         	$data['retry'] = 1;

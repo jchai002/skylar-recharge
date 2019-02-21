@@ -692,11 +692,19 @@ function sc_get_main_subscription(PDO $db, RechargeClient $rc, $filters = []){
 function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id){
 	$res = $rc->get('/onetimes', [
 		'address_id' => $address_id,
+		'status' => 'ONETIME',
 	]);
-	$onetimes = $res['onetimes'];
+	// Fix for api returning non-onetimes
+	$onetimes = [];
+	foreach($res['onetimes'] as $onetime){
+		if($onetime['status'] == 'ONETIME'){
+			$onetimes[] = $onetime;
+		}
+	}
 	$res = $rc->get('/orders', [
 		'address_id' => $address_id,
 		'scheduled_at_min' => date('Y-m-t'),
+		'status' => 'QUEUED',
 	]);
 	$orders = $res['orders'];
 	$res = $rc->get('/charges', [
@@ -722,6 +730,8 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 				$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
 			}
 			if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
+				echo "Found Scent Club 1: ";
+				print_r($item);
 				continue 2;
 			}
 		}
@@ -736,6 +746,8 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 					$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
 				}
 				if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
+					echo "Found Scent Club 2: ";
+					print_r($item);
 					continue 3;
 				}
 			}
@@ -750,7 +762,8 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 					$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
 				}
 				if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
-					// Found something for this month, go to next
+					echo "Found Scent Club 3: ";
+					print_r($item);
 					continue 3;
 				}
 			}
