@@ -703,6 +703,13 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 		'scheduled_at_min' => date('Y-m-t'),
 	]);
 	$orders = $res['orders'];
+	$res = $rc->get('/charges', [
+		'address_id' => $address_id,
+		'date_min' => date('Y-m-t'),
+		'status' => 'SKIPPED'
+	]);
+	$charges = $res['charges'];
+	print_r($charges);
 
 	$products_by_id = [];
 	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
@@ -727,6 +734,28 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 			}
 			// Found something for this month, go to next
 			continue 2;
+		}
+		foreach($charges as $charge){
+			if(date('Y-m', strtotime($charge['scheduled_at'])).'01' != $next_charge_date){
+				continue;
+			}
+			foreach($charge['line_items'] as $item){
+				if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
+					$stmt->execute([$item['shopify_product_id']]);
+					$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
+				}
+				if(!is_scent_club($products_by_id[$item['shopify_product_id']])){
+					continue;
+				}
+				if(!is_scent_club_month($products_by_id[$item['shopify_product_id']])){
+					continue;
+				}
+				if(!is_scent_club_swap($products_by_id[$item['shopify_product_id']])){
+					continue;
+				}
+				// Found something for this month, go to next
+				continue 3;
+			}
 		}
 		foreach($orders as $order){
 			if(date('Y-m', strtotime($order['scheduled_at'])).'01' != $next_charge_date){
