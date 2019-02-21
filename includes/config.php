@@ -554,3 +554,10 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 function is_scent_club($product){
 	return $product['type'] == 'Scent Club';
 }
+function is_scent_club_month($product){
+	return $product['type'] == 'Scent Club';
+}
+function sc_swap_scent(RechargeClient $rc, $subscription_id, $new_scent, $time){
+	// Get upcoming charges, check if there is one for the current date
+
+}
