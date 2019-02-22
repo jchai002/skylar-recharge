@@ -109,9 +109,9 @@ foreach($upcoming_shipments as $upcoming_shipment){
 										<?php } ?>
 									</div>
 									<?php if(!empty($item['skipped'])){ ?>
-										<div><a class="sc-unskip-link" href="#">Unskip Box</a></div>
+										<div><a class="sc-unskip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>">Unskip Box</a></div>
 									<?php } else if(!empty($item['charge'])){ ?>
-										<div><a class="sc-skip-link" href="#">Skip Box</a></div>
+										<div><a class="sc-skip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>">Skip Box</a></div>
 									<?php } ?>
 								</div>
 								<div class="sc-item-details">
@@ -172,6 +172,9 @@ foreach($upcoming_shipments as $upcoming_shipment){
             $('#sc-member-swap .sc-swap-option').removeClass('active').filter('[data-variant-id='+box_item.data('variant-id')+']').addClass('active');
             $('#sc-member-swap').data('mmenu').open();
         });
+        $('.sc-skip-link').click(function(e){
+
+		});
 	}
 </script>
 <?php } ?>
