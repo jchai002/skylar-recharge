@@ -136,4 +136,16 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	</div>
 </div>
 {{ 'sc-portal.js' | asset_url | script_tag }}
+<script>
+	function bind_events(){
+        $('.sc-swap-link').click(function(e){
+            e.preventDefault();
+            var box_item = $(this).closest('.sc-box-item');
+            $('#sc-member-swap').data('address-id', box_item.data('address-id'));
+            $('#sc-member-swap').data('date', box_item.data('date'));
+            $('#sc-member-swap .sc-swap-option').removeClass('active').filter('[data-variant-id='+box_item.data('variant-id')+']').addClass('active');
+            $('#sc-member-swap').data('mmenu').open();
+        });
+	}
+</script>
 <?php } ?>
