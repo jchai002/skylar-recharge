@@ -700,7 +700,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 			$onetimes[] = $onetime;
 		}
 	}
-	print_r($onetimes);
+	//print_r($onetimes);
 	$res = $rc->get('/orders', [
 		'address_id' => $address_id,
 		'scheduled_at_min' => date('Y-m-t'),
