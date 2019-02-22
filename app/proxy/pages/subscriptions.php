@@ -108,7 +108,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 										<?php } ?>
 										<?php if(!empty($item['skipped'])){ ?>
-											<div><a class="sc-unskip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>"<span>Unskip Box</span></a></div>
+											<div><a class="sc-unskip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>"><span>Unskip Box</span></a></div>
 										<?php } else if(!empty($item['charge'])){ ?>
 											<div><a class="sc-skip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>"><span>Skip Box</span></a></div>
 										<?php } ?>
@@ -121,7 +121,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-detail-value">${{ <?=$item['price'] ?> | money_without_trailing_zeroes }}</div>
 										</div>
 									<?php } ?>
-									<div> 
+									<div>
 										<div class="sc-item-detail-label">Delivery</div>
 										<div class="sc-item-detail-value">
 											<?php if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){ ?>
