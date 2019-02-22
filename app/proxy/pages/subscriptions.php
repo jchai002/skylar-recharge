@@ -121,7 +121,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-detail-value">${{ <?=$item['price'] ?> | money_without_trailing_zeroes }}</div>
 										</div>
 									<?php } ?>
-									<div>
+									<div> 
 										<div class="sc-item-detail-label">Delivery</div>
 										<div class="sc-item-detail-value">
 											<?php if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){ ?>
