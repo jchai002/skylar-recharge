@@ -162,7 +162,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	</div>
 </div>
 <div class="hidden">
-	<div class="sc-skip-modal">
+	<div id="sc-skip-modal">
 		<div class="sc-modal-title">Did you know you can...</div>
 		<div class="sc-modal-links">
 			<div class="sc-modal-linkbox">
@@ -194,7 +194,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
         });
         $('.sc-skip-link').unbind().click(function(e){
             $.fancybox.open({
-				src: '.sc-skip-modal',
+				src: '#sc-skip-modal',
 				type: 'inline',
 			});
 		});
