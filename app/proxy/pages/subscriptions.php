@@ -194,8 +194,11 @@ foreach($upcoming_shipments as $upcoming_shipment){
         });
         $('.sc-skip-link').unbind().click(function(e){
             e.preventDefault();
-            $.fancybox.open({
-				selector: '#sc-skip-modal',
+            $.fancybox.open($('#sc-skip-modal'),{
+                width: modal_width,
+                height: 'auto',
+                autoSize: false,
+                padding: 10,
 			});
 		});
 	}
