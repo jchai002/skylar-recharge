@@ -587,6 +587,7 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 			$item['type'] = 'charge';
 			$item['charge'] = $charge;
 			$item['skipped'] = $charge['status'] == 'SKIPPED';
+			$item['address_id'] = $charge['address_id'];
 			$schedule[$date]['items'][] = $item;
 		}
 	}
