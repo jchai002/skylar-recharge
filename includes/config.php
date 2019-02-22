@@ -505,6 +505,7 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 				];
 			}
 			$subscription['type'] = 'subscription';
+			$subscription['subscription_id'] = $subscription['id'];
 			$schedule[$date]['items'][] = $subscription;
 			$next_charge_time = strtotime($date.' +'.$subscription['order_interval_frequency'].' '.$subscription['order_interval_unit']);
 			if($subscription['order_interval_unit'] == 'month' && !empty($subscription['order_day_of_month'])){
@@ -552,6 +553,7 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 				'total' => 0,
 			];
 		}
+		$onetime['subscription_id'] = $onetime['id'];
 		$onetime['type'] = 'onetime';
 		$schedule[$date]['items'][] = $onetime;
 	}
