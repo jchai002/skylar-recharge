@@ -107,12 +107,12 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 										<?php } ?>
+										<?php if(!empty($item['skipped'])){ ?>
+											<div><a class="sc-unskip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>">Unskip Box</a></div>
+										<?php } else if(!empty($item['charge'])){ ?>
+											<div><a class="sc-skip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>">Skip Box</a></div>
+										<?php } ?>
 									</div>
-									<?php if(!empty($item['skipped'])){ ?>
-										<div><a class="sc-unskip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>">Unskip Box</a></div>
-									<?php } else if(!empty($item['charge'])){ ?>
-										<div><a class="sc-skip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>">Skip Box</a></div>
-									<?php } ?>
 								</div>
 								<div class="sc-item-details">
 									<?php if($index == 0){ ?>
