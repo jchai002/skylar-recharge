@@ -196,7 +196,9 @@ foreach($upcoming_shipments as $upcoming_shipment){
         });
         $('.sc-skip-link').unbind().click(function(e){
             e.preventDefault();
-            $.featherlight($('#sc-skip-modal'));
+            $.featherlight($('#sc-skip-modal'), {
+                variant: 'scent-club',
+			});
 		});
 	}
 </script>
