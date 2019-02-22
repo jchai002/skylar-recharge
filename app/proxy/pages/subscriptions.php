@@ -165,12 +165,12 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	<div id="sc-skip-modal">
 		<div class="sc-modal-title">Did you know you can...</div>
 		<div class="sc-modal-links">
-			<div class="sc-modal-linkbox">
+			<div class="sc-modal-linkbox" onclick="$.featherlight.close();ScentClub.show_date_change();">
 				<div><img src="{{ 'calendar.svg' | file_url }}" /></div>
 				<div class="sc-linkbox-label">Change Shipping Date</div>
 				<div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
 			</div>
-			<div class="sc-modal-linkbox">
+			<div class="sc-modal-linkbox" onclick="$.featherlight.close();ScentClub.show_swap();">
 				<div><img src="{{ 'swapscent-black.svg' | file_url }}" /></div>
 				<div class="sc-linkbox-label">Swap Scents</div>
 				<div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
@@ -188,14 +188,12 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	function bind_events(){
         $('.sc-swap-link').unbind().click(function(e){
             e.preventDefault();
-            var box_item = $(this).closest('.sc-box-item');
-            $('#sc-member-swap').data('address-id', box_item.data('address-id'));
-            $('#sc-member-swap').data('date', box_item.data('date'));
-            $('#sc-member-swap .sc-swap-option').removeClass('active').filter('[data-variant-id='+box_item.data('variant-id')+']').addClass('active');
-            $('#sc-member-swap').data('mmenu').open();
+            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
+            ScentClub.show_swap();
         });
         $('.sc-skip-link').unbind().click(function(e){
             e.preventDefault();
+            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
             $.featherlight($('#sc-skip-modal'), {
                 variant: 'scent-club',
                 afterOpen: $.noop, // Fix dumb app bug
