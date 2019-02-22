@@ -692,7 +692,6 @@ function sc_get_main_subscription(PDO $db, RechargeClient $rc, $filters = []){
 function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id){
 	$res = $rc->get('/onetimes', [
 		'address_id' => $address_id,
-		'status' => 'ONETIME',
 	]);
 	// Fix for api returning non-onetimes
 	$onetimes = [];
@@ -701,6 +700,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 			$onetimes[] = $onetime;
 		}
 	}
+	print_r($onetimes);
 	$res = $rc->get('/orders', [
 		'address_id' => $address_id,
 		'scheduled_at_min' => date('Y-m-t'),
@@ -717,14 +717,16 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 	$products_by_id = [];
 	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 	$offset = 0;
-	$next_charge_date = date('Y-m', strtotime("+1 months")).'-01';
+	$next_charge_month = date('Y-m', strtotime("+1 months"));
 	while(true) {
 		$offset++;
-		$next_charge_date = date('Y-m', strtotime("+$offset months")).'-01';
+		$next_charge_month = date('Y-m', strtotime("+$offset months"));
 		foreach($onetimes as $item){
-			if(date('Y-m', strtotime($item['next_charge_scheduled_at'])).'-01' != $next_charge_date){
+			$onetime_charge_month = date('Y-m', strtotime($item['next_charge_scheduled_at']));
+			if($onetime_charge_month != $next_charge_month){
 				continue;
 			}
+			echo "$onetime_charge_month != $next_charge_month".PHP_EOL;
 			if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
 				$stmt->execute([$item['shopify_product_id']]);
 				$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
@@ -736,8 +738,8 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 			}
 		}
 		foreach($charges as $charge){
-			$charge_date = date('Y-m', strtotime($charge['scheduled_at'])).'-01';
-			if($charge_date != $next_charge_date){
+			$charge_date = date('Y-m', strtotime($charge['scheduled_at']));
+			if($charge_date != $next_charge_month){
 				continue;
 			}
 			foreach($charge['line_items'] as $item){
@@ -753,7 +755,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 			}
 		}
 		foreach($orders as $order){
-			if(date('Y-m', strtotime($order['scheduled_at'])).'-01' != $next_charge_date){
+			if(date('Y-m', strtotime($order['scheduled_at'])) != $next_charge_month){
 				continue;
 			}
 			foreach($order['line_items'] as $item){
@@ -771,18 +773,18 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 		// If we've made it this far, there is no SC-related stuff scheduled for this offset
 		break;
 	}
-
+	return;
 	$main_sub = sc_get_main_subscription($db, $rc, [
 		'address_id' => $address_id,
 		'status' => 'ACTIVE',
 	]);
 
 	$res = $rc->post('/subscriptions/'.$main_sub['id'].'/set_next_charge_date',[
-		'date' => $next_charge_date,
+		'date' => $next_charge_month.'-01',
 	]);
 	//print_r($res);
 
-	return $next_charge_date;
+	return $next_charge_month.'-01';
 }
 function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time){
 	$delete_month = date('Y-m', $time);
@@ -809,7 +811,7 @@ function sc_get_monthly_scent(PDO $db, $time = null){
 	if(empty($time)){
 		$time = time();
 	}
-	$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE date=?");
+	$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=?");
 	$stmt->execute([date('Y-m', $time).'-01']);
 	if($stmt->rowCount() < 1){
 		return false;
@@ -822,6 +824,7 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time){
 		'status' => 'ACTIVE',
 	]);
 	if(empty($main_sub)){
+//		echo "No Main Sub";
 		return false;
 	}
 	sc_delete_month_onetime($db, $rc, $address_id, $time);
@@ -829,6 +832,7 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time){
 	$scent_info = sc_get_monthly_scent($db, $time);
 	if(empty($scent_info)){
 		sc_calculate_next_charge_date($db, $rc, $address_id);
+//		echo "No monthly scent";
 		return false;
 	}
 	$res = $rc->post('/addresses/'.$address_id.'/onetimes', [
@@ -836,6 +840,9 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time){
 		'shopify_variant_id' => $scent_info['shopify_variant_id'],
 		'properties' => $main_sub['properties'],
 		'price' => $main_sub['price'],
+		'quantity' => 1,
+		'product_title' => 'Monthly Scent Club',
+		'variant_title' => $scent_info['variant_title'],
 	]);
 	sc_calculate_next_charge_date($db, $rc, $address_id);
 	return $res['onetime'];
@@ -848,12 +855,21 @@ function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $
 	if(empty($main_sub)){
 		return false;
 	}
+	$stmt = $db->prepare("SELECT p.title FROM variants v WHERE shopify_variant_id=?");
+	$stmt->execute([$shopify_variant_id]);
+	if($stmt->rowCount() < 1){
+		return false;
+	}
+	$variant_title = $stmt->fetchColumn();
 	sc_delete_month_onetime($db, $rc, $address_id, $time);
 	$res = $rc->post('/addresses/'.$address_id.'/onetimes', [
 		'next_charge_scheduled_at' => date('Y-m-d H:i:s', $time),
 		'shopify_variant_id' => $shopify_variant_id,
 		'properties' => $main_sub['properties'],
 		'price' => $main_sub['price'],
+		'quantity' => 1,
+		'product_title' => 'Scent Club Swap-in',
+		'variant_title' => $variant_title,
 	]);
 	sc_calculate_next_charge_date($db, $rc, $address_id);
 	return $res['onetime'];
