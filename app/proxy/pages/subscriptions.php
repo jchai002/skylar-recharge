@@ -181,6 +181,8 @@ foreach($upcoming_shipments as $upcoming_shipment){
 		</div>
 	</div>
 </div>
+{{ 'featherlight.min.js' | asset_url | script_tag }}
+{{ 'featherlight.min.css' | asset_url | stylesheet_tag }}
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
 	function bind_events(){
@@ -194,10 +196,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
         });
         $('.sc-skip-link').unbind().click(function(e){
             e.preventDefault();
-            $.fancybox.open($('#sc-skip-modal'),{
-                height: auto,
-				width: 600,
-			});
+            $.featherlight($('#sc-skip-modal'));
 		});
 	}
 </script>
