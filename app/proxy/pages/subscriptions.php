@@ -195,7 +195,8 @@ foreach($upcoming_shipments as $upcoming_shipment){
         $('.sc-skip-link').unbind().click(function(e){
             e.preventDefault();
             $.fancybox.open($('#sc-skip-modal'),{
-                
+                height: auto,
+				width: 600,
 			});
 		});
 	}
