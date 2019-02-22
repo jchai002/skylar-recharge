@@ -556,6 +556,9 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 		$schedule[$date]['items'][] = $onetime;
 	}
 	foreach($charges as $charge){
+		if($charge['status'] != 'QUEUED' || $charge['status'] != 'SKIPPED'){
+			continue;
+		}
 		$order_time = strtotime($charge['scheduled_at']);
 		if($order_time > $max_time){
 			continue;
@@ -571,11 +574,11 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 		}
 		foreach($charge['line_items'] as $item){
 			foreach($schedule[$date]['items'] as $index=>$scheduled_item){
-				if(!empty($scheduled_item['subscription_id']) && $scheduled_item['subscription_id'] == $item['subscription_id']){
-					$schedule[$date]['items'][$index]['charge'] = $charge;
-					continue 2;
-				}
-				if($scheduled_item['id'] == $item['subscription_id']){
+				if(
+					(!empty($scheduled_item['subscription_id']) && $scheduled_item['subscription_id'] == $item['subscription_id'])
+					|| ($scheduled_item['id'] == $item['subscription_id'])
+				){
+					$schedule[$date]['items'][$index]['skipped'] = $charge['status'] == 'SKIPPED';
 					$schedule[$date]['items'][$index]['charge'] = $charge;
 					continue 2;
 				}
@@ -583,6 +586,7 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 			$item['id'] = $item['subscription_id'];
 			$item['type'] = 'charge';
 			$item['charge'] = $charge;
+			$item['skipped'] = $charge['status'] == 'SKIPPED';
 			$schedule[$date]['items'][] = $item;
 		}
 	}
