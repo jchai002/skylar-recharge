@@ -844,11 +844,13 @@ function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $
 		'status' => 'ACTIVE',
 	]);
 	if(empty($main_sub)){
+		echo "No Main Sub";
 		return false;
 	}
-	$stmt = $db->prepare("SELECT p.title FROM variants v WHERE shopify_variant_id=?");
+	$stmt = $db->prepare("SELECT title FROM variants WHERE shopify_id=?");
 	$stmt->execute([$shopify_variant_id]);
 	if($stmt->rowCount() < 1){
+		echo "No Variant";
 		return false;
 	}
 	$variant_title = $stmt->fetchColumn();
