@@ -83,7 +83,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 						</div>
 						<?php foreach($upcoming_shipment['items'] as $item){ ?>
 							{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
-							<div class="sc-box-item"
+							<div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
 								 data-address-id="<?=$item['address_id']?>"
 								 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
 								 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>">
