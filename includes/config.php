@@ -700,7 +700,6 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 			$onetimes[] = $onetime;
 		}
 	}
-	//print_r($onetimes);
 	$res = $rc->get('/orders', [
 		'address_id' => $address_id,
 		'scheduled_at_min' => date('Y-m-t'),
@@ -786,7 +785,7 @@ function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time
 	$products_by_id = [];
 	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 	foreach($res['onetimes'] as $onetime){
-		$ship_month = datE('Y-m',strtotime($onetime['next_charge_scheduled_at']));
+		$ship_month = date('Y-m',strtotime($onetime['next_charge_scheduled_at']));
 		if($ship_month != $delete_month){
 			continue;
 		}
