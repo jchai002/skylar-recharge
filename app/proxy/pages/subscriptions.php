@@ -113,11 +113,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 										<div class="sc-item-detail-label">Delivery</div>
 										<div class="sc-item-detail-value">
 											<?php if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){ ?>
-												<?php if($item['order_interval_frequency'] == '1'){ ?>
-													Every <?=$item['order_interval_unit']?>
-												<?php } else { ?>
-													Every <?=$item['order_interval_frequency']?> <?=$item['order_interval_unit']?>s
-												<?php } ?>
+												Every Month
 											<?php } else if(empty($item['order_interval_frequency'])){ ?>
 												Once
 											<?php } else if($item['order_interval_frequency'] == '1'){ ?>
