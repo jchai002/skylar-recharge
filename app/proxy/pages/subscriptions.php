@@ -104,7 +104,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 											<div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
 										<?php } else { ?>
-											<div class="sc-item-title"><?=$item['product_title']?></div>
+											<div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 										<?php } ?>
 									</div>
