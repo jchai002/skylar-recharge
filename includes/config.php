@@ -555,7 +555,7 @@ function is_scent_club($product){
 	return $product['type'] == 'Scent Club';
 }
 function is_scent_club_month($product){
-	return $product['type'] == 'Scent Club Scent';
+	return $product['type'] == 'Scent Club Month';
 }
 function is_scent_club_swap($product){
 	return $product['type'] == 'Scent Club Swap';
@@ -722,18 +722,15 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 		$offset++;
 		$next_charge_month = date('Y-m', strtotime("+$offset months"));
 		foreach($onetimes as $item){
-			$onetime_charge_month = date('Y-m', strtotime($item['next_charge_scheduled_at']));
-			if($onetime_charge_month != $next_charge_month){
+			$charge_date = date('Y-m', strtotime($item['next_charge_scheduled_at']));
+			if($charge_date != $next_charge_month){
 				continue;
 			}
-			echo "$onetime_charge_month != $next_charge_month".PHP_EOL;
 			if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
 				$stmt->execute([$item['shopify_product_id']]);
 				$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
 			}
 			if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
-				echo "Found Scent Club 1: ";
-				print_r($item);
 				continue 2;
 			}
 		}
@@ -748,8 +745,6 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 					$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
 				}
 				if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
-					echo "Found Scent Club 2: ";
-					print_r($item);
 					continue 3;
 				}
 			}
@@ -764,8 +759,6 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 					$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
 				}
 				if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
-					echo "Found Scent Club 3: ";
-					print_r($item);
 					continue 3;
 				}
 			}
@@ -773,7 +766,6 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 		// If we've made it this far, there is no SC-related stuff scheduled for this offset
 		break;
 	}
-	return;
 	$main_sub = sc_get_main_subscription($db, $rc, [
 		'address_id' => $address_id,
 		'status' => 'ACTIVE',
