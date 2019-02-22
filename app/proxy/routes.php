@@ -17,6 +17,10 @@ $router->route('/subscriptions\/swap/i', function() {
 	require('ajax/swap.php');
 	return true;
 });
+$router->route('/subscriptions\/skip/i', function() {
+	require('ajax/skip.php');
+	return true;
+});
 $router->route('/subscriptions/i', function() {
 	require_customer_id(function(){
 		require('pages/subscriptions.php');

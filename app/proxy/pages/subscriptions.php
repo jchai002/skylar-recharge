@@ -3,6 +3,7 @@ if(!empty($_REQUEST['months'])){
 	$more = intval($_REQUEST['months']);
 }
 global $rc;
+// TODO: Load skipped charges too
 $res = $rc->get('/subscriptions', [
 	'shopify_customer_id' => $_REQUEST['c'],
 	'status' => 'ACTIVE',
@@ -21,12 +22,18 @@ if(!empty($subscriptions)){
 }
 $onetimes = [];
 $orders = [];
+$charges = [];
 if(!empty($rc_customer_id)){
 	$res = $rc->get('/orders', [
 		'customer_id' => $rc_customer_id,
 		'status' => 'QUEUED',
 	]);
 	$orders = $res['orders'];
+	$res = $rc->get('/charges', [
+		'customer_id' => $rc_customer_id,
+		'date_min' => date('Y-m-d'),
+	]);
+	$charges = $res['charges'];
 	$res = $rc->get('/onetimes', [
 		'customer_id' => $rc_customer_id,
 	]);
@@ -39,7 +46,7 @@ if(!empty($rc_customer_id)){
 }
 global $db;
 $months = empty($more) ? 3 : $more;
-$upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, $onetimes, strtotime(date('Y-m-t',strtotime("+$months months"))));
+$upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, $onetimes, $charges, strtotime(date('Y-m-t',strtotime("+$months months"))));
 $products_by_id = [];
 $stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 foreach($upcoming_shipments as $upcoming_shipment){

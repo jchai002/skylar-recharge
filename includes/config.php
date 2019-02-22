@@ -486,7 +486,7 @@ if(!function_exists('divide')){
 };
 
 // Start Scent Club
-function generate_subscription_schedule($orders, $subscriptions, $onetimes = [], $max_time = null){
+function generate_subscription_schedule($orders, $subscriptions, $onetimes = [], $charges = [], $max_time = null){
 	$schedule = [];
 
 	$max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
@@ -504,6 +504,7 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 					'total' => 0,
 				];
 			}
+			$subscription['type'] = 'subscription';
 			$schedule[$date]['items'][] = $subscription;
 			$next_charge_time = strtotime($date.' +'.$subscription['order_interval_frequency'].' '.$subscription['order_interval_unit']);
 			if($subscription['order_interval_unit'] == 'month' && !empty($subscription['order_day_of_month'])){
@@ -527,7 +528,12 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 				'total' => 0,
 			];
 		}
-		$schedule[$date]['items'][] = $order;
+		foreach($order['line_items'] as $item){
+			$item['id'] = $item['subscription_id'];
+			$item['type'] = 'order';
+			$item['order'] = $order;
+			$schedule[$date]['items'][] = $item;
+		}
 	}
 	foreach($onetimes as $onetime){
 		$order_time = strtotime($onetime['next_charge_scheduled_at']);
@@ -546,7 +552,39 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 				'total' => 0,
 			];
 		}
+		$onetime['type'] = 'onetime';
 		$schedule[$date]['items'][] = $onetime;
+	}
+	foreach($charges as $charge){
+		$order_time = strtotime($charge['scheduled_at']);
+		if($order_time > $max_time){
+			continue;
+		}
+		$date = date('Y-m-d', $order_time);
+		if(empty($schedule[$date])){
+			$schedule[$date] = [
+				'items' => [],
+				'ship_date_time' => strtotime($date),
+				'discounts' => [], // TODO
+				'total' => 0,
+			];
+		}
+		foreach($charge['line_items'] as $item){
+			foreach($schedule[$date]['items'] as $index=>$scheduled_item){
+				if(!empty($scheduled_item['subscription_id']) && $scheduled_item['subscription_id'] == $item['subscription_id']){
+					$schedule[$date]['items'][$index]['charge'] = $charge;
+					continue 2;
+				}
+				if($scheduled_item['id'] == $item['subscription_id']){
+					$schedule[$date]['items'][$index]['charge'] = $charge;
+					continue 2;
+				}
+			}
+			$item['id'] = $item['subscription_id'];
+			$item['type'] = 'charge';
+			$item['charge'] = $charge;
+			$schedule[$date]['items'][] = $item;
+		}
 	}
 	ksort($schedule);
 	return $schedule;
@@ -581,11 +619,23 @@ function sc_skip_future_charge(RechargeClient $rc, $subscription_id, $time){
 		return $a['scheduled_at'] < $b['scheduled_at'] ? -1 : 1;
 	});
 	$charge = $charges[0];
-	/*
+
+	$charges_to_unskip = [];
 	while(strtotime($charge['scheduled_at']) <= $time){
-		$res = $rc->post('/charges/'.$charge['id'].'/')
+		$res = $rc->post('/charges/'.$charge['id'].'/skip', []);
+		if(empty($res['charge'])){
+			return false;
+		}
+		if($res['charge']['status'] == 'SKIPPED'){
+			$charges_to_unskip[] = $res['charge'];
+		} else {
+			$charges_to_unskip[] = [
+				'dummy' => true,
+				'date' => $res['charge']['scheduled_at'],
+			];
+		}
+		//print_r($rc->post('/charges/139403620/skip', ['subscription_id'=>37299566]));
 	}
-	*/
 }
 /*
 function sc_swap_to_default(PDO $db, RechargeClient $rc, $old_subscription_id, $time){
