@@ -108,6 +108,11 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 										<?php } ?>
 									</div>
+									<?php if(!empty($item['skipped'])){ ?>
+										<div><a class="sc-unskip-link" href="#">Unskip Box</a></div>
+									<?php } else if(!empty($item['charge'])){ ?>
+										<div><a class="sc-skip-link" href="#">Skip Box</a></div>
+									<?php } ?>
 								</div>
 								<div class="sc-item-details">
 									<?php if($index == 0){ ?>
