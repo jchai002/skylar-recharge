@@ -82,7 +82,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>">
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
-										<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
+										<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: '100x100' }} 1x, {{ box_product.images.first | img_url: '200x200' }} 2x" />
 									</div>
 									<div>
 										<?php if(is_scent_club_month($products_by_id[$item['shopify_product_id']])){ ?>
