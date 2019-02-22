@@ -125,26 +125,11 @@ foreach($upcoming_shipments as $upcoming_shipment){
 				<?php } ?>
 			</div>
 			<div class="sc-load-more">
-				<a href="#" class="action_button" onclick="load_more(<?=$months+3?>); return false;">Load More</a>
+				<a href="#" class="action_button" onclick="ScentClub.load_schedule(<?=$months+3?>); return false;">Load More</a>
 			</div>
 		</div>
 		<?php if(empty($more)){ ?>
 	</div>
 </div>
 {{ 'sc-portal.js' | asset_url | script_tag }}
-<script>
-	function load_more(months){
-	    $.ajax({
-			url: '/tools/skylar/subscriptions',
-			method: 'GET',
-			data: {
-			    months: months,
-				c: '{{ customer.id }}',
-			},
-			success: function(data){
-			    $('.sc-portal-content').html(data);
-			}
-		});
-	}
-</script>
 <?php } ?>
