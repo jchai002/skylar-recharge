@@ -108,9 +108,9 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 										<?php } ?>
 										<?php if(!empty($item['skipped'])){ ?>
-											<div><a class="sc-unskip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>">Unskip Box</a></div>
+											<div><a class="sc-unskip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>"<span>Unskip Box</span></a></div>
 										<?php } else if(!empty($item['charge'])){ ?>
-											<div><a class="sc-skip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>">Skip Box</a></div>
+											<div><a class="sc-skip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>"><span>Skip Box</span></a></div>
 										<?php } ?>
 									</div>
 								</div>
