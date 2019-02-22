@@ -198,6 +198,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
             e.preventDefault();
             $.featherlight($('#sc-skip-modal'), {
                 variant: 'scent-club',
+                afterOpen: $.noop, // Fix dumb app bug
 			});
 		});
 	}
