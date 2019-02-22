@@ -193,10 +193,8 @@ foreach($upcoming_shipments as $upcoming_shipment){
             $('#sc-member-swap').data('mmenu').open();
         });
         $('.sc-skip-link').unbind().click(function(e){
-            $.fancybox.open({
-				src: '#sc-skip-modal',
-				type: 'inline',
-			});
+            e.preventDefault();
+            $.fancybox.open($('#sc-skip-modal'));
 		});
 	}
 </script>
