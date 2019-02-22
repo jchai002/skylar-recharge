@@ -3,7 +3,7 @@ header('Content-Type: application/json');
 
 global $db, $rc;
 
-if(empty($_REQUEST['address_id']) || empty($_REQUEST['date']) || empty($_REQUEST['variant_id'])){
+if(empty($_REQUEST['address_id']) || empty($_REQUEST['date']) || !array_key_exists('variant_id', $_REQUEST)){
 	die(json_encode([
 		'success' => false,
 		'errors' => [['msg'=>'Fields Missing']],
