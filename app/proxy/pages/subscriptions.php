@@ -86,7 +86,9 @@ foreach($upcoming_shipments as $upcoming_shipment){
 							<div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
 								 data-address-id="<?=$item['address_id']?>"
 								 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
-								 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>">
+								 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
+								 data-master-image="{{ box_product.images.first | img_url: 'master' }}"
+							>
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
 										<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: '100x100' }} 1x, {{ box_product.images.first | img_url: '200x200' }} 2x" />
@@ -178,6 +180,22 @@ foreach($upcoming_shipments as $upcoming_shipment){
 		</div>
 		<div class="sc-modal-continue">
 			<a href="#">Continue To Skip</a>
+		</div>
+	</div>
+	<div id="sc-skip-confirm-modal">
+		<div class="sc-skip-image sc-desktop">
+			<img src="" />
+		</div>
+		<div>
+			<div class="sc-modal-title">Are you sure you want to skip:</div>
+			<div class="sc-modal-subtitle"></div>
+			<div class="sc-skip-image sc-mobile">
+				<img src="" />
+			</div>
+			<div class="sc-skip-options">
+				<a class="action_button">Yes, Skip Box</a>
+				<a class="action_button inverted">Cancel</a>
+			</div>
 		</div>
 	</div>
 </div>
