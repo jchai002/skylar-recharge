@@ -556,7 +556,7 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 		$schedule[$date]['items'][] = $onetime;
 	}
 	foreach($charges as $charge){
-		if($charge['status'] != 'QUEUED' || $charge['status'] != 'SKIPPED'){
+		if($charge['status'] != 'QUEUED' && $charge['status'] != 'SKIPPED'){
 			continue;
 		}
 		$order_time = strtotime($charge['scheduled_at']);
