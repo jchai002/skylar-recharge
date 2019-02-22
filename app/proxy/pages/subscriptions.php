@@ -196,7 +196,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
             $.fancybox.open({
 				src: '.sc-skip-modal',
 				type: 'inline',
-			})
+			});
 		});
 	}
 </script>
