@@ -63,7 +63,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 <?php } else { ?>
 <!-- <?php print_r($upcoming_shipments);?> -->
 {% assign portal_page = 'subscriptions' %}
-{{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
+{{ 'sc-portal.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
 	{% include 'sc-member-nav' %}
 	<div class="sc-portal-content">

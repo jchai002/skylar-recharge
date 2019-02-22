@@ -29,7 +29,7 @@ $recommended_products = [
 ];
 ?>
 {% assign portal_page = 'my_box' %}
-{{ 'sc-portal.scss' | asset_url | stylesheet_tag }}
+{{ 'sc-portal.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
 	{% include 'sc-member-nav' %}
 	<div class="sc-portal-content">
