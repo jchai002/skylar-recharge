@@ -13,6 +13,10 @@ $router->route('/members/i', function() {
 	});
 	return true;
 });
+$router->route('/subscriptions\/swap/i', function() {
+	require('ajax/swap.php');
+	return true;
+});
 $router->route('/subscriptions/i', function() {
 	require_customer_id(function(){
 		require('pages/subscriptions.php');
@@ -20,10 +24,6 @@ $router->route('/subscriptions/i', function() {
 	return true;
 });
 
-$router->route('/subscriptions\/swap/i', function() {
-	require('ajax/swap.php');
-	return true;
-});
 
 function require_customer_id($callback_if_true){
 	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
