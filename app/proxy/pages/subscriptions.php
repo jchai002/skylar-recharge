@@ -161,10 +161,30 @@ foreach($upcoming_shipments as $upcoming_shipment){
 		<?php if(empty($more)){ ?>
 	</div>
 </div>
+<div class="hidden">
+	<div class="sc-skip-modal">
+		<div class="sc-modal-title">Did you know you can...</div>
+		<div class="sc-modal-links">
+			<div class="sc-modal-linkbox">
+				<div><img src="{{ 'calendar.svg' | file_url }}" /></div>
+				<div class="sc-linkbox-label">Change Shipping Date</div>
+				<div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
+			</div>
+			<div class="sc-modal-linkbox">
+				<div><img src="{{ 'swapscent-black.svg' | file_url }}" /></div>
+				<div class="sc-linkbox-label">Swap Scents</div>
+				<div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
+			</div>
+		</div>
+		<div class="sc-modal-continue">
+			<a href="#">Continue To Skip</a>
+		</div>
+	</div>
+</div>
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
 	function bind_events(){
-        $('.sc-swap-link').click(function(e){
+        $('.sc-swap-link').unbind().click(function(e){
             e.preventDefault();
             var box_item = $(this).closest('.sc-box-item');
             $('#sc-member-swap').data('address-id', box_item.data('address-id'));
@@ -172,8 +192,11 @@ foreach($upcoming_shipments as $upcoming_shipment){
             $('#sc-member-swap .sc-swap-option').removeClass('active').filter('[data-variant-id='+box_item.data('variant-id')+']').addClass('active');
             $('#sc-member-swap').data('mmenu').open();
         });
-        $('.sc-skip-link').click(function(e){
-
+        $('.sc-skip-link').unbind().click(function(e){
+            $.fancybox.open({
+				src: '.sc-skip-modal',
+				type: 'inline',
+			})
 		});
 	}
 </script>
