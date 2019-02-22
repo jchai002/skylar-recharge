@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-global $rc;
+global $db, $rc;
 
 if(empty($_REQUEST['address_id']) || empty($_REQUEST['date']) || empty($_REQUEST['variant_id'])){
 	die(json_encode([
