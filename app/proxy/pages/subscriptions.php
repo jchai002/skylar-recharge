@@ -181,6 +181,8 @@ foreach($upcoming_shipments as $upcoming_shipment){
 		</div>
 	</div>
 </div>
+{{ 'featherlight.js' | asset_url | script_tag }}
+{{ 'featherlight.css' | asset_url | stylesheet_tag }}
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
 	function bind_events(){
