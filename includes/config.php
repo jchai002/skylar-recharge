@@ -629,7 +629,9 @@ function sc_skip_future_charge(RechargeClient $rc, $subscription_id, $time){
 
 	$charges_to_unskip = [];
 	while(strtotime($charge['scheduled_at']) <= $time){
-		$res = $rc->post('/charges/'.$charge['id'].'/skip', []);
+		$res = $rc->post('/charges/'.$charge['id'].'/skip', [
+			'subscription_id' => $subscription_id,
+		]);
 		if(empty($res['charge'])){
 			return false;
 		}
