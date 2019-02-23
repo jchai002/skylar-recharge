@@ -596,6 +596,11 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 	ksort($schedule);
 	return $schedule;
 }
+function get_product(PDO $db, $shopify_product_id){
+	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
+	$stmt->execute([$shopify_product_id]);
+	return $stmt->fetch();
+}
 function is_scent_club($product){
 	return $product['type'] == 'Scent Club';
 }
