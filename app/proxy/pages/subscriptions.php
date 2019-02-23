@@ -179,7 +179,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 			</div>
 		</div>
 		<div class="sc-modal-continue">
-			<a href="#">Continue To Skip</a>
+			<a href="#" onclick="ScentClub.show_skip_final(); return false;">Continue To Skip</a>
 		</div>
 	</div>
 	<div id="sc-skip-confirm-modal">
