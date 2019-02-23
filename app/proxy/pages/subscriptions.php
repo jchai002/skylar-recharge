@@ -88,7 +88,9 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
 								 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
 								 data-master-image="{{ box_product.images.first | img_url: 'master' }}"
-								 data-month-text="<?=date('F',$upcoming_shipment['ship_date_time'])?>"
+								 data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
+								 data-subscription-id="<?=$item['subscription_id']?>"
+								<?= !empty($item['charge']) ? 'data-charge-id="'.$item['charge']['id'].'"' : '' ?>
 							>
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
@@ -111,9 +113,9 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 										<?php } ?>
 										<?php if(!empty($item['skipped'])){ ?>
-											<div><a class="sc-unskip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>"><span>Unskip Box</span></a></div>
+											<div><a class="sc-unskip-link" href="#"><span>Unskip Box</span></a></div>
 										<?php } else if(!empty($item['charge'])){ ?>
-											<div><a class="sc-skip-link" href="#" data-charge-id="<?=$item['charge']['id']?>" data-subscription-id="<?=$item['subscription_id']?>"><span>Skip Box</span></a></div>
+											<div><a class="sc-skip-link" href="#"><span>Skip Box</span></a></div>
 										<?php } ?>
 									</div>
 								</div>
