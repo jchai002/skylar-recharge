@@ -91,6 +91,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								 data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
 								 data-subscription-id="<?=$item['subscription_id']?>"
 								<?= !empty($item['charge']) ? 'data-charge-id="'.$item['charge']['id'].'"' : '' ?>
+								data-type="<?=$item['type']?>"
 							>
 								<div class="sc-item-summary">
 									<div class="sc-item-image">

@@ -9,6 +9,9 @@ if(empty($_REQUEST['subscription_id']) || empty($_REQUEST['charge_id'])){
 		'errors' => [['msg'=>'Fields Missing']],
 	]));
 }
+
+// Might need to check if its a onetime
+
 $subscription_id = intval($_REQUEST['subscription_id']);
 $charge_id = intval($_REQUEST['charge_id']);
 
