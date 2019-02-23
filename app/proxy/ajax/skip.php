@@ -13,11 +13,11 @@ $subscription_id = intval($_REQUEST['subscription_id']);
 $charge_id = strtotime($_REQUEST['charge_id']);
 
 if(!empty($_REQUEST['unskip'])){
-	$rc->post('/charges/'.$charge_id.'/unskip', [
+	$res = $rc->post('/charges/'.$charge_id.'/unskip', [
 		'subscription_id' => $subscription_id
 	]);
 } else {
-	$rc->post('/charges/'.$charge_id.'/skip', [
+	$res = $rc->post('/charges/'.$charge_id.'/skip', [
 		'subscription_id' => $subscription_id
 	]);
 }
@@ -26,4 +26,5 @@ if(!empty($_REQUEST['unskip'])){
 
 echo json_encode([
 	'success' => true,
+	'res' => $res,
 ]);
