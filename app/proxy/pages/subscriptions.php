@@ -88,6 +88,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
 								 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
 								 data-master-image="{{ box_product.images.first | img_url: 'master' }}"
+								 data-month-text="<?=date('F',$upcoming_shipment['ship_date_time'])?>"
 							>
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
