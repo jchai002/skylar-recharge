@@ -114,7 +114,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 										<?php } ?>
 										<?php if(!empty($item['skipped'])){ ?>
-											<div><a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>); return false;"><span>Unskip Box</span></a></div>
+											<div><a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a></div>
 										<?php } else if(!empty($item['charge'])){ ?>
 											<div><a class="sc-skip-link" href="#"><span>Skip Box</span></a></div>
 										<?php } ?>
@@ -197,7 +197,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 				<img src="" />
 			</div>
 			<div class="sc-skip-options">
-				<a class="action_button" onclick="$(this).addClass('disabled'); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id')); return false;">Yes, Skip Box</a>
+				<a class="action_button" onclick="$(this).addClass('disabled'); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Yes, Skip Box</a>
 				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
 			</div>
 		</div>
