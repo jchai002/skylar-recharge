@@ -48,7 +48,6 @@ if($subscription['status'] == 'ONETIME'){
 		$res = $rc->post('/charges/'.$charge_id.'/unskip', [
 			'subscription_id' => $subscription_id
 		]);
-		sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
 		sc_swap_to_monthly($db, $rc, $subscription['address_id'], strtotime($charge['scheduled_at']));
 	} else {
 		$res = $rc->post('/charges/'.$charge_id.'/skip', [
