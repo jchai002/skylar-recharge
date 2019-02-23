@@ -10,7 +10,7 @@ if(empty($_REQUEST['subscription_id']) || empty($_REQUEST['charge_id'])){
 	]));
 }
 $subscription_id = intval($_REQUEST['subscription_id']);
-$charge_id = strtotime($_REQUEST['charge_id']);
+$charge_id = intval($_REQUEST['charge_id']);
 
 if(!empty($_REQUEST['unskip'])){
 	$res = $rc->post('/charges/'.$charge_id.'/unskip', [
@@ -25,7 +25,6 @@ if(!empty($_REQUEST['unskip'])){
 //sc_skip_future_charge($rc, $subscription_id, $time);
 
 echo json_encode([
-	'url' => '/charges/'.$charge_id.'/skip',
 	'success' => true,
 	'res' => $res,
 ]);
