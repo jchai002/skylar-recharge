@@ -93,6 +93,14 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								<?= !empty($item['charge']) ? 'data-charge-id="'.$item['charge']['id'].'"' : '' ?>
 								data-type="<?=$item['type']?>"
 							>
+
+								<?php if(!empty($item['skipped'])){ ?>
+									<div><a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a></div>
+								<?php } else if($item['type'] == 'onetime'){ ?>
+									<div><a class="sc-remove-link" href="#"><span>Remove Item</span></a></div>
+								<?php } else if(!empty($item['charge'])){ ?>
+									<div><a class="sc-skip-link" href="#"><span>Skip Box</span></a></div>
+								<?php } ?>
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
 										<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: '100x100' }} 1x, {{ box_product.images.first | img_url: '200x200' }} 2x" />
@@ -112,13 +120,6 @@ foreach($upcoming_shipments as $upcoming_shipment){
 										<?php } else { ?>
 											<div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
-										<?php } ?>
-										<?php if(!empty($item['skipped'])){ ?>
-											<div><a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a></div>
-										<?php } else if($item['type'] == 'onetime'){ ?>
-											<div><a class="sc-remove-link" href="#"><span>Remove Item</span></a></div>
-										<?php } else if(!empty($item['charge'])){ ?>
-											<div><a class="sc-skip-link" href="#"><span>Skip Box</span></a></div>
 										<?php } ?>
 									</div>
 								</div>
