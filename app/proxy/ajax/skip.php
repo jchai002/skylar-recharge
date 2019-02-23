@@ -18,7 +18,6 @@ $subscription = $res['subscription'];
 $res = $rc->get('/charges/'.$charge_id);
 $charge = $res['charge'];
 
-// Might need to check if its a onetime
 if($subscription['status'] == 'ONETIME'){
 	$res = $rc->delete('/onetimes/'.$subscription_id);
 	sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
@@ -50,6 +49,7 @@ if($subscription['status'] == 'ONETIME'){
 		]);
 	}
 	sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
+	sc_swap_to_monthly($db, $rc, $subscription['address_id'], strtotime($charge['scheduled_at']));
 }
 
 //sc_skip_future_charge($rc, $subscription_id, $time);
