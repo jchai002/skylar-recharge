@@ -29,6 +29,15 @@ if($subscription['status'] == 'ONETIME'){
 			'address_id' => $address_id,
 			'status' => 'ACTIVE',
 		]);
+		if(!empty($main_sub)){
+			$res = $rc->get('/charges', [
+				'subscription_id' => $main_sub['id'],
+				'date' => $charge['scheduled_at']
+			]);
+			if(!empty($res['charges'])){
+				$res = $rc->post('/charges/'.$res['charges'][0]['id'].'/skip');
+			}
+		}
 	}
 } else {
 	if(!empty($_REQUEST['unskip'])){
