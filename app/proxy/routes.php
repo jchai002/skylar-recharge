@@ -27,6 +27,12 @@ $router->route('/subscriptions/i', function() {
 	});
 	return true;
 });
+$router->route('/order-history/i', function() {
+	require_customer_id(function(){
+		require('pages/orderhistory.php');
+	});
+	return true;
+});
 
 
 function require_customer_id($callback_if_true){
