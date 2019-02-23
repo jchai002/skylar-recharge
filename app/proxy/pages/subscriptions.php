@@ -95,11 +95,11 @@ foreach($upcoming_shipments as $upcoming_shipment){
 							>
 
 								<?php if(!empty($item['skipped'])){ ?>
-									<div><a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a></div>
+									<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 								<?php } else if($item['type'] == 'onetime'){ ?>
-									<div><a class="sc-remove-link" href="#"><span>Remove Item</span></a></div>
+									<a class="sc-remove-link" href="#"><span>Remove Item</span></a>
 								<?php } else if(!empty($item['charge'])){ ?>
-									<div><a class="sc-skip-link" href="#"><span>Skip Box</span></a></div>
+									<a class="sc-skip-link" href="#"><span>Skip Box</span></a>
 								<?php } ?>
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
