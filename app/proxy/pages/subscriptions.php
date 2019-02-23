@@ -113,7 +113,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 										<?php } ?>
 										<?php if(!empty($item['skipped'])){ ?>
-											<div><a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.skip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>); return false;"><span>Unskip Box</span></a></div>
+											<div><a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>); return false;"><span>Unskip Box</span></a></div>
 										<?php } else if(!empty($item['charge'])){ ?>
 											<div><a class="sc-skip-link" href="#"><span>Skip Box</span></a></div>
 										<?php } ?>
