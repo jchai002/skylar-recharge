@@ -19,6 +19,8 @@ $res = $rc->get('/charges/'.$charge_id);
 $charge = $res['charge'];
 
 if($subscription['status'] == 'ONETIME'){
+	// Can only 'skip' onetimes if they are scent club
+	// Can't actually skip onetimes, so delete it and put the scent club back, then skip
 	$res = $rc->delete('/onetimes/'.$subscription_id);
 	sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
 	if(!empty($_REQUEST['unskip'])){
