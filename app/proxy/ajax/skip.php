@@ -37,7 +37,9 @@ if($subscription['status'] == 'ONETIME'){
 				'date' => $charge['scheduled_at']
 			]);
 			if(!empty($res['charges'])){
-				$res = $rc->post('/charges/'.$res['charges'][0]['id'].'/skip');
+				$res = $rc->post('/charges/'.$res['charges'][0]['id'].'/skip', [
+					'subscription_id' => $main_sub['id'],
+				]);
 			}
 		}
 	}
