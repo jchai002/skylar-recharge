@@ -46,9 +46,8 @@ class RechargeClient {
 		$header = substr($response, 0, $header_size);
 		$body = substr($response, $header_size);
 
-		//echo $header;
-
         $response = json_decode($body, true);
+        $response['header'] = $header;
 
         if(!empty($response['warning']) && $response['warning'] == 'too many requests' && empty($data['retry'])){
         	$data['retry'] = 1;
