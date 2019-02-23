@@ -25,6 +25,7 @@ if(!empty($_REQUEST['unskip'])){
 //sc_skip_future_charge($rc, $subscription_id, $time);
 
 echo json_encode([
+	'url' => '/charges/'.$charge_id.'/skip',
 	'success' => true,
 	'res' => $res,
 ]);
