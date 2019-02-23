@@ -17,6 +17,7 @@ $res = $rc->get('/subscriptions/'.$subscription_id);
 $subscription = $res['subscription'];
 $res = $rc->get('/charges/'.$charge_id);
 $charge = $res['charge'];
+$main_sub = [];
 
 if($subscription['status'] == 'ONETIME'){
 	// Can only 'skip' onetimes if they are scent club
@@ -61,4 +62,5 @@ echo json_encode([
 	'success' => true,
 	'res' => $res,
 	'subscription' => $subscription,
+	'main_sub' => $main_sub,
 ]);
