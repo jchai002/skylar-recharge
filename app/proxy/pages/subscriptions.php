@@ -196,8 +196,8 @@ foreach($upcoming_shipments as $upcoming_shipment){
 				<img src="" />
 			</div>
 			<div class="sc-skip-options">
-				<a class="action_button">Yes, Skip Box</a>
-				<a class="action_button inverted">Cancel</a>
+				<a class="action_button" onclick="$(this).addClass('disabled'); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id')); return false;">Yes, Skip Box</a>
+				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
 			</div>
 		</div>
 	</div>

@@ -3,17 +3,26 @@ header('Content-Type: application/json');
 
 global $db, $rc;
 
-if(empty($_REQUEST['subscription_id']) || empty($_REQUEST['date'])){
+if(empty($_REQUEST['subscription_id']) || empty($_REQUEST['charge_id'])){
 	die(json_encode([
 		'success' => false,
 		'errors' => [['msg'=>'Fields Missing']],
 	]));
 }
-//sc_swap_scent($rc, $_REQUEST['subscription_id'], $_REQUEST['handle'], strtotime($_REQUEST['date']));
 $subscription_id = intval($_REQUEST['subscription_id']);
-$time = strtotime($_REQUEST['date']);
+$charge_id = strtotime($_REQUEST['charge_id']);
 
-sc_skip_future_charge($rc, $subscription_id, $time);
+if(!empty($_REQUEST['unskip'])){
+	$rc->post('/charges/'.$charge_id.'/unskip', [
+		'subscription_id' => $subscription_id
+	]);
+} else {
+	$rc->post('/charges/'.$charge_id.'/skip', [
+		'subscription_id' => $subscription_id
+	]);
+}
+
+//sc_skip_future_charge($rc, $subscription_id, $time);
 
 echo json_encode([
 	'success' => true,
