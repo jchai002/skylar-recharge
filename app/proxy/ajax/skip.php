@@ -26,7 +26,7 @@ if($subscription['status'] == 'ONETIME'){
 		sc_swap_to_monthly($db, $rc, $subscription['address_id'], strtotime($charge['scheduled_at']));
 	} else {
 		$main_sub = sc_get_main_subscription($db, $rc, [
-			'address_id' => $address_id,
+			'address_id' => $subscription['address_id'],
 			'status' => 'ACTIVE',
 		]);
 		if(!empty($main_sub)){
