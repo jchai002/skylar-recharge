@@ -33,6 +33,18 @@ $router->route('/order-history/i', function() {
 	});
 	return true;
 });
+$router->route('/billing/i', function() {
+	require_customer_id(function(){
+		require('pages/billing.php');
+	});
+	return true;
+});
+$router->route('/settings/i', function() {
+	require_customer_id(function(){
+		require('pages/settings.php');
+	});
+	return true;
+});
 
 
 function require_customer_id($callback_if_true){

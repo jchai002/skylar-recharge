@@ -3,6 +3,19 @@ require_once('includes/config.php');
 require_once('includes/class.ShopifyClient.php');
 require_once('includes/class.RechargeClient.php');
 
+$sc = new ShopifyClient();
+
+$res = $sc->put('/admin/customers/644696211543.json', [
+	'customer' => [
+		'id' => 644696211543,
+		'password' => 'testtest',
+		'password_confirmation' => 'testtest',
+	]
+]);
+
+print_r($res);
+die();
+
 $rc = new RechargeClient();
 $rc_customer_id = 12965232;
 $rc_address_id = 18278415;
