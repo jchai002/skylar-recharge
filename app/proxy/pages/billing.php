@@ -108,7 +108,11 @@ if($customer['processor_type'] == 'stripe'){
 						<input id="sc-address-state" value="<?=$address['province']?>" />
 					</div>
 				</div>
-				<div class="save-button action_button">Save Address</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<div class="save-button action_button">Save Address</div>
+					</div>
+				</div>
 			</form>
 		</div>
 	</div>
@@ -135,7 +139,11 @@ if($customer['processor_type'] == 'stripe'){
 						<input id="sc-card-ccv" />
 					</div>
 				</div>
-				<div class="save-button action_button">Save Address</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<div class="save-button action_button">Save Address</div>
+					</div>
+				</div>
 			</form>
 		</div>
 	</div>
@@ -162,7 +170,11 @@ if($customer['processor_type'] == 'stripe'){
 						<input id="sc-card-ccv" />
 					</div>
 				</div>
-				<div class="save-button action_button">Save Address</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<div class="save-button action_button">Save Address</div>
+					</div>
+				</div>
 			</form>
 		</div>
 	</div>
