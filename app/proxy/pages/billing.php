@@ -1,5 +1,5 @@
 <?php
-use \Stripe\Stripe, \Stripe\Token;
+use \Stripe\Token;
 global $rc, $db;
 $main_sub = sc_get_main_subscription($db, $rc, [
 	'shopify_customer_id' => $_REQUEST['c'],
@@ -12,7 +12,6 @@ $customer = $res['customer'];
 
 $cc_info = [];
 if($customer['processor_type'] == 'stripe'){
-	Stripe::setApiKey("sk_test_4eC39HqLyjWDarjtT1zdp7dc");
 	$cc_info = Token::retrieve($customer['stripe_customer_token']);
 }
 ?>
