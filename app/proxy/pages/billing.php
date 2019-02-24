@@ -12,6 +12,7 @@ $customer = $res['customer'];
 
 $cc_info = [];
 if($customer['processor_type'] == 'stripe'){
+	echo $_ENV['STRIPE_API_KEY'];
 	$cc_info = Token::retrieve($customer['stripe_customer_token']);
 }
 ?>
