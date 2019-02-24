@@ -172,7 +172,15 @@ if($customer['processor_type'] == 'stripe'){
 	ScentClub.address_id =
     $(document).ready(function(){
         optional_scripts.onload('mmenu', function(){
-            $('#sc-member-swap').mmenu({
+            $('#sc-edit-card').mmenu({
+                offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
+                classes: "mm-white",
+            });
+            $('#sc-add-card').mmenu({
+                offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
+                classes: "mm-white",
+            });
+            $('#sc-edit-address').mmenu({
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
                 classes: "mm-white",
             });
