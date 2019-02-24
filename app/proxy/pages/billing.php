@@ -56,7 +56,7 @@ if($customer['processor_type'] == 'stripe'){
 			</div>
 			<div class="sc-tile-actions">
 				<?php if(!empty($cc_info)){?>
-					<a href="#" class="sc-edit-card" onclick="$('#sc-edit-card').data('mmenu').open(); return false;">Edit Card</a>
+					<a href="#" class="sc-edit-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Edit Card</a>
 				<?php } else { ?>
 					<a href="#" class="sc-add-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Add Card</a>
 				<?php } ?>
@@ -120,59 +120,28 @@ if($customer['processor_type'] == 'stripe'){
 		<div>
 			<div class="sc-mmenu-header">
 				<div class="sc-mmenu-close-icon"><img class="lazyload lazypreload" data-src="{{ 'icon-close.svg' | file_url }}"></div>
-				<div class="sc-mmenu-title">Add Card</div>
-			</div>
-			<form class="sc-mmenu-form">
-				<div class="sc-input-row">
-					<div class="sc-input-group">
-						<label for="sc-card-number">Card Number</label>
-						<input id="sc-card-number" />
-					</div>
-				</div>
-				<div class="sc-input-row">
-					<div class="sc-input-group">
-						<label for="sc-card-expiration">MM/YY</label>
-						<input id="sc-card-expiration" />
-					</div>
-					<div class="sc-input-group">
-						<label for="sc-card-ccv">CCV</label>
-						<input id="sc-card-ccv" />
-					</div>
-				</div>
-				<div class="sc-input-row">
-					<div class="sc-input-group">
-						<div class="save-button action_button">Save Address</div>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
-	<div id="sc-edit-card">
-		<div>
-			<div class="sc-mmenu-header">
-				<div class="sc-mmenu-close-icon"><img class="lazyload lazypreload" data-src="{{ 'icon-close.svg' | file_url }}"></div>
 				<div class="sc-mmenu-title">Edit Card</div>
 			</div>
 			<form class="sc-mmenu-form">
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-card-number">Card Number</label>
-						<input id="sc-card-number" />
+						<div id="sc-card-number"></div>
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-card-expiration">MM/YY</label>
-						<input id="sc-card-expiration" />
+						<div id="sc-card-expiration"></div>
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-card-ccv">CCV</label>
-						<input id="sc-card-ccv" />
+						<div id="sc-card-ccv"></div>
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
-						<div class="save-button action_button">Save Address</div>
+						<div class="save-button action_button">Save Card</div>
 					</div>
 				</div>
 			</form>
@@ -184,10 +153,6 @@ if($customer['processor_type'] == 'stripe'){
     ScentClub.address_id = <?=$address['id']?>;
     $(document).ready(function(){
         optional_scripts.onload('mmenu', function(){
-            $('#sc-edit-card').mmenu({
-                offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
-                classes: "mm-white",
-            });
             $('#sc-add-card').mmenu({
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
                 classes: "mm-white",
