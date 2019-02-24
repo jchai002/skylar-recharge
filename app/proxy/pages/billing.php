@@ -1,5 +1,4 @@
 <?php
-use \Stripe\Token;
 global $rc, $db;
 $main_sub = sc_get_main_subscription($db, $rc, [
 	'shopify_customer_id' => $_REQUEST['c'],
@@ -13,7 +12,7 @@ $customer = $res['customer'];
 $cc_info = [];
 if($customer['processor_type'] == 'stripe'){
 	\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
-	$cc_info = Token::retrieve($customer['stripe_customer_token']);
+	$cc_info = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
 }
 ?>
 {% assign portal_page = 'billing' %}
