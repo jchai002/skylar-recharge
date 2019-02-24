@@ -135,8 +135,8 @@ if($customer['processor_type'] == 'stripe'){
 						<div id="sc-card-expiration"></div>
 					</div>
 					<div class="sc-input-group">
-						<label for="sc-card-ccv">CCV</label>
-						<div id="sc-card-ccv"></div>
+						<label for="sc-card-cvc">CVC</label>
+						<div id="sc-card-cvc"></div>
 					</div>
 				</div>
 				<div class="sc-input-row">
@@ -164,8 +164,12 @@ if($customer['processor_type'] == 'stripe'){
 		});
         optional_scripts.onload('stripe', function(){
             window.elements = window.stripe.elements();
-            ScentClub.card = window.elements.create('card', {});
-            ScentClub.card.mount('#sc-card-number');
+            ScentClub.cardNumber = window.elements.create('cardNumber', {});
+            ScentClub.cardNumber.mount('#sc-card-number');
+            ScentClub.cardExpiry = window.elements.create('cardExpiry', {});
+            ScentClub.cardExpiry.mount('#sc-card-expiration');
+            ScentClub.cardExpiry = window.elements.create('cardCvc', {});
+            ScentClub.cardExpiry.mount('#sc-card-cvc');
         });
 	});
 </script>
