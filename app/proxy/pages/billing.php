@@ -172,7 +172,7 @@ if($customer['processor_type'] == 'stripe'){
             ScentClub.cardExpiry.mount('#sc-card-cvc');
             $('#sc-add-card form').submit(function(e){
                 e.preventDefault();
-                var tokenRes = window.stripe.createToken(window.elements);
+                var tokenRes = window.stripe.createToken(ScentClub.cardNumber);
                 tokenRes.then(function(response){
                     console.log(response);
 				});
