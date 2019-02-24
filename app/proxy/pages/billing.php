@@ -39,9 +39,7 @@ if($customer['processor_type'] == 'stripe'){
 			<div class="sc-portal-tile">
 				<div class="sc-box-title">Payment Method</div>
 			<?php if($customer['processor_type'] == 'stripe'){ ?>
-				{% raw %}
-				<?print_r($cc_info)?>
-				{% endraw %}
+				<?php print_r($cc_info)?>
 			<?php } else if($customer['processor_type'] == 'paypal'){ ?>
 			<?php } else { ?>
 			<?php } ?>
