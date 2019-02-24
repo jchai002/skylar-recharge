@@ -170,6 +170,13 @@ if($customer['processor_type'] == 'stripe'){
             ScentClub.cardExpiry.mount('#sc-card-expiration');
             ScentClub.cardExpiry = window.elements.create('cardCvc', {});
             ScentClub.cardExpiry.mount('#sc-card-cvc');
+            $('#sc-add-card form').submit(function(e){
+                e.preventDefault();
+                var tokenRes = window.stripe.createToken(window.elements);
+                tokenRes.then(function(response){
+                    console.log(response);
+				});
+			});
         });
 	});
 </script>
