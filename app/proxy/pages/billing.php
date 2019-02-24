@@ -12,7 +12,15 @@ $customer = $res['customer'];
 $cc_info = [];
 if($customer['processor_type'] == 'stripe'){
 	\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
-	$cc_info = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
+	$customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
+	if(!empty($customer->default_source)){
+		foreach($customer->sources->data as $source){
+			if($source->id == $customer->default_source){
+				$cc_info = $source;
+				break;
+			}
+		}
+	}
 }
 ?>
 {% assign portal_page = 'billing' %}
@@ -38,11 +46,20 @@ if($customer['processor_type'] == 'stripe'){
 
 			<div class="sc-portal-tile">
 				<div class="sc-box-title">Payment Method</div>
-			<?php if($customer['processor_type'] == 'stripe'){ ?>
-				<?php var_dump($cc_info)?>
+			<?php if(!empty($cc_info)){ ?>
+				<?=$cc_info->brand?>: *<?=$cc_info->last4?> <?=$cc_info->exp_month?>/<?=$cc_info->exp_year?>
 			<?php } else if($customer['processor_type'] == 'paypal'){ ?>
+				<a href="https://paypal.com" target="_blank">Paypal</a>
 			<?php } else { ?>
+				Card Not Stored
 			<?php } ?>
+			</div>
+			<div class="sc-box-actions">
+				<?php if(!empty($cc_info)){?>
+					<a href="#" class="sc-edit-card">Edit Card</a>
+				<?php } else { ?>
+					<a href="#" class="sc-add-card">Add Card</a>
+				<?php } ?>
 			</div>
 		</div>
 	</div>
