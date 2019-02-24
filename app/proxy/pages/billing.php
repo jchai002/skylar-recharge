@@ -65,7 +65,7 @@ if($customer['processor_type'] == 'stripe'){
 	</div>
 </div>
 <div class="hidden">
-	<div id="#sc-edit-address">
+	<div id="sc-edit-address">
 		<div>
 			<div class="sc-mmenu-header">
 				<div class="sc-mmenu-close-icon"><img class="lazyload lazypreload" data-src="{{ 'icon-close.svg' | file_url }}"></div>
@@ -112,7 +112,7 @@ if($customer['processor_type'] == 'stripe'){
 			</form>
 		</div>
 	</div>
-	<div id="#sc-add-card">
+	<div id="sc-add-card">
 		<div>
 			<div class="sc-mmenu-header">
 				<div class="sc-mmenu-close-icon"><img class="lazyload lazypreload" data-src="{{ 'icon-close.svg' | file_url }}"></div>
@@ -139,7 +139,7 @@ if($customer['processor_type'] == 'stripe'){
 			</form>
 		</div>
 	</div>
-	<div id="#sc-edit-card">
+	<div id="sc-edit-card">
 		<div>
 			<div class="sc-mmenu-header">
 				<div class="sc-mmenu-close-icon"><img class="lazyload lazypreload" data-src="{{ 'icon-close.svg' | file_url }}"></div>
