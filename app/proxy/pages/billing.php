@@ -15,7 +15,6 @@ if($customer['processor_type'] == 'stripe'){
 	Stripe::setApiKey("sk_test_4eC39HqLyjWDarjtT1zdp7dc");
 	$cc_info = Token::retrieve($customer['stripe_customer_token']);
 }
-print_r($cc_info);
 ?>
 {% assign portal_page = 'billing' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
@@ -41,7 +40,7 @@ print_r($cc_info);
 			<div class="sc-portal-tile">
 				<div class="sc-box-title">Payment Method</div>
 			<?php if($customer['processor_type'] == 'stripe'){ ?>
-
+				print_r($cc_info);
 			<?php } else if($customer['processor_type'] == 'paypal'){ ?>
 			<?php } else { ?>
 			<?php } ?>
