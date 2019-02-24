@@ -8,6 +8,8 @@ spl_autoload_register(function($class){
 	require_once(__DIR__.'/class.'.$class.'.php');
 });
 
+\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
+
 $dotenv = new Dotenv\Dotenv(__DIR__.'/..');
 $dotenv->load();
 
