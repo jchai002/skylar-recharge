@@ -163,7 +163,9 @@ if($customer['processor_type'] == 'stripe'){
             });
 		});
         optional_scripts.onload('stripe', function(){
-            window.add_card_elements = window.stripe.elements();
+            window.elements = window.stripe.elements();
+            ScentClub.card = window.elements.create('card', {});
+            ScentClub.card.mount('#sc-card-number');
         });
 	});
 </script>
