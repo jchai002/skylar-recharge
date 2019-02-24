@@ -181,7 +181,7 @@ if($customer['processor_type'] == 'stripe'){
 </div>
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
-	ScentClub.address_id =
+    ScentClub.address_id = <?=$address['id']?>;
     $(document).ready(function(){
         optional_scripts.onload('mmenu', function(){
             $('#sc-edit-card').mmenu({
@@ -197,5 +197,8 @@ if($customer['processor_type'] == 'stripe'){
                 classes: "mm-white",
             });
 		});
+        optional_scripts.onload('stripe', function(){
+            window.add_card_elements = window.stripe.elements();
+        });
 	});
 </script>
