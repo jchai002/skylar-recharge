@@ -110,7 +110,7 @@ if($customer['processor_type'] == 'stripe'){
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
-						<div class="save-button action_button">Save Address</div>
+						<input type="submit" class="save-button action_button" value="Save Address">
 					</div>
 				</div>
 			</form>
@@ -141,7 +141,7 @@ if($customer['processor_type'] == 'stripe'){
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
-						<div class="save-button action_button">Save Card</div>
+						<input type="submit" class="save-button action_button" value="Save Card">
 					</div>
 				</div>
 			</form>
