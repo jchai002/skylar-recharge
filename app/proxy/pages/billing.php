@@ -41,7 +41,7 @@ if($customer['processor_type'] == 'stripe'){
 				<div class="sc-tile-detail"><?=$address['city']?>, <?=$address['province']?> <?=$address['zip']?></div>
 			</div>
 			<div class="sc-tile-actions">
-				<a href="#" class="sc-edit-address">Edit</a>
+				<a href="#" class="sc-edit-address" onclick="$('#sc-edit-address').data('mmenu').open(); return false;">Edit</a>
 			</div>
 
 			<div class="sc-portal-tile">
@@ -56,12 +56,126 @@ if($customer['processor_type'] == 'stripe'){
 			</div>
 			<div class="sc-tile-actions">
 				<?php if(!empty($cc_info)){?>
-					<a href="#" class="sc-edit-card">Edit Card</a>
+					<a href="#" class="sc-edit-card" onclick="$('#sc-edit-card').data('mmenu').open(); return false;">Edit Card</a>
 				<?php } else { ?>
-					<a href="#" class="sc-add-card">Add Card</a>
+					<a href="#" class="sc-add-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Add Card</a>
 				<?php } ?>
 			</div>
 		</div>
 	</div>
 </div>
+<div class="hidden">
+	<div id="#sc-edit-address">
+		<div>
+			<div class="sc-mmenu-header">
+				<div class="sc-mmenu-close-icon"><img class="lazyload lazypreload" data-src="{{ 'icon-close.svg' | file_url }}"></div>
+				<div class="sc-mmenu-title">Edit Address</div>
+			</div>
+			<form class="sc-mmenu-form">
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-address-first-name">First Name</label>
+						<input id="sc-address-first-name" value="<?=$address['first_name']?>" />
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-address-last-name">Last Name</label>
+						<input id="sc-address-last-name" value="<?=$address['last_name']?>" />
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-address-address1">Address</label>
+						<input id="sc-address-address1" value="<?=$address['address1']?>" />
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-address-address2">Apt, Suite, etc</label>
+						<input id="sc-address-address2" value="<?=$address['address2']?>" />
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-address-zip">Zip Code</label>
+						<input id="sc-address-zip" value="<?=$address['zip']?>" />
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-address-city">City</label>
+						<input id="sc-address-city" value="<?=$address['city']?>" />
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-address-state">State</label>
+						<input id="sc-address-state" value="<?=$address['province']?>" />
+					</div>
+				</div>
+				<div class="save-button action_button">Save Address</div>
+			</form>
+		</div>
+	</div>
+	<div id="#sc-add-card">
+		<div>
+			<div class="sc-mmenu-header">
+				<div class="sc-mmenu-close-icon"><img class="lazyload lazypreload" data-src="{{ 'icon-close.svg' | file_url }}"></div>
+				<div class="sc-mmenu-title">Add Card</div>
+			</div>
+			<form class="sc-mmenu-form">
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-card-number">Card Number</label>
+						<input id="sc-card-number" />
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-card-expiration">MM/YY</label>
+						<input id="sc-card-expiration" />
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-card-ccv">CCV</label>
+						<input id="sc-card-ccv" />
+					</div>
+				</div>
+				<div class="save-button action_button">Save Address</div>
+			</form>
+		</div>
+	</div>
+	<div id="#sc-edit-card">
+		<div>
+			<div class="sc-mmenu-header">
+				<div class="sc-mmenu-close-icon"><img class="lazyload lazypreload" data-src="{{ 'icon-close.svg' | file_url }}"></div>
+				<div class="sc-mmenu-title">Edit Card</div>
+			</div>
+			<form class="sc-mmenu-form">
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-card-number">Card Number</label>
+						<input id="sc-card-number" />
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-card-expiration">MM/YY</label>
+						<input id="sc-card-expiration" />
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-card-ccv">CCV</label>
+						<input id="sc-card-ccv" />
+					</div>
+				</div>
+				<div class="save-button action_button">Save Address</div>
+			</form>
+		</div>
+	</div>
+</div>
 {{ 'sc-portal.js' | asset_url | script_tag }}
+<script>
+	ScentClub.address_id =
+    $(document).ready(function(){
+        optional_scripts.onload('mmenu', function(){
+            $('#sc-member-swap').mmenu({
+                offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
+                classes: "mm-white",
+            });
+		});
+	});
+</script>
