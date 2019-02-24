@@ -48,3 +48,4 @@ if($customer['processor_type'] == 'stripe'){
 		</div>
 	</div>
 </div>
+{{ 'sc-portal.js' | asset_url | script_tag }}

@@ -9,3 +9,4 @@
 		</div>
 	</div>
 </div>
+{{ 'sc-portal.js' | asset_url | script_tag }}
