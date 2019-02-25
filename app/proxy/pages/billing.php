@@ -164,10 +164,12 @@ if($customer['processor_type'] == 'stripe'){
 		});
         optional_scripts.onload('stripe', function(){
             var elementStyle = {
-                fontFamily: 'sofia-pro,Helvetica,Arial,sans-serif',
-				fontSize: '17px',
-				fontWeight: '300',
-				padding: '14px',
+                base: {
+                    fontFamily: 'sofia-pro,Helvetica,Arial,sans-serif',
+                    fontSize: '17px',
+                    fontWeight: '300',
+                    padding: '14px',
+                }
 			};
             window.elements = window.stripe.elements({
 
