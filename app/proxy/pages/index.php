@@ -1,24 +1,64 @@
 <?php
-$upcoming_box = [
-	'items' => [
-		[
-			'scent_club_product' => true,
-			'handle' => 'scent-club-2019-march',
-			'price' => 2500,
-			'price_formatted' => '$25',
-			'order_interval_frequency' => 1,
-			'order_interval_unit' => 'month',
-			'next_charge_scheduled_at' => strtotime('next month day 4'),
-		],
-	],
-	'discounts' => [[
-		'title' => 'Test',
-		'value' => '500',
-		'value_formatted' => '$5',
-	]],
-	'total' => '2000',
-	'total_formatted' => '$20',
-];
+
+global $rc;
+$res = $rc->get('/subscriptions', [
+	'shopify_customer_id' => $_REQUEST['c'],
+	'status' => 'ACTIVE',
+]);
+$subscriptions = $res['subscriptions'];
+if(!empty($subscriptions)){
+	$rc_customer_id = $subscriptions[0]['customer_id'];
+} else {
+	$res = $rc->get('/customers', [
+		'shopify_customer_id' => $_REQUEST['c'],
+	]);
+	$customer = $res['customers'];
+	if(!empty($customer)){
+		$rc_customer_id = $customer['id'];
+	}
+}
+$onetimes = [];
+$orders = [];
+$charges = [];
+if(!empty($rc_customer_id)){
+	$res = $rc->get('/orders', [
+		'customer_id' => $rc_customer_id,
+		'status' => 'QUEUED',
+	]);
+	$orders = $res['orders'];
+	$res = $rc->get('/charges', [
+		'customer_id' => $rc_customer_id,
+		'date_min' => date('Y-m-d'),
+	]);
+	$charges = $res['charges'];
+	$res = $rc->get('/onetimes', [
+		'customer_id' => $rc_customer_id,
+	]);
+	foreach($res['onetimes'] as $onetime){
+		// Fix for api returning non-onetimes
+		if($onetime['status'] == 'ONETIME'){
+			$onetimes[] = $onetime;
+		}
+	}
+}
+global $db;
+$months = empty($more) ? 3 : $more;
+$upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, $onetimes, $charges, strtotime(date('Y-m-t',strtotime("+$months months"))));
+$products_by_id = [];
+$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
+$upcoming_box = false;
+foreach($upcoming_shipments as $upcoming_shipment){
+	foreach($upcoming_shipment['items'] as $item){
+		if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
+			$stmt->execute([$item['shopify_product_id']]);
+			$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
+			if(empty($upcoming_box) && is_scent_club_any($products_by_id[$item['shopify_product_id']])){
+				$upcoming_box = $upcoming_shipment;
+			}
+		}
+	}
+}
+
 $recommended_products = [
 	['handle' => 'arrow'],
 	['handle' => 'capri'],
@@ -33,6 +73,11 @@ $recommended_products = [
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
 	{% include 'sc-member-nav' %}
 	<div class="sc-portal-content">
+		<?php if(empty($upcoming_box)){ ?>
+		<div class="sc-portal-innercontainer">
+			<div class="sc-portal-title">No Scent Club Subscription Found</div>
+		</div>
+		<?php } else { ?>
 		<div class="sc-portal-innercontainer">
 			<div class="sc-portal-title">Your Upcoming Box</div>
 			<div class="sc-portal-nextbox">
@@ -136,6 +181,7 @@ $recommended_products = [
 				<?php } ?>
 			</div>
 		</div>
+		<?php } ?>
 	</div>
 </div>
 {{ 'sc-portal.js' | asset_url | script_tag }}

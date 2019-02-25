@@ -3,7 +3,6 @@ if(!empty($_REQUEST['months'])){
 	$more = intval($_REQUEST['months']);
 }
 global $rc;
-// TODO: Load skipped charges too
 $res = $rc->get('/subscriptions', [
 	'shopify_customer_id' => $_REQUEST['c'],
 	'status' => 'ACTIVE',
