@@ -161,6 +161,11 @@ if($customer['processor_type'] == 'stripe'){
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
                 classes: "mm-white",
             });
+
+            $('#sc-add-card form').submit(function(e){
+                e.preventDefault();
+                ScentClub.update_address($(this).serializeJSON());
+			});
 		});
         optional_scripts.onload('stripe', function(){
             var elementStyle = {
