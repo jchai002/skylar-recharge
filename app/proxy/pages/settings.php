@@ -111,7 +111,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
                 });
             });
 
-            $('#sc-password-email form').submit(function(e){
+            $('#sc-edit-password form').submit(function(e){
                 e.preventDefault();
                 var data = $(this).serializeJSON();
                 data.c = Shopify.queryParams.c;
