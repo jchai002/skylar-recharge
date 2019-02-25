@@ -162,7 +162,7 @@ if($customer['processor_type'] == 'stripe'){
                 classes: "mm-white",
             });
 
-            $('#sc-add-card form').submit(function(e){
+            $('#sc-edit-address form').submit(function(e){
                 e.preventDefault();
                 ScentClub.update_address($(this).serializeJSON());
 			});
