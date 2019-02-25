@@ -13,8 +13,8 @@ $router->route('/members$/i', function() {
 	});
 	return true;
 });
-$router->route('/subscriptions\/swap/i', function() {
-	header('Content-Type: application/json');
+$router->route('/subscriptions\/swap/i', function() use(&$json_output) {
+	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
@@ -25,8 +25,8 @@ $router->route('/subscriptions\/swap/i', function() {
 	require('ajax/swap.php');
 	return true;
 });
-$router->route('/subscriptions\/skip/i', function() {
-	header('Content-Type: application/json');
+$router->route('/subscriptions\/skip/i', function() use(&$json_output) {
+	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
@@ -49,8 +49,8 @@ $router->route('/order-history$/i', function() {
 	});
 	return true;
 });
-$router->route('/billing\/update-card/i', function() {
-	header('Content-Type: application/json');
+$router->route('/billing\/update-card/i', function() use(&$json_output) {
+	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
@@ -65,8 +65,8 @@ $router->route('/billing\/update-card/i', function() {
 	require('ajax/update_card.php');
 	return true;
 });
-$router->route('/billing\/update-address/i', function() {
-	header('Content-Type: application/json');
+$router->route('/billing\/update-address/i', function() use(&$json_output) {
+	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
@@ -83,8 +83,8 @@ $router->route('/billing$/i', function() {
 	});
 	return true;
 });
-$router->route('/settings$\/update-email/i', function() {
-	header('Content-Type: application/json');
+$router->route('/settings$\/update-email/i', function() use(&$json_output) {
+	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
@@ -95,8 +95,8 @@ $router->route('/settings$\/update-email/i', function() {
 	require('ajax/update_email.php');
 	return true;
 });
-$router->route('/settings$\/update-password/i', function() {
-	header('Content-Type: application/json');
+$router->route('/settings$\/update-password/i', function() use(&$json_output) {
+	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,

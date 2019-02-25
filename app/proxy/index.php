@@ -13,7 +13,38 @@ $rc = new RechargeClient();
 
 require_once dirname(__FILE__).'/routes.php';
 $path = str_replace('/app/proxy/', '', parse_url($_SERVER['REQUEST_URI'])['path']);
-$res = $router->execute($path);
+$json_output = false;
+try {
+	ob_start();
+	$res = $router->execute($path);
+	if($json_output){
+		header('Content-Type: application/json');
+	}
+	ob_end_flush();
+} catch (ShopifyApiException $e){
+	ob_end_clean();
+	if($json_output){
+		header('Content-Type: application/json');
+		echo json_encode([
+			'success' => false,
+			'res' => $e->getResponse(),
+		]);
+	} else {
+		echo "An error has occurred while loading this page. Please try again later.";
+		echo "<!-- ".$e->getResponse()." -->";
+	}
+} catch (ErrorException $e){
+	if($json_output){
+		header('Content-Type: application/json');
+		echo json_encode([
+			'success' => false,
+			'res' => $e,
+		]);
+	} else {
+		echo "An error has occurred while loading this page. Please try again later.";
+		echo "<!-- ".var_dump($e)." -->";
+	}
+}
 if(!$res){
 	echo $path." Not Found";
 }
