@@ -14,14 +14,17 @@ $customer = $res['customer'];
 
 \Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
 
-
+$res = [];
 if($customer['processor_type'] != 'stripe'){
-	$res = \Stripe\Customer::create([
+	$res[] = $stripe_customer = \Stripe\Customer::create([
 		'email' => $customer['email'],
 		'source' => $token,
 	]);
+	$res[] = $rc->put('/customers/'.$customer['id'],[
+		'stripe_customer_token' => $stripe_customer->id,
+	]);
 } else {
-	$res = $stripe_customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
+	$res[] = $stripe_customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
 	$stripe_customer->source = $token;
 	$stripe_customer->save();
 }
