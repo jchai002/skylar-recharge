@@ -99,6 +99,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
                 var data = $(this).serializeJSON();
                 data.c = Shopify.queryParams.c;
                 $.ajax({
+                    type: 'post',
                     url: '/tools/skylar/settings/update-email',
                     data: data,
                     success: function(data){
@@ -116,6 +117,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
                 var data = $(this).serializeJSON();
                 data.c = Shopify.queryParams.c;
                 $.ajax({
+					type: 'post',
                     url: '/tools/skylar/settings/update-password',
                     data: data,
                     success: function(data){
