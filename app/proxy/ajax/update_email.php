@@ -4,8 +4,10 @@ $sc = new ShopifyClient();
 
 try {
 	$res = $sc->put('/admin/customers/'.intval($_REQUEST['c']).'.json', [
-		'id' => intval($_REQUEST['c']),
-		'email' => $_REQUEST['email'],
+		'customer' => [
+			'id' => intval($_REQUEST['c']),
+			'email' => $_REQUEST['email'],
+		]
 	]);
 
 	if($res['email'] == $_REQUEST['email']){

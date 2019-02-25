@@ -8,7 +8,7 @@ $sc = new ShopifyClient();
 $res = $sc->put('/admin/customers/644696211543.json', [
 	'customer' => [
 		'id' => 644696211543,
-		'password' => 'test',
+		'password' => 'testtest',
 		'password_confirmation' => 'testtest',
 	]
 ]);
