@@ -16,7 +16,7 @@ foreach($_REQUEST['address'] as $key => $value){
 	$new_address[$key] = $value;
 }
 
-$res[] = $rc->put('/address/'.$main_sub['address_id'], $new_address);
+$res[] = $rc->put('/addresses/'.$main_sub['address_id'], $new_address);
 
 $sc = new ShopifyClient();
 $customer = $sc->get('/admin/customers/'.$_REQUEST['c'].'.json');
