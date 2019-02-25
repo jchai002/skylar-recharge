@@ -27,7 +27,6 @@ $sc->put('/admin/customers/'.$_REQUEST['c'].'/addresses/'.$customer['default_add
 	'address' => $new_address,
 ]);
 
-
 echo json_encode([
 	'success' => true,
 	'res' => $res,
