@@ -26,7 +26,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 				<div class="sc-tile-detail">**********</div>
 			</div>
 			<div class="sc-tile-actions">
-				<a href="#" class="sc-edit-password" onclick="$('#sc-edit-password').data('mmenu').open(); return false;">Edit Card</a>
+				<a href="#" class="sc-edit-password" onclick="$('#sc-edit-password').data('mmenu').open(); return false;">Change Password</a>
 			</div>
 		</div>
 	</div>
