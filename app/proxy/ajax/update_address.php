@@ -3,8 +3,6 @@ header('Content-Type: application/json');
 
 global $rc, $db;
 
-$token = $_REQUEST['token'];
-
 $main_sub = sc_get_main_subscription($db, $rc, [
 	'shopify_customer_id' => $_REQUEST['c'],
 ]);
@@ -23,7 +21,7 @@ $res[] = $rc->put('/address/'.$main_sub['address_id'], $new_address);
 $sc = new ShopifyClient();
 $customer = $sc->get('/admin/customers/'.$_REQUEST['c'].'.json');
 
-$sc->put('/admin/customers/'.$_REQUEST['c'].'/addresses/'.$customer['default_address']['id'].'.json', [
+$res[] = $sc->put('/admin/customers/'.$_REQUEST['c'].'/addresses/'.$customer['default_address']['id'].'.json', [
 	'address' => $new_address,
 ]);
 
