@@ -3,7 +3,8 @@
 $sc = new ShopifyClient();
 
 try {
-	$res = $sc->put('/admin/customers/'.$_REQUEST['c'].'.json', [
+	$res = $sc->put('/admin/customers/'.intval($_REQUEST['c']).'.json', [
+		'id' => intval($_REQUEST['c']),
 		'email' => $_REQUEST['email'],
 	]);
 
