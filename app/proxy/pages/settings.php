@@ -62,7 +62,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 			<form class="sc-mmenu-form">
 				<div class="sc-input-row">
 					<div class="sc-input-group">
-						<label for="sc-change-password">Password</label>
+						<label for="sc-change-password">New Password</label>
 						<input id="sc-change-password" name="password" type="password" />
 					</div>
 				</div>
