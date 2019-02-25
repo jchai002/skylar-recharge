@@ -176,9 +176,7 @@ if($customer['processor_type'] == 'stripe'){
                     padding: '14px',
                 }
 			};
-            window.elements = window.stripe.elements({
-
-			});
+            window.elements = window.stripe.elements({});
             ScentClub.cardNumber = window.elements.create('cardNumber', {
                 'style': elementStyle,
 			});
