@@ -85,7 +85,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 <script>
     $(document).ready(function(){
         optional_scripts.onload('mmenu', function(){
-            $('#sc-add-email').mmenu({
+            $('#sc-edit-email').mmenu({
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
                 classes: "mm-white",
             });
