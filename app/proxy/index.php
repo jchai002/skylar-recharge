@@ -24,14 +24,21 @@ try {
 	ob_end_clean();
 	if($json_output){
 		header('Content-Type: application/json');
+		$error_string = '';
+		foreach($e->getResponse()['errors'] as $error){
+			foreach($error as $error_line){
+				$error_string .= $error_line.PHP_EOL;
+			}
+		}
 		echo json_encode([
 			'success' => false,
+			'error' => $error_string,
 			'res' => $e->getResponse(),
 		]);
 	} else {
 		header('Content-Type: application/liquid');
 		echo "An error has occurred while loading this page. Please try again later.";
-		echo "<!-- ".$e->getResponse()." -->";
+		echo "<!-- ".print_r($e->getResponse(), true)." -->";
 	}
 } catch (ErrorException $e){
 	if($json_output){
