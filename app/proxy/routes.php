@@ -83,7 +83,7 @@ $router->route('/billing$/i', function() {
 	});
 	return true;
 });
-$router->route('/settings$\/update-email/i', function() use(&$json_output) {
+$router->route('/settings\/update-email/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
@@ -95,7 +95,7 @@ $router->route('/settings$\/update-email/i', function() use(&$json_output) {
 	require('ajax/update_email.php');
 	return true;
 });
-$router->route('/settings$\/update-password/i', function() use(&$json_output) {
+$router->route('/settings\/update-password/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
