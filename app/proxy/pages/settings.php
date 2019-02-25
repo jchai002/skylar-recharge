@@ -2,9 +2,7 @@
 global $rc, $db;
 
 $sc = new ShopifyClient();
-$res = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
-print_r($res);
-$customer = $res['customer'];
+$customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 
 ?>
 {% assign portal_page = 'settings' %}
