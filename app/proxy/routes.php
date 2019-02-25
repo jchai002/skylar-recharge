@@ -38,9 +38,7 @@ $router->route('/billing\/update-card/i', function() {
 		echo json_encode(['success' => false]);
 		return false;
 	}
-	require_customer_id(function(){
-		require('ajax/update_card.php');
-	});
+	require('ajax/update_card.php');
 	return true;
 });
 $router->route('/billing/i', function() {
