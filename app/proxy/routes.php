@@ -33,6 +33,16 @@ $router->route('/order-history/i', function() {
 	});
 	return true;
 });
+$router->route('/billing\/update-card/i', function() {
+	if(empty($_REQUEST['token'])){
+		echo json_encode(['success' => false]);
+		return false;
+	}
+	require_customer_id(function(){
+		require('ajax/update_card.php');
+	});
+	return true;
+});
 $router->route('/billing/i', function() {
 	require_customer_id(function(){
 		require('pages/billing.php');
