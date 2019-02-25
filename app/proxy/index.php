@@ -30,6 +30,7 @@ try {
 			'res' => $e->getResponse(),
 		]);
 	} else {
+		header('Content-Type: application/liquid');
 		echo "An error has occurred while loading this page. Please try again later.";
 		echo "<!-- ".$e->getResponse()." -->";
 	}
@@ -41,10 +42,12 @@ try {
 			'res' => $e,
 		]);
 	} else {
+		header('Content-Type: application/liquid');
 		echo "An error has occurred while loading this page. Please try again later.";
 		echo "<!-- ".var_dump($e)." -->";
 	}
 }
 if(!$res){
+	header('Content-Type: application/liquid');
 	echo $path." Not Found";
 }
