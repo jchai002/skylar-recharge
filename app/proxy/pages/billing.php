@@ -190,8 +190,8 @@ if($customer['processor_type'] == 'stripe'){
                 e.preventDefault();
                 var tokenRes = window.stripe.createToken(ScentClub.cardNumber);
                 tokenRes.then(function(response){
-                    // TODO: Errors
                     console.log(response);
+                    location.reload();
 				});
 			});
         });
