@@ -69,7 +69,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-change-password-confirm">Confirm New Password</label>
-						<input id="sc-change-password-confirm" name="confirm_password" type="password" />
+						<input id="sc-change-password-confirm" name="password_confirmation" type="password" />
 					</div>
 				</div>
 				<div class="sc-input-row">
