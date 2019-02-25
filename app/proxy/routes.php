@@ -51,6 +51,14 @@ $router->route('/billing$/i', function() {
 	});
 	return true;
 });
+$router->route('/settings$\/update-email/i', function() {
+	require('ajax/update_email.php');
+	return true;
+});
+$router->route('/settings$\/update-password/i', function() {
+	require('ajax/update_password.php');
+	return true;
+});
 $router->route('/settings$/i', function() {
 	require_customer_id(function(){
 		require('pages/settings.php');

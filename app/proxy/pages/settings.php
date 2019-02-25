@@ -74,7 +74,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
-						<input type="submit" class="save-button action_button" value="Save Email">
+						<input type="submit" class="save-button action_button" value="Save Password">
 					</div>
 				</div>
 			</form>
@@ -96,9 +96,11 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 
             $('#sc-edit-email form').submit(function(e){
                 e.preventDefault();
+                var data = $(this).serializeJSON();
+                data.c = Shopify.queryParams.c;
                 $.ajax({
                     url: '/tools/skylar/settings/update-email',
-                    data: $(this).serialize(),
+                    data: data,
                     success: function(data){
                         if(data.success){
                             location.reload();
@@ -111,10 +113,11 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 
             $('#sc-password-email form').submit(function(e){
                 e.preventDefault();
-
+                var data = $(this).serializeJSON();
+                data.c = Shopify.queryParams.c;
                 $.ajax({
                     url: '/tools/skylar/settings/update-password',
-                    data: $(this).serialize(),
+                    data: data,
                     success: function(data){
                         if(data.success){
                             location.reload();
