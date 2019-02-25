@@ -47,7 +47,7 @@ if($customer['processor_type'] == 'stripe'){
 			<div class="sc-portal-tile">
 				<div class="sc-tile-title">Payment Method</div>
 			<?php if(!empty($cc_info)){ ?>
-				<?=$cc_info->brand?>: *<?=$cc_info->last4?> <?=$cc_info->exp_month?>/<?=$cc_info->exp_year?>
+				<?=$cc_info->brand?>: *<?=$cc_info->last4?> <?=str_pad($cc_info->exp_month, 2, '0', STR_PAD_LEFT)?>/<?=substr($cc_info->exp_year, 2, 4)?>
 			<?php } else if($customer['processor_type'] == 'paypal'){ ?>
 				<a href="https://paypal.com" target="_blank">Paypal</a>
 			<?php } else { ?>
