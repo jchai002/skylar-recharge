@@ -79,7 +79,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
-						<label for="">You will need to log in again to confirm.</label>
+						<label for="">You will need to log in again after saving.</label>
 					</div>
 				</div>
 			</form>
