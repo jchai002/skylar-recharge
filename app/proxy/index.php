@@ -20,7 +20,6 @@ try {
 	if($json_output){
 		header('Content-Type: application/json');
 	}
-	ob_end_flush();
 } catch (ShopifyApiException $e){
 	ob_end_clean();
 	if($json_output){
@@ -47,6 +46,7 @@ try {
 		echo "<!-- ".var_dump($e)." -->";
 	}
 }
+ob_end_flush();
 if(!$res){
 	header('Content-Type: application/liquid');
 	echo $path." Not Found";
