@@ -191,7 +191,11 @@ if($customer['processor_type'] == 'stripe'){
                 var tokenRes = window.stripe.createToken(ScentClub.cardNumber);
                 tokenRes.then(function(response){
                     console.log(response);
-                    location.reload();
+                    if(response.token){
+                        ScentClub.assign_token(response.token);
+					} else {
+                        alert(response.error);
+					}
 				});
 			});
         });
