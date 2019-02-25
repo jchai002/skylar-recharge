@@ -41,6 +41,10 @@ $router->route('/billing\/update-card/i', function() {
 	require('ajax/update_card.php');
 	return true;
 });
+$router->route('/billing\/update-address/i', function() {
+	require('ajax/update_address.php');
+	return true;
+});
 $router->route('/billing/i', function() {
 	require_customer_id(function(){
 		require('pages/billing.php');
