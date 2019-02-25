@@ -15,9 +15,16 @@ try {
 		'success' => true,
 	]);
 } catch(ShopifyApiException $e){
+	$errors = $e->getResponse()['errors'];
+	$error_string = '';
+	foreach($errors as $error){
+		foreach($error as $error_line){
+			$error_string .= $error_line.PHP_EOL;
+		}
+	}
 	echo json_encode([
 		'success' => false,
-		'error' => implode(PHP_EOL, $e->getResponse()['errors']),
+		'error' => $error_string,
 		'res' => $e->getResponse(),
 	]);
 }
