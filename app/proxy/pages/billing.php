@@ -163,17 +163,32 @@ if($customer['processor_type'] == 'stripe'){
             });
 		});
         optional_scripts.onload('stripe', function(){
-            window.elements = window.stripe.elements();
-            ScentClub.cardNumber = window.elements.create('cardNumber', {});
+            var elementStyle = {
+                fontFamily: 'sofia-pro,Helvetica,Arial,sans-serif',
+				fontSize: '17px',
+				fontWeight: '300',
+				padding: '14px',
+			};
+            window.elements = window.stripe.elements({
+
+			});
+            ScentClub.cardNumber = window.elements.create('cardNumber', {
+                'style': elementStyle,
+			});
             ScentClub.cardNumber.mount('#sc-card-number');
-            ScentClub.cardExpiry = window.elements.create('cardExpiry', {});
+            ScentClub.cardExpiry = window.elements.create('cardExpiry', {
+                'style': elementStyle,
+			});
             ScentClub.cardExpiry.mount('#sc-card-expiration');
-            ScentClub.cardExpiry = window.elements.create('cardCvc', {});
+            ScentClub.cardExpiry = window.elements.create('cardCvc', {
+                'style': elementStyle,
+			});
             ScentClub.cardExpiry.mount('#sc-card-cvc');
             $('#sc-add-card form').submit(function(e){
                 e.preventDefault();
                 var tokenRes = window.stripe.createToken(ScentClub.cardNumber);
                 tokenRes.then(function(response){
+                    // TODO: Errors
                     console.log(response);
 				});
 			});
