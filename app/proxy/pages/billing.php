@@ -47,11 +47,11 @@ if($customer['processor_type'] == 'stripe'){
 			<div class="sc-portal-tile">
 				<div class="sc-tile-title">Payment Method</div>
 			<?php if(!empty($cc_info)){ ?>
-				<?=$cc_info->brand?>: *<?=$cc_info->last4?> <?=str_pad($cc_info->exp_month, 2, '0', STR_PAD_LEFT)?>/<?=substr($cc_info->exp_year, 2, 4)?>
+				<div class="sc-tile-detail"><?=$cc_info->brand?>: *<?=$cc_info->last4?> <?=str_pad($cc_info->exp_month, 2, '0', STR_PAD_LEFT)?>/<?=substr($cc_info->exp_year, 2, 4)?></div>
 			<?php } else if($customer['processor_type'] == 'paypal'){ ?>
-				<a href="https://paypal.com" target="_blank">Paypal</a>
+				<div class="sc-tile-detail"><a href="https://paypal.com" target="_blank">Paypal</a></div>
 			<?php } else { ?>
-				Card Not Stored
+				<div class="sc-tile-detail">Card Not Stored</div>
 			<?php } ?>
 			</div>
 			<div class="sc-tile-actions">
