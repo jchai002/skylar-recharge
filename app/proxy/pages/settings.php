@@ -112,7 +112,6 @@ $customer = $res['customer'];
 
             $('#sc-password-email form').submit(function(e){
                 e.preventDefault();
-                
                 $.ajax({
                     url: '/tools/skylar/settings/update-password',
                     data: $(this).serialize(),
