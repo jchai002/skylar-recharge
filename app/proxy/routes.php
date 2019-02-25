@@ -14,10 +14,26 @@ $router->route('/members$/i', function() {
 	return true;
 });
 $router->route('/subscriptions\/swap/i', function() {
+	header('Content-Type: application/json');
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'errors' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
 	require('ajax/swap.php');
 	return true;
 });
 $router->route('/subscriptions\/skip/i', function() {
+	header('Content-Type: application/json');
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'errors' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
 	require('ajax/skip.php');
 	return true;
 });
@@ -34,6 +50,14 @@ $router->route('/order-history$/i', function() {
 	return true;
 });
 $router->route('/billing\/update-card/i', function() {
+	header('Content-Type: application/json');
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'errors' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
 	if(empty($_REQUEST['token'])){
 		echo json_encode(['success' => false]);
 		return false;
@@ -42,6 +66,14 @@ $router->route('/billing\/update-card/i', function() {
 	return true;
 });
 $router->route('/billing\/update-address/i', function() {
+	header('Content-Type: application/json');
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'errors' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
 	require('ajax/update_address.php');
 	return true;
 });
@@ -52,10 +84,26 @@ $router->route('/billing$/i', function() {
 	return true;
 });
 $router->route('/settings$\/update-email/i', function() {
+	header('Content-Type: application/json');
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'errors' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
 	require('ajax/update_email.php');
 	return true;
 });
 $router->route('/settings$\/update-password/i', function() {
+	header('Content-Type: application/json');
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'errors' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
 	require('ajax/update_password.php');
 	return true;
 });
