@@ -89,7 +89,7 @@ $recommended_products = [
 								<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: 100x100 }} 1x, {{ box_product.images.first | img_url: 200x200 }} 2x" />
 							</div>
 							<div>
-								<?php if($item['scent_club_product']){ ?>
+								<?php if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){ ?>
 									<div class="sc-item-title">Monthly Scent Club</div>
 									<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 									<div class="sc-item-link"><a href="/products/{{ box_product.handle }}">Explore This Month's Scent</a></div>
@@ -102,12 +102,16 @@ $recommended_products = [
 						<div class="sc-item-details">
 							<div>
 								<div class="sc-item-detail-label">Total</div>
-								<div class="sc-item-detail-value"><?=$item['price_formatted']?></div>
+								<div class="sc-item-detail-value"> ${{ <?=$item['price'] ?> | money_without_trailing_zeroes }}</div>
 							</div>
 							<div>
 								<div class="sc-item-detail-label">Delivery</div>
 								<div class="sc-item-detail-value">
-									<?php if($item['order_interval_frequency'] == '1'){ ?>
+									<?php if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){ ?>
+										Every Month
+									<?php } else if(empty($item['order_interval_frequency'])){ ?>
+										Once
+									<?php } else if($item['order_interval_frequency'] == '1'){ ?>
 										Every <?=$item['order_interval_unit']?>
 									<?php } else { ?>
 										Every <?=$item['order_interval_frequency']?> <?=$item['order_interval_unit']?>s
@@ -116,7 +120,7 @@ $recommended_products = [
 							</div>
 							<div>
 								<div class="sc-item-detail-label">Next Charge</div>
-								<div class="sc-item-detail-value"><?=date('F j, Y', $item['next_charge_scheduled_at'])?></div>
+								<div class="sc-item-detail-value"><?=date('F j, Y', strtotime($item['next_charge_scheduled_at']))?></div>
 							</div>
 						</div>
 					</div>
@@ -131,7 +135,7 @@ $recommended_products = [
 					<div class="sc-discount-link">Got a promo code?</div>
 				</div>
 				<div class="sc-box-total">
-					Grand Total: <?=$upcoming_box['total_formatted']?>
+					Grand Total: ${{ <?=$upcoming_box['price'] ?> | money_without_trailing_zeroes }}
 				</div>
 			</div>
 			<div class="sc-section-menu">
