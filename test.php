@@ -5,15 +5,19 @@ require_once('includes/class.RechargeClient.php');
 
 $sc = new ShopifyClient();
 
-$res = $sc->put('/admin/customers/644696211543.json', [
-	'customer' => [
-		'id' => 644696211543,
-		'password' => 'testtest',
-		'password_confirmation' => 'testtest',
-	]
-]);
+try {
+	$res = $sc->put('/admin/customers/644696211543.json', [
+		'customer' => [
+			'id' => 644696211543,
+			'password' => 'test',
+			'password_confirmation' => 'testtest',
+		]
+	]);
+	print_r($res);
+} catch(ShopifyApiException $e){
+	var_dump($e->getResponse());
+}
 
-print_r($res);
 die();
 
 $rc = new RechargeClient();

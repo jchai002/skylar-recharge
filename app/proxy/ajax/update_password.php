@@ -18,5 +18,6 @@ try {
 	echo json_encode([
 		'success' => false,
 		'error' => implode(PHP_EOL, $e->getResponse()['errors']),
+		'res' => $e->getResponse(),
 	]);
 }
