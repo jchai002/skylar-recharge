@@ -77,6 +77,11 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 						<input type="submit" class="save-button action_button" value="Save Password">
 					</div>
 				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="">You will need to log in again to confirm.</label>
+					</div>
+				</div>
 			</form>
 		</div>
 	</div>
