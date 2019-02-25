@@ -7,7 +7,7 @@ $router->route('',function(){
 	});
 	return true;
 });
-$router->route('/members/i', function() {
+$router->route('/members$/i', function() {
 	require_customer_id(function(){
 		require('pages/members.php');
 	});
@@ -21,13 +21,13 @@ $router->route('/subscriptions\/skip/i', function() {
 	require('ajax/skip.php');
 	return true;
 });
-$router->route('/subscriptions/i', function() {
+$router->route('/subscriptions$/i', function() {
 	require_customer_id(function(){
 		require('pages/subscriptions.php');
 	});
 	return true;
 });
-$router->route('/order-history/i', function() {
+$router->route('/order-history$/i', function() {
 	require_customer_id(function(){
 		require('pages/orderhistory.php');
 	});
@@ -45,13 +45,13 @@ $router->route('/billing\/update-address/i', function() {
 	require('ajax/update_address.php');
 	return true;
 });
-$router->route('/billing/i', function() {
+$router->route('/billing$/i', function() {
 	require_customer_id(function(){
 		require('pages/billing.php');
 	});
 	return true;
 });
-$router->route('/settings/i', function() {
+$router->route('/settings$/i', function() {
 	require_customer_id(function(){
 		require('pages/settings.php');
 	});
