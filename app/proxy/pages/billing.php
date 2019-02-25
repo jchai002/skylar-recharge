@@ -192,7 +192,7 @@ if($customer['processor_type'] == 'stripe'){
                 tokenRes.then(function(response){
                     console.log(response);
                     if(response.token){
-                        ScentClub.assign_token(response.token);
+                        ScentClub.assign_token(response.token.id);
 					} else {
                         alert(response.error);
 					}
