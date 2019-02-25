@@ -4,6 +4,7 @@ $sc = new ShopifyClient();
 
 try {
 	$res = $sc->put('/admin/customers/'.$_REQUEST['c'].'.json', [
+		'id' => intval($_REQUEST['c']),
 		'password' => $_REQUEST['password'],
 		'password_confirmation' => $_REQUEST['password_confirmation'],
 	]);
