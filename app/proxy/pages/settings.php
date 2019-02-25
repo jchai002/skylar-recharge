@@ -3,6 +3,7 @@ global $rc, $db;
 
 $sc = new ShopifyClient();
 $res = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
+print_r($res);
 $customer = $res['customer'];
 
 ?>
@@ -112,6 +113,7 @@ $customer = $res['customer'];
 
             $('#sc-password-email form').submit(function(e){
                 e.preventDefault();
+
                 $.ajax({
                     url: '/tools/skylar/settings/update-password',
                     data: $(this).serialize(),
