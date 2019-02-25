@@ -75,37 +75,37 @@ if($customer['processor_type'] == 'stripe'){
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-first-name">First Name</label>
-						<input id="sc-address-first-name" value="<?=$address['first_name']?>" />
+						<input id="sc-address-first-name" name="first_name" value="<?=$address['first_name']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-last-name">Last Name</label>
-						<input id="sc-address-last-name" value="<?=$address['last_name']?>" />
+						<input id="sc-address-last-name" name="last_name" value="<?=$address['last_name']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-address1">Address</label>
-						<input id="sc-address-address1" value="<?=$address['address1']?>" />
+						<input id="sc-address-address1" name="address1" value="<?=$address['address1']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-address2">Apt, Suite, etc</label>
-						<input id="sc-address-address2" value="<?=$address['address2']?>" />
+						<input id="sc-address-address2" name="address2" value="<?=$address['address2']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-zip">Zip Code</label>
-						<input id="sc-address-zip" value="<?=$address['zip']?>" />
+						<input id="sc-address-zip" name="zip" value="<?=$address['zip']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-city">City</label>
-						<input id="sc-address-city" value="<?=$address['city']?>" />
+						<input id="sc-address-city" name="city" value="<?=$address['city']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-state">State</label>
-						<input id="sc-address-state" value="<?=$address['province']?>" />
+						<input id="sc-address-state" name="province" value="<?=$address['province']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
@@ -120,7 +120,7 @@ if($customer['processor_type'] == 'stripe'){
 		<div>
 			<div class="sc-mmenu-header">
 				<div class="sc-mmenu-close-icon"><img class="lazyload lazypreload" data-src="{{ 'icon-close.svg' | file_url }}"></div>
-				<div class="sc-mmenu-title">Edit Card</div>
+				<div class="sc-mmenu-title"><?=empty($cc_info) ? 'Add' : 'Edit'?> Card</div>
 			</div>
 			<form class="sc-mmenu-form">
 				<div class="sc-input-row">
