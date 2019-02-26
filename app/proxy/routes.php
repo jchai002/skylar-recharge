@@ -49,6 +49,18 @@ $router->route('/subscriptions\/skip/i', function() use(&$json_output) {
 	require('ajax/skip.php');
 	return true;
 });
+$router->route('/subscriptions\/add-to-box/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/add_to_box.php');
+	return true;
+});
 $router->route('/subscriptions$/i', function() {
 	require_customer_id(function(){
 		require('pages/subscriptions.php');
