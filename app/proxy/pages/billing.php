@@ -85,37 +85,37 @@ if(!empty($main_sub)){
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-first-name">First Name</label>
-						<input id="sc-address-first-name" name="first_name" value="<?=$address['first_name']?>" />
+						<input id="sc-address-first-name" name="first_name" value="<?=empty($address) ? '' : $address['first_name']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-last-name">Last Name</label>
-						<input id="sc-address-last-name" name="last_name" value="<?=$address['last_name']?>" />
+						<input id="sc-address-last-name" name="last_name" value="<?=empty($address) ? '' : $address['last_name']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-address1">Address</label>
-						<input id="sc-address-address1" name="address1" value="<?=$address['address1']?>" />
+						<input id="sc-address-address1" name="address1" value="<?=empty($address) ? '' : $address['address1']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-address2">Apt, Suite, etc</label>
-						<input id="sc-address-address2" name="address2" value="<?=$address['address2']?>" />
+						<input id="sc-address-address2" name="address2" value="<?=empty($address) ? '' : $address['address2']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-zip">Zip Code</label>
-						<input id="sc-address-zip" name="zip" value="<?=$address['zip']?>" />
+						<input id="sc-address-zip" name="zip" value="<?=empty($address) ? '' : $address['zip']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-city">City</label>
-						<input id="sc-address-city" name="city" value="<?=$address['city']?>" />
+						<input id="sc-address-city" name="city" value="<?=empty($address) ? '' : $address['city']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-state">State</label>
-						<input id="sc-address-state" name="province" value="<?=$address['province']?>" />
+						<input id="sc-address-state" name="province" value="<?=empty($address) ? '' : $address['province']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
