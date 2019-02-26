@@ -236,8 +236,24 @@ foreach($upcoming_shipments as $upcoming_shipment){
             $.featherlight($('#sc-skip-modal'), {
                 variant: 'scent-club',
                 afterOpen: $.noop, // Fix dumb app bug
-			});
-		});
+            });
+        });
+        $('.sc-remove-link').unbind().click(function(e){
+            e.preventDefault();
+            var data = e.serializeJSON();
+            data.c = Shopify.queryParams.c;
+            $.ajax({
+				url: '/tools/skylar/subscriptions/remove-item',
+				data: data,
+				success: function(data){
+				    if(data.success){
+				        location.reload();
+					} else {
+				        alert(data.error);
+					}
+				}
+			})
+        });
 	}
 </script>
 <?php } ?>
