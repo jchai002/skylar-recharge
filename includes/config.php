@@ -609,9 +609,10 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			}
 			$item['id'] = $item['subscription_id'];
 			$item['type'] = 'charge';
-			$schedule[$date]['charge'] = $item['charge'] = $charge;
+			$item['charge'] = $charge;
 			$item['skipped'] = $charge['status'] == 'SKIPPED';
 			$item['address_id'] = $charge['address_id'];
+			$schedule[$date]['charge'] = $charge;
 			$schedule[$date]['items'][] = $item;
 		}
 	}
