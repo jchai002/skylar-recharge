@@ -112,7 +112,7 @@ $recommended_products = [
 						<div class="sc-item-details">
 							<div>
 								<div class="sc-item-detail-label">Total</div>
-								<div class="sc-item-detail-value"> ${{ <?=$item['price'] ?> | money_without_trailing_zeroes }}</div>
+								<div class="sc-item-detail-value"> $<?=price_without_trailing_zeroes($item['price']) ?></div>
 							</div>
 							<div>
 								<div class="sc-item-detail-label">Delivery</div>
@@ -142,7 +142,7 @@ $recommended_products = [
 							<?php if($discount['type'] == 'percentage'){ ?>
 								<div class="sc-discount-value"><?=$discount['amount']?>%</div>
 							<?php } else { ?>
-								<div class="sc-discount-value">${{ <?=$discount['amount'] ?> | money_without_trailing_zeroes }}</div>
+								<div class="sc-discount-value">$<?=price_without_trailing_zeroes($discount['amount']) ?></div>
 							<?php } ?>
 						</div>
 					<?php } ?>
@@ -157,11 +157,11 @@ $recommended_products = [
 				</div>
 				<?php if(!empty($upcoming_box['charge'])){ ?>
 					<div class="sc-box-total">
-						Grand Total: ${{ <?= $upcoming_box['charge']['total_price'] ?> | money_without_trailing_zeroes }}
+						Grand Total: $<?= price_without_trailing_zeroes($upcoming_box['charge']['total_price']) ?>
 					</div>
 				<?php } else { ?>
 					<div class="sc-box-total">
-						Grand Total: ${{ <?= array_sum(array_column($upcoming_box['items'], 'price')) ?> | money_without_trailing_zeroes }}
+						Grand Total: $<?= price_without_trailing_zeroes(array_sum(array_column($upcoming_box['items'], 'price'))) ?>
 					</div>
 				<?php } ?>
 			</div>

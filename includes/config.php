@@ -872,3 +872,9 @@ function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $
 	sc_calculate_next_charge_date($db, $rc, $address_id);
 	return $res['onetime'];
 }
+function price_without_trailing_zeroes($price = 0){
+	if($price % 100 > 0){
+		return number_format($price / 100, 2);
+	}
+	return $price/100;
+}

@@ -140,7 +140,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 									<?php if($index == 0){ ?>
 										<div>
 											<div class="sc-item-detail-label">Total</div>
-											<div class="sc-item-detail-value">${{ <?=$item['price'] ?> | money_without_trailing_zeroes }}</div>
+											<div class="sc-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
 										</div>
 									<?php } ?>
 									<div>
