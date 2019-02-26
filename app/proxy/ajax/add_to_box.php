@@ -27,7 +27,7 @@ foreach($product['variants'] as $variant){
 	}
 }
 
-$rc->post('/addresses/'.$charge['address_id'].'/onetime', [
+$res = $rc->post('/addresses/'.$charge['address_id'].'/onetime', [
 	'address_id' => $charge['address_id'],
 	'next_charge_scheduled_at' => $charge['scheduled_at'],
 	'product_title' => $product['title'],
