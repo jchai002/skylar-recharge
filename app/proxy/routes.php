@@ -25,6 +25,18 @@ $router->route('/subscriptions\/swap/i', function() use(&$json_output) {
 	require('ajax/swap.php');
 	return true;
 });
+$router->route('/subscriptions\/update-discount/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'errors' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/update_discount.php');
+	return true;
+});
 $router->route('/subscriptions\/skip/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
