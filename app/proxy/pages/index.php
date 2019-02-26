@@ -82,7 +82,7 @@ $recommended_products = [
 			<div class="sc-portal-title">Your Upcoming Box</div>
 			<div class="sc-portal-nextbox">
 				<?php foreach($upcoming_box['items'] as $item){ ?>
-					{% assign box_product = all_products['<?=$item['handle']?>'] %}
+					{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
 					<div class="sc-box-item">
 						<div class="sc-item-summary">
 							<div class="sc-item-image">
