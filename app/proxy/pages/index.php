@@ -44,8 +44,7 @@ if(!empty($rc_customer_id)){
 	}
 }
 global $db;
-$months = empty($more) ? 6 : $more;
-$upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, $onetimes, $charges, strtotime(date('Y-m-t',strtotime("+$months months"))));
+$upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges);
 $products_by_id = [];
 $stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 $upcoming_box = false;
