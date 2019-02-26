@@ -135,7 +135,7 @@ $recommended_products = [
 					<div class="sc-discount-link">Got a promo code?</div>
 				</div>
 				<div class="sc-box-total">
-					Grand Total: ${{ <?=$upcoming_box['price'] ?> | money_without_trailing_zeroes }}
+					Grand Total: ${{ <?=array_sum(array_column($upcoming_box['items'], 'price')) ?> | money_without_trailing_zeroes }}
 				</div>
 			</div>
 			<div class="sc-section-menu">
