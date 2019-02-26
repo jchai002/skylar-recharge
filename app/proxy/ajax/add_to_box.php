@@ -20,7 +20,7 @@ if(empty($_REQUEST['charge_id'])){
 	$res = $rc->get('/charges/'.intval($_REQUEST['charge_id']));
 	$charge = $res['charge'];
 }
-var_dump($charge);
+//var_dump($charge);
 $sc = new ShopifyClient();
 $product = $sc->get("/admin/products/".intval($_REQUEST['product_id']).'.json');
 foreach($product['variants'] as $variant){
@@ -29,7 +29,7 @@ foreach($product['variants'] as $variant){
 	}
 }
 
-$res = $rc->post('/addresses/'.$charge['address_id'].'/onetime', [
+$res = $rc->post('/addresses/'.$charge['address_id'].'/onetimes', [
 	'address_id' => $charge['address_id'],
 	'next_charge_scheduled_at' => $charge['scheduled_at'],
 	'product_title' => $product['title'],
