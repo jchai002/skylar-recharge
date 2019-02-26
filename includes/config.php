@@ -486,12 +486,24 @@ if(!function_exists('divide')){
 		return $numerator/$denominator;
 	}
 };
-
+function get_next_subscription_time($start_date, $order_interval_unit, $order_interval_frequency, $order_day_of_month = null, $order_day_of_week = null){
+	$next_charge_time = strtotime($start_date.' +'.$order_interval_frequency.' '.$order_interval_unit);
+	if($order_interval_unit == 'month' && !empty($order_day_of_month)){
+		$next_charge_time = strtotime(date('Y-m-'.$order_day_of_month, $next_charge_time));
+	} else if($order_interval_unit && !empty($order_day_of_week)){
+		// TODO if needed
+	}
+	return $next_charge_time;
+}
 // Start Scent Club
-function generate_subscription_schedule($orders, $subscriptions, $onetimes = [], $charges = [], $max_time = null){
+function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $onetimes = [], $charges = [], $max_time = null){
 	$schedule = [];
 
 	$max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
+
+	$products = [];
+
+	$stmt_get_swap = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=?");
 
 	foreach($subscriptions as $subscription){
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
@@ -505,6 +517,13 @@ function generate_subscription_schedule($orders, $subscriptions, $onetimes = [],
 					'discounts' => [], // TODO
 					'total' => 0,
 				];
+			}
+			if(empty($products[$subscription['shopify_product_id']])){
+				$products[$subscription['shopify_product_id']] = get_product($db, $subscription['shopify_product_id']);
+			}
+			if(is_scent_club($products[$subscription['shopify_product_id']])){
+//				$stmt_get_swap->execute([date('Y-m',$next_charge_time).'-01']);
+				// Swap here if changing to non-fill in
 			}
 			$subscription['type'] = 'subscription';
 			$subscription['subscription_id'] = $subscription['id'];
@@ -619,6 +638,7 @@ function sc_swap_scent(RechargeClient $rc, $subscription_id, $new_scent, $time){
 
 }
 function sc_skip_future_charge(RechargeClient $rc, $subscription_id, $time){
+	/*
 	$res = $rc->get('/charges', [
 		'subscription_id' => $subscription_id,
 		'status' => 'QUEUED',
@@ -652,97 +672,8 @@ function sc_skip_future_charge(RechargeClient $rc, $subscription_id, $time){
 		}
 		//print_r($rc->post('/charges/139403620/skip', ['subscription_id'=>37299566]));
 	}
+	*/
 }
-/*
-function sc_swap_to_default(PDO $db, RechargeClient $rc, $old_subscription_id, $time){
-	$stmt = $db->prepare("SELECT 1 FROM sc_products WHERE date=?");
-	$stmt->execute([date('Y-m-d', $time)]);
-	if($stmt->rowCount() > 0){
-		return sc_swap_to_monthly($db, $rc, $old_subscription_id, $time);
-	}
-	// No scent yet, unskip and remove if onetime
-	$res = $rc->get("/subscriptions/".$old_subscription_id);
-	$old_subscription = $res['subscription'];
-	if($old_subscription['status'] == 'ONETIME'){
-		$res = $rc->delete('/onetimes/'.$old_subscription_id);
-		if(!empty($res)){
-			return false;
-			// TODO: Log error
-		}
-	}
-	// unskip charge
-	$res = $rc->get('/charges', [
-		'customer_id' => $old_subscription['customer_id'],
-		'status' => 'SKIPPED',
-	]);
-	if(empty($res['charges'])){
-		return true;
-	}
-	$products_by_id = [];
-	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
-	$sc_skipped_charge = false;
-	foreach($res['charges'] as $charge){
-		if(strtotime($charge['scheduled_at']) == $time){
-			$sc_skipped_item = false;
-			foreach($charge['line_items'] as $item){
-				if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
-					$stmt->execute([$item['shopify_product_id']]);
-					$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
-				}
-				if(is_scent_club($products_by_id[$item['shopify_product_id']])){
-					$sc_skipped_charge = $charge;
-					$sc_skipped_item = $item;
-					break;
-				}
-			}
-		}
-	}
-	if(!empty($sc_skipped_item) && !empty($sc_skipped_charge)){
-		$rc->post('/charges/'.$sc_skipped_charge['id'].'/unskip', [
-			'subscription_id' => $sc_skipped_item['id'],
-		]);
-	}
-	return true;
-}
-function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $old_subscription_id, $time){
-	// Get what scent variant id to use
-	$stmt = $db->prepare("SELECT v.shopify_variant_id FROM sc_products scp
-LEFT JOIN variants v ON scp.variant_id = v.id
-WHERE scp.date=?");
-	$stmt->execute([date('Y-m', $time).'-01']);
-	$variant_id = $stmt->fetchColumn();
-	if(empty($variant_id)){
-		sc_swap_to_default($db, $rc, $old_subscription_id, $time);
-	}
-
-	// Get old sub info
-	$res = $rc->get("/subscriptions/".$old_subscription_id);
-	$old_subscription = $res['subscription'];
-	// Delete old onetime
-	if($old_subscription['status'] == 'ONETIME'){
-		$res = $rc->delete('/onetimes/'.$old_subscription_id);
-		if(!empty($res)){
-			return false;
-		}
-	}
-
-	// Skip month
-	$main_sub = sc_get_main_subscription($db, $rc, [
-		'customer_id' => $old_subscription['customer_id'],
-		'status' => 'ACTIVE',
-	]);
-
-	// Create onetime for this month
-	$rc->post('/addresses/'.$main_sub['address_id'].'/onetimes', [
-		'price' => $main_sub['price'],
-		'next_charge_scheduled_at' => date('Y-m-d\TH:i:s', $time),
-		'shopify_variant_id' => $variant_id,
-		'properties' => $main_sub['properties'],
-		'quantity' => 1,
-	]);
-	return true;
-}
-*/
 function sc_get_main_subscription(PDO $db, RechargeClient $rc, $filters = []){
 	$res = $rc->get('/subscriptions', $filters);
 	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
@@ -878,11 +809,13 @@ function sc_get_monthly_scent(PDO $db, $time = null){
 	}
 	return $stmt->fetch();
 }
-function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time){
-	$main_sub = sc_get_main_subscription($db, $rc, [
-		'address_id' => $address_id,
-		'status' => 'ACTIVE',
-	]);
+function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $main_sub = []){
+	if(empty($main_sub)){
+		$main_sub = sc_get_main_subscription($db, $rc, [
+			'address_id' => $address_id,
+			'status' => 'ACTIVE',
+		]);
+	}
 	if(empty($main_sub)){
 //		echo "No Main Sub";
 		return false;
