@@ -5,6 +5,7 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 ]);
 $address = [];
 $customer = [];
+$cc_info = [];
 if(!empty($main_sub)){
 	$res = $rc->get('/addresses/'.$main_sub['address_id']);
 	$address = $res['address'];
@@ -12,7 +13,6 @@ if(!empty($main_sub)){
 	$res = $rc->get('/customers/'.$main_sub['customer_id']);
 	$customer = $res['customer'];
 
-	$cc_info = [];
 	if($customer['processor_type'] == 'stripe'){
 		\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
 		$customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
@@ -56,6 +56,8 @@ if(!empty($main_sub)){
 				<div class="sc-tile-title">Payment Method</div>
 			<?php if(!empty($cc_info)){ ?>
 				<div class="sc-tile-detail"><?=$cc_info->brand?>: *<?=$cc_info->last4?> <?=str_pad($cc_info->exp_month, 2, '0', STR_PAD_LEFT)?>/<?=substr($cc_info->exp_year, 2, 4)?></div>
+			<?php } else if(empty($customer)){ ?>
+				<div class="sc-tile-detail">Card Not Stored</div>
 			<?php } else if($customer['processor_type'] == 'paypal'){ ?>
 				<div class="sc-tile-detail"><a href="https://paypal.com" target="_blank">Paypal</a></div>
 			<?php } else { ?>
