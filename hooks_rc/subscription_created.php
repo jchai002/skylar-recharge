@@ -30,12 +30,10 @@ $max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
 echo date('Y-m-d', $max_time);
 while($next_charge_time < $max_time){
 	var_dump(date('Y-m-d', $next_charge_time));
-	$next_charge_time = get_next_subscription_time(date('Y-m-d', $next_charge_time), $subscription['order_interval_unit'], $subscription['order_interval_frequency'], $subscription['order_day_of_month'], $subscription['order_day_of_week']);
-	var_dump(date('Y-m', $next_charge_time).'-01');
 	$stmt->execute([date('Y-m', $next_charge_time).'-01']);
-	var_dump($stmt->fetch());
 	if($stmt->rowCount() > 0){
 		sc_swap_to_monthly($db, $rc, $subscription['address_id'], $next_charge_time, $subscription);
 		echo 'swap';
 	}
+	$next_charge_time = get_next_subscription_time(date('Y-m-d', $next_charge_time), $subscription['order_interval_unit'], $subscription['order_interval_frequency'], $subscription['order_day_of_month'], $subscription['order_day_of_week']);
 }
