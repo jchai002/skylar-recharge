@@ -116,6 +116,13 @@ $router->route('/settings\/update-password/i', function() use(&$json_output) {
 		]);
 		return true;
 	}
+	if(empty($_REQUEST['charge_id'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing Charge ID',
+		]);
+		return true;
+	}
 	require('ajax/update_password.php');
 	return true;
 });

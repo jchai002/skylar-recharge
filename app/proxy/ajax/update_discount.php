@@ -1,9 +1,5 @@
 <?php
 
-if(empty($_REQUEST['charge_id'])){
-	echo "No Charge ID";
-}
-
 $rc = new RechargeClient();
 
 if(!empty($_REQUEST['discount_code'])){
