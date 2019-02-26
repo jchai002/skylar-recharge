@@ -240,11 +240,12 @@ foreach($upcoming_shipments as $upcoming_shipment){
         });
         $('.sc-remove-link').unbind().click(function(e){
             e.preventDefault();
-            var data = $(this).serializeJSON();
-            data.c = Shopify.queryParams.c;
             $.ajax({
 				url: '/tools/skylar/subscriptions/remove-item',
-				data: data,
+				data: {
+				    id: $(this).closest('.sc-box-item').data('subscription-id'),
+                    c: Shopify.queryParams.c,
+				},
 				success: function(data){
 				    if(data.success){
                         ScentClub.load_schedule($('.sc-load-more').data('months'));
