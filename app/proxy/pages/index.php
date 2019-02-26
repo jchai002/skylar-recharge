@@ -75,7 +75,7 @@ $recommended_products = [
 {% assign portal_page = 'my_box' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <?php if(!empty($upcoming_box['charge'])){ ?>
-{% assign add_to_box_charge_id = '<?=$upcoming_box['charge']['id']?>' %}
+	{% assign add_to_box_charge_id = '<?=$upcoming_box['charge']['id']?>' %}
 <?php } ?>
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
 	{% include 'sc-member-nav' %}
