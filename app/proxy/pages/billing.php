@@ -160,7 +160,6 @@ if(!empty($main_sub)){
 </div>
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
-    ScentClub.address_id = <?=$address['id']?>;
     $(document).ready(function(){
         optional_scripts.onload('mmenu', function(){
             $('#sc-add-card').mmenu({

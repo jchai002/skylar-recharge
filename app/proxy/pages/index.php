@@ -5,8 +5,13 @@ $res = $rc->get('/subscriptions', [
 	'shopify_customer_id' => $_REQUEST['c'],
 	'status' => 'ACTIVE',
 ]);
-$subscriptions = $res['subscriptions'];
-if(!empty($subscriptions)){
+$subscriptions = [];
+$onetimes = [];
+$orders = [];
+$charges = [];
+$customer = [];
+if(!empty($res['subscriptions'])){
+	$subscriptions = $res['subscriptions'];
 	$rc_customer_id = $subscriptions[0]['customer_id'];
 } else {
 	$res = $rc->get('/customers', [
@@ -17,9 +22,6 @@ if(!empty($subscriptions)){
 		$rc_customer_id = $customer['id'];
 	}
 }
-$onetimes = [];
-$orders = [];
-$charges = [];
 if(!empty($rc_customer_id)){
 	$res = $rc->get('/orders', [
 		'customer_id' => $rc_customer_id,
@@ -42,7 +44,7 @@ if(!empty($rc_customer_id)){
 	}
 }
 global $db;
-$months = empty($more) ? 3 : $more;
+$months = empty($more) ? 6 : $more;
 $upcoming_shipments = generate_subscription_schedule($orders, $subscriptions, $onetimes, $charges, strtotime(date('Y-m-t',strtotime("+$months months"))));
 $products_by_id = [];
 $stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
@@ -75,7 +77,10 @@ $recommended_products = [
 	<div class="sc-portal-content">
 		<?php if(empty($upcoming_box)){ ?>
 		<div class="sc-portal-innercontainer">
-			<div class="sc-portal-title">No Scent Club Subscription Found</div>
+			<div class="sc-portal-title">You Aren't A Member!</div>
+			<div>
+				<a href="/pages/scent-club">Click Here To Learn More</a>
+			</div>
 		</div>
 		<?php } else { ?>
 		<div class="sc-portal-innercontainer">
