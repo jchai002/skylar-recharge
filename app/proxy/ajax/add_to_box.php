@@ -20,8 +20,8 @@ if(empty($_REQUEST['charge_id'])){
 	$charge = $rc->get('/charges/'.intval($_REQUEST['charge_id']));
 }
 $sc = new ShopifyClient();
-$product = $sc->get("/admin/products/".intval($_REQUEST['product_id'].'.json'));
-print_r($product);
+$product = $sc->get("/admin/products/".intval($_REQUEST['product_id']).'.json');
+var_dump($product);
 foreach($product['variants'] as $variant){
 	if($variant['id'] == $_REQUEST['variant_id']){
 		break;
