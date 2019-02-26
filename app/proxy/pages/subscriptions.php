@@ -247,7 +247,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 				data: data,
 				success: function(data){
 				    if(data.success){
-				        location.reload();
+                        ScentClub.load_schedule($('.sc-load-more').data('months'));
 					} else {
 				        alert(data.error);
 					}
