@@ -146,7 +146,7 @@ $recommended_products = [
 							<?php } ?>
 						</div>
 					<?php } ?>
-					<div class="sc-discount-link" onclick="$('.sc-add-discount').show();">Got a promo code?</div>
+					<div class="sc-discount-link" onclick="$('.sc-add-discount').show();$(this).hide();">Got a promo code?</div>
 					<form class="sc-add-discount" style="display: none;">
 						<div><input type="text" name="discount_code" /></div>
 						<div><input type="submit" value="Apply" class="action_button inverted" /></div>
