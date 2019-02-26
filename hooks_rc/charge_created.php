@@ -27,9 +27,11 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 	'status' => 'ACTIVE',
 	'customer_id' => $charge['customer_id'],
 ]);
+var_dump($main_sub);
 if(empty($main_sub)){
 	foreach($charge['line_items'] as $line_item){
 		$product = get_product($db, $line_item['shopify_product_id']);
+		var_dump($product);
 		if(is_scent_club($product)){
 			$res = $rc->post('/subscriptions', [
 				'address_id' => $charge['address_id'],
