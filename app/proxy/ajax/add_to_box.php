@@ -20,7 +20,7 @@ if(empty($_REQUEST['charge_id'])){
 	$charge = $rc->get('/charges/'.intval($_REQUEST['charge_id']));
 }
 
-$product = $sc->get("/admin/products/".intval($_REQUEST['product_id']));
+$product = $sc->get("/admin/products/".intval($_REQUEST['product_id'].'.json'));
 foreach($product['variants'] as $variant){
 	if($variant['id'] == $_REQUEST['variant_id']){
 		break;
