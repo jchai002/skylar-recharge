@@ -255,7 +255,7 @@ $recommended_products = [
                         alert(data.error);
                     } else {
                         btn.find('span').text({{ 'products.product.add_to_cart_success' | t | json }}).removeClass('zoomOut').addClass('fadeIn');
-                        //location.reload();
+                        location.reload();
                     }
                 }
             });
