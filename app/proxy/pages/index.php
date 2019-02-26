@@ -144,7 +144,6 @@ $recommended_products = [
 					<form class="sc-add-discount" style="display: none;">
 						<div><input type="text" name="discount_code" /></div>
 						<div><input type="submit" value="Apply" class="action_button inverted" /></div>
-						<input type="hidden" name="address_id" value="<?=$upcoming_box['address_id']?>" />
 						<?php if(!empty($upcoming_box['charge'])){ ?>
 							<input type="hidden" name="charge_id" value="<?=$upcoming_box['charge']['id']?>" />
 						<?php } ?>
