@@ -42,6 +42,7 @@ if(empty($main_sub)){
 				'shopify_variant_id' => $line_item['shopify_variant_id'],
 				'order_interval_unit' => 'month',
 				'order_interval_frequency' => '1',
+				'charge_interval_frequency' => '1',
 				'order_day_of_month' => '1',
 			]);
 			var_dump($res);
