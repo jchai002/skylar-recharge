@@ -10,8 +10,14 @@ if(!empty($_REQUEST['discount_code'])){
 } else {
 	$res = $rc->post('/charges/'.intval($_REQUEST['charge_id']).'/remove_discount');
 }
-
-echo json_encode([
-	'success' => true,
-	'res' => $res,
-]);
+if(!empty($res['error'])){
+	echo json_encode([
+		'success' => false,
+		'res' => $res['error'],
+	]);
+} else {
+	echo json_encode([
+		'success' => true,
+		'res' => $res,
+	]);
+}
