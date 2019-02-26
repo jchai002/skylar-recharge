@@ -139,7 +139,7 @@ $recommended_products = [
 							<?php if($discount['type'] == 'percentage'){ ?>
 								<div class="sc-discount-value"><?=$discount['amount']?>%</div>
 							<?php } else { ?>
-								<div class="sc-discount-value">${{ <?=$discount['amount'] * 100 ?> | money_without_trailing_zeroes }}</div>
+								<div class="sc-discount-value">${{ <?=$discount['amount'] ?> | money_without_trailing_zeroes }}</div>
 							<?php } ?>
 						</div>
 					<?php } ?>
