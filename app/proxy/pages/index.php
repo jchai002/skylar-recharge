@@ -227,7 +227,7 @@ $recommended_products = [
 				    if(data.error){
 				        alert(data.error);
 					} else {
-                        //location.reload();
+                        location.reload();
 					}
 				}
 			});
