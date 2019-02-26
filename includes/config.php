@@ -604,6 +604,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 				){
 					$schedule[$date]['items'][$index]['skipped'] = $charge['status'] == 'SKIPPED';
 					$schedule[$date]['items'][$index]['charge'] = $charge;
+					$schedule[$date]['charge'] = $charge;
 					continue 2;
 				}
 			}
