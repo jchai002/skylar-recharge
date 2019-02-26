@@ -876,5 +876,5 @@ function price_without_trailing_zeroes($price = 0){
 	if($price % 100 > 0){
 		return number_format($price, 2);
 	}
-	return $price;
+	return number_format($price);
 }
