@@ -34,5 +34,6 @@ while($next_charge_time < $max_time){
 	$stmt->execute([date('Y-m', $next_charge_time).'-01']);
 	if($stmt->rowCount() > 0){
 		sc_swap_to_monthly($db, $rc, $subscription['address_id'], $next_charge_time, $subscription);
+		echo 'swap';
 	}
 }
