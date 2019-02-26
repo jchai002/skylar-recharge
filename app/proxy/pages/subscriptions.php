@@ -7,8 +7,13 @@ $res = $rc->get('/subscriptions', [
 	'shopify_customer_id' => $_REQUEST['c'],
 	'status' => 'ACTIVE',
 ]);
-$subscriptions = $res['subscriptions'];
-if(!empty($subscriptions)){
+$subscriptions = [];
+$onetimes = [];
+$orders = [];
+$charges = [];
+$customer = [];
+if(!empty($res['subscriptions'])){
+	$subscriptions = $res['subscriptions'];
 	$rc_customer_id = $subscriptions[0]['customer_id'];
 } else {
 	$res = $rc->get('/customers', [
@@ -19,9 +24,6 @@ if(!empty($subscriptions)){
 		$rc_customer_id = $customer['id'];
 	}
 }
-$onetimes = [];
-$orders = [];
-$charges = [];
 if(!empty($rc_customer_id)){
 	$res = $rc->get('/orders', [
 		'customer_id' => $rc_customer_id,
@@ -68,6 +70,14 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	<div class="sc-portal-content">
 		<?php } ?>
 		<div class="sc-portal-innercontainer">
+			<?php if(empty($upcoming_box)){ ?>
+				<div class="sc-portal-innercontainer">
+					<div class="sc-portal-title">You Aren't A Member!</div>
+					<div>
+						<a href="/pages/scent-club">Click Here To Learn More</a>
+					</div>
+				</div>
+			<?php } else { ?>
 			<div class="sc-portal-title">Manage Membership</div>
 			<div class="sc-portal-subtitle">Update Shipping Date and Frequency</div>
 			<div class="sc-portal-box-list">
@@ -169,6 +179,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 			<div class="sc-load-more" data-months="<?=$months?>">
 				<a href="#" class="action_button" onclick="ScentClub.load_schedule(<?=$months+3?>); return false;">Load More</a>
 			</div>
+			<?php } ?>
 		</div>
 		<?php if(empty($more)){ ?>
 	</div>
