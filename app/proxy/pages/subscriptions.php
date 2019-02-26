@@ -240,7 +240,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
         });
         $('.sc-remove-link').unbind().click(function(e){
             e.preventDefault();
-            var data = e.serializeJSON();
+            var data = $(this).serializeJSON();
             data.c = Shopify.queryParams.c;
             $.ajax({
 				url: '/tools/skylar/subscriptions/remove-item',
