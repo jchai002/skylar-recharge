@@ -218,27 +218,48 @@ $recommended_products = [
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
 	$(document).ready(function(){
-	    $('.sc-add-discount').submit(function(e){
-	        e.preventDefault();
-            var btn = $(this).find('.add-to-box');
+        $('.sc-add-discount').submit(function(e){
+            e.preventDefault();
+            var btn = $(this).find('.action_button');
             btn.attr('disabled', 'disabled').addClass('disabled');
             btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
             var data = $(this).serializeJSON();
-	        data.c = Shopify.queryParams.c;
-	        $.ajax({
-				url: '/tools/skylar/subscriptions/update-discount',
-				data: data,
-				success: function(data){
-				    console.log(data);
-				    if(data.error){
-				        alert(data.error);
-					} else {
+            data.c = Shopify.queryParams.c;
+            $.ajax({
+                url: '/tools/skylar/subscriptions/update-discount',
+                data: data,
+                success: function(data){
+                    console.log(data);
+                    if(data.error){
+                        alert(data.error);
+                    } else {
+                        btn.find('span').text({{ 'products.product.add_to_cart_success' | t | json }}).removeClass('zoomOut').addClass('fadeIn');
+                        location.reload();
+                    }
+                }
+            });
+        });
+        $('.sc-add-line').submit(function(e){
+            e.preventDefault();
+            var btn = $(this).find('.action_button');
+            btn.attr('disabled', 'disabled').addClass('disabled');
+            btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
+            var data = $(this).serializeJSON();
+            data.c = Shopify.queryParams.c;
+            $.ajax({
+                url: '/tools/skylar/subscriptions/add-to-box',
+                data: data,
+                success: function(data){
+                    console.log(data);
+                    if(data.error){
+                        alert(data.error);
+                    } else {
                         btn.find('span').text({{ 'products.product.add_to_cart_success' | t | json }}).removeClass('zoomOut').addClass('fadeIn');
                         //location.reload();
-					}
-				}
-			});
-		});
+                    }
+                }
+            });
+        });
 	    $('.sc-section-menu a').click(function(e){
 	        e.preventDefault();
             $('html,body').animate({scrollTop: $($(this).attr('href')).offset().top-140},'slow');
