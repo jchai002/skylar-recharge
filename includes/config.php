@@ -873,7 +873,7 @@ function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $
 	return $res['onetime'];
 }
 function price_without_trailing_zeroes($price = 0){
-	if($price % 100 > 0){
+	if($price % 1 == 0){
 		return number_format($price, 2);
 	}
 	return number_format($price);
