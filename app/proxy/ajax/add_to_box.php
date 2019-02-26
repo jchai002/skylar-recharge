@@ -15,7 +15,26 @@ if(empty($_REQUEST['charge_id'])){
 		if (strtotime($item1['scheduled_at']) == strtotime($item2['scheduled_at'])) return 0;
 		return strtotime($item1['scheduled_at']) < strtotime($item2['scheduled_at']) ? -1 : 1;
 	});
+	$charge = $charges[0];
+} else {
+	$charge = $rc->get('/charges/'.intval($_REQUEST['charge_id']));
 }
+
+$product = $sc->get("/admin/products/".intval($_REQUEST['product_id']));
+foreach($product['variants'] as $variant){
+	if($variant['id'] == $_REQUEST['variant_id']){
+		break;
+	}
+}
+
+$rc->post('/addresses/'.$charge['address_id'].'/onetime', [
+	'address_id' => $charge['address_id'],
+	'next_charge_scheduled_at' => $charge['scheduled_at'],
+	'product_title' => $product['title'],
+	'price' => round($variant['price']*.9, 2),
+	'quantity' => 1,
+	'shopify_variant_id' => $variant['id'],
+]);
 
 if(!empty($res['error'])){
 	echo json_encode([
