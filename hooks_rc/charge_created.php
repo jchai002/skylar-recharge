@@ -44,6 +44,7 @@ if(empty($main_sub)){
 				'order_interval_frequency' => '1',
 				'order_day_of_month' => '1',
 			]);
+			var_dump($res);
 			if(!empty($res['subscription'])){
 				$main_sub = $res['subscription'];
 			}
