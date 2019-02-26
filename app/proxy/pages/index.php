@@ -69,6 +69,9 @@ $recommended_products = [
 	['handle' => 'willow'],
 ];
 ?>
+<!--
+<?php print_r($upcoming_box); ?>
+-->
 {% assign portal_page = 'my_box' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
