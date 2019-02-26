@@ -70,7 +70,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	<div class="sc-portal-content">
 		<?php } ?>
 		<div class="sc-portal-innercontainer">
-			<?php if(empty($upcoming_box)){ ?>
+			<?php if(empty($upcoming_shipments)){ ?>
 				<div class="sc-portal-innercontainer">
 					<div class="sc-portal-title">You Aren't A Member!</div>
 					<div>
