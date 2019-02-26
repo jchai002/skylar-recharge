@@ -17,8 +17,8 @@ if(empty($_REQUEST['charge_id'])){
 	});
 	$charge = $charges[0];
 } else {
-	$charge = $rc->get('/charges/'.intval($_REQUEST['charge_id']));
-	$charge = $charges[0];
+	$res = $rc->get('/charges/'.intval($_REQUEST['charge_id']));
+	$charge = $res['charge'];
 }
 var_dump($charge);
 $sc = new ShopifyClient();
