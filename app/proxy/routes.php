@@ -18,7 +18,7 @@ $router->route('/subscriptions\/swap/i', function() use(&$json_output) {
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
-			'errors' => 'Missing customer ID. Please refresh.',
+			'error' => 'Missing customer ID. Please refresh.',
 		]);
 		return true;
 	}
@@ -30,7 +30,7 @@ $router->route('/subscriptions\/update-discount/i', function() use(&$json_output
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
-			'errors' => 'Missing customer ID. Please refresh.',
+			'error' => 'Missing customer ID. Please refresh.',
 		]);
 		return true;
 	}
@@ -42,7 +42,7 @@ $router->route('/subscriptions\/skip/i', function() use(&$json_output) {
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
-			'errors' => 'Missing customer ID. Please refresh.',
+			'error' => 'Missing customer ID. Please refresh.',
 		]);
 		return true;
 	}
@@ -66,7 +66,7 @@ $router->route('/billing\/update-card/i', function() use(&$json_output) {
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
-			'errors' => 'Missing customer ID. Please refresh.',
+			'error' => 'Missing customer ID. Please refresh.',
 		]);
 		return true;
 	}
@@ -82,7 +82,7 @@ $router->route('/billing\/update-address/i', function() use(&$json_output) {
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
-			'errors' => 'Missing customer ID. Please refresh.',
+			'error' => 'Missing customer ID. Please refresh.',
 		]);
 		return true;
 	}
@@ -100,7 +100,7 @@ $router->route('/settings\/update-email/i', function() use(&$json_output) {
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
-			'errors' => 'Missing customer ID. Please refresh.',
+			'error' => 'Missing customer ID. Please refresh.',
 		]);
 		return true;
 	}
@@ -112,7 +112,7 @@ $router->route('/settings\/update-password/i', function() use(&$json_output) {
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
 			'success' => false,
-			'errors' => 'Missing customer ID. Please refresh.',
+			'error' => 'Missing customer ID. Please refresh.',
 		]);
 		return true;
 	}

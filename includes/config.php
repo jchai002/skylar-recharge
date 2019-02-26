@@ -591,10 +591,11 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			$schedule[$date] = [
 				'items' => [],
 				'ship_date_time' => strtotime($date),
-				'discounts' => [], // TODO
+				'discounts' => [],
 				'total' => 0,
 			];
 		}
+		$schedule[$date]['discounts'] = $charge['discount_codes'];
 		foreach($charge['line_items'] as $item){
 			foreach($schedule[$date]['items'] as $index=>$scheduled_item){
 				if(

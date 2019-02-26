@@ -132,15 +132,33 @@ $recommended_products = [
 				<div class="sc-box-discounts">
 					<?php foreach($upcoming_box['discounts'] as $discount){ ?>
 						<div class="sc-box-discount">
-							<div class="sc-discount-title"><?=$discount['title']?>:</div>
-							<div class="sc-discount-value"><?=$discount['value_formatted']?></div>
+							<div class="sc-discount-title"><?=$discount['code']?>:</div>
+							<?php if($discount['type'] == 'percentage'){ ?>
+								<div class="sc-discount-value"><?=$discount['amount']?>%</div>
+							<?php } else { ?>
+								<div class="sc-discount-value">${{ <?=$discount['amount'] * 100 ?> | money_without_trailing_zeroes }}</div>
+							<?php } ?>
 						</div>
 					<?php } ?>
-					<div class="sc-discount-link">Got a promo code?</div>
+					<div class="sc-discount-link" onclick="$('.sc-add-discount').show();">Got a promo code?</div>
+					<form class="sc-add-discount" style="display: none;">
+						<div><input type="text" name="discount_code" /></div>
+						<div><input type="submit" value="Apply" class="action_button inverted" /></div>
+						<input type="hidden" name="address_id" value="<?=$upcoming_box['address_id']?>" />
+						<?php if(!empty($upcoming_box['charge'])){ ?>
+							<input type="hidden" name="charge_id" value="<?=$upcoming_box['charge']['id']?>" />
+						<?php } ?>
+					</form>
 				</div>
-				<div class="sc-box-total">
-					Grand Total: ${{ <?= array_sum(array_column($upcoming_box['items'], 'price')) ?> | money_without_trailing_zeroes }}
-				</div>
+				<?php if(!empty($upcoming_box['charge'])){ ?>
+					<div class="sc-box-total">
+						Grand Total: ${{ <?= $upcoming_box['charge']['total_price'] ?> | money_without_trailing_zeroes }}
+					</div>
+				<?php } else { ?>
+					<div class="sc-box-total">
+						Grand Total: ${{ <?= array_sum(array_column($upcoming_box['items'], 'price')) ?> | money_without_trailing_zeroes }}
+					</div>
+				<?php } ?>
 			</div>
 			<div class="sc-section-menu">
 				<a href="#recommendations">Your Profile Recommendations</a>
@@ -195,6 +213,23 @@ $recommended_products = [
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
 	$(document).ready(function(){
+	    $('.sc-add-discount').submit(function(e){
+	        e.preventDefault();
+	        var data = $(this).serializeJSON();
+	        data.c = Shopify.queryParams.c;
+	        $.ajax({
+				url: '/tools/skylar/subscriptions/update-discount',
+				data: data,
+				success: function(data){
+				    console.log(data);
+				    if(data.error){
+				        alert(data.error);
+					} else {
+                        location.reload();
+					}
+				}
+			});
+		});
 	    $('.sc-section-menu a').click(function(e){
 	        e.preventDefault();
             $('html,body').animate({scrollTop: $($(this).attr('href')).offset().top-140},'slow');
