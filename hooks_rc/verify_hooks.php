@@ -25,10 +25,6 @@ $needed_hooks = [
 		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_all.php',
 	],
 	[
-		'topic' => 'subscription/created',
-		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_created.php',
-	],
-	[
 		'topic' => 'subscription/updated',
 		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_all.php',
 	],
@@ -39,6 +35,14 @@ $needed_hooks = [
 	[
 		'topic' => 'subscription/cancelled',
 		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_all.php',
+	],
+	[
+		'topic' => 'subscription/created',
+		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_created.php',
+	],
+	[
+		'topic' => 'subscription/cancelled',
+		'address' => 'https://ec2production.skylar.com/hooks_rc/subscription_cancelled.php',
 	],
 ];
 
