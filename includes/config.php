@@ -844,6 +844,7 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $ma
 		'product_title' => 'Monthly Scent Club',
 		'variant_title' => $scent_info['variant_title'],
 	]);
+	//print_r($res);
 	sc_calculate_next_charge_date($db, $rc, $address_id);
 	return $res['onetime'];
 }
