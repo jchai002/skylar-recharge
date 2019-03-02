@@ -32,10 +32,11 @@ while($next_charge_time < $max_time){
 	$stmt->execute([date('Y-m', $next_charge_time).'-01']);
 	if($stmt->rowCount() > 0){
 		sc_swap_to_monthly($db, $rc, $subscription['address_id'], $next_charge_time, $subscription);
-		echo 'swap';
+		echo 'swap'.PHP_EOL;
 	}
 	$next_charge_time = get_next_subscription_time(date('Y-m-d', $next_charge_time), $subscription['order_interval_unit'], $subscription['order_interval_frequency'], $subscription['order_day_of_month'], $subscription['order_day_of_week']);
 }
+sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
 
 $sc = new ShopifyClient();
 $res = $sc->post('/admin/customers/644696211543/metafields.json', ['metafield'=> [
