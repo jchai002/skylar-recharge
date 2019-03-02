@@ -302,6 +302,10 @@ function calculate_discount_factors(PDO $db, RechargeClient $rc, $charge){
 			var_dump($res);
 			continue;
 		}
+		$product = get_product($db, $line_item['shopify_product_id']);
+		if(is_scent_club_any($product)){
+			continue;
+		}
 		$stmt_get_price->execute([$line_item['shopify_variant_id']]);
 		$price = $stmt_get_price->fetchColumn();
 		$line_item_total += $line_item['price']*$line_item['quantity'];
