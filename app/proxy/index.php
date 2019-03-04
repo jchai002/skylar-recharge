@@ -25,6 +25,7 @@ try {
 	if($json_output){
 		header('Content-Type: application/json');
 		$error_string = '';
+		print_r($e->getResponse());
 		foreach($e->getResponse()['errors'] as $error){
 			foreach($error as $error_line){
 				$error_string .= $error_line.PHP_EOL;
