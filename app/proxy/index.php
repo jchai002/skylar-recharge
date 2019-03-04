@@ -26,9 +26,13 @@ try {
 		header('Content-Type: application/json');
 		$error_string = '';
 		print_r($e->getResponse());
-		foreach($e->getResponse()['errors'] as $error){
-			foreach($error as $error_line){
-				$error_string .= $error_line.PHP_EOL;
+		if(!is_array($e->getResponse()['errors'])){
+			$error_string = $e->getResponse()['errors'];
+		} else {
+			foreach($e->getResponse()['errors'] as $error){
+				foreach($error as $error_line){
+					$error_string .= $error_line.PHP_EOL;
+				}
 			}
 		}
 		echo json_encode([
