@@ -95,7 +95,8 @@ if(!empty($return_box)){
 	]);
 } else {
 	echo json_encode([
-		'success' => $return_box,
+		'success' => true,
+		'box' => $return_box,
 		'res' => $res,
 	]);
 }
