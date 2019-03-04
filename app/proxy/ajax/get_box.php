@@ -92,6 +92,7 @@ if(!empty($return_box)){
 	echo json_encode([
 		'success' => false,
 		'res' => $upcoming_shipments,
+		'month' => $month,
 	]);
 } else {
 	echo json_encode([
