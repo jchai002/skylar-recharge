@@ -25,7 +25,6 @@ try {
 	if($json_output){
 		header('Content-Type: application/json');
 		$error_string = '';
-		print_r($e->getResponse());
 		if(!is_array($e->getResponse()['errors'])){
 			$error_string = $e->getResponse()['errors'];
 		} else {
@@ -45,6 +44,7 @@ try {
 		echo "An error has occurred while loading this page. Please try again later.";
 		echo "<!-- ".print_r($e->getResponse(), true)." -->";
 	}
+	$res = true;
 } catch (ErrorException $e){
 	if($json_output){
 		header('Content-Type: application/json');
@@ -57,6 +57,7 @@ try {
 		echo "An error has occurred while loading this page. Please try again later.";
 		echo "<!-- ".var_dump($e)." -->";
 	}
+	$res = true;
 }
 ob_end_flush();
 if(!$res){
