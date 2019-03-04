@@ -91,12 +91,12 @@ foreach($upcoming_shipments as $upcoming_shipment){
 if(!empty($return_box)){
 	echo json_encode([
 		'success' => false,
-		'res' => $res,
+		'res' => $upcoming_shipments,
 	]);
 } else {
 	echo json_encode([
 		'success' => true,
 		'box' => $return_box,
-		'res' => $res,
+		'res' => $upcoming_shipments,
 	]);
 }
