@@ -40,6 +40,7 @@ if(!empty($res['error'])){
 } else {
 	echo json_encode([
 		'success' => true,
+		'id' => $res['onetime']['id'],
 		'res' => $res,
 	]);
 }
