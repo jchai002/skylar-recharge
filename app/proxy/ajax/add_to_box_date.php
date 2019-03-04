@@ -16,7 +16,7 @@ $stmt->execute([$_REQUEST['variant_id']]);
 
 $product_id = $stmt->fetchColumn();
 
-$product = $sc->get("/admin/products/".intval($_REQUEST['product_id']).'.json');
+$product = $sc->get("/admin/products/$product_id.json");
 foreach($product['variants'] as $variant){
 	if($variant['id'] == $_REQUEST['variant_id']){
 		break;
