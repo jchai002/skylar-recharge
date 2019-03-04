@@ -79,7 +79,6 @@ foreach($upcoming_shipments as $upcoming_shipment){
 		continue;
 	}
 	foreach($upcoming_shipment['items'] as $item){
-		print_r(get_product($db, $item['shopify_product_id']));
 		$is_scent_club = is_scent_club_any(get_product($db, $item['shopify_product_id']));
 		if($is_scent_club){
 			break;
@@ -89,7 +88,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 }
 
 
-if(!empty($return_box)){
+if(empty($return_box)){
 	echo json_encode([
 		'success' => false,
 		'res' => $upcoming_shipments,
