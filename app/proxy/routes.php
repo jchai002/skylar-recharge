@@ -61,6 +61,18 @@ $router->route('/subscriptions\/add-to-box/i', function() use(&$json_output) {
 	require('ajax/add_to_box.php');
 	return true;
 });
+$router->route('/subscriptions\/get-box/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/get_box.php');
+	return true;
+});
 $router->route('/subscriptions\/remove-item/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
