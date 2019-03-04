@@ -49,7 +49,7 @@ $router->route('/subscriptions\/skip/i', function() use(&$json_output) {
 	require('ajax/skip.php');
 	return true;
 });
-$router->route('/subscriptions\/add-to-box-date/i', function() use(&$json_output) {
+$router->route('/subscriptions\/add-to-box-date$/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
@@ -61,7 +61,7 @@ $router->route('/subscriptions\/add-to-box-date/i', function() use(&$json_output
 	require('ajax/add_to_box_date.php');
 	return true;
 });
-$router->route('/subscriptions\/add-to-box/i', function() use(&$json_output) {
+$router->route('/subscriptions\/add-to-box$/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
@@ -73,7 +73,7 @@ $router->route('/subscriptions\/add-to-box/i', function() use(&$json_output) {
 	require('ajax/add_to_box.php');
 	return true;
 });
-$router->route('/subscriptions\/get-box/i', function() use(&$json_output) {
+$router->route('/subscriptions\/get-box$/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([
