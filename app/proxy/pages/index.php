@@ -287,6 +287,9 @@ $recommended_products = [
             $('html,body').animate({scrollTop: $($(this).attr('href')).offset().top-140},'slow');
 		});
         optional_scripts.onload('slick', function(){
+            $('.sc-product-carousel select, .sc-product-carousel button').click(function(e){
+                e.stopPropagation();
+			});
             $('.sc-product-carousel').slick({
                 slidesToShow: 3,
                 centerPadding: '100px',
