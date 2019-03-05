@@ -137,10 +137,16 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
             $('#sc-edit-email').mmenu({
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
                 classes: "mm-white",
+                keyboardNavigation: {
+                    enable: true,
+                }
             });
             $('#sc-edit-password').mmenu({
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
                 classes: "mm-white",
+                keyboardNavigation: {
+                    enable: true,
+                }
             });
 
             $('#sc-edit-email form').submit(function(e){
