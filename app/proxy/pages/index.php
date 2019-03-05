@@ -102,7 +102,11 @@ $recommended_products = [
 					<div class="sc-box-item">
 						<div class="sc-item-summary">
 							<div class="sc-item-image">
+								{% if box_variant.image == nil %}
+								<img class="lazyload" data-srcset="{{ product.featured_image | img_url: '100x100' }} 1x, {{ product.featured_image | img_url: '200x200' }} 2x" />
+								{% else %}
 								<img class="lazyload" data-srcset="{{ box_variant.image | img_url: '100x100' }} 1x, {{ box_variant.image | img_url: '200x200' }} 2x" />
+								{% endif %}
 							</div>
 							<div>
 								<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
