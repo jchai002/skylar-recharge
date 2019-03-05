@@ -123,6 +123,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								<?php } else if(!empty($item['charge'])){ ?>
 									<a class="sc-skip-link<?=is_scent_club_any($products_by_id[$item['shopify_product_id']]) ? '-club' : '' ?>" href="#"><span>Skip Box</span></a>
 								<?php } ?>
+								{{ box_variant.image.src }}
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
 										{% if box_variant.image.src != '' %}
