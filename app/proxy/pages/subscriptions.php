@@ -126,11 +126,9 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								<?php } ?>
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
-										{% if box_variant.image.src != '' %}
-										here1
-										<img class="lazyload" data-srcset="{{ box_variant.image | img_url: '100x100' }} 1x, {{ box_variant.image | img_url: '200x200' }} 2x" />
+										{% if box_variant.image != nil %}
+										<img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
 										{% else %}
-										here2
 										<img class="lazyload" data-srcset="{{ product.featured_image | img_url: '100x100' }} 1x, {{ product.featured_image | img_url: '200x200' }} 2x" />
 										{% endif %}
 									</div>
