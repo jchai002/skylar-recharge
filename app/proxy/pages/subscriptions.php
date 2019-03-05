@@ -213,7 +213,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 		<div>
 			<div class="sc-modal-title">Are you sure you want to skip:</div>
 			<div class="sc-modal-subtitle"></div>
-			<div class="sc-skip-image sc-mobile">
+			<div class="sc-skip-image sc-mobile sc-tablet">
 				<img src="" />
 			</div>
 			<div class="sc-skip-options">
