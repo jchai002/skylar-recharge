@@ -101,6 +101,8 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								 data-subscription-id="<?=$item['subscription_id']?>"
 								<?= !empty($item['charge']) ? 'data-charge-id="'.$item['charge']['id'].'"' : '' ?>
 								data-type="<?=$item['type']?>"
+								 <?= is_scent_club($products_by_id[$item['shopify_product_id']]) ? 'data-sc' : ''?>
+								 data-sc-type="<?= is_scent_club($products_by_id[$item['shopify_product_id']]) ? 'default' : ''?><?= is_scent_club_swap($products_by_id[$item['shopify_product_id']]) ? 'swap' : ''?><?= is_scent_club_month($products_by_id[$item['shopify_product_id']]) ? 'monthly' : ''?><?= !is_scent_club_any($products_by_id[$item['shopify_product_id']]) ? 'none' : ''?>"
 							>
 
 								<?php if(!empty($item['skipped'])){ ?>
@@ -227,6 +229,23 @@ foreach($upcoming_shipments as $upcoming_shipment){
 {{ 'featherlight.css' | asset_url | stylesheet_tag }}
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
+	$(document).ready(function(){
+        ScentClub.selected_box_item = $('.sc-box-item[data-sc]').eq(0);
+        if(ScentClub.selected_box_item.length < 1){
+            return;
+        }
+	    switch(Shopify.queryParams.intent){
+			default:
+			    return;
+            case 'swapscent':
+                Scentclub.show_swap();
+                break;
+            case 'changedate':
+                Scentclub.show_date_change();
+                break;
+
+		}
+	});
 	function bind_events(){
         $('.sc-swap-link').unbind().click(function(e){
             e.preventDefault();
