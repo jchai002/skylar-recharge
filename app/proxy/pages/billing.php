@@ -206,7 +206,11 @@ if(!empty($main_sub)){
                     if(response.token){
                         ScentClub.assign_token(response.token.id);
 					} else {
-                        alert(response.error);
+                        if(response.error.message){
+                            alert(response.error.message);
+						} else {
+                            alert(response.error);
+						}
 					}
 				});
 			});
