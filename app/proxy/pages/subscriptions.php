@@ -238,10 +238,10 @@ foreach($upcoming_shipments as $upcoming_shipment){
 			default:
 			    return;
             case 'swapscent':
-                Scentclub.show_swap();
+                ScentClub.show_swap();
                 break;
             case 'changedate':
-                Scentclub.show_date_change();
+                ScentClub.show_date_change();
                 break;
 
 		}
