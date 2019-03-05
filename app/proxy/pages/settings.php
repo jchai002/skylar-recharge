@@ -1,5 +1,8 @@
 <?php
 global $rc, $db;
+$main_sub = sc_get_main_subscription($db, $rc, [
+	'shopify_customer_id' => $_REQUEST['c'],
+]);
 
 $sc = new ShopifyClient();
 $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
@@ -28,6 +31,11 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 			<div class="sc-tile-actions">
 				<a href="#" class="sc-edit-password" onclick="$('#sc-edit-password').data('mmenu').open(); return false;">Change Password</a>
 			</div>
+			<?php if(!empty($main_sub)){ ?>
+			<div class="sc-portal-minisection">
+				<a href="#cancel_sub" class="sc-cancel-link">Cancel Subscription</a>
+			</div>
+			<?php } ?>
 		</div>
 	</div>
 </div>
