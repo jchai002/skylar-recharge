@@ -133,6 +133,9 @@ foreach($upcoming_shipments as $upcoming_shipment){
 										<?php } else { ?>
 											<div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
 											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
+											<?php if($item['type'] != 'onetime'){ ?>
+												<a class="sc-unsub-link" href="#"><span>Remove</span></a>
+											<?php } ?>
 										<?php } ?>
 									</div>
 								</div>
@@ -241,19 +244,36 @@ foreach($upcoming_shipments as $upcoming_shipment){
         $('.sc-remove-link').unbind().click(function(e){
             e.preventDefault();
             $.ajax({
-				url: '/tools/skylar/subscriptions/remove-item',
-				data: {
-				    id: $(this).closest('.sc-box-item').data('subscription-id'),
+                url: '/tools/skylar/subscriptions/remove-item',
+                data: {
+                    id: $(this).closest('.sc-box-item').data('subscription-id'),
                     c: Shopify.queryParams.c,
-				},
-				success: function(data){
-				    if(data.success){
+                },
+                success: function(data){
+                    if(data.success){
                         ScentClub.load_schedule($('.sc-load-more').data('months'));
-					} else {
-				        alert(data.error);
-					}
-				}
-			})
+                    } else {
+                        alert(data.error);
+                    }
+                }
+            })
+        });
+        $('.sc-unsub-link').unbind().click(function(e){
+            e.preventDefault();
+            $.ajax({
+                url: '/tools/skylar/subscriptions/remove-item',
+                data: {
+                    id: $(this).closest('.sc-box-item').data('subscription-id'),
+                    c: Shopify.queryParams.c,
+                },
+                success: function(data){
+                    if(data.success){
+                        ScentClub.load_schedule($('.sc-load-more').data('months'));
+                    } else {
+                        alert(data.error);
+                    }
+                }
+            })
         });
 	}
 </script>
