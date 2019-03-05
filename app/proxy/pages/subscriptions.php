@@ -99,8 +99,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 									{% assign box_variant = svariant %}
 								{% endif %}
 							{% endfor %}
-							{{ box_variant.id }}
-							{{ box_variant.image.src }}
+							{{ box_variant.image.id }}
 							<div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
 								 data-address-id="<?=$item['address_id']?>"
 								 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
@@ -128,8 +127,10 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
 										{% if box_variant.image.src != '' %}
+										here1
 										<img class="lazyload" data-srcset="{{ box_variant.image | img_url: '100x100' }} 1x, {{ box_variant.image | img_url: '200x200' }} 2x" />
 										{% else %}
+										here2
 										<img class="lazyload" data-srcset="{{ product.featured_image | img_url: '100x100' }} 1x, {{ product.featured_image | img_url: '200x200' }} 2x" />
 										{% endif %}
 									</div>
