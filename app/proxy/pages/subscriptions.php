@@ -244,10 +244,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
         $('.sc-skip-link').unbind().click(function(e){
             e.preventDefault();
             ScentClub.selected_box_item = $(this).closest('.sc-box-item');
-            $.featherlight($('#sc-skip-confirm-modal'), {
-                variant: 'scent-club',
-                afterOpen: $.noop, // Fix dumb app bug
-            });
+            ScentClub.show_skip_final();
         });
         $('.sc-remove-link').unbind().click(function(e){
             e.preventDefault();
