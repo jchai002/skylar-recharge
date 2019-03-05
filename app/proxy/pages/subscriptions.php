@@ -128,7 +128,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 										<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
 											<img class="lazyload" data-srcset="{{ product | img_url: '100x100' }} 1x, {{ product | img_url: '200x200' }} 2x" />
 										<?php } else { ?>
-											{% if box_variant.image != nil %}
+											{% if box_variant.image %}
 											<img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
 											{% else %}
 											<img class="lazyload" data-srcset="{{ product | img_url: '100x100' }} 1x, {{ product | img_url: '200x200' }} 2x" />
