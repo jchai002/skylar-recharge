@@ -110,7 +110,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 			</div>
 		</div>
 		<div class="sc-modal-continue">
-			<a href="#" onclick="ScentClub.show_cancel_final(); return false;">Continue To Skip</a>
+			<a href="#" onclick="ScentClub.show_cancel_final(); return false;">Continue To Cancel</a>
 		</div>
 	</div>
 	<div id="sc-cancel-confirm-modal">
