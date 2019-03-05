@@ -121,7 +121,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 			<div class="sc-modal-title">Are you sure you want to cancel your Scent Club subscription?</div>
 			<div class="sc-modal-subtitle"></div>
 			<div class="sc-skip-image sc-mobile sc-tablet">
-				<img src="{{ all_products['scent-club'].featured_image | img_url: '400x' }}" />
+				<img src="{{ all_products['scent-club'].featured_image | img_url: 'x300' }}" />
 			</div>
 			<div class="sc-skip-options">
 				<a class="action_button warning" onclick="$(this).addClass('disabled'); ScentClub.cancel_main_sub(); return false;">Yes, Cancel My Subscription</a>
