@@ -165,10 +165,16 @@ if(!empty($main_sub)){
             $('#sc-add-card').mmenu({
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
                 classes: "mm-white",
+                keyboardNavigation: {
+                    enable: true,
+                }
             });
             $('#sc-edit-address').mmenu({
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
                 classes: "mm-white",
+                keyboardNavigation: {
+                    enable: true,
+                }
             });
 
             $('#sc-edit-address form').submit(function(e){
