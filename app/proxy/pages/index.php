@@ -93,24 +93,30 @@ $recommended_products = [
 			<div class="sc-portal-nextbox">
 				<?php foreach($upcoming_box['items'] as $item){ ?>
 					{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
+					{% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
+					{% for svariant in box_product.variants %}
+						{% if svariant.id == picked_variant_id %}
+							{% assign box_variant = svariant %}
+						{% endif %}
+					{% endfor %}
 					<div class="sc-box-item">
 						<div class="sc-item-summary">
 							<div class="sc-item-image">
-								<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: '100x100' }} 1x, {{ box_product.images.first | img_url: '200x200' }} 2x" />
+								<img class="lazyload" data-srcset="{{ box_variant.image | img_url: '100x100' }} 1x, {{ box_variant.image | img_url: '200x200' }} 2x" />
 							</div>
 							<div>
 								<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
 									<div class="sc-item-title">Monthly Scent Club</div>
 								<?php } else if(is_scent_club_month($products_by_id[$item['shopify_product_id']])){ ?>
 									<div class="sc-item-title">Monthly Scent Club</div>
-									<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
+									<div class="sc-item-subtitle">{{ box_variant.title }}</div>
 									<div class="sc-item-link"><a href="/products/{{ box_product.handle }}">Explore This Month's Scent</a></div>
 								<?php } else if(is_scent_club_swap($products_by_id[$item['shopify_product_id']])){ ?>
 									<div class="sc-item-title"><?=$item['product_title']?></div>
 									<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 								<?php } else { ?>
 									<div class="sc-item-title">{{ box_product.title }}</div>
-									<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
+									<div class="sc-item-subtitle">{{ box_variant.title }}</div>
 								<?php } ?>
 							</div>
 						</div>
