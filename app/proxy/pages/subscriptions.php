@@ -124,6 +124,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 									<a class="sc-skip-link<?=is_scent_club_any($products_by_id[$item['shopify_product_id']]) ? '-club' : '' ?>" href="#"><span>Skip Box</span></a>
 								<?php } ?>
 								<div class="sc-item-summary">
+									{{ box_variant.image.src }}
 									<div class="sc-item-image">
 										{% if box_variant.image %}
 										<img class="lazyload" data-srcset="{{ box_variant.image | img_url: '100x100' }} 1x, {{ box_variant.image | img_url: '200x200' }} 2x" />
