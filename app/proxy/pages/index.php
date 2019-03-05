@@ -61,12 +61,12 @@ foreach($upcoming_shipments as $upcoming_shipment){
 }
 
 $recommended_products = [
-	'arrow|rollie:12235409129559',
-	'capri|rollie:12235492425815',
-	'coral|rollie:12235492360279',
-	'isle|rollie:12235492327511',
-	'meadow|rollie:12235492393047',
-	'willow|rollie:12588614484055',
+	'arrow::Full Size|rollie:12235409129559:Rollie',
+	'capri::Full Size|rollie:12235492425815:Rollie',
+	'coral::Full Size|rollie:12235492360279:Rollie',
+	'isle::Full Size|rollie:12235492327511:Rollie',
+	'meadow::Full Size|rollie:12235492393047:Rollie',
+	'willow::Full Size|rollie:12588614484055:Rollie',
 ];
 ?>
 <!--
