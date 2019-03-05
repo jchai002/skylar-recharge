@@ -95,7 +95,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 	</div>
 </div>
 <div class="hidden">
-	<div id="sc-skip-modal">
+	<div id="sc-cancel-modal">
 		<div class="sc-modal-title">Did you know you can...</div>
 		<div class="sc-modal-links">
 			<div class="sc-modal-linkbox" onclick="location.href='/tools/skylar/subscriptions?c={{ customer.id }}&intent=changedate'; return false;">
@@ -110,10 +110,10 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 			</div>
 		</div>
 		<div class="sc-modal-continue">
-			<a href="#" onclick="ScentClub.show_skip_final(); return false;">Continue To Skip</a>
+			<a href="#" onclick="ScentClub.show_cancel_final(); return false;">Continue To Skip</a>
 		</div>
 	</div>
-	<div id="sc-skip-confirm-modal">
+	<div id="sc-cancel-confirm-modal">
 		<div class="sc-skip-image sc-desktop">
 			<img src="{{ all_products['scent-club'].featured_image | img_url: '500x' }}" />
 		</div>
