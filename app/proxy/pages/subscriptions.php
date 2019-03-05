@@ -106,13 +106,13 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								<?php if(!empty($item['skipped'])){ ?>
 									<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 								<?php } else if(is_scent_club_month($products_by_id[$item['shopify_product_id']])){ ?>
-									<a class="sc-skip-link" href="#"><span>Skip Box</span></a>
+									<a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
 								<?php } else if(is_scent_club_swap($products_by_id[$item['shopify_product_id']])){ ?>
-									<a class="sc-skip-link" href="#"><span>Skip Box</span></a>
+									<a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
 								<?php } else if($item['type'] == 'onetime'){ ?>
 									<a class="sc-remove-link" href="#"><span>Remove Item</span></a>
 								<?php } else if(!empty($item['charge'])){ ?>
-									<a class="sc-skip-link" href="#"><span>Skip Box</span></a>
+									<a class="sc-skip-link<?=is_scent_club_any($products_by_id[$item['shopify_product_id']]) ? '-club' : '' ?>" href="#"><span>Skip Box</span></a>
 								<?php } ?>
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
@@ -232,6 +232,14 @@ foreach($upcoming_shipments as $upcoming_shipment){
             e.preventDefault();
             ScentClub.selected_box_item = $(this).closest('.sc-box-item');
             ScentClub.show_swap();
+        });
+        $('.sc-skip-link-club').unbind().click(function(e){
+            e.preventDefault();
+            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
+            $.featherlight($('#sc-skip-modal'), {
+                variant: 'scent-club',
+                afterOpen: $.noop, // Fix dumb app bug
+            });
         });
         $('.sc-skip-link').unbind().click(function(e){
             e.preventDefault();
