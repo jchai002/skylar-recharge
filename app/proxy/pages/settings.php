@@ -113,7 +113,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 			<a href="#" onclick="ScentClub.show_cancel_final(); return false;">Continue To Cancel</a>
 		</div>
 	</div>
-	<div id="sc-cancel-confirm-modal">
+	<div id="sc-cancel-confirm-modal" class="sc-confirm-modal">
 		<div class="sc-skip-image sc-desktop">
 			<img src="{{ all_products['scent-club'].featured_image | img_url: '500x' }}" />
 		</div>
