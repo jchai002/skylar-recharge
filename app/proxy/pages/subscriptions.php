@@ -126,11 +126,15 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								<?php } ?>
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
-										{% if box_variant.image != nil %}
-										<img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
-										{% else %}
-										<img class="lazyload" data-srcset="{{ product.featured_image | img_url: '100x100' }} 1x, {{ product.featured_image | img_url: '200x200' }} 2x" />
-										{% endif %}
+										<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
+											<img class="lazyload" data-srcset="{{ product.featured_image | img_url: '100x100' }} 1x, {{ product.featured_image | img_url: '200x200' }} 2x" />
+										<?php } else { ?>
+											{% if box_variant.image != nil %}
+											<img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
+											{% else %}
+											<img class="lazyload" data-srcset="{{ product.featured_image | img_url: '100x100' }} 1x, {{ product.featured_image | img_url: '200x200' }} 2x" />
+											{% endif %}
+										<?php } ?>
 									</div>
 									<div>
 										<?php if(is_scent_club_month($products_by_id[$item['shopify_product_id']])){ ?>
