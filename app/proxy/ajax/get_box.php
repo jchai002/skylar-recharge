@@ -79,12 +79,13 @@ foreach($upcoming_shipments as $upcoming_shipment){
 		continue;
 	}
 	foreach($upcoming_shipment['items'] as $item){
-		$is_scent_club = is_scent_club_any(get_product($db, $item['shopify_product_id']));
-		if($is_scent_club){
-			break;
+		$product = get_product($db, $item['shopify_product_id']);
+		if(is_scent_club_any($product)){
+			$return_box = $upcoming_shipment;
+			$return_box['sc_product'] = $product;
+			break 2;
 		}
 	}
-	$return_box = $upcoming_shipment;
 }
 
 
