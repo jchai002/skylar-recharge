@@ -186,7 +186,7 @@ $recommended_products = [
 				<?php } ?>
 			</div>
 			<div class="sc-section-menu">
-				<a href="#recommendations">Your Profile Recommendations</a>
+				<a href="#recommendations" class="active">Your Profile Recommendations</a>
 				<a href="#layering">Layering</a>
 				<a href="#best-sellers">Best Sellers</a>
 				<a href="#essentials">The Essentials</a>
@@ -284,6 +284,8 @@ $recommended_products = [
         });
 	    $('.sc-section-menu a').click(function(e){
 	        e.preventDefault();
+	        $('.sc-section-menu a').removeClass('active');
+			$(this).addClass('active');
             $('html,body').animate({scrollTop: $($(this).attr('href')).offset().top-140},'slow');
 		});
         optional_scripts.onload('slick', function(){
