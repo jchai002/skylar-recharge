@@ -61,12 +61,12 @@ foreach($upcoming_shipments as $upcoming_shipment){
 }
 
 $recommended_products = [
-	['handle' => 'arrow'],
-	['handle' => 'capri'],
-	['handle' => 'coral'],
-	['handle' => 'isle'],
-	['handle' => 'meadow'],
-	['handle' => 'willow'],
+	'arrow|rollie:12235409129559',
+	'capri|rollie:12235492425815',
+	'coral|rollie:12235492360279',
+	'isle|rollie:12235492327511',
+	'meadow|rollie:12235492393047',
+	'willow|rollie:12588614484055',
 ];
 ?>
 <!--
@@ -182,7 +182,7 @@ $recommended_products = [
 			<div class="sc-product-carousel">
 				<?php shuffle($recommended_products);
 				foreach($recommended_products as $product){ ?>
-					{% assign box_product = all_products['<?=$product['handle']?>'] %}
+					{% assign recommended_handles = '<?=$product?>' | split: '|' %}
 					{% include 'sc-product-tile' %}
 				<?php } ?>
 			</div>
@@ -192,7 +192,7 @@ $recommended_products = [
 			<div class="sc-product-carousel">
 				<?php shuffle($recommended_products);
 				foreach($recommended_products as $product){ ?>
-					{% assign box_product = all_products['<?=$product['handle']?>'] %}
+					{% assign recommended_handles = '<?=$product?>' %}
 					{% include 'sc-product-tile' %}
 				<?php } ?>
 			</div>
@@ -202,7 +202,7 @@ $recommended_products = [
 			<div class="sc-product-carousel">
 				<?php shuffle($recommended_products);
 				foreach($recommended_products as $product){ ?>
-					{% assign box_product = all_products['<?=$product['handle']?>'] %}
+					{% assign recommended_handles = '<?=$product?>' %}
 					{% include 'sc-product-tile' %}
 				<?php } ?>
 			</div>
@@ -212,7 +212,7 @@ $recommended_products = [
 			<div class="sc-product-carousel">
 				<?php shuffle($recommended_products);
 				foreach($recommended_products as $product){ ?>
-					{% assign box_product = all_products['<?=$product['handle']?>'] %}
+					{% assign recommended_handles = '<?=$product?>' %}
 					{% include 'sc-product-tile' %}
 				<?php } ?>
 			</div>
