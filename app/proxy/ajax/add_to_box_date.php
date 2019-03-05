@@ -23,14 +23,31 @@ foreach($product['variants'] as $variant){
 	}
 }
 
-$res = $rc->post('/addresses/'.$main_sub['address_id'].'/onetimes', [
-	'address_id' => $main_sub['address_id'],
-	'next_charge_scheduled_at' => date('Y-m-d', $_REQUEST['ship_time']),
-	'product_title' => $product['title'],
-	'price' => round($variant['price']*.9, 2),
-	'quantity' => 1,
-	'shopify_variant_id' => $variant['id'],
-]);
+$frequency = empty($_REQUEST['frequency']) ? 'onetime' : $_REQUEST['frequency'];
+
+if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
+	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/onetimes', [
+		'address_id' => $main_sub['address_id'],
+		'next_charge_scheduled_at' => date('Y-m-d', $_REQUEST['ship_time']),
+		'product_title' => $product['title'],
+		'price' => round($variant['price']*.9, 2),
+		'quantity' => 1,
+		'shopify_variant_id' => $variant['id'],
+	]);
+} else {
+	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/subscriptions', [
+		'address_id' => $main_sub['address_id'],
+		'next_charge_scheduled_at' => date('Y-m-d', $_REQUEST['ship_time']),
+		'product_title' => $product['title'],
+		'price' => round($variant['price']*.9, 2),
+		'quantity' => 1,
+		'shopify_variant_id' => $variant['id'],
+		'order_interval_unit' => 'month',
+		'order_interval_frequency' => $frequency,
+		'charge_interval_frequency' => $frequency,
+		'order_day_of_month' => $main_sub['order_day_of_month'],
+	]);
+}
 
 if(!empty($res['error'])){
 	echo json_encode([
