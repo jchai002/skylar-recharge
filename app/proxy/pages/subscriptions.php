@@ -99,6 +99,8 @@ foreach($upcoming_shipments as $upcoming_shipment){
 									{% assign box_variant = svariant %}
 								{% endif %}
 							{% endfor %}
+							{{ box_variant.id }}
+							{{ box_variant.image.src }}
 							<div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
 								 data-address-id="<?=$item['address_id']?>"
 								 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
@@ -123,7 +125,6 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								<?php } else if(!empty($item['charge'])){ ?>
 									<a class="sc-skip-link<?=is_scent_club_any($products_by_id[$item['shopify_product_id']]) ? '-club' : '' ?>" href="#"><span>Skip Box</span></a>
 								<?php } ?>
-								{{ box_variant.image.src }}
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
 										{% if box_variant.image.src != '' %}
