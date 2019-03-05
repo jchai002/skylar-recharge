@@ -33,7 +33,7 @@ if(!empty($main_sub)){
 	{% include 'sc-member-nav' %}
 	<div class="sc-portal-content">
 		<div class="sc-portal-innercontainer">
-			<div class="sc-portal-title">Billing Information</div>
+			<div class="sc-portal-title">Billing &amp; Shipping Information</div>
 			<div class="sc-portal-subtitle">Edit your shipping address or payment method</div>
 			<div class="sc-portal-tile">
 				<div class="sc-tile-title">Shipping Address</div>
