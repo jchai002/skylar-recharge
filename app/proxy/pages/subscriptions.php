@@ -92,6 +92,13 @@ foreach($upcoming_shipments as $upcoming_shipment){
 						</div>
 						<?php foreach($upcoming_shipment['items'] as $item){ ?>
 							{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
+							{% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
+							{% assign box_variant = box_product.variants.first %}
+							{% for svariant in box_product.variants %}
+								{% if svariant.id == picked_variant_id %}
+									{% assign box_variant = svariant %}
+								{% endif %}
+							{% endfor %}
 							<div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
 								 data-address-id="<?=$item['address_id']?>"
 								 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
@@ -118,7 +125,11 @@ foreach($upcoming_shipments as $upcoming_shipment){
 								<?php } ?>
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
-										<img class="lazyload" data-srcset="{{ box_product.images.first | img_url: '100x100' }} 1x, {{ box_product.images.first | img_url: '200x200' }} 2x" />
+										{% if box_variant.image == nil %}
+										<img class="lazyload" data-srcset="{{ product.featured_image | img_url: '100x100' }} 1x, {{ product.featured_image | img_url: '200x200' }} 2x" />
+										{% else %}
+										<img class="lazyload" data-srcset="{{ box_variant.image | img_url: '100x100' }} 1x, {{ box_variant.image | img_url: '200x200' }} 2x" />
+										{% endif %}
 									</div>
 									<div>
 										<?php if(is_scent_club_month($products_by_id[$item['shopify_product_id']])){ ?>
