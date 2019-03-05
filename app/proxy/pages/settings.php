@@ -94,6 +94,42 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 		</div>
 	</div>
 </div>
+<div class="hidden">
+	<div id="sc-skip-modal">
+		<div class="sc-modal-title">Did you know you can...</div>
+		<div class="sc-modal-links">
+			<div class="sc-modal-linkbox" onclick="location.href='/tools/skylar/subscriptions?c={{ customer.id }}&intent=changedate'; return false;">
+				<div><img src="{{ 'calendar.svg' | file_url }}" /></div>
+				<div class="sc-linkbox-label">Change Shipping Date</div>
+				<div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
+			</div>
+			<div class="sc-modal-linkbox" onclick="location.href='/tools/skylar/subscriptions?c={{ customer.id }}&intent=swapscent'; return false;">
+				<div><img src="{{ 'swapscent-black.svg' | file_url }}" /></div>
+				<div class="sc-linkbox-label">Swap Scents</div>
+				<div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
+			</div>
+		</div>
+		<div class="sc-modal-continue">
+			<a href="#" onclick="ScentClub.show_skip_final(); return false;">Continue To Skip</a>
+		</div>
+	</div>
+	<div id="sc-skip-confirm-modal">
+		<div class="sc-skip-image sc-desktop">
+			<img src="{{ all_products['scent-club'].featured_image | img_url: '500x' }}" />
+		</div>
+		<div>
+			<div class="sc-modal-title">Are you sure you want to cancel your Scent Club subscription?</div>
+			<div class="sc-modal-subtitle"></div>
+			<div class="sc-skip-image sc-mobile">
+				<img src="{{ all_products['scent-club'].featured_image | img_url: '400x' }}" />
+			</div>
+			<div class="sc-skip-options">
+				<a class="action_button warning" onclick="$(this).addClass('disabled'); ScentClub.cancel_main_sub(); return false;">Yes, Cancel My Subscription</a>
+				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">No Thanks, Go Back</a>
+			</div>
+		</div>
+	</div>
+</div>
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
     $(document).ready(function(){
