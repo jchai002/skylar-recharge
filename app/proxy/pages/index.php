@@ -94,6 +94,7 @@ $recommended_products = [
 				<?php foreach($upcoming_box['items'] as $item){ ?>
 					{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
 					{% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
+					{% assign box_variant = box_product.variants.first %}
 					{% for svariant in box_product.variants %}
 						{% if svariant.id == picked_variant_id %}
 							{% assign box_variant = svariant %}
@@ -102,10 +103,10 @@ $recommended_products = [
 					<div class="sc-box-item">
 						<div class="sc-item-summary">
 							<div class="sc-item-image">
-								{% if box_variant.image == nil %}
-								<img class="lazyload" data-srcset="{{ product.featured_image | img_url: '100x100' }} 1x, {{ product.featured_image | img_url: '200x200' }} 2x" />
-								{% else %}
+								{% if box_variant.image.src %}
 								<img class="lazyload" data-srcset="{{ box_variant.image | img_url: '100x100' }} 1x, {{ box_variant.image | img_url: '200x200' }} 2x" />
+								{% else %}
+								<img class="lazyload" data-srcset="{{ product.featured_image | img_url: '100x100' }} 1x, {{ product.featured_image | img_url: '200x200' }} 2x" />
 								{% endif %}
 							</div>
 							<div>
