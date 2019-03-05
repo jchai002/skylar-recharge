@@ -32,7 +32,7 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 				<a href="#" class="sc-edit-password" onclick="$('#sc-edit-password').data('mmenu').open(); return false;">Change Password</a>
 			</div>
 			<?php if(!empty($main_sub)){ ?>
-			<div class="sc-portal-minisection">
+			<div class="sc-portal-minisection sc-tile-actions">
 				<a href="#cancel_sub" class="sc-cancel-link">Cancel Subscription</a>
 			</div>
 			<?php } ?>
