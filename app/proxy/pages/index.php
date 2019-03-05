@@ -240,6 +240,7 @@ $recommended_products = [
             btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
             var data = $(this).serializeJSON();
             data.c = Shopify.queryParams.c;
+            $('.loader').fadeIn();
             $.ajax({
                 url: '/tools/skylar/subscriptions/update-discount',
                 data: data,
@@ -261,6 +262,7 @@ $recommended_products = [
             btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
             var data = $(this).serializeJSON();
             data.c = Shopify.queryParams.c;
+            $('.loader').fadeIn();
             $.ajax({
                 url: '/tools/skylar/subscriptions/add-to-box',
                 data: data,
