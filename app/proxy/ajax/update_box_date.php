@@ -38,13 +38,12 @@ if(!empty($res['charge'])){
 			foreach($res['subscriptions'] as $subscription){
 				$res_all[] = $rc->put('/subscriptions/'.$subscription['id'],[
 					'order_day_of_month' => $day_of_month,
+					'commit_update' => true,
 				]);
 			}
 		}
 
-		$res_all[] = $rc->post('/charges/'.$_REQUEST['charge_id'].'/change_next_charge_date', [
-			'next_charge_date' => date('Y-m-d', strtotime($_REQUEST['date'])),
-		]);
+		$res_all[] = $rc->
 	}
 	//sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
 }
