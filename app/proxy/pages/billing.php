@@ -69,6 +69,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-tile-detail">Card Not Stored</div>
 			<?php } ?>
 			</div>
+			<?php print_r($customer) ?>
 			<div class="sc-tile-actions">
 				<?php if(!empty($cc_info)){?>
 					<a href="#" class="sc-edit-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Edit Card</a>
