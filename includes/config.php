@@ -57,7 +57,6 @@ if (!function_exists('getallheaders')){
     }
 }
 function log_event(PDO $db, $category='', $value='', $action='', $value2='', $note='', $actor=''){
-	return;
 	$stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2, note, actor, date_created) VALUES (:category, :action, :value, :value2, :note, :actor, :date_created)");
 	$stmt->execute([
 		'category' => $category,
