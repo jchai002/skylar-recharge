@@ -13,6 +13,33 @@ $router->route('/members$/i', function() {
 	});
 	return true;
 });
+$router->route('/subscriptions\/update-box-date$/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	if(empty($_REQUEST['charge_id'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing charge ID. Please refresh.',
+		]);
+		return true;
+	}
+	if(!empty($_REQUEST['date']) && !empty(strtotime($_REQUEST['date']))){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing date. Please refresh.',
+		]);
+		return true;
+
+	}
+	require('ajax/update_box_date.php');
+	return true;
+});
 $router->route('/subscriptions\/swap/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
