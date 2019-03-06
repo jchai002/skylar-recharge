@@ -91,7 +91,11 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<div class="sc-upcoming-shipment">
 						<div class="sc-box-info">
 							<span class="sc-box-shiplabel">Shipping Date</span>
-							<span class="sc-box-date"><?=date('F j', $upcoming_shipment['ship_date_time']) ?></span>
+							<?php if($index == 0){ ?>
+								<span class="sc-box-date sc-edit-date"><?=date('F j', $upcoming_shipment['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
+							<?php } else { ?>
+								<span class="sc-box-date"><?=date('F j', $upcoming_shipment['ship_date_time']) ?></span>
+							<?php } ?>
 						</div>
 						<?php foreach($upcoming_shipment['items'] as $item){ ?>
 							{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
