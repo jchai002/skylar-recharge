@@ -1,4 +1,5 @@
 <?php
+global $rc;
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 {% assign portal_page = 'portal' %}
