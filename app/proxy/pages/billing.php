@@ -284,10 +284,10 @@ $countries = [
                 'style': elementStyle,
 			});
             ScentClub.cardExpiry.mount('#sc-card-expiration');
-            ScentClub.cardExpiry = window.elements.create('cardCvc', {
+            ScentClub.cardCvc = window.elements.create('cardCvc', {
                 'style': elementStyle,
 			});
-            ScentClub.cardExpiry.mount('#sc-card-cvc');
+            ScentClub.cardCvc.mount('#sc-card-cvc');
             $('#sc-add-card form').submit(function(e){
                 e.preventDefault();
                 var tokenRes = window.stripe.createToken(ScentClub.cardNumber);
@@ -301,6 +301,9 @@ $countries = [
 						} else {
                             alert(response.error);
 						}
+                        ScentClub.cardNumber.update({'disabled': false});
+                        ScentClub.cardExpiry.update({'disabled': false});
+                        ScentClub.cardCvc.update({'disabled': false});
 					}
 				});
 			});
