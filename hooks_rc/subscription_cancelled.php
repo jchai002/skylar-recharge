@@ -7,6 +7,7 @@ if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/subscriptions/'.$_REQUEST['id']);
 } else {
 	$data = file_get_contents('php://input');
+	log_event($db, 'webhook', $data, 'subscription_cancelled');
 	if(!empty($data)){
 		$res = json_decode($data, true);
 	}
@@ -18,7 +19,6 @@ $product = get_product($db, $subscription['shopify_product_id']);
 if(!is_scent_club($product)){
 	die();
 }
-$now = date('Y-m').'-01';
 $stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date = ?");
 
 // Remove any scent club onetimes

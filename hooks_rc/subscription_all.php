@@ -9,6 +9,7 @@ if(!empty($_REQUEST['id'])){
 	$subscription = ['id' => $_REQUEST['id']];
 } else {
 	$data = file_get_contents('php://input');
+	log_event($db, 'webhook', $data, 'subscription_all');
 	if(!empty($data)){
 		$res = json_decode($data, true);
 	}

@@ -2,6 +2,7 @@
 require_once('../includes/config.php');
 require_once('../includes/class.RechargeClient.php');
 
+
 // Remove sample discount from address if they have one
 
 $rc = new RechargeClient();
@@ -9,7 +10,7 @@ if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/addresses/'.$_REQUEST['id']);
 } else {
 	$data = file_get_contents('php://input');
-	log_event($db, 'log', $data);
+	log_event($db, 'webhook', $data, 'address_updated');
 	if(!empty($data)){
 		$res = json_decode($data, true);
 	}
