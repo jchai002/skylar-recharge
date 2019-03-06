@@ -26,8 +26,8 @@ if(!empty($res['charge'])){
 				$onetime_time = strtotime($onetime['next_charge_scheduled_at']);
 				$this_day_of_month = date('t', $onetime_time) < $day_of_month ? date('t', $onetime_time) : $day_of_month;
 				$res_all[] = '/onetimes/'.$onetime['id'];
-				$res_all[] = $rc->put('/onetimes/'.$onetime['id'],[
-					'next_charge_date' => date('Y-m', $onetime_time).'-'.$this_day_of_month
+				$res_all[] = $rc->put('/onetimes/'.$onetime['id'], [
+					'next_charge_scheduled_at' => date('Y-m', $onetime_time).'-'.$this_day_of_month
 				]);
 			}
 		}
