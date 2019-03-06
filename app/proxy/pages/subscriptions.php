@@ -246,6 +246,22 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			</div>
 		</div>
 	</div>
+	<div id="sc-remove-confirm-modal">
+		<div class="sc-skip-image sc-desktop">
+			<img src="" />
+		</div>
+		<div>
+			<div class="sc-modal-title">Are you sure you want to remove:</div>
+			<div class="sc-modal-subtitle"></div>
+			<div class="sc-skip-image sc-mobile sc-tablet">
+				<img src="" />
+			</div>
+			<div class="sc-skip-options">
+				<a class="action_button" onclick="$(this).addClass('disabled'); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id')); return false;">Yes, Remove</a>
+				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
+			</div>
+		</div>
+	</div>
 </div>
 {{ 'featherlight.js' | asset_url | script_tag }}
 {{ 'featherlight.css' | asset_url | stylesheet_tag }}
@@ -291,39 +307,17 @@ sc_conditional_billing($rc, $_REQUEST['c']);
             ScentClub.selected_box_item = $(this).closest('.sc-box-item');
             ScentClub.show_skip_final();
         });
-        $('.sc-remove-link').unbind().click(function(e){
+        $('.sc-unsub-link, .sc-remove-link').unbind().click(function(e){
             e.preventDefault();
-            $.ajax({
-                url: '/tools/skylar/subscriptions/remove-item',
-                data: {
-                    id: $(this).closest('.sc-box-item').data('subscription-id'),
-                    c: Shopify.queryParams.c,
-                },
-                success: function(data){
-                    if(data.success){
-                        ScentClub.load_schedule($('.sc-load-more').data('months'));
-                    } else {
-                        alert(data.error);
-                    }
-                }
-            })
-        });
-        $('.sc-unsub-link').unbind().click(function(e){
-            e.preventDefault();
-            $.ajax({
-                url: '/tools/skylar/subscriptions/remove-item',
-                data: {
-                    id: $(this).closest('.sc-box-item').data('subscription-id'),
-                    c: Shopify.queryParams.c,
-                },
-                success: function(data){
-                    if(data.success){
-                        ScentClub.load_schedule($('.sc-load-more').data('months'));
-                    } else {
-                        alert(data.error);
-                    }
-                }
-            })
+            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
+            $('.sc-skip-image img').attr('src', ScentClub.selected_box_item.data('master-image'));
+            var text = ScentClub.selected_box_item.data('month-text')+' '+ScentClub.selected_box_item.find('.sc-item-title').text().trim().replace('Monthly ', '');
+            $('#sc-remove-confirm-modal .sc-modal-subtitle').html(text);
+            $.featherlight.close();
+            $.featherlight($('#sc-remove-confirm-modal'), {
+                variant: 'scent-club',
+                afterOpen: $.noop, // Fix dumb app bug
+            });
         });
 	}
 </script>
