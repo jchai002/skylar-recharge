@@ -167,11 +167,11 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-billing-first-name">First Name</label>
-						<input required id="sc-billing-first-name" name="billing_first_name" value="<?=empty($customer['billing_first_name']) ? '' : $customer['billing_first_name']?>" />
+						<input required id="sc-billing-first-name" name="billing_first_name" value="<?=empty($customer['first_name']) ? '' : $customer['first_name']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-billing-last-name">Last Name</label>
-						<input required id="sc-billing-last-name" name="billing_last_name" value="<?=empty($customer['billing_last_name']) ? '' : $customer['billing_last_name']?>" />
+						<input required id="sc-billing-last-name" name="billing_last_name" value="<?=empty($customer['last_name']) ? '' : $customer['last_name']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
