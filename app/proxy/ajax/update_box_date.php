@@ -40,8 +40,10 @@ if(!empty($res['charge'])){
 				$this_day_of_month = date('t', $subscription_time) < $day_of_month ? date('t', $subscription_time) : $day_of_month;
 				$res_all[] = $rc->put('/subscriptions/'.$subscription['id'],[
 					'order_day_of_month' => $day_of_month,
-					'next_charge_date' => date('Y-m', $subscription_time).'-'.$this_day_of_month,
 					'commit_update' => true,
+				]);
+				$res = $rc->post('/subscriptions/'.$subscription['id'].'/set_next_charge_date',[
+					'date' => date('Y-m', $subscription_time).'-'.$this_day_of_month,
 				]);
 			}
 		}
