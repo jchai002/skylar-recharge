@@ -22,8 +22,8 @@ if(empty($res['customers'])){
 	$res_all[] = $res = $rc->post('/customers/',[
 		'shopify_customer_id' => $_REQUEST['c'],
 		'email' => $shopify_customer['email'],
-		'first_name' => $shopify_customer['first_name'],
-		'last_name' => $shopify_customer['last_name'],
+		'first_name' => $_REQUEST['billing_first_name'],
+		'last_name' => $_REQUEST['billing_last_name'],
 		'billing_first_name' => $_REQUEST['billing_first_name'],
 		'billing_last_name' => $_REQUEST['billing_last_name'],
 		'billing_address1' => $_REQUEST['billing_address1'],
@@ -56,6 +56,8 @@ if(empty($res['customers'])){
 		]);
 		$res_all[] = $res = $rc->put('/customers/'.$customer['id'],[
 			'stripe_customer_token' => $stripe_customer->id,
+			'first_name' => $_REQUEST['billing_first_name'],
+			'last_name' => $_REQUEST['billing_last_name'],
 			'billing_first_name' => $_REQUEST['billing_first_name'],
 			'billing_last_name' => $_REQUEST['billing_last_name'],
 			'billing_address1' => $_REQUEST['billing_address1'],
