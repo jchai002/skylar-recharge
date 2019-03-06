@@ -305,6 +305,7 @@ $countries = [
                             ScentClub.cardNumber.update({'disabled': false});
                             ScentClub.cardExpiry.update({'disabled': false});
                             ScentClub.cardCvc.update({'disabled': false});
+                            console.log('enabling');
 						}, 500);
 					}
 				});
