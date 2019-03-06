@@ -42,8 +42,6 @@ if(!empty($res['charge'])){
 				]);
 			}
 		}
-
-		$res_all[] = $rc->get('/subscriptions/38502292');
 	}
 	//sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
 }
