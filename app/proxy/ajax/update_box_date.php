@@ -43,7 +43,7 @@ if(!empty($res['charge'])){
 			}
 		}
 
-		$res_all[] = $rc->
+		//$res_all[] = $rc->('/')
 	}
 	//sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
 }
