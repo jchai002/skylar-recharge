@@ -60,6 +60,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 		}
 	}
 }
+sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <?php if(!empty($more)){ ?>
 {% layout 'raw' %}

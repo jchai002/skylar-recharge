@@ -70,6 +70,7 @@ $recommended_products = [
 	'meadow::Full Size|rollie:12235492393047:Rollie',
 	'willow::Full Size|rollie:12588614484055:Rollie',
 ];
+sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <!--
 <?php print_r($upcoming_box); ?>
