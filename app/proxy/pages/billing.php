@@ -69,7 +69,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-tile-detail">Card Not Stored</div>
 			<?php } ?>
 			<br />
-			<div class="sc-tile-title">Shipping Address</div>
+			<div class="sc-tile-title">Billing Address</div>
 			<?php if(empty($customer['billing_address1'])){ ?>
 				<div class="sc-tile-detail">No Address Stored</div>
 			<?php } else { ?>
