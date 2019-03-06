@@ -271,6 +271,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
             btn.attr('disabled', 'disabled').addClass('disabled');
             btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
             var data = $(this).serializeJSON();
+            data.product_id = $(this).find('.sc-size-select option:selected').data('product-id');
             data.c = Shopify.queryParams.c;
             $('.loader').fadeIn();
             $.ajax({
