@@ -69,7 +69,6 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-tile-detail">Card Not Stored</div>
 			<?php } ?>
 			</div>
-			<?php print_r($customer) ?>
 			<div class="sc-tile-actions">
 				<?php if(!empty($cc_info)){?>
 					<a href="#" class="sc-edit-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Edit Card</a>
@@ -168,47 +167,47 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-billing-first-name">First Name</label>
-						<input required id="sc-billing-first-name" name="billing_first_name" value="<?=empty($customer) ? '' : $customer['billing_first_name']?>" />
+						<input required id="sc-billing-first-name" name="billing_first_name" value="<?=empty($customer['billing_first_name']) ? '' : $customer['billing_first_name']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-billing-last-name">Last Name</label>
-						<input required id="sc-billing-last-name" name="billing_last_name" value="<?=empty($customer) ? '' : $customer['billing_last_name']?>" />
+						<input required id="sc-billing-last-name" name="billing_last_name" value="<?=empty($customer['billing_last_name']) ? '' : $customer['billing_last_name']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-billing-address1">Address</label>
-						<input required id="sc-billing-address1" name="billing_address1" value="<?=empty($customer) ? '' : $customer['billing_address1']?>" />
+						<input required id="sc-billing-address1" name="billing_address1" value="<?=empty($customer['billing_address1']) ? '' : $customer['billing_address1']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-billing-address2">Apt, Suite, etc</label>
-						<input id="sc-billing-address2" name="billing_address2" value="<?=empty($customer) ? '' : $customer['billing_address2']?>" />
+						<input id="sc-billing-address2" name="billing_address2" value="<?=empty($customer['billing_address2']) ? '' : $customer['billing_address2']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-billing-phone">Phone</label>
-						<input id="sc-billing-phone" name="billing_phone" value="<?=empty($customer) ? '' : $customer['billing_phone']?>" />
+						<input id="sc-billing-phone" name="billing_phone" value="<?=empty($customer['billing_phone']) ? '' : $customer['billing_phone']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-billing-city">City</label>
-						<input required id="sc-billing-city" name="billing_city" value="<?=empty($customer) ? '' : $customer['billing_city']?>" />
+						<input required id="sc-billing-city" name="billing_city" value="<?=empty($customer['billing_city']) ? '' : $customer['billing_city']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-billing-state">State/Province</label>
-						<input required id="sc-billing-state" name="billing_province" value="<?=empty($customer) ? '' : $customer['billing_province']?>" />
+						<input required id="sc-billing-state" name="billing_province" value="<?=empty($customer['billing_province']) ? '' : $customer['billing_province']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-billing-zip">Zip Code</label>
-						<input required id="sc-billing-zip" name="billing_zip" value="<?=empty($customer) ? '' : $customer['billing_zip']?>" />
+						<input required id="sc-billing-zip" name="billing_zip" value="<?=empty($customer['billing_zip']) ? '' : $customer['billing_zip']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-billing-country">Country</label>
-						<input required id="sc-billing-country" name="billing_country" value="<?=empty($customer) ? 'United States' : $customer['billing_country']?>" />
+						<input required id="sc-billing-country" name="billing_country" value="<?=empty($customer['billing_country']) ? 'United States' : $customer['billing_country']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
