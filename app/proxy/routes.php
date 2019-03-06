@@ -29,7 +29,7 @@ $router->route('/subscriptions\/update-box-date$/i', function() use(&$json_outpu
 		]);
 		return true;
 	}
-	if(!empty($_REQUEST['date']) && !empty(strtotime($_REQUEST['date']))){
+	if(empty($_REQUEST['date']) && empty(strtotime($_REQUEST['date']))){
 		echo json_encode([
 			'success' => false,
 			'error' => 'Missing date. Please refresh.',
