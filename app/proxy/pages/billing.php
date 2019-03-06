@@ -122,7 +122,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-phone">Phone</label>
-						<input required id="sc-address-phone" name="address_phone" value="<?=empty($address) ? '' : $address['phone']?>" />
+						<input id="sc-address-phone" name="address_phone" value="<?=empty($address) ? '' : $address['phone']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
