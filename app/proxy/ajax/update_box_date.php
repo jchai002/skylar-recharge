@@ -42,7 +42,7 @@ if(!empty($res['charge'])){
 			}
 		}
 	}
-	sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
+	//sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
 }
 
 
