@@ -1,5 +1,4 @@
 <?php
-sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 {% assign portal_page = 'orderhistory' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
@@ -9,6 +8,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		<div class="sc-portal-innercontainer">
 			<div class="sc-portal-title">Order History</div>
 			<div class="sc-portal-subtitle">Here you have the ability to view your past orders</div>
+			{% include 'sc-order-history' %}
 		</div>
 	</div>
 </div>
