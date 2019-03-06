@@ -785,12 +785,14 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 		'status' => 'ACTIVE',
 	]);
 
+	$day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
+
 	$res = $rc->post('/subscriptions/'.$main_sub['id'].'/set_next_charge_date',[
-		'date' => $next_charge_month.'-01',
+		'date' => $next_charge_month.'-'.$day_of_month,
 	]);
 	//print_r($res);
 
-	return $next_charge_month.'-01';
+	return $next_charge_month.'-'.$day_of_month;
 }
 function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time){
 	$delete_month = date('Y-m', $time);
