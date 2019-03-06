@@ -68,12 +68,24 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<?php } else { ?>
 				<div class="sc-tile-detail">Card Not Stored</div>
 			<?php } ?>
+			<br />
+			<div class="sc-tile-title">Shipping Address</div>
+			<?php if(empty($customer['billing_address1'])){ ?>
+				<div class="sc-tile-detail">No Address Stored</div>
+			<?php } else { ?>
+				<div class="sc-tile-detail"><?=$customer['first_name']?> <?=$customer['last_name']?></div>
+				<div class="sc-tile-detail"><?=$customer['billing_address1']?></div>
+				<?php if(!empty($customer['billing_address2'])){ ?>
+					<div class="sc-tile-detail"><?=$customer['billing_address2']?></div>
+				<?php } ?>
+				<div class="sc-tile-detail"><?=$customer['billing_city']?>, <?=$customer['billing_province']?> <?=$customer['billing_zip']?></div>
+			<?php } ?>
 			</div>
 			<div class="sc-tile-actions">
 				<?php if(!empty($cc_info)){?>
-					<a href="#" class="sc-edit-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Edit Card</a>
+					<a href="#" class="sc-edit-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Edit</a>
 				<?php } else { ?>
-					<a href="#" class="sc-add-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Add Card</a>
+					<a href="#" class="sc-add-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Add</a>
 				<?php } ?>
 			</div>
 		</div>
