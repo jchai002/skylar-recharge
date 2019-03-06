@@ -86,17 +86,17 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-first-name">First Name</label>
-						<input id="sc-address-first-name" name="first_name" value="<?=empty($address) ? '' : $address['first_name']?>" />
+						<input required id="sc-address-first-name" name="first_name" value="<?=empty($address) ? '' : $address['first_name']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-last-name">Last Name</label>
-						<input id="sc-address-last-name" name="last_name" value="<?=empty($address) ? '' : $address['last_name']?>" />
+						<input required id="sc-address-last-name" name="last_name" value="<?=empty($address) ? '' : $address['last_name']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-address1">Address</label>
-						<input id="sc-address-address1" name="address1" value="<?=empty($address) ? '' : $address['address1']?>" />
+						<input required id="sc-address-address1" name="address1" value="<?=empty($address) ? '' : $address['address1']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
@@ -106,27 +106,27 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-phone">Phone</label>
-						<input id="sc-address-phone" name="address_phone" value="<?=empty($address) ? '' : $address['phone']?>" />
+						<input required id="sc-address-phone" name="address_phone" value="<?=empty($address) ? '' : $address['phone']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-city">City</label>
-						<input id="sc-address-city" name="city" value="<?=empty($address) ? '' : $address['city']?>" />
+						<input required id="sc-address-city" name="city" value="<?=empty($address) ? '' : $address['city']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-state">State/Province</label>
-						<input id="sc-address-state" name="province" value="<?=empty($address) ? '' : $address['province']?>" />
+						<input required id="sc-address-state" name="province" value="<?=empty($address) ? '' : $address['province']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-address-zip">Zip Code</label>
-						<input id="sc-address-zip" name="zip" value="<?=empty($address) ? '' : $address['zip']?>" />
+						<input required id="sc-address-zip" name="zip" value="<?=empty($address) ? '' : $address['zip']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-country">Country</label>
-						<input id="sc-address-country" name="country" value="<?=empty($address) ? '' : $address['country']?>" />
+						<input required id="sc-address-country" name="country" value="<?=empty($address) ? 'United States' : $address['country']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
@@ -163,17 +163,17 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-billing-first-name">First Name</label>
-						<input id="sc-billing-first-name" name="billing_first_name" value="<?=empty($customer) ? '' : $customer['billing_first_name']?>" />
+						<input required id="sc-billing-first-name" name="billing_first_name" value="<?=empty($customer) ? '' : $customer['billing_first_name']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-billing-last-name">Last Name</label>
-						<input id="sc-billing-last-name" name="billing_last_name" value="<?=empty($customer) ? '' : $customer['billing_last_name']?>" />
+						<input required id="sc-billing-last-name" name="billing_last_name" value="<?=empty($customer) ? '' : $customer['billing_last_name']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-billing-address1">Address</label>
-						<input id="sc-billing-address1" name="billing_address1" value="<?=empty($customer) ? '' : $customer['billing_address1']?>" />
+						<input required id="sc-billing-address1" name="billing_address1" value="<?=empty($customer) ? '' : $customer['billing_address1']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
@@ -189,21 +189,21 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-billing-city">City</label>
-						<input id="sc-billing-city" name="billing_city" value="<?=empty($customer) ? '' : $customer['billing_city']?>" />
+						<input required id="sc-billing-city" name="billing_city" value="<?=empty($customer) ? '' : $customer['billing_city']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-billing-state">State/Province</label>
-						<input id="sc-billing-state" name="billing_province" value="<?=empty($customer) ? '' : $customer['billing_province']?>" />
+						<input required id="sc-billing-state" name="billing_province" value="<?=empty($customer) ? '' : $customer['billing_province']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-billing-zip">Zip Code</label>
-						<input id="sc-billing-zip" name="billing_zip" value="<?=empty($customer) ? '' : $customer['billing_zip']?>" />
+						<input required id="sc-billing-zip" name="billing_zip" value="<?=empty($customer) ? '' : $customer['billing_zip']?>" />
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-billing-country">Country</label>
-						<input id="sc-billing-country" name="billing_country" value="<?=empty($customer) ? '' : $customer['billing_country']?>" />
+						<input required id="sc-billing-country" name="billing_country" value="<?=empty($customer) ? 'United States' : $customer['billing_country']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
