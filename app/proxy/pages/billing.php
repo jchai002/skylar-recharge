@@ -31,6 +31,13 @@ if(!empty($main_sub)){
 	}
 }
 sc_conditional_billing($rc, $_REQUEST['c']);
+$countries = [
+	'United States',
+	'Australia',
+	'Canada',
+	'France',
+	'United Kingdom',
+]
 ?>
 {% assign portal_page = 'billing' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
@@ -142,7 +149,11 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-country">Country</label>
-						<input required id="sc-address-country" name="country" value="<?=empty($address) ? 'United States' : $address['country']?>" />
+						<select id="sc-address-country" name="country">
+							<?php foreach($countries as $country){ ?>
+								<option value="<?=$country?>"<?= !empty($address) && $address['country'] == $country ? ' selected' : ''?>><?=$country?></option>
+							<?php } ?>
+						</select>
 					</div>
 				</div>
 				<div class="sc-input-row">
