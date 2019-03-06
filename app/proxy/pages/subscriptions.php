@@ -269,8 +269,8 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		}
 	});
 	function bind_events(){
-	    $('.sc-edit-link').unbind().click(function(e){
-            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
+	    $('.sc-edit-date').unbind().click(function(e){
+            ScentClub.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
             ScentClub.show_date_change();
 		});
         $('.sc-swap-link').unbind().click(function(e){
