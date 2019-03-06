@@ -105,8 +105,8 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						<input id="sc-address-address2" name="address2" value="<?=empty($address) ? '' : $address['address2']?>" />
 					</div>
 					<div class="sc-input-group">
-						<label for="sc-address-zip">Zip Code</label>
-						<input id="sc-address-zip" name="zip" value="<?=empty($address) ? '' : $address['zip']?>" />
+						<label for="sc-address-phone">Phone</label>
+						<input id="sc-address-phone" name="address_phone" value="<?=empty($address) ? '' : $address['phone']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
@@ -115,8 +115,18 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						<input id="sc-address-city" name="city" value="<?=empty($address) ? '' : $address['city']?>" />
 					</div>
 					<div class="sc-input-group">
-						<label for="sc-address-state">State</label>
+						<label for="sc-address-state">State/Province</label>
 						<input id="sc-address-state" name="province" value="<?=empty($address) ? '' : $address['province']?>" />
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-address-zip">Zip Code</label>
+						<input id="sc-address-zip" name="zip" value="<?=empty($address) ? '' : $address['zip']?>" />
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-address-country">Country</label>
+						<input id="sc-address-country" name="country" value="<?=empty($address) ? '' : $address['country']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
@@ -148,6 +158,52 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<div class="sc-input-group">
 						<label for="sc-card-cvc">CVC</label>
 						<div id="sc-card-cvc"></div>
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-billing-first-name">First Name</label>
+						<input id="sc-billing-first-name" name="billing_first_name" value="<?=empty($customer) ? '' : $customer['billing_first_name']?>" />
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-billing-last-name">Last Name</label>
+						<input id="sc-billing-last-name" name="billing_last_name" value="<?=empty($customer) ? '' : $customer['billing_last_name']?>" />
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-billing-address1">Address</label>
+						<input id="sc-billing-address1" name="billing_address1" value="<?=empty($customer) ? '' : $customer['billing_address1']?>" />
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-billing-address2">Apt, Suite, etc</label>
+						<input id="sc-billing-address2" name="billing_address2" value="<?=empty($customer) ? '' : $customer['billing_address2']?>" />
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-billing-phone">Phone</label>
+						<input id="sc-billing-phone" name="billing_phone" value="<?=empty($customer) ? '' : $customer['billing_phone']?>" />
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-billing-city">City</label>
+						<input id="sc-billing-city" name="billing_city" value="<?=empty($customer) ? '' : $customer['billing_city']?>" />
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-billing-state">State/Province</label>
+						<input id="sc-billing-state" name="billing_province" value="<?=empty($customer) ? '' : $customer['billing_province']?>" />
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-billing-zip">Zip Code</label>
+						<input id="sc-billing-zip" name="billing_zip" value="<?=empty($customer) ? '' : $customer['billing_zip']?>" />
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-billing-country">Country</label>
+						<input id="sc-billing-country" name="billing_country" value="<?=empty($customer) ? '' : $customer['billing_country']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
