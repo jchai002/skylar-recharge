@@ -257,6 +257,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                     console.log(data);
                     if(data.error){
                         alert(data.error);
+                        btn.prop('disabled', false).removeClass('disabled');
                     } else {
                         btn.find('span').text({{ 'products.product.add_to_cart_success' | t | json }}).removeClass('zoomOut').addClass('fadeIn');
                         location.reload();
@@ -279,6 +280,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                     console.log(data);
                     if(data.error){
                         alert(data.error);
+                        btn.prop('disabled', false).removeClass('disabled');
                     } else {
                         btn.find('span').text({{ 'products.product.add_to_cart_success' | t | json }}).removeClass('zoomOut').addClass('fadeIn');
                         location.reload();
