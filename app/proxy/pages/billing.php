@@ -19,10 +19,10 @@ if(!empty($main_sub)){
 
 	if($customer['processor_type'] == 'stripe'){
 		\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
-		$customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
-		if(!empty($customer->default_source)){
-			foreach($customer->sources->data as $source){
-				if($source->id == $customer->default_source){
+		$stripe_customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
+		if(!empty($stripe_customer->default_source)){
+			foreach($stripe_customer->sources->data as $source){
+				if($source->id == $stripe_customer->default_source){
 					$cc_info = $source;
 					break;
 				}
