@@ -41,6 +41,10 @@ if(!empty($res['charge'])){
 				]);
 			}
 		}
+
+		$res_all[] = $rc->post('/charges/'.$_REQUEST['charge_id'].'/change_next_charge_date', [
+			'next_charge_date' => date('Y-m-d', strtotime($_REQUEST['date'])),
+		]);
 	}
 	//sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
 }
