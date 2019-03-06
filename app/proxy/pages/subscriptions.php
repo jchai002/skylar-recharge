@@ -269,6 +269,10 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		}
 	});
 	function bind_events(){
+	    $('.sc-edit-link').unbind().click(function(e){
+            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
+            ScentClub.show_date_change();
+		});
         $('.sc-swap-link').unbind().click(function(e){
             e.preventDefault();
             ScentClub.selected_box_item = $(this).closest('.sc-box-item');
