@@ -7,6 +7,7 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 $sc = new ShopifyClient();
 $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 
+sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 {% assign portal_page = 'settings' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}

@@ -1,3 +1,6 @@
+<?php
+sc_conditional_billing($rc, $_REQUEST['c']);
+?>
 {% assign portal_page = 'orderhistory' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">

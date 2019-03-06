@@ -26,6 +26,7 @@ if(!empty($main_sub)){
 		}
 	}
 }
+sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 {% assign portal_page = 'billing' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}

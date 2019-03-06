@@ -641,8 +641,16 @@ function is_scent_club_swap($product){
 function is_scent_club_any($product){
 	return is_scent_club($product) || is_scent_club_month($product) || is_scent_club_swap($product);
 }
-function sc_swap_scent(RechargeClient $rc, $subscription_id, $new_scent, $time){
-
+function sc_conditional_billing(RechargeClient $rc, $customer_id, $customer = false){
+	if(empty($customer)){
+		$res = $rc->get('/customers/', [
+			'shopify_customer_id' => $customer_id,
+		]);
+		if(!empty($res['customers'])){
+			$customer = $res['customers'][0];
+		}
+	}
+	echo '{% assign nav_billing = '.(empty($customer) ? 'false' : 'true').' %}';
 }
 function sc_skip_future_charge(RechargeClient $rc, $subscription_id, $time){
 	/*
