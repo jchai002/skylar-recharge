@@ -23,14 +23,15 @@ if(empty($res['customers'])){
 		'email' => $shopify_customer['email'],
 		'first_name' => $shopify_customer['first_name'],
 		'last_name' => $shopify_customer['last_name'],
-		'billing_first_name ' => $_REQUEST['billing_first_name'],
-		'billing_last_name ' => $_REQUEST['billing_last_name'],
-		'billing_address1 ' => $_REQUEST['billing_address1'],
-		'billing_address2 ' => $_REQUEST['billing_address2'],
-		'billing_zip ' => $_REQUEST['billing_zip'],
-		'billing_city ' => $_REQUEST['billing_city'],
-		'billing_province ' => $_REQUEST['billing_province'],
-		'billing_country ' => $_REQUEST['billing_country'],
+		'billing_first_name' => $_REQUEST['billing_first_name'],
+		'billing_last_name' => $_REQUEST['billing_last_name'],
+		'billing_address1' => $_REQUEST['billing_address1'],
+		'billing_address2' => $_REQUEST['billing_address2'],
+		'billing_zip' => $_REQUEST['billing_zip'],
+		'billing_phone' => $_REQUEST['billing_zip'],
+		'billing_city' => $_REQUEST['billing_city'],
+		'billing_province' => $_REQUEST['billing_province'],
+		'billing_country' => $_REQUEST['billing_country'],
 		'stripe_customer_token' => $token,
 	]);
 	if(!empty($res['error'])){
@@ -54,6 +55,15 @@ if(empty($res['customers'])){
 		]);
 		$res[] = $rc->put('/customers/'.$customer['id'],[
 			'stripe_customer_token' => $stripe_customer->id,
+			'billing_first_name' => $_REQUEST['billing_first_name'],
+			'billing_last_name' => $_REQUEST['billing_last_name'],
+			'billing_address1' => $_REQUEST['billing_address1'],
+			'billing_address2' => $_REQUEST['billing_address2'],
+			'billing_zip' => $_REQUEST['billing_zip'],
+			'billing_phone' => $_REQUEST['billing_zip'],
+			'billing_city' => $_REQUEST['billing_city'],
+			'billing_province' => $_REQUEST['billing_province'],
+			'billing_country' => $_REQUEST['billing_country'],
 		]);
 	} else {
 		$res[] = $stripe_customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
