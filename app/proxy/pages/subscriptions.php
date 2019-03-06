@@ -238,7 +238,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<div class="sc-modal-title">Are you sure you want to skip:</div>
 			<div class="sc-modal-subtitle"></div>
 			<div class="sc-skip-image sc-mobile sc-tablet">
-				<img src="" />
+				<img src="" style="max-height: 400px;" />
 			</div>
 			<div class="sc-skip-options">
 				<a class="action_button" onclick="$(this).addClass('disabled'); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Yes, Skip Box</a>
