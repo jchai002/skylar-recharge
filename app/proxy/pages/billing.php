@@ -3,15 +3,19 @@ global $rc, $db;
 $main_sub = sc_get_main_subscription($db, $rc, [
 	'shopify_customer_id' => $_REQUEST['c'],
 ]);
-$address = [];
 $customer = [];
+$res = $rc->get('/customers/', [
+	'shopify_customer_id' => $_REQUEST['c'],
+]);
+if(!empty($res['customers'])){
+	$customer = $res['customers'][0];
+}
+
+$address = [];
 $cc_info = [];
 if(!empty($main_sub)){
 	$res = $rc->get('/addresses/'.$main_sub['address_id']);
 	$address = $res['address'];
-
-	$res = $rc->get('/customers/'.$main_sub['customer_id']);
-	$customer = $res['customer'];
 
 	if($customer['processor_type'] == 'stripe'){
 		\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
