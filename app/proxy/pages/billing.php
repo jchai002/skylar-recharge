@@ -296,14 +296,14 @@ $countries = [
                     if(response.token){
                         ScentClub.assign_token(response.token.id);
 					} else {
+                        ScentClub.cardNumber.update({'disabled': false});
+                        ScentClub.cardExpiry.update({'disabled': false});
+                        ScentClub.cardCvc.update({'disabled': false});
                         if(response.error.message){
                             alert(response.error.message);
 						} else {
                             alert(response.error);
 						}
-                        ScentClub.cardNumber.update({'disabled': false});
-                        ScentClub.cardExpiry.update({'disabled': false});
-                        ScentClub.cardCvc.update({'disabled': false});
 					}
 				});
 			});
