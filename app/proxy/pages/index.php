@@ -93,6 +93,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		<?php } else { ?>
 		<div class="sc-portal-innercontainer">
 			<div class="sc-portal-title">Your Upcoming Box</div>
+			<div class="sc-portal-subtitle">See what's headed your way this month + add your other favorites for sweet savings</div>
 			<div class="sc-portal-nextbox">
 				<?php foreach($upcoming_box['items'] as $item){ ?>
 					{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
