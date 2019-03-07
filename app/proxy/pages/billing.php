@@ -17,17 +17,21 @@ if(!empty($main_sub)){
 	$res = $rc->get('/addresses/'.$main_sub['address_id']);
 	$address = $res['address'];
 
-	if($customer['processor_type'] == 'stripe'){
-		\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
-		$stripe_customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
-		if(!empty($stripe_customer->default_source)){
-			foreach($stripe_customer->sources->data as $source){
-				if($source->id == $stripe_customer->default_source){
-					$cc_info = $source;
-					break;
+	try {
+		if($customer['processor_type'] == 'stripe'){
+			\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
+			$stripe_customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
+			if(!empty($stripe_customer->default_source)){
+				foreach($stripe_customer->sources->data as $source){
+					if($source->id == $stripe_customer->default_source){
+						$cc_info = $source;
+						break;
+					}
 				}
 			}
 		}
+	} catch(ErrorException $e){
+		$cc_info = [];
 	}
 }
 sc_conditional_billing($rc, $_REQUEST['c']);
