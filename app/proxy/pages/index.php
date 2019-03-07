@@ -182,10 +182,13 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<?php if(!empty($upcoming_box['charge'])){ ?>
 					<?php if(!empty($upcoming_box['charge']['shipping_lines'])){
 						foreach($upcoming_box['charge']['shipping_lines'] as $shipping_line){
+							if(empty($shipping_line['price'])){
+								continue;
+							}
 							?>
 							<div class="sc-box-shipping">
 								<div class="sc-shipping-title"><?=$shipping_line['title']?></div>
-								<div class="sc-shipping-value"><?=$shipping_line['price']?></div>
+								<div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
 							</div>
 						<?php }
 					} ?>
