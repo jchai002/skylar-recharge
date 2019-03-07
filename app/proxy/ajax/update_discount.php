@@ -13,7 +13,8 @@ if(!empty($_REQUEST['discount_code'])){
 if(!empty($res['error'])){
 	echo json_encode([
 		'success' => false,
-		'res' => $res['error'],
+		'res' => $res,
+		'error' => $res['error']
 	]);
 } else {
 	echo json_encode([
