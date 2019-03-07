@@ -30,7 +30,7 @@ if(!empty($main_sub)){
 				}
 			}
 		}
-	} catch(ErrorException $e){
+	} catch(Error $e){
 		$cc_info = [];
 	}
 }
