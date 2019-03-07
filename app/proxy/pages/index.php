@@ -164,7 +164,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						<div class="sc-box-discount">
 							<div class="sc-discount-title"><?=$discount['code']?>:</div>
 							<?php if($discount['type'] == 'percentage'){ ?>
-								<div class="sc-discount-value"><?=$discount['amount']?>% ($<?=price_without_trailing_zeroes($discount['amount']*$upcoming_box['charge']['total_price']/100)?>)</div>
+								<div class="sc-discount-value"><?=$discount['amount']?>% ($<?=price_without_trailing_zeroes($discount['amount']*array_sum(array_column($upcoming_box['items'], 'price'))/100)?>)</div>
 							<?php } else { ?>
 								<div class="sc-discount-value">$<?=price_without_trailing_zeroes($discount['amount']) ?></div>
 							<?php } ?>
