@@ -240,7 +240,8 @@ function require_customer_id($callback_if_true){
 	}
 	ob_start();
 	$callback_if_true();
-	$output = ob_end_flush();
+	$output = ob_get_contents();
+	ob_end_clean();
 	echo "{% if customer == nil %}
 {% layout 'scredirect' %}
 	<script>
