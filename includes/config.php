@@ -511,6 +511,9 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 
 	foreach($subscriptions as $subscription){
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
+		if(empty($next_charge_time)){
+			continue;
+		}
 
 		while($next_charge_time < $max_time){
 			$date = date('Y-m-d', $next_charge_time);
@@ -542,6 +545,9 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 	}
 	foreach($orders as $order){
 		$order_time = strtotime($order['scheduled_at']);
+		if(empty($order_time)){
+			continue;
+		}
 		if($order_time > $max_time){
 			continue;
 		}
@@ -554,6 +560,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 				'total' => 0,
 			];
 		}
+		$order['next_charge_scheduled_at'] = $order['scheduled_at'];
 		foreach($order['line_items'] as $item){
 			$item['id'] = $item['subscription_id'];
 			$item['type'] = 'order';
@@ -563,6 +570,9 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 	}
 	foreach($onetimes as $onetime){
 		$order_time = strtotime($onetime['next_charge_scheduled_at']);
+		if(empty($order_time)){
+			continue;
+		}
 		if($order_time < time()){
 			continue;
 		}
@@ -587,9 +597,13 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			continue;
 		}
 		$order_time = strtotime($charge['scheduled_at']);
+		if(empty($order_time)){
+			continue;
+		}
 		if($order_time > $max_time){
 			continue;
 		}
+		$charge['next_charge_scheduled_at'] = $charge['scheduled_at'];
 		$date = date('Y-m-d', $order_time);
 		if(empty($schedule[$date])){
 			$schedule[$date] = [
