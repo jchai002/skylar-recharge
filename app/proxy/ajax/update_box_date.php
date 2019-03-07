@@ -56,7 +56,7 @@ if(!empty($res['charge'])){
 					'date' => date('Y-m-d', strtotime($_REQUEST['date'])),
 				]);
 			} else {
-				$res_all[] = $rc->post('/onetimes/'.$line_item['subscription_id'], [
+				$res_all[] = $rc->put('/onetimes/'.$line_item['subscription_id'], [
 					'next_charge_scheduled_at' => date('Y-m-d', strtotime($_REQUEST['date'])),
 				]);
 			}
