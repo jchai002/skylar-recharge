@@ -254,6 +254,25 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
 	$(document).ready(function(){
+	    $('.remove-discount-link').click(function(e){
+            e.preventDefault();
+            $('.loader').fadeIn();
+            var data = $('.sc-add-discount').serializeJSON();
+            data.c = Shopify.queryParams.c;
+            $.ajax({
+                url: '/tools/skylar/subscriptions/update-discount',
+                data: data,
+                success: function(data){
+                    console.log(data);
+                    if(!data.success){
+                        $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
+                        $('.loader').fadeOut();
+                    } else {
+                        location.reload();
+                    }
+                }
+            });
+		});
         $('.sc-add-discount').submit(function(e){
             e.preventDefault();
             $('.sc-discount-error').remove();
