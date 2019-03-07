@@ -50,9 +50,16 @@ if(!empty($res['charge'])){
 		}
 	} else {
 		foreach($charge['line_items'] as $line_item){
-			$res_all[] = $rc->post('/subscriptions/'.$line_item['subscription_id'].'/set_next_charge_date', [
-				'date' => date('Y-m-d', strtotime($_REQUEST['date'])),
-			]);
+			$res_all[] = $res = $rc->get('/subscriptions/'.$line_item['subscription_id']);
+			if(!empty($res['subscription']) && $res['subscription']['stats'] == 'ACTIVE'){
+				$res_all[] = $rc->post('/subscriptions/'.$line_item['subscription_id'].'/set_next_charge_date', [
+					'date' => date('Y-m-d', strtotime($_REQUEST['date'])),
+				]);
+			} else {
+				$res_all[] = $rc->post('/onetimes/'.$line_item['subscription_id'], [
+					'next_charge_scheduled_at' => date('Y-m-d', strtotime($_REQUEST['date'])),
+				]);
+			}
 		}
 	}
 	sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
