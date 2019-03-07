@@ -30,7 +30,7 @@ if(!empty($main_sub)){
 				}
 			}
 		}
-	} catch(Error $e){
+	} catch(\Stripe\Error\InvalidRequest $e){
 		$cc_info = [];
 	}
 }
