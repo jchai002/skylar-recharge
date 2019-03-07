@@ -44,7 +44,9 @@ if(!empty($rc_customer_id)){
 			$onetimes[] = $onetime;
 		}
 	}
-	echo "<!-- ".print_r($onetimes)." -->";
+	echo "<!-- ";
+	print_r($onetimes);
+	echo " -->";
 }
 global $db;
 $upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges);
