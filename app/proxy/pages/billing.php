@@ -294,6 +294,11 @@ $countries = [
             $('#sc-add-card form').submit(function(e){
                 e.preventDefault();
                 var tokenRes = window.stripe.createToken(ScentClub.cardNumber);
+                window.setInterval(function(){
+                    window.ScentClub.cardNumber.update({disabled: false});
+                    window.ScentClub.cardExpiry.update({disabled: false});
+                    window.ScentClub.cardCvc.update({disabled: false});
+                }, 1000);
                 tokenRes.then(function(response){
                     console.log(response);
                     if(response.token){
