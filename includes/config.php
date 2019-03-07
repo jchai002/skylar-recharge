@@ -509,6 +509,30 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 
 	$stmt_get_swap = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=?");
 
+	foreach($onetimes as $onetime){
+		$order_time = strtotime($onetime['next_charge_scheduled_at']);
+		if(empty($order_time)){
+			continue;
+		}
+		if($order_time < time()){
+			continue;
+		}
+		if($order_time > $max_time){
+			continue;
+		}
+		$date = date('Y-m-d', $order_time);
+		if(empty($schedule[$date])){
+			$schedule[$date] = [
+				'items' => [],
+				'ship_date_time' => strtotime($date),
+				'discounts' => [], // TODO
+				'total' => 0,
+			];
+		}
+		$onetime['subscription_id'] = $onetime['id'];
+		$onetime['type'] = 'onetime';
+		$schedule[$date]['items'][] = $onetime;
+	}
 	foreach($subscriptions as $subscription){
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
 		if(empty($next_charge_time)){
@@ -562,6 +586,12 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 					$this_subscription['shopify_variant_id'] = $swap['shopify_variant_id'];
 					$this_subscription['product_title'] = $swap['product_title'];
 					$this_subscription['variant_title'] = $swap['variant_title'];
+					foreach($schedule[$date]['items'] as $item){
+						if($item['shopify_product_id'] == $this_subscription['shopify_product_id']){
+							$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
+							continue 2;
+						}
+					}
 				}
 				$this_subscription['type'] = 'subscription';
 				$this_subscription['subscription_id'] = $subscription['id'];
@@ -596,30 +626,6 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			$item['order'] = $order;
 			$schedule[$date]['items'][] = $item;
 		}
-	}
-	foreach($onetimes as $onetime){
-		$order_time = strtotime($onetime['next_charge_scheduled_at']);
-		if(empty($order_time)){
-			continue;
-		}
-		if($order_time < time()){
-			continue;
-		}
-		if($order_time > $max_time){
-			continue;
-		}
-		$date = date('Y-m-d', $order_time);
-		if(empty($schedule[$date])){
-			$schedule[$date] = [
-				'items' => [],
-				'ship_date_time' => strtotime($date),
-				'discounts' => [], // TODO
-				'total' => 0,
-			];
-		}
-		$onetime['subscription_id'] = $onetime['id'];
-		$onetime['type'] = 'onetime';
-		$schedule[$date]['items'][] = $onetime;
 	}
 	foreach($charges as $charge){
 		if($charge['status'] != 'QUEUED' && $charge['status'] != 'SKIPPED'){
