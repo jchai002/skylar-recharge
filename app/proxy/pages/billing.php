@@ -278,23 +278,26 @@ $countries = [
             window.elements = window.stripe.elements({});
             ScentClub.cardNumber = window.elements.create('cardNumber', {
                 'style': elementStyle,
+                disabled: false,
 			});
             ScentClub.cardNumber.mount('#sc-card-number');
             ScentClub.cardExpiry = window.elements.create('cardExpiry', {
                 'style': elementStyle,
+                disabled: false,
 			});
             ScentClub.cardExpiry.mount('#sc-card-expiration');
             ScentClub.cardCvc = window.elements.create('cardCvc', {
                 'style': elementStyle,
+				disabled: false,
 			});
             ScentClub.cardCvc.mount('#sc-card-cvc');
             $('#sc-add-card form').submit(function(e){
                 e.preventDefault();
                 var tokenRes = window.stripe.createToken(ScentClub.cardNumber);
                 window.setInterval(function(){
-                    window.ScentClub.cardNumber.update({'disabled': false});
-                    window.ScentClub.cardExpiry.update({'disabled': false});
-                    window.ScentClub.cardCvc.update({'disabled': false});
+                    window.ScentClub.cardNumber.update({disabled: false});
+                    window.ScentClub.cardExpiry.update({disabled: false});
+                    window.ScentClub.cardCvc.update({disabled: false});
                 }, 1000);
                 tokenRes.then(function(response){
                     console.log(response);
