@@ -305,12 +305,9 @@ $countries = [
                     if(response.token){
                         ScentClub.assign_token(response.token.id);
 					} else {
-                        // ScentClub.cardNumber.unmount().mount('#sc-card-number');
-                        // ScentClub.cardExpiry.unmount().mount('#sc-card-expiration');
-                        // ScentClub.cardCvc.unmount().mount('#sc-card-cvc');
-                        ScentClub.cardNumber.update({disabled: false});
-                        ScentClub.cardExpiry.update({disabled: false});
-                        ScentClub.cardCvc.update({disabled: false});
+                        ScentClub.cardNumber.unmount().mount('#sc-card-number');
+                        ScentClub.cardExpiry.unmount().mount('#sc-card-expiration');
+                        ScentClub.cardCvc.unmount().mount('#sc-card-cvc');
                         $('.loader').fadeOut();
                         if(response.error.message){
                             alert(response.error.message);
