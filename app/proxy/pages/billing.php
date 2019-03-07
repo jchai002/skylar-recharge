@@ -313,7 +313,7 @@ $countries = [
                         if(response.error.message){
                             $('.sc-input-error').html(response.error.message);
 						} else {
-                            $('.sc-input-error').html(response.error.);
+                            $('.sc-input-error').html(response.error);
 						}
 					}
 				});
