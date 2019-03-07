@@ -256,6 +256,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 	$(document).ready(function(){
         $('.sc-add-discount').submit(function(e){
             e.preventDefault();
+            $('.sc-discount-error').remove();
             var btn = $(this).find('.action_button');
             btn.attr('disabled', 'disabled').addClass('disabled');
             btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
@@ -267,8 +268,8 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                 data: data,
                 success: function(data){
                     console.log(data);
-                    if(data.error){
-                        alert(data.error);
+                    if(!data.success){
+                        $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
                         btn.prop('disabled', false).removeClass('disabled');
                     } else {
                         btn.find('span').text({{ 'products.product.add_to_cart_success' | t | json }}).removeClass('zoomOut').addClass('fadeIn');
