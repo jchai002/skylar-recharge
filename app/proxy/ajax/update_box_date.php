@@ -51,7 +51,7 @@ if(!empty($res['charge'])){
 	} else {
 		foreach($charge['line_items'] as $line_item){
 			$res_all[] = $res = $rc->get('/subscriptions/'.$line_item['subscription_id']);
-			if(!empty($res['subscription']) && $res['subscription']['stats'] == 'ACTIVE'){
+			if(!empty($res['subscription']) && $res['subscription']['status'] == 'ACTIVE'){
 				$res_all[] = $rc->post('/subscriptions/'.$line_item['subscription_id'].'/set_next_charge_date', [
 					'date' => date('Y-m-d', strtotime($_REQUEST['date'])),
 				]);
