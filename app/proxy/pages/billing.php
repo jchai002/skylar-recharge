@@ -308,7 +308,7 @@ $countries = [
                         ScentClub.cardNumber.unmount().mount('#sc-card-number');
                         ScentClub.cardExpiry.unmount().mount('#sc-card-expiration');
                         ScentClub.cardCvc.unmount().mount('#sc-card-cvc');
-                        $('.loader').fadeIn();
+                        $('.loader').fadeOut();
                         if(response.error.message){
                             alert(response.error.message);
 						} else {
