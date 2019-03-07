@@ -553,14 +553,23 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 						'total' => 0,
 					];
 				}
-				$subscription['type'] = 'subscription';
-				$subscription['subscription_id'] = $subscription['id'];
-				$subscription['status'] = 'SKIPPED';
-				$subscription['skipped'] = true;
-				$schedule[$date]['items'][] = $subscription;
+				$this_subscription = $subscription;
+				$stmt_get_swap->execute([date('Y-m',$next_charge_time).'-01']);
+				if($stmt_get_swap->rowCount() > 0){
+					$swap = $stmt_get_swap->fetch();
+					$this_subscription['handle'] = $swap['handle'];
+					$this_subscription['shopify_product_id'] = $swap['shopify_product_id'];
+					$this_subscription['shopify_variant_id'] = $swap['shopify_variant_id'];
+					$this_subscription['product_title'] = $swap['product_title'];
+					$this_subscription['variant_title'] = $swap['variant_title'];
+				}
+				$this_subscription['type'] = 'subscription';
+				$this_subscription['subscription_id'] = $subscription['id'];
+				$this_subscription['status'] = 'SKIPPED';
+				$this_subscription['skipped'] = true;
+				$schedule[$date]['items'][] = $this_subscription;
 				$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
 			}
-			$stmt_get_swap->execute([date('Y-m',$next_charge_time).'-01']);
 		}
 	}
 	foreach($orders as $order){
