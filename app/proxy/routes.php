@@ -184,9 +184,9 @@ $router->route('/billing\/update-address/i', function() use(&$json_output) {
 	return true;
 });
 $router->route('/billing$/i', function() {
-	require_customer_id(function(){
+//	require_customer_id(function(){
 		require('pages/billing.php');
-	});
+//	});
 	return true;
 });
 $router->route('/settings\/update-email/i', function() use(&$json_output) {
