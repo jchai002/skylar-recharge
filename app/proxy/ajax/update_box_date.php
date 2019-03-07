@@ -48,6 +48,12 @@ if(!empty($res['charge'])){
 				]);
 			}
 		}
+	} else {
+		foreach($charge['line_items'] as $line_item){
+			$res_all[] = $rc->post('/subscriptions/'.$line_item['subscription_id'].'/set_next_charge_date', [
+				'date' => date('Y-m-d', strtotime($_REQUEST['date'])),
+			]);
+		}
 	}
 	sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
 }
