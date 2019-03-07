@@ -543,7 +543,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		if(is_scent_club($products[$subscription['shopify_product_id']])){
 			$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 month')));
 			while($end_of_next_month_time < $next_charge_time){
-				$date = date('Y-m', $end_of_next_month_time).'-'.(!empty($subscription['order_day_of_month']) ? str_pad($subscription['order_day_of_month'], 2, '0') : date('d', $next_charge_time));
+				$date = date('Y-m', $end_of_next_month_time).'-'.(!empty($subscription['order_day_of_month']) ? str_pad($subscription['order_day_of_month'], 2, '0', STR_PAD_LEFT) : date('d', $next_charge_time));
 				if(empty($schedule[$date])){
 					$schedule[$date] = [
 						'items' => [],
