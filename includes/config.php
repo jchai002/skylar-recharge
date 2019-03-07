@@ -557,7 +557,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 				$subscription['status'] = 'SKIPPED';
 				$subscription['skipped'] = true;
 				$schedule[$date]['items'][] = $subscription;
-				$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 day', $end_of_next_month_time)));
+				$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
 			}
 			$stmt_get_swap->execute([date('Y-m',$next_charge_time).'-01']);
 		}
