@@ -119,7 +119,9 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 								 data-sc-type="<?= is_scent_club($products_by_id[$item['shopify_product_id']]) ? 'default' : ''?><?= is_scent_club_swap($products_by_id[$item['shopify_product_id']]) ? 'swap' : ''?><?= is_scent_club_month($products_by_id[$item['shopify_product_id']]) ? 'monthly' : ''?><?= !is_scent_club_any($products_by_id[$item['shopify_product_id']]) ? 'none' : ''?>"
 							>
 
-								<?php if(!empty($item['skipped'])){ ?>
+								<?php if(!empty($item['skipped']) && !empty($item['charge'])){ ?>
+									<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+								<?php } else if(!empty($item['skipped'])){ ?>
 									<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 								<?php } else if(is_scent_club_month($products_by_id[$item['shopify_product_id']])){ ?>
 									<a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
