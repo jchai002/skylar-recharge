@@ -162,7 +162,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-box-discounts">
 					<?php foreach($upcoming_box['discounts'] as $discount){ ?>
 						<div class="sc-box-discount">
-							<div class="sc-discount-title"><?=$discount['code']?> (<a href="#" class="remove-discount-link">remove</a>):</div>
+							<div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
 							<?php if($discount['type'] == 'percentage'){ ?>
 								<div class="sc-discount-value"><?=$discount['amount']?>% ($<?=price_without_trailing_zeroes($discount['amount']*array_sum(array_column($upcoming_box['items'], 'price'))/100)?>)</div>
 							<?php } else { ?>
