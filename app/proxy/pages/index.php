@@ -271,6 +271,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                     if(!data.success){
                         $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
                         btn.prop('disabled', false).removeClass('disabled');
+                        $('loader').fadeOut();
                     } else {
                         btn.find('span').text({{ 'products.product.add_to_cart_success' | t | json }}).removeClass('zoomOut').addClass('fadeIn');
                         location.reload();
