@@ -578,7 +578,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 					];
 				}
 				$this_subscription = $subscription;
-				$stmt_get_swap->execute([date('Y-m',$next_charge_time).'-01']);
+				$stmt_get_swap->execute([date('Y-m',$end_of_next_month_time).'-01']);
 				if($stmt_get_swap->rowCount() > 0){
 					$swap = $stmt_get_swap->fetch();
 					$this_subscription['handle'] = $swap['handle'];
