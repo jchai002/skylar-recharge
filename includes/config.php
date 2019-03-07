@@ -539,6 +539,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			}
 		}
 
+		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
 		// Detect skips for scent club
 		if(is_scent_club($products[$subscription['shopify_product_id']])){
 			$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 month')));
