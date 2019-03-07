@@ -238,10 +238,6 @@ function require_customer_id($callback_if_true){
 {% endif %}";
 		return false;
 	}
-//	ob_start();
-//	$callback_if_true();
-//	$output = ob_get_contents();
-//	ob_end_clean();
 	echo "{% if customer == nil %}
 {% layout 'scredirect' %}
 	<script>
@@ -251,6 +247,8 @@ function require_customer_id($callback_if_true){
 	<script>
 		location.search = location.search.replace('c=".$customer_id."','c={{customer.id}}');
 	</script>
-	{% else %}".$callback_if_true()."{% endif %}";
+	{% else %}";
+	$callback_if_true();
+	echo "{% endif %}";
 	return true;
 }
