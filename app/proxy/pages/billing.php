@@ -171,6 +171,7 @@ $countries = [
 				<div class="sc-mmenu-title"><?=empty($cc_info) ? 'Add' : 'Edit'?> Card</div>
 			</div>
 			<form class="sc-mmenu-form">
+				<div class="sc-input-error"></div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
 						<label for="sc-card-number">Card Number</label>
@@ -292,14 +293,14 @@ $countries = [
 			});
             ScentClub.cardCvc.mount('#sc-card-cvc');
             $('#sc-add-card form').submit(function(e){
-                // $('.loader').fadeIn();
+                $('.loader').fadeIn();
                 e.preventDefault();
                 var tokenRes = window.stripe.createToken(ScentClub.cardNumber);
-                window.setInterval(function(){
+                // window.setInterval(function(){
                     // window.ScentClub.cardNumber.update({disabled: false});
                     // window.ScentClub.cardExpiry.update({disabled: false});
                     // window.ScentClub.cardCvc.update({disabled: false});
-                }, 1000);
+                // }, 1000);
                 tokenRes.then(function(response){
                     console.log(response);
                     if(response.token){
@@ -308,11 +309,11 @@ $countries = [
                         ScentClub.cardNumber.unmount().mount('#sc-card-number');
                         ScentClub.cardExpiry.unmount().mount('#sc-card-expiration');
                         ScentClub.cardCvc.unmount().mount('#sc-card-cvc');
-                        // $('.loader').fadeOut();
+                        $('.loader').fadeOut();
                         if(response.error.message){
-                            alert(response.error.message);
+                            $('.sc-input-error').html(response.error.message);
 						} else {
-                            alert(response.error);
+                            $('.sc-input-error').html(response.error.);
 						}
 					}
 				});
