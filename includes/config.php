@@ -514,6 +514,9 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		if(empty($next_charge_time)){
 			continue;
 		}
+		if(empty($products[$subscription['shopify_product_id']])){
+			$products[$subscription['shopify_product_id']] = get_product($db, $subscription['shopify_product_id']);
+		}
 
 		while($next_charge_time < $max_time){
 			$date = date('Y-m-d', $next_charge_time);
@@ -525,13 +528,6 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 					'total' => 0,
 				];
 			}
-			if(empty($products[$subscription['shopify_product_id']])){
-				$products[$subscription['shopify_product_id']] = get_product($db, $subscription['shopify_product_id']);
-			}
-			if(is_scent_club($products[$subscription['shopify_product_id']])){
-//				$stmt_get_swap->execute([date('Y-m',$next_charge_time).'-01']);
-				// Swap here if changing to non-fill in
-			}
 			$subscription['type'] = 'subscription';
 			$subscription['subscription_id'] = $subscription['id'];
 			$schedule[$date]['items'][] = $subscription;
@@ -541,6 +537,29 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			} else if($subscription['order_interval_unit'] == 'week' && !empty($subscription['order_day_of_week'])){
 				// TODO if needed
 			}
+		}
+
+		// Detect skips for scent club
+		if(is_scent_club($products[$subscription['shopify_product_id']])){
+			$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 month')));
+			while($end_of_next_month_time < $next_charge_time){
+				$date = date('Y-m', $end_of_next_month_time).'-'.(!empty($subscription['order_day_of_month']) ? $subscription['order_day_of_month'] : date('d', $next_charge_time));
+				if(empty($schedule[$date])){
+					$schedule[$date] = [
+						'items' => [],
+						'ship_date_time' => strtotime($date),
+						'discounts' => [], // TODO
+						'total' => 0,
+					];
+				}
+				$subscription['type'] = 'subscription';
+				$subscription['subscription_id'] = $subscription['id'];
+				$subscription['status'] = 'SKIPPED';
+				$subscription['skipped'] = true;
+				$schedule[$date]['items'][] = $subscription;
+				$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 day', $end_of_next_month_time)));
+			}
+			$stmt_get_swap->execute([date('Y-m',$next_charge_time).'-01']);
 		}
 	}
 	foreach($orders as $order){
