@@ -43,6 +43,11 @@ $countries = [
 	'United Kingdom',
 ]
 ?>
+<!--
+<?php
+print_r($customer);
+?>
+-->
 {% assign portal_page = 'billing' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
