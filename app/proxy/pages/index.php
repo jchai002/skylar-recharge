@@ -45,7 +45,7 @@ if(!empty($rc_customer_id)){
 		}
 	}
 	echo "<!-- ";
-	print_r($onetimes);
+	print_r($res);
 	echo " -->";
 }
 global $db;
