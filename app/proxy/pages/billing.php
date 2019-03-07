@@ -294,6 +294,7 @@ $countries = [
             ScentClub.cardCvc.mount('#sc-card-cvc');
             $('#sc-add-card form').submit(function(e){
                 $('.loader').fadeIn();
+                $('.sc-input-error').html('');
                 e.preventDefault();
                 var tokenRes = window.stripe.createToken(ScentClub.cardNumber);
                 // window.setInterval(function(){
