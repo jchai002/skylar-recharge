@@ -243,7 +243,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<img src="" />
 			</div>
 			<div class="sc-skip-options">
-				<a class="action_button" onclick="$(this).addClass('disabled'); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Yes, Skip Box</a>
+				<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Yes, Skip Box</a>
 				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
 			</div>
 		</div>
@@ -259,7 +259,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<img src="" />
 			</div>
 			<div class="sc-skip-options">
-				<a class="action_button" onclick="$(this).addClass('disabled'); ScentClub.remove_sub(ScentClub.selected_box_item.data('subscription-id')); return false;">Yes, Remove</a>
+				<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); ScentClub.remove_sub(ScentClub.selected_box_item.data('subscription-id')); return false;">Yes, Remove</a>
 				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
 			</div>
 		</div>
