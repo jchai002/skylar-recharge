@@ -20,7 +20,7 @@ if(!empty($res['charge'])){
 		]);
 		if(!empty($res['onetimes'])){
 			foreach($res['onetimes'] as $onetime){
-				if($onetime['status'] != 'ONETIME'){
+				if(!empty($onetime['status']) && $onetime['status'] != 'ONETIME'){
 					continue;
 				}
 				$onetime_time = strtotime($onetime['next_charge_scheduled_at']);
