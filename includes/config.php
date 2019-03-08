@@ -569,6 +569,22 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 month')));
 			while($end_of_next_month_time < $next_charge_time){
 				$date = date('Y-m', $end_of_next_month_time).'-'.(!empty($subscription['order_day_of_month']) ? str_pad($subscription['order_day_of_month'], 2, '0', STR_PAD_LEFT) : date('d', $next_charge_time));
+
+				// Search schedule for any existing SC this month
+				$date_split = explode('-', $date);
+				foreach($schedule as $sched_date=>$box){
+					$sched_date_split = explode('-', $sched_date);
+					if($sched_date_split[0] != $date_split[0] || $sched_date_split[1] != $date_split[1]){ // Month or year doesn't match
+						continue;
+					}
+					foreach($box['items'] as $item){
+						// If there is an SC item this month already, go to next month (while loop)
+						if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
+							continue 3;
+						}
+					}
+				}
+
 				if(empty($schedule[$date])){
 					$schedule[$date] = [
 						'items' => [],
@@ -579,6 +595,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 				}
 				$this_subscription = $subscription;
 				$stmt_get_swap->execute([date('Y-m',$end_of_next_month_time).'-01']);
+				$swap = false;
 				if($stmt_get_swap->rowCount() > 0){
 					$swap = $stmt_get_swap->fetch();
 					$this_subscription['handle'] = $swap['handle'];
@@ -586,12 +603,6 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 					$this_subscription['shopify_variant_id'] = $swap['shopify_variant_id'];
 					$this_subscription['product_title'] = $swap['product_title'];
 					$this_subscription['variant_title'] = $swap['variant_title'];
-					foreach($schedule[$date]['items'] as $item){
-						if($item['shopify_product_id'] == $this_subscription['shopify_product_id']){
-							$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
-							continue 2;
-						}
-					}
 				}
 				$this_subscription['type'] = 'subscription';
 				$this_subscription['subscription_id'] = $subscription['id'];
@@ -600,6 +611,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 				$this_subscription['skip_info'] = [
 					'end_of_next_month' => date('Y-m-d', $end_of_next_month_time),
 					'next_charge' => date('Y-m-d', $next_charge_time),
+					'swap' => $swap,
 				];
 				$schedule[$date]['items'][] = $this_subscription;
 				$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
