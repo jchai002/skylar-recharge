@@ -859,7 +859,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 	$res = $rc->post('/subscriptions/'.$main_sub['id'].'/set_next_charge_date',[
 		'date' => $next_charge_month.'-'.$day_of_month,
 	]);
-	log_event($db, 'set_next_charge_date', $next_charge_month.'-'.$day_of_month, '', json_encode($res));
+	log_event($db, 'subscription', 'set_next_charge_date', $next_charge_month.'-'.$day_of_month, json_encode($res));
 	//print_r($res);
 
 	return $next_charge_month.'-'.$day_of_month;
