@@ -580,6 +580,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 					foreach($box['items'] as $item){
 						// If there is an SC item this month already, go to next month (while loop)
 						if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
+							$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
 							continue 3;
 						}
 					}
