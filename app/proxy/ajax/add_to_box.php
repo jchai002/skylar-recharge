@@ -1,6 +1,6 @@
 <?php
 
-$rc = new RechargeClient();
+global $db, $rc;
 
 if(empty($_REQUEST['charge_id'])){
 	$res = $rc->get('/customers', [
