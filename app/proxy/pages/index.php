@@ -227,8 +227,11 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		<div class="sc-product-section" id="layering">
 			<div class="sc-section-title">Layering</div>
 			<div class="sc-product-carousel">
-				<?php shuffle($recommended_products);
-				foreach($recommended_products as $product){ ?>
+				<?php foreach([
+							  'isle::Full Size|rollie:12235492327511:Rollie',
+							  'meadow::Full Size|rollie:12235492393047:Rollie',
+							  'capri::Full Size|rollie:12235492425815:Rollie',
+						  ] as $product){ ?>
 					{% assign recommended_handles = '<?=$product?>' | split: '|' %}
 					{% include 'sc-product-tile' %}
 				<?php } ?>
@@ -237,8 +240,11 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		<div class="sc-product-section" id="best-sellers">
 			<div class="sc-section-title">Best Sellers</div>
 			<div class="sc-product-carousel">
-				<?php shuffle($recommended_products);
-				foreach($recommended_products as $product){ ?>
+				<?php foreach([
+							  'isle::Full Size|rollie:12235492327511:Rollie',
+							  'rollie:12235409129559:Arrow|rollie:12235492425815:Capri|rollie:12235492360279:Coral|rollie:12235492327511:Isle|rollie:12235492393047:Meadow|rollie:12588614484055:Willow',
+							  'scent-experience',
+						  ] as $product){ ?>
 					{% assign recommended_handles = '<?=$product?>' | split: '|' %}
 					{% include 'sc-product-tile' %}
 				<?php } ?>
@@ -247,8 +253,11 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		<div class="sc-product-section" id="essentials">
 			<div class="sc-section-title">The Essentials</div>
 			<div class="sc-product-carousel">
-				<?php shuffle($recommended_products);
-				foreach($recommended_products as $product){ ?>
+				<?php foreach([
+						'sample-palette',
+						'scent-collection',
+						'rollie-collection',
+					] as $product){ ?>
 					{% assign recommended_handles = '<?=$product?>' | split: '|' %}
 					{% include 'sc-product-tile' %}
 				<?php } ?>
