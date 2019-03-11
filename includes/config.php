@@ -574,6 +574,10 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		if(is_scent_club($products[$subscription['shopify_product_id']])){
 			$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 month')));
 			while($end_of_next_month_time < $next_charge_time){
+				if(date('Y', $next_charge_time) == 2019 && date('m', $next_charge_time) <= 4){
+					$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
+					continue;
+				}
 				$date = date('Y-m', $end_of_next_month_time).'-'.(!empty($subscription['order_day_of_month']) ? str_pad($subscription['order_day_of_month'], 2, '0', STR_PAD_LEFT) : date('d', $next_charge_time));
 
 				// Search schedule for any existing SC this month
