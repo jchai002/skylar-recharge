@@ -29,14 +29,33 @@ foreach($product['variants'] as $variant){
 	}
 }
 
-$res = $rc->post('/addresses/'.$charge['address_id'].'/onetimes', [
-	'address_id' => $charge['address_id'],
-	'next_charge_scheduled_at' => $charge['scheduled_at'],
-	'product_title' => $product['title'],
-	'price' => round($variant['price']*.9, 2),
-	'quantity' => 1,
-	'shopify_variant_id' => $variant['id'],
-]);
+$frequency = empty($_REQUEST['frequency']) ? 'onetime' : $_REQUEST['frequency'];
+$res_id = false;
+if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
+	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/onetimes', [
+		'address_id' => $charge['address_id'],
+		'next_charge_scheduled_at' => $charge['scheduled_at'],
+		'product_title' => $product['title'],
+		'price' => round($variant['price']*.9, 2),
+		'quantity' => 1,
+		'shopify_variant_id' => $variant['id'],
+	]);
+	$res_id = $res['onetime']['id'];
+} else {
+	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/subscriptions', [
+		'address_id' => $charge['address_id'],
+		'next_charge_scheduled_at' => $charge['scheduled_at'],
+		'product_title' => $product['title'],
+		'price' => round($variant['price']*.9, 2),
+		'quantity' => 1,
+		'shopify_variant_id' => $variant['id'],
+		'order_interval_unit' => 'month',
+		'order_interval_frequency' => $frequency,
+		'charge_interval_frequency' => $frequency,
+		'order_day_of_month' => $main_sub['order_day_of_month'],
+	]);
+	$res_id = $res['subscription']['id'];
+}
 
 if(!empty($res['error'])){
 	echo json_encode([
