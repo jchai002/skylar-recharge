@@ -36,8 +36,9 @@ if(empty($main_sub)){
 		$next_charge_date = date('Y-m', strtotime('+1 month')).'-'.$day_of_month.' 00:00:00';
 		var_dump($product);
 		if(is_scent_club($product)){
-			if(date('Y', $next_charge_date) == 2019 && date('m', $next_charge_date) <= 4){
-				$next_charge_date = '2019-05-'.date('d', $next_charge_date).' 00:00:00';
+			$next_charge_date_time = strtotime($next_charge_date);
+			if(date('Y', $next_charge_date_time) == 2019 && date('m', $next_charge_date_time) <= 4){
+				$next_charge_date = '2019-05-'.date('d', $next_charge_date_time).' 00:00:00';
 			}
 			$res = $rc->post('/subscriptions', [
 				'address_id' => $charge['address_id'],
