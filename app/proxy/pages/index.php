@@ -313,14 +313,12 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                 $(this).find('.sc-frequency-options').slideDown('fast');
                 return;
             }
-            console.log($(this).find('.sc-frequency-options').is(':visible'));
             var btn = $(this).find('.action_button');
             btn.attr('disabled', 'disabled').addClass('disabled');
             btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
             var data = $(this).serializeJSON();
             data.product_id = $(this).find('.sc-size-select option:selected').data('product-id');
             data.c = Shopify.queryParams.c;
-            return;
             $('.loader').fadeIn();
             $.ajax({
                 url: '/tools/skylar/subscriptions/add-to-box',
@@ -338,7 +336,6 @@ sc_conditional_billing($rc, $_REQUEST['c']);
             });
         });
         $('.sc-addtobox-form').hover(function(e){
-            console.log(e);
             if(!$(this).data('id')){
                 $(this).find('.sc-frequency-options').stop(true).slideDown('fast');
             }
