@@ -32,7 +32,7 @@ foreach($product['variants'] as $variant){
 $frequency = empty($_REQUEST['frequency']) ? 'onetime' : $_REQUEST['frequency'];
 $res_id = false;
 if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
-	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/onetimes', [
+	$res = $rc->post('/addresses/'.$charge['address_id'].'/onetimes', [
 		'address_id' => $charge['address_id'],
 		'next_charge_scheduled_at' => $charge['scheduled_at'],
 		'product_title' => $product['title'],
@@ -42,7 +42,10 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 	]);
 	$res_id = $res['onetime']['id'];
 } else {
-	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/subscriptions', [
+	$main_sub = sc_get_main_subscription($db, $rc, [
+		'address_id' => $charge['address_id'],
+	]);
+	$res = $rc->post('/addresses/'.$charge['address_id'].'/subscriptions', [
 		'address_id' => $charge['address_id'],
 		'next_charge_scheduled_at' => $charge['scheduled_at'],
 		'product_title' => $product['title'],
