@@ -495,9 +495,12 @@ if(!function_exists('divide')){
 };
 function get_next_subscription_time($start_date, $order_interval_unit, $order_interval_frequency, $order_day_of_month = null, $order_day_of_week = null){
 	$next_charge_time = strtotime($start_date.' +'.$order_interval_frequency.' '.$order_interval_unit);
+	if(date('Y', $next_charge_time) == 2019 && date('m', $next_charge_time) <= 4){
+		$next_charge_time = strtotime('2019-05-'.date('d', $next_charge_time)); // Don't double-dip for launch month
+	}
 	if($order_interval_unit == 'month' && !empty($order_day_of_month)){
 		$next_charge_time = strtotime(date('Y-m-'.$order_day_of_month, $next_charge_time));
-	} else if($order_interval_unit && !empty($order_day_of_week)){
+	} else if($order_interval_unit == 'week' && !empty($order_day_of_week)){
 		// TODO if needed
 	}
 	return $next_charge_time;
