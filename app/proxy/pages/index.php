@@ -132,7 +132,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 									<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 								<?php } else { ?>
 									<div class="sc-item-title">{{ box_product.title }}</div>
-									{% if box_variant.title == 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
+									{% if box_variant.title != 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
 								<?php } ?>
 							</div>
 						</div>
