@@ -574,7 +574,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		if(is_scent_club($products[$subscription['shopify_product_id']])){
 			$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 month')));
 			while($end_of_next_month_time < $next_charge_time){
-				if(date('Y', $next_charge_time) == 2019 && date('m', $next_charge_time) <= 4){
+				if(date('Y', $end_of_next_month_time) == 2019 && date('m', $end_of_next_month_time) <= 4){
 					$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
 					continue;
 				}
