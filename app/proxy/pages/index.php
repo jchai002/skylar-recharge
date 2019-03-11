@@ -310,6 +310,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                 $(this).find('.sc-frequency-options').slideDown('fast');
                 return;
             }
+            console.log($(this).find('.sc-frequency-options').is(':visible'));
             var btn = $(this).find('.action_button');
             btn.attr('disabled', 'disabled').addClass('disabled');
             btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
