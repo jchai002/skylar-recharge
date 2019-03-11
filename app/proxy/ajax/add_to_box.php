@@ -41,7 +41,9 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'quantity' => 1,
 		'shopify_variant_id' => $variant['id'],
 	]);
-	$res_id = $res['onetime']['id'];
+	if(!empty($res['onetime'])){
+		$res_id = $res['onetime']['id'];
+	}
 } else {
 	$main_sub = sc_get_main_subscription($db, $rc, [
 		'address_id' => $charge['address_id'],
@@ -58,7 +60,9 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'charge_interval_frequency' => $frequency,
 		'order_day_of_month' => $main_sub['order_day_of_month'],
 	]);
-	$res_id = $res['subscription']['id'];
+	if(!empty($res['subscription'])){
+		$res_id = $res['subscription']['id'];
+	}
 }
 
 if(!empty($res['error'])){
