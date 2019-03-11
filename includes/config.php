@@ -665,6 +665,9 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		if($order_time > $max_time){
 			continue;
 		}
+		if($charge['status'] == 'SKIPPED' && date('Y', $order_time) == 2019 && date('m', $order_time) <= 4){
+			continue;
+		}
 		$charge['next_charge_scheduled_at'] = $charge['scheduled_at'];
 		$date = date('Y-m-d', $order_time);
 		if(empty($schedule[$date])){
