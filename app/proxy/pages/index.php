@@ -333,6 +333,13 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                 }
             });
         });
+        $('.sc-addtobox-form').hover(function(e){
+            if(!$(this).data('id')){
+                $(this).find('.sc-frequency-options').stop(true).slideDown('fast');
+            }
+        }, function(e){
+            $(this).find('.sc-frequency-options').stop(true).slideUp();
+        });
 	    $('.sc-section-menu a').click(function(e){
 	        e.preventDefault();
 	        $('.sc-section-menu a').removeClass('active');
