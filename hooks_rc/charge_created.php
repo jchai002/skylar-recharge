@@ -33,11 +33,15 @@ $day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order
 if(empty($main_sub)){
 	foreach($charge['line_items'] as $line_item){
 		$product = get_product($db, $line_item['shopify_product_id']);
+		$next_charge_date = date('Y-m', strtotime('+1 month')).'-'.$day_of_month.' 00:00:00';
 		var_dump($product);
 		if(is_scent_club($product)){
+			if(date('Y', $next_charge_date) == 2019 && date('m', $next_charge_date) <= 4){
+				$next_charge_date = '2019-05-'.date('d', $next_charge_date).' 00:00:00';
+			}
 			$res = $rc->post('/subscriptions', [
 				'address_id' => $charge['address_id'],
-				'next_charge_scheduled_at' => date('Y-m', strtotime('+1 month')).'-'.$day_of_month.' 00:00:00',
+				'next_charge_scheduled_at' => $next_charge_date,
 				'product_title' => 'Skylar Scent Club',
 				'price' => $line_item['price'],
 				'quantity' => 1,
