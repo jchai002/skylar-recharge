@@ -339,7 +339,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
             $('html,body').animate({scrollTop: $($(this).attr('href')).offset().top-140},'slow');
 		});
         optional_scripts.onload('slick', function(){
-            $('.sc-product-carousel select, .sc-product-carousel button').click(function(e){
+            $('.sc-product-carousel select, .sc-product-carousel button, .sc-product-carousel label').click(function(e){
                 e.stopPropagation();
 			});
             $('.sc-product-carousel').slick({
