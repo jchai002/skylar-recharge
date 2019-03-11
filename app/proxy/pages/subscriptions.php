@@ -158,7 +158,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 											<div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
 										<?php } else { ?>
 											<div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
-											<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
+											{% if box_variant.title == 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
 											<?php if($item['type'] != 'onetime'){ ?>
 												<a class="sc-unsub-link" href="#"><span>Remove</span></a>
 											<?php } ?>
