@@ -304,8 +304,12 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                 }
             });
         });
-        $('.sc-add-line').submit(function(e){
+        $('.sc-addtobox-form').submit(function(e){
             e.preventDefault();
+            if(!form.find('.sc-frequency-options').is(':visible')){
+                form.find('.sc-frequency-options').slideDown('fast');
+                return;
+            }
             var btn = $(this).find('.action_button');
             btn.attr('disabled', 'disabled').addClass('disabled');
             btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
