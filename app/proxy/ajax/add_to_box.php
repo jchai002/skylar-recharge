@@ -9,6 +9,7 @@ if(empty($_REQUEST['charge_id'])){
 	$customer = $res['customers'][0];
 	$res = $rc->get('/charges', [
 		'customer_id' => $customer['id'],
+		'status' => 'QUEUED',
 	]);
 	$charges = $res['charges'];
 	usort($charges, function ($item1, $item2) {
