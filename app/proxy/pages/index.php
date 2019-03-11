@@ -306,8 +306,8 @@ sc_conditional_billing($rc, $_REQUEST['c']);
         });
         $('.sc-addtobox-form').submit(function(e){
             e.preventDefault();
-            if(!form.find('.sc-frequency-options').is(':visible')){
-                form.find('.sc-frequency-options').slideDown('fast');
+            if(!$(this).find('.sc-frequency-options').is(':visible')){
+                $(this).find('.sc-frequency-options').slideDown('fast');
                 return;
             }
             var btn = $(this).find('.action_button');
