@@ -3,7 +3,7 @@
 $rc = new RechargeClient();
 
 $res = $rc->get('/subscriptions/'.intval($_REQUEST['id']));
-if(empty($res['subscription']) || res['subscription']['status'] == 'ONETIME'){
+if(empty($res['subscription']) || $res['subscription']['status'] == 'ONETIME'){
 	$res = $rc->delete('/onetimes/'.intval($_REQUEST['id']));
 } else {
 	$res = $rc->delete('/subscriptions/'.intval($_REQUEST['id']));
