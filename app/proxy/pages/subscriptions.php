@@ -166,12 +166,10 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 									</div>
 								</div>
 								<div class="sc-item-details">
-									<?php if($index == 0){ ?>
-										<div>
-											<div class="sc-item-detail-label">Total</div>
-											<div class="sc-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
-										</div>
-									<?php } ?>
+									<div>
+										<div class="sc-item-detail-label">Total</div>
+										<div class="sc-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
+									</div>
 									<div>
 										<div class="sc-item-detail-label">Delivery</div>
 										<div class="sc-item-detail-value">
