@@ -55,7 +55,8 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 if(!empty($res['error'])){
 	echo json_encode([
 		'success' => false,
-		'res' => $res['error'],
+		'error' => $res['error'],
+		'res' => $res,
 	]);
 } else {
 	echo json_encode([
