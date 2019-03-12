@@ -178,7 +178,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						<div><input type="text" name="discount_code" /></div>
 						<div><input type="submit" value="Apply" class="action_button inverted" /></div>
 						<?php if(!empty($upcoming_box['charge'])){ ?>
-							<input type="hidden" name="charge_id" value="<?=$upcoming_box['charge']['id']?>" />
+							<input type="hidden" name="address_id" value="<?=$upcoming_box['charge']['address_id']?>" />
 						<?php } ?>
 					</form>
 				</div>
