@@ -2,7 +2,7 @@
 global $db;
 $rc = new RechargeClient();
 
-$month = empty($_REQUEST['month']) ? date('Y-m',strtotime('+1 month')) : date('Y-m', strtotime($_REQUEST['month']));
+$month = empty($_REQUEST['month']) ? date('Y-m',strtotime('+6 months')) : date('Y-m', strtotime($_REQUEST['month']));
 
 $ts1 = time();
 $ts2 = strtotime($month.'-01');
