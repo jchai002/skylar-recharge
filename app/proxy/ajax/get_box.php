@@ -2,7 +2,7 @@
 global $db;
 $rc = new RechargeClient();
 
-$month = empty($_REQUEST['month']) ? date('Y-m',strtotime('+6 months')) : date('Y-m', strtotime($_REQUEST['month']));
+$month = empty($_REQUEST['month']) ? date('Y-m',strtotime('+1 months')) : date('Y-m', strtotime($_REQUEST['month']));
 
 $ts1 = time();
 $ts2 = strtotime($month.'-01');
@@ -14,6 +14,8 @@ $month1 = date('m', $ts1);
 $month2 = date('m', $ts2);
 
 $months = (($year2 - $year1) * 12) + ($month2 - $month1);
+
+$months++; // April 2019
 
 
 global $rc;
