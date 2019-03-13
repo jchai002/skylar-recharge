@@ -216,9 +216,9 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<div class="sc-section-title">Recommendations based on your profile</div>
 			<div class="sc-product-carousel">
 				<?php foreach([
-							'isle::Full Size|rollie:12235492327511:Rollie',
-							'meadow::Full Size|rollie:12235492393047:Rollie',
-							'capri::Full Size|rollie:12235492425815:Rollie',
+							  'coral::Full Size|rollie:12235492360279:Rollie',
+							  'arrow::Full Size|rollie:12235409129559:Rollie',
+							  'willow::Full Size|rollie:12588614484055:Rollie',
 						] as $product){ ?>
 					{% assign recommended_handles = '<?=$product?>' | split: '|' %}
 					{% include 'sc-product-tile' %}
