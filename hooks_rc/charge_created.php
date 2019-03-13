@@ -81,6 +81,7 @@ if(empty($main_sub)){
 				],
 			]);
 			$res = curl_exec($ch);
+			echo $res;
 			log_event($db, 'klaviyo', $res, 'subscribe', $charge);
 			break;
 		}
