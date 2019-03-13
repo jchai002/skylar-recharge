@@ -80,6 +80,8 @@ if(empty($main_sub)){
 					'Content-Type: application/json',
 				],
 			]);
+			$res = curl_exec($ch);
+			log_event($db, 'klaviyo', $res, 'subscribe', $charge);
 			break;
 		}
 	}
