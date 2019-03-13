@@ -13,9 +13,12 @@ $year2 = date('Y', $ts2);
 $month1 = date('m', $ts1);
 $month2 = date('m', $ts2);
 
+if($year2 == 2019 && $month2 < 4){
+	$month2 = 5;
+}
+
 $months = (($year2 - $year1) * 12) + ($month2 - $month1);
 
-$months++; // April 2019
 
 
 global $rc;
