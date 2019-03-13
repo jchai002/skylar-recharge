@@ -206,7 +206,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<?php } ?>
 			</div>
 			<div class="sc-section-menu">
-				<a href="#recommendations" class="active">Your Profile Recommendations</a>
+				<a href="#recommendations" class="active">Your Scent Profile Recommendations</a>
 				<a href="#layering">Layering</a>
 				<a href="#best-sellers">Best Sellers</a>
 				<a href="#essentials">The Essentials</a>
