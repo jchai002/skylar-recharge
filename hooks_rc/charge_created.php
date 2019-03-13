@@ -58,8 +58,8 @@ if(empty($main_sub)){
 			}
 
 			$props = [];
-			foreach($line_item['properties'] as $key=>$val){
-				$props['$'.$key] = $val;
+			foreach($line_item['properties'] as $property){
+				$props['$'.str_replace('_sc_preference_', '', $property['name'])] = $property['value'];
 			}
 
 			$props['email'] = $charge['email'];
