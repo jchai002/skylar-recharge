@@ -56,6 +56,30 @@ if(empty($main_sub)){
 			if(!empty($res['subscription'])){
 				$main_sub = $res['subscription'];
 			}
+
+			$props = [];
+			foreach($line_item['properties'] as $key=>$val){
+				$props['$'.$key] = $val;
+			}
+
+			$props['email'] = $charge['email'];
+			$props['$source'] = $charge['checkout'];
+
+			$ch = curl_init('https://a.klaviyo.com/api/v2/list/KLHcef/subscribe');
+			curl_setopt_array($ch, [
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_POST => true,
+				CURLOPT_POSTFIELDS => json_encode([
+					'api_key' => $_ENV['KLAVIYO_API_KEY'],
+					'profiles' => [
+						$props,
+					],
+				]),
+				CURLOPT_HTTPHEADER => [
+					'api-key: '.$_ENV['KLAVIYO_API_KEY'],
+					'Content-Type: application/json',
+				],
+			]);
 			break;
 		}
 	}
