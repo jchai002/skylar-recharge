@@ -15,7 +15,7 @@ $month2 = date('m', $ts2);
 
 if($year2 == 2019 && $month2 < 4){
 	$month2 = 5;
-	$month = strtotime('2019-05-01');
+	$month = date('Y-m', strtotime('2019-05-01'));
 }
 
 $months = (($year2 - $year1) * 12) + ($month2 - $month1);
