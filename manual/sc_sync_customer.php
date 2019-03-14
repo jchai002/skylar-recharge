@@ -18,3 +18,4 @@ $res = $sc->post('/admin/customers/'.$_REQUEST['id'].'/metafields.json', ['metaf
 	'value' => empty($main_sub) ? 0 : 1,
 	'value_type' => 'integer'
 ]]);
+print_r($res);
