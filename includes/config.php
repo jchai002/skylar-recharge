@@ -968,7 +968,12 @@ function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $
 	return $res['onetime'];
 }
 function sc_pull_profile_data(PDO $db, RechargeClient $rc, $rc_customer_id, $shopify_customer_id=false){
-	$profile_data = [];
+	$profile_data = [
+		'daysoff' => '',
+		'scent' => '',
+		'whenwear' => '',
+		'personality' => '',
+	];
 	if(!empty($rc_customer_id)){
 		$res = $rc->get('/charges', ['customer_id' => $rc_customer_id]);
 		if(!empty($res['charges'])){
@@ -1019,8 +1024,60 @@ function sc_get_profile_data(PDO $db, RechargeClient $rc, $shopify_customer_id){
 	}
 	return sc_pull_profile_data($db, $rc, $rc_customer_id, $shopify_customer_id);
 }
-function sc_generate_profile_products($profile_data){
+function sc_get_profile_products($profile_data){
+	$product_strings = [
+		'arrow' => 'arrow::Full Size|rollie:12235409129559:Rollie',
+		'capri' => 'capri::Full Size|rollie:12235492425815:Rollie',
+		'coral' => 'coral::Full Size|rollie:12235492360279:Rollie',
+		'isle' => 'isle::Full Size|rollie:12235492327511:Rollie',
+		'meadow' => 'meadow::Full Size|rollie:12235492393047:Rollie',
+		'willow' => 'willow::Full Size|rollie:12588614484055:Rollie',
+	];
+	$answer_mapping = [
+		'scent' => [
+			'fresh' => 'isle',
+			'fruity' => 'coral',
+			'woodsy' => 'willow',
+			'floral' => 'meadow',
+		],
+		'daysoff' => [
+			'hiking' => 'willow',
+			'beach' => 'capri',
+			'book' => 'isle',
+			'friends' => 'arrow',
+		],
+		'personality' => [
+			'adventurous' => 'capri',
+			'shy' => 'meadow',
+			'outgoing' => 'arrow',
+			'funny' => 'coral',
+		],
+	];
+	$product_handles = [];
 	$products = [];
+	foreach($answer_mapping as $profile_key => $answers){
+		if(empty($profile_data[$profile_key]) || !array_key_exists($profile_data[$profile_key], $answers)){
+			continue;
+		}
+		if(in_array($answers[$profile_data[$profile_key]], $product_handles)){
+			continue;
+		}
+		$product_handles[] = $answers[$profile_data[$profile_key]];
+	}
+	if(count($product_handles) < 3){
+		foreach(array_keys($product_strings) as $handle){
+			if(!in_array($handle, $product_handles)){
+				$product_handles[] = $handle;
+			}
+			if(count($product_handles) >= 3){
+				break;
+			}
+		}
+	}
+	foreach($product_handles as $handle){
+		$products[] = $product_strings[$handle];
+	}
+	return $products;
 }
 function price_without_trailing_zeroes($price = 0){
 	if(!is_float($price)){
