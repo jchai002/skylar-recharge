@@ -11,5 +11,5 @@ foreach($recommended_products as $recommended_product){
 }
 ?>
 {% assign portal_page = 'portal' %}
-{% assign recommended_product_handles = '<?=implode('|',$recommended_products)?>' | split: '|' %}
+{% assign recommended_product_handles = '<?=implode('|',$single_reco_products)?>' | split: '|' %}
 {% include 'sc-member-portal' %}
