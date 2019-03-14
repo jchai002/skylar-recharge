@@ -967,6 +967,61 @@ function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $
 	sc_calculate_next_charge_date($db, $rc, $address_id);
 	return $res['onetime'];
 }
+function sc_pull_profile_data(PDO $db, RechargeClient $rc, $rc_customer_id, $shopify_customer_id=false){
+	$profile_data = [];
+	if(!empty($rc_customer_id)){
+		$res = $rc->get('/charges', ['customer_id' => $rc_customer_id]);
+		if(!empty($res['charges'])){
+			foreach($res['charges'] as $charge){
+				foreach($charge['line_items'] as $line_item){
+					if(!is_scent_club(get_product($db, $line_item['shopify_product_id']))){
+						continue;
+					}
+					if(!empty($line_item['properties'])){
+						foreach($line_item['properties'] as $property){
+							if(strpos($property['name'], '_sc_preference_') === false){
+								continue;
+							}
+							$profile_data[str_replace('_sc_preference_', '', $property['name'])] = $property['value'];
+						}
+					}
+					if(!empty($profile_data)){
+						$stmt = $db->prepare("INSERT INTO sc_profile_data (shopify_customer_id, data_key, data_value) VALUES (:shopify_customer_id, :data_key, :data_value) ON DUPLICATE KEY UPDATE data_value=:data_value");
+						if(empty($shopify_customer_id)){
+							$customer_res = $rc->get('/customers/'.$rc_customer_id);
+							$shopify_customer_id = $customer_res['shopify_customer_id'];
+						}
+						foreach($profile_data as $key=>$value){
+							$stmt->execute([
+								'shopify_customer_id' => $shopify_customer_id,
+								'data_key' => $key,
+								'data_value' => $value,
+							]);
+						}
+						break 2;
+					}
+				}
+			}
+		}
+	}
+	return $profile_data;
+}
+function sc_get_profile_data(PDO $db, RechargeClient $rc, $shopify_customer_id){
+	$stmt = $db->prepare("SELECT data_key, data_value FROM sc_profile_data WHERE shopify_customer_id=?");
+	$stmt->execute([$shopify_customer_id]);
+	if($stmt->rowCount() > 0){
+		return $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+	}
+	$res = $rc->get('/customers', ['shopify_customer_id' => $shopify_customer_id]);
+	$rc_customer_id = false;
+	if(!empty($res['customers'])){
+		$rc_customer_id = $res['customers'][0]['id'];
+	}
+	return sc_pull_profile_data($db, $rc, $rc_customer_id, $shopify_customer_id);
+}
+function sc_generate_profile_products($profile_data){
+	$products = [];
+}
 function price_without_trailing_zeroes($price = 0){
 	if(!is_float($price)){
 		return number_format($price);
