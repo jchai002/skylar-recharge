@@ -69,7 +69,6 @@ $recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <!--
-<?php print_r($recommended_products); ?>
 <?php print_r($upcoming_box); ?>
 -->
 {% assign portal_page = 'my_box' %}
@@ -209,11 +208,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		<div class="sc-product-section" id="recommendations">
 			<div class="sc-section-title">Recommendations based on your profile</div>
 			<div class="sc-product-carousel">
-				<?php foreach([
-							  'coral::Full Size|rollie:12235492360279:Rollie',
-							  'arrow::Full Size|rollie:12235409129559:Rollie',
-							  'willow::Full Size|rollie:12588614484055:Rollie',
-						] as $product){ ?>
+				<?php foreach($recommended_products as $product){ ?>
 					{% assign recommended_handles = '<?=$product?>' | split: '|' %}
 					{% include 'sc-product-tile' %}
 				<?php } ?>
