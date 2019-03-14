@@ -69,6 +69,7 @@ $recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <!--
+<?php print_r($recommended_products); ?>
 <?php print_r($upcoming_box); ?>
 -->
 {% assign portal_page = 'my_box' %}
