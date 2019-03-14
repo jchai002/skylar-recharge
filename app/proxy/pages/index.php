@@ -65,14 +65,7 @@ foreach($upcoming_shipments as $upcoming_shipment){
 	}
 }
 
-$recommended_products = [
-	'arrow::Full Size|rollie:12235409129559:Rollie',
-	'capri::Full Size|rollie:12235492425815:Rollie',
-	'coral::Full Size|rollie:12235492360279:Rollie',
-	'isle::Full Size|rollie:12235492327511:Rollie',
-	'meadow::Full Size|rollie:12235492393047:Rollie',
-	'willow::Full Size|rollie:12588614484055:Rollie',
-];
+$recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_REQUEST['c']));
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <!--
