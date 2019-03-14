@@ -6,7 +6,7 @@ $single_reco_products = [];
 mt_srand($_REQUEST['c']);
 foreach($recommended_products as $recommended_product){
 	$parts = explode('|',$recommended_product);
-	$key = mt_rand(0,count($recommended_products)-1);
+	$key = mt_rand(0,count($parts)-1);
 	$single_reco_products = $parts[$key];
 }
 ?>
