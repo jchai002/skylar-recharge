@@ -704,7 +704,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 	foreach($schedule as $date=>$box){
 		usort($box['items'], function($a, $b) use ($db) {
 			$sc_a = is_scent_club_any(get_product($db, $a['shopify_product_id']));
-			$sc_b = is_scent_club_any(get_product($db, $a['shopify_product_id']));
+			$sc_b = is_scent_club_any(get_product($db, $b['shopify_product_id']));
 			if($sc_a == $sc_b) {
 				return 0;
 			}
