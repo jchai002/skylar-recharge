@@ -196,16 +196,16 @@ print_r($customer);
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
-						<label for="sc-address-zip">Zip Code</label>
-						<input required id="sc-address-zip" name="zip" value="<?=empty($address) ? '' : $address['zip']?>" />
-					</div>
-					<div class="sc-input-group">
 						<label for="sc-address-country">Country</label>
 						<select id="sc-address-country" name="country">
 							<?php foreach($countries as $country){ ?>
 								<option value="<?=$country?>"<?= !empty($address) && $address['country'] == $country ? ' selected' : ''?>><?=$country?></option>
 							<?php } ?>
 						</select>
+					</div>
+					<div class="sc-input-group">
+						<label for="sc-address-zip">Zip Code</label>
+						<input required id="sc-address-zip" name="zip" value="<?=empty($address) ? '' : $address['zip']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
