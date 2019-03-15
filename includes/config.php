@@ -709,7 +709,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			if($a['is_sc_any'] == $b['is_sc_any']) {
 				return 0;
 			}
-			return $a['is_sc_any'] ? 1 : -1;
+			return $a['is_sc_any'] ? -1 : 1;
 		});
 		echo "<!-- ";
 		print_r($box['items']);
