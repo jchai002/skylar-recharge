@@ -216,7 +216,7 @@ print_r($customer);
 					<div class="sc-input-group" id="sc-address-states-us">
 						<label for="sc-address-state">State</label>
 						<?php foreach($states as $state){ ?>
-							<option value="<?=$state?>"<?= !empty($address) && $address['state'] == $state ? ' selected' : ''?>><?=$country?></option>
+							<option value="<?=$state?>"<?= !empty($address) && $address['province'] == $state ? ' selected' : ''?>><?=$country?></option>
 						<?php } ?>
 					</div>
 					<div class="sc-input-group" id="sc-address-states-other" style="display: none;">
