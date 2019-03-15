@@ -701,12 +701,28 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		}
 	}
 	ksort($schedule);
+	foreach($schedule as $date=>$box){
+		usort($box['items'], function($a, $b) use ($db) {
+			$sc_a = is_scent_club_any(get_product($db, $a['shopify_product_id']));
+			$sc_b = is_scent_club_any(get_product($db, $a['shopify_product_id']));
+			if($sc_a == $sc_b) {
+				return 0;
+			}
+			return $sc_a > $sc_b;
+		});
+		$schedule[$date]['items'] = $box['items'];
+	}
 	return $schedule;
 }
+$product_cache = [];
 function get_product(PDO $db, $shopify_product_id){
-	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
-	$stmt->execute([$shopify_product_id]);
-	return $stmt->fetch();
+	global $product_cache;
+	if(!array_key_exists($shopify_product_id, $product_cache)){
+		$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
+		$stmt->execute([$shopify_product_id]);
+		$product_cache[$shopify_product_id] = $stmt->fetch();
+	}
+	return $product_cache[$shopify_product_id];
 }
 function is_scent_club($product){
 	return $product['type'] == 'Scent Club';
