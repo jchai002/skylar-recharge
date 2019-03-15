@@ -58,7 +58,8 @@ if(!empty($res['error'])){
 	]);
 	echo json_encode([
 		'success' => true,
-		'res' => $res_all,
+		'res' => $res,
+		'res_all' => $res_all,
 		'new_address' => $new_address,
 	]);
 }
