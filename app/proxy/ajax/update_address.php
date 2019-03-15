@@ -11,6 +11,9 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 $res = [];
 
 $new_address = [];
+if(!empty($_REQUEST['country']) && $_REQUEST['country'] == 'United States'){
+	$_REQUEST['province'] = $_REQUEST['state'];
+}
 foreach($_REQUEST['address'] as $key => $value){
 	if(!in_array($key, ['first_name', 'last_name', 'address1', 'address2', 'zip', 'city', 'province', 'country', 'phone'])){
 		continue;

@@ -41,7 +41,60 @@ $countries = [
 	'Canada',
 	'France',
 	'United Kingdom',
-]
+];
+$states = [
+	'AL' => 'Alabama',
+	'AK' => 'Alaska',
+	'AZ' => 'Arizona',
+	'AR' => 'Arkansas',
+	'CA' => 'California',
+	'CO' => 'Colorado',
+	'CT' => 'Connecticut',
+	'DE' => 'Delaware',
+	'DC' => 'District of Columbia',
+	'FL' => 'Florida',
+	'GA' => 'Georgia',
+	'HI' => 'Hawaii',
+	'ID' => 'Idaho',
+	'IL' => 'Illinois',
+	'IN' => 'Indiana',
+	'IA' => 'Iowa',
+	'KS' => 'Kansas',
+	'KY' => 'Kentucky',
+	'LA' => 'Louisiana',
+	'ME' => 'Maine',
+	'MD' => 'Maryland',
+	'MA' => 'Massachusetts',
+	'MI' => 'Michigan',
+	'MN' => 'Minnesota',
+	'MS' => 'Mississippi',
+	'MO' => 'Missouri',
+	'MT' => 'Montana',
+	'NE' => 'Nebraska',
+	'NV' => 'Nevada',
+	'NH' => 'New Hampshire',
+	'NJ' => 'New Jersey',
+	'NM' => 'New Mexico',
+	'NY' => 'New York',
+	'NC' => 'North Carolina',
+	'ND' => 'North Dakota',
+	'OH' => 'Ohio',
+	'OK' => 'Oklahoma',
+	'OR' => 'Oregon',
+	'PA' => 'Pennsylvania',
+	'RI' => 'Rhode Island',
+	'SC' => 'South Carolina',
+	'SD' => 'South Dakota',
+	'TN' => 'Tennessee',
+	'TX' => 'Texas',
+	'UT' => 'Utah',
+	'VT' => 'Vermont',
+	'VA' => 'Virginia',
+	'WA' => 'Washington',
+	'WV' => 'West Virginia',
+	'WI' => 'Wisconsin',
+	'WY' => 'Wyoming',
+];
 ?>
 <!--
 <?php
@@ -143,16 +196,6 @@ print_r($customer);
 				</div>
 				<div class="sc-input-row">
 					<div class="sc-input-group">
-						<label for="sc-address-city">City</label>
-						<input required id="sc-address-city" name="city" value="<?=empty($address) ? '' : $address['city']?>" />
-					</div>
-					<div class="sc-input-group">
-						<label for="sc-address-state">State/Province</label>
-						<input required id="sc-address-state" name="province" value="<?=empty($address) ? '' : $address['province']?>" />
-					</div>
-				</div>
-				<div class="sc-input-row">
-					<div class="sc-input-group">
 						<label for="sc-address-zip">Zip Code</label>
 						<input required id="sc-address-zip" name="zip" value="<?=empty($address) ? '' : $address['zip']?>" />
 					</div>
@@ -163,6 +206,22 @@ print_r($customer);
 								<option value="<?=$country?>"<?= !empty($address) && $address['country'] == $country ? ' selected' : ''?>><?=$country?></option>
 							<?php } ?>
 						</select>
+					</div>
+				</div>
+				<div class="sc-input-row">
+					<div class="sc-input-group">
+						<label for="sc-address-city">City</label>
+						<input required id="sc-address-city" name="city" value="<?=empty($address) ? '' : $address['city']?>" />
+					</div>
+					<div class="sc-input-group" id="sc-address-states-us">
+						<label for="sc-address-state">State</label>
+						<?php foreach($states as $state){ ?>
+							<option value="<?=$state?>"<?= !empty($address) && $address['state'] == $state ? ' selected' : ''?>><?=$country?></option>
+						<?php } ?>
+					</div>
+					<div class="sc-input-group" id="sc-address-states-other" style="display: none;">
+						<label for="sc-address-province">Province</label>
+						<input required id="sc-address-province" name="province" value="<?=empty($address) ? '' : $address['province']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
@@ -255,6 +314,17 @@ print_r($customer);
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
     $(document).ready(function(){
+        $('#sc-address-country').change(function(){
+            if($(this).val() == 'United States'){
+                $('#sc-address-states-us').show();
+                $('#sc-address-states-other').hide();
+                $('#sc-address-province').prop('required', false);
+			} else {
+                $('#sc-address-states-us').hide();
+                $('#sc-address-states-other').show();
+                $('#sc-address-province').prop('required', true);
+			}
+		});
         optional_scripts.onload('mmenu', function(){
             $('#sc-add-card').mmenu({
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
