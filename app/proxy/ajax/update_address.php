@@ -44,7 +44,7 @@ if(empty($main_sub)){
 		$res_all[] = $res = $rc->put('/addresses/'.$res['addresses'][0]['id'], $new_address);
 	}
 } else {
-	$res_all[] = $rc->put('/addresses/'.$main_sub['address_id'], $new_address);
+	$res_all[] = $res = $rc->put('/addresses/'.$main_sub['address_id'], $new_address);
 }
 if(!empty($res['error'])){
 	echo json_encode([
