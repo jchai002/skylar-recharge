@@ -711,9 +711,6 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			}
 			return $a['is_sc_any'] ? -1 : 1;
 		});
-		echo "<!-- ";
-		print_r($box['items']);
-		echo "-->";
 		$schedule[$date]['items'] = $box['items'];
 	}
 	return $schedule;
