@@ -276,23 +276,34 @@ function calculate_discount_factors(PDO $db, RechargeClient $rc, $charge){
 	// Multi Bottle Discount
 	$fullsize_count = 0;
 //	var_dump($charge);
+
+	$scent_club_in_box = false;
+
 	foreach($charge['line_items'] as $line_item){
+		if(is_scent_club_any(get_product($db, $line_item['shopify_product_id']))){
+			$scent_club_in_box = true;
+			continue;
+		}
 		if(in_array($line_item['shopify_variant_id'], $scent_variant_ids)){
 			$fullsize_count += $line_item['quantity'];
 		}
 	}
-	$discount_factors[] = ['key' => 'multi_bottle_discount', 'type' => 'subtract', 'amount' => calculate_multi_bottle_discount($fullsize_count)];
 
-	// Sample credit
-	if(!empty($charge['note_attributes'])){
-		foreach($charge['note_attributes'] as $note_attribute){
-			if($note_attribute['name'] == '_sample_credit' && !empty($note_attribute['value'])){
-				$discount_factors[] = ['key' => 'sample_credit', 'type' => 'subtract', 'amount' => $note_attribute['value']];
+	// Scent Club Discount
+
+	// Only apply if not scent club
+	if(!$scent_club_in_box){
+		$discount_factors[] = ['key' => 'multi_bottle_discount', 'type' => 'subtract', 'amount' => calculate_multi_bottle_discount($fullsize_count)];
+
+		// Sample credit
+		if(!empty($charge['note_attributes'])){
+			foreach($charge['note_attributes'] as $note_attribute){
+				if($note_attribute['name'] == '_sample_credit' && !empty($note_attribute['value'])){
+					$discount_factors[] = ['key' => 'sample_credit', 'type' => 'subtract', 'amount' => $note_attribute['value']];
+				}
 			}
 		}
 	}
-
-	// Scent Club Discount
 
 	// Subscription Discount
 	$line_item_total = 0;
