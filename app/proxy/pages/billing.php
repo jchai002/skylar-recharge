@@ -326,7 +326,7 @@ print_r($customer);
                 $('#sc-address-states-other').show();
                 $('#sc-address-province').prop('required', true);
 			}
-		});
+		}).trigger('change');
         optional_scripts.onload('mmenu', function(){
             $('#sc-add-card').mmenu({
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
