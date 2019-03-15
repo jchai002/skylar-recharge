@@ -220,10 +220,12 @@ $router->route('/settings$/i', function() {
 	return true;
 });
 
-
+$admin_customers = [644696211543];
 function require_customer_id($callback_if_true){
+	global $admin_customers;
 	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
 	header('Content-Type: application/liquid');
+
 	if(empty($customer_id)){
 		echo "
 {% layout 'scredirect' %}
@@ -242,15 +244,16 @@ function require_customer_id($callback_if_true){
 	$callback_if_true();
 	$output = ob_get_contents();
 	ob_end_clean();
-	echo "{% if customer == nil %}
+	echo "{% assign admin_customers = '".implode('|',$admin_customers)."' | split: '|' %}
+{% if customer == nil %}
 {% layout 'scredirect' %}
 	<script>
 		location.href = '/account/login?next='+location.pathname;
 	</script>
-	{% elsif customer.id != $customer_id %}
+	{% elsif customer.id == $customer_id or admin_customers contains $customer_id %}".$output."{% else %}
 	<script>
 		location.search = location.search.replace('c=".$customer_id."','c={{customer.id}}');
 	</script>
-	{% else %}".$output."{% endif %}";
+	{% endif %}";
 	return true;
 }
