@@ -702,13 +702,14 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 	}
 	ksort($schedule);
 	foreach($schedule as $date=>$box){
+		foreach($box['items'] as $index=>$item){
+			$box['items'][$index]['is_sc_any'] = is_scent_club(get_product($db, $item['shopify_product_id']));
+		}
 		usort($box['items'], function($a, $b) use ($db) {
-			$sc_a = is_scent_club_any(get_product($db, $a['shopify_product_id']));
-			$sc_b = is_scent_club_any(get_product($db, $b['shopify_product_id']));
-			if($sc_a == $sc_b) {
+			if($a['is_sc_any'] == $b['is_sc_any']) {
 				return 0;
 			}
-			return $sc_a ? 1 : -1;
+			return $a['is_sc_any'] ? 1 : -1;
 		});
 		$schedule[$date]['items'] = $box['items'];
 	}
