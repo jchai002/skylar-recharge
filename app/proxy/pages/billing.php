@@ -215,9 +215,11 @@ print_r($customer);
 					</div>
 					<div class="sc-input-group" id="sc-address-states-us">
 						<label for="sc-address-state">State</label>
-						<?php foreach($states as $state){ ?>
-							<option value="<?=$state?>"<?= !empty($address) && $address['province'] == $state ? ' selected' : ''?>><?=$country?></option>
-						<?php } ?>
+						<select id="sc-address-state" name="state">
+							<?php foreach($states as $state){ ?>
+								<option value="<?=$state?>"<?= !empty($address) && $address['province'] == $state ? ' selected' : ''?>><?=$state?></option>
+							<?php } ?>
+						</select>
 					</div>
 					<div class="sc-input-group" id="sc-address-states-other" style="display: none;">
 						<label for="sc-address-province">Province</label>
