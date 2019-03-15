@@ -8,7 +8,7 @@ $shopify_customer = $sc->get('/admin/customers/'.$_REQUEST['c'].'.json');
 $main_sub = sc_get_main_subscription($db, $rc, [
 	'shopify_customer_id' => $_REQUEST['c'],
 ]);
-$res = [];
+$res_all = [];
 
 $new_address = [];
 if(!empty($_REQUEST['address']['country']) && $_REQUEST['address']['country'] == 'United States'){
@@ -22,11 +22,11 @@ foreach($_REQUEST['address'] as $key => $value){
 }
 
 if(empty($main_sub)){
-	$res = $rc->get('/customers/', [
+	$res_all[] = $res = $rc->get('/customers/', [
 		'shopify_customer_id' => $_REQUEST['c'],
 	]);
 	if(empty($res['customers'])){
-		$res = $rc->post('/customers/',[
+		$res_all[] = $res = $rc->post('/customers/',[
 			'shopify_customer_id' => $_REQUEST['c'],
 			'email' => $shopify_customer['email'],
 			'first_name' => $_REQUEST['first_name'],
@@ -37,21 +37,28 @@ if(empty($main_sub)){
 	} else {
 		$customer = $res['customers'][0];
 	}
-	$res = $rc->get('/customers/'.$customer['id'].'/addresses');
+	$res_all[] = $res = $rc->get('/customers/'.$customer['id'].'/addresses');
 	if(empty($res['addresses'])){
-		$res = $rc->post('/customers/'.$customer['id'].'/addresses', $new_address);
+		$res_all[] = $res = $rc->post('/customers/'.$customer['id'].'/addresses', $new_address);
 	} else {
-		$res = $rc->put('/addresses/'.$res['addresses'][0]['id'], $new_address);
+		$res_all[] = $res = $rc->put('/addresses/'.$res['addresses'][0]['id'], $new_address);
 	}
 } else {
-	$res[] = $rc->put('/addresses/'.$main_sub['address_id'], $new_address);
+	$res_all[] = $rc->put('/addresses/'.$main_sub['address_id'], $new_address);
 }
-$res[] = $sc->put('/admin/customers/'.$_REQUEST['c'].'/addresses/'.$shopify_customer['default_address']['id'].'.json', [
-	'address' => $new_address,
-]);
-
-echo json_encode([
-	'success' => true,
-	'res' => $res,
-	'new_address' => $new_address,
-]);
+if(!empty($res['error'])){
+	echo json_encode([
+		'success' => false,
+		'error' => implode(PHP_EOL, $res['error']),
+		'res' => $res_all,
+	]);
+} else {
+	$res_all[] = $sc->put('/admin/customers/'.$_REQUEST['c'].'/addresses/'.$shopify_customer['default_address']['id'].'.json', [
+		'address' => $new_address,
+	]);
+	echo json_encode([
+		'success' => true,
+		'res' => $res_all,
+		'new_address' => $new_address,
+	]);
+}
