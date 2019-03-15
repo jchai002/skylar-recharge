@@ -708,7 +708,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			if($sc_a == $sc_b) {
 				return 0;
 			}
-			return $sc_a > $sc_b;
+			return $sc_a > $sc_b ? 1 : -1;
 		});
 		$schedule[$date]['items'] = $box['items'];
 	}
