@@ -250,6 +250,7 @@ function require_customer_id($callback_if_true){
 		location.href = '/account/login?next='+location.pathname;
 	</script>
 	{% elsif customer.id == $customer_id or admin_customers contains customer.id %}
+	{% assign is_alias = customer.id != $customer_id %}
 	{% if customer.id != $customer_id %}{% assign customer_first_name = 'Alias'  %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
 	{% assign customer_id = $customer_id %}
 	".$output."
