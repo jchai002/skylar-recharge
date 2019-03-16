@@ -243,7 +243,7 @@ function require_customer_id($callback_if_true){
 	$callback_if_true();
 	$output = ob_get_contents();
 	ob_end_clean();
-	echo "{% assign admin_customers = '".implode('|',$admin_customers)."' %}
+	echo "{% assign admin_customers = '|".implode('|',$admin_customers)."|' %}
 {% if customer == nil %}
 {% layout 'scredirect' %}
 	<script>
