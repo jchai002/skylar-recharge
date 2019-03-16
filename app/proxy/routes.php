@@ -256,6 +256,7 @@ function require_customer_id($callback_if_true){
 	".$output."
 	{% else %}
 	{{ admin_customers }}
+	$customer_id
 	{% if admin_customers contains '$customer_id' %}
 	yes
 	{% endif %}
