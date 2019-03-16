@@ -255,6 +255,7 @@ function require_customer_id($callback_if_true){
 	{% assign customer_id = $customer_id %}
 	".$output."
 	{% else %}
+	{{ admin_customers contains '$customer_id' }}
 	<script>
 		location.search = location.search.replace('c=".$customer_id."','c={{customer.id}}');
 	</script>
