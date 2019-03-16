@@ -249,17 +249,12 @@ function require_customer_id($callback_if_true){
 	<script>
 		location.href = '/account/login?next='+location.pathname;
 	</script>
-	{% elsif customer.id == $customer_id or admin_customers contains '$customer_id' %}
+	{% elsif customer.id == $customer_id or admin_customers contains customer.id %}
 	{% assign is_alias = customer.id != $customer_id %}
 	{% if is_alias %}{% assign customer_first_name = 'Alias'  %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
 	{% assign customer_id = $customer_id %}
 	".$output."
 	{% else %}
-	{{ admin_customers }}
-	$customer_id
-	{% if admin_customers contains '$customer_id' %}
-	yes
-	{% endif %}
 	<script>
 		location.search = location.search.replace('c=".$customer_id."','c={{customer.id}}');
 	</script>
