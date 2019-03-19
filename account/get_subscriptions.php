@@ -64,7 +64,8 @@ foreach($subscriptions as $subscription){
 				'value_type' => 'integer'
 			]]);
 		} catch(ShopifyApiException $e){
-			
+			echo '/admin/customers/'.$_REQUEST['customer_id'].'/metafields.json';
+			var_dump($e);
 		}
 		break;
 	}
