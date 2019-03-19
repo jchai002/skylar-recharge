@@ -56,6 +56,12 @@ foreach($subscriptions as $subscription){
 	}
 	$sc_member = is_scent_club_any(get_product($db, $subscription['product_id']));
 	if($sc_member){
+		$res = $sc->post('/admin/customers/'.$_REQUEST['customer_id'].'/metafields.json', ['metafield'=> [
+			'namespace' => 'scent_club',
+			'key' => 'active',
+			'value' => 1,
+			'value_type' => 'integer'
+		]]);
 		break;
 	}
 }
