@@ -6,5 +6,5 @@ $commands = [
 ];
 foreach($commands as $command){
 	$tmp = shell_exec("$command 2>&1");
-	echo $command.htmlentities(trim($tmp)) . "\n";
+	echo "$command ".htmlentities(trim($tmp)) . "\n";
 }
