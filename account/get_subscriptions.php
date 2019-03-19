@@ -49,10 +49,22 @@ foreach($addresses_res['addresses'] as $address_res){
 }
 //var_dump($addresses);
 
+$sc_member = false;
+foreach($subscriptions as $subscription){
+	if($subscription['status'] != 'ACTIVE'){
+		continue;
+	}
+	$sc_member = is_scent_club_any(get_product($db, $subscription['product_id']));
+	if($sc_member){
+		break;
+	}
+}
+
 echo json_encode([
 	'success' => true,
 	'subscriptions' => group_subscriptions($subscriptions, $addresses),
 	'subscriptions_raw' => $subscriptions,
+	'sc_member' => $sc_member,
 ]);
 
 
