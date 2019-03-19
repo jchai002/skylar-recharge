@@ -2,7 +2,7 @@
 $commands = [
 	'echo $PWD',
 	'whoami',
-	'sudo git pull',
+	'sudo /usr/bin/git pull',
 	'git status',
 ];
 foreach($commands as $command){
