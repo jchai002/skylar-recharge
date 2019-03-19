@@ -1,6 +1,7 @@
 <?php
 $commands = [
 	'echo $PWD',
+	'whoami',
 	'git pull',
 	'git status',
 ];
