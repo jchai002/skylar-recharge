@@ -54,7 +54,7 @@ foreach($subscriptions as $subscription){
 	if($subscription['status'] != 'ACTIVE'){
 		continue;
 	}
-	$sc_member = is_scent_club_any(get_product($db, $subscription['product_id']));
+	$sc_member = is_scent_club_any(get_product($db, $subscription['shopify_product_id']));
 	if($sc_member){
 		$res = $sc->post('/admin/customers/'.$_REQUEST['customer_id'].'/metafields.json', ['metafield'=> [
 			'namespace' => 'scent_club',
