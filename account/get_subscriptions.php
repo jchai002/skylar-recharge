@@ -40,7 +40,7 @@ $subscriptions = $subscriptions['subscriptions'];
 $subscriptions = upgrade_check($sc, $rc, $db, $subscriptions);
 
 $addresses = [];
-$addresses_res = $rc->get('/customers/'.$subscriptions[0]['customer_id'].'/addresses');
+$addresses_res = $rc->get('/customers/'.$subscriptions[0]['shopify_customer_id'].'/addresses');
 if(empty($addresses_res['addresses'])){
 	die(json_encode($subscriptions));
 }
