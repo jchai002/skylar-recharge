@@ -893,7 +893,9 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 	]);
 
 	$day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
-
+	if($next_charge_month == '2019-04'){
+		$next_charge_month = '2019-05';
+	}
 	$res = $rc->post('/subscriptions/'.$main_sub['id'].'/set_next_charge_date',[
 		'date' => $next_charge_month.'-'.$day_of_month,
 	]);
