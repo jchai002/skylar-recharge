@@ -18,6 +18,8 @@ try {
 	var_dump($e->getResponse());
 }
 
+//comment
+
 die();
 
 $rc = new RechargeClient();
