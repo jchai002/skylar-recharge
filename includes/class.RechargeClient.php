@@ -43,11 +43,15 @@ class RechargeClient {
         $response = curl_exec($ch);
 
 		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-		$header = substr($response, 0, $header_size);
+		$headers = substr($response, 0, $header_size);
 		$body = substr($response, $header_size);
 
         $response = json_decode($body, true);
-        $response['header'] = $header;
+        $response['headers'] = [];
+        foreach(explode(PHP_EOL,trim($headers)) as $header){
+        	$header_split = explode(':', trim($header));
+			$response['headers'][array_shift($header_split)] = trim(implode(':', $header_split));
+		}
 
         if(!empty($response['warning']) && $response['warning'] == 'too many requests' && empty($data['retry'])){
         	$data['retry'] = 1;
