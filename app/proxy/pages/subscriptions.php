@@ -71,7 +71,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
 	{% include 'sc-member-nav' %}
 	<div class="sc-portal-content">
-		<?php } ?>
+<?php } ?>
 		<div class="sc-portal-innercontainer">
 			<?php if(empty($upcoming_shipments)){ ?>
 				<div class="sc-portal-innercontainer">
