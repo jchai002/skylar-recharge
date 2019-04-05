@@ -13,6 +13,12 @@ $router->route('/members$/i', function() {
 	});
 	return true;
 });
+$router->route('/staging$/i', function() {
+	require_customer_id(function(){
+		require('pages/staging.php');
+	});
+	return true;
+});
 $router->route('/subscriptions\/update-box-date$/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
