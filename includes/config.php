@@ -616,7 +616,8 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 					];
 				}
 				$this_subscription = $subscription;
-				$swap = sc_get_monthly_scent($db, $end_of_next_month_time, $this_subscription['address_id'] == '2947854');
+				$swap = sc_get_monthly_scent($db, $end_of_next_month_time, $this_subscription['address_id'] == '29478544');
+				$this_subscription['swap'] = $swap;
 				if(!empty($swap)){
 					$this_subscription['handle'] = $swap['handle'];
 					$this_subscription['shopify_product_id'] = $swap['shopify_product_id'];
