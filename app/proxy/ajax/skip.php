@@ -7,7 +7,13 @@ if(empty($_REQUEST['charge_id']) && !empty($_REQUEST['unskip']) && !empty($_REQU
 	// No charge id unskip = just move the date back
 	$res = $rc->get('/subscriptions/'.$subscription_id);
 	$subscription = $res['subscription'];
-	sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
+	$next_charge_date = sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
+	die(json_encode([
+		'success' => true,
+		'res' => $res,
+		'next_charge_date' => $next_charge_date,
+	]));
+
 }
 
 if(empty($_REQUEST['subscription_id']) || empty($_REQUEST['charge_id'])){
