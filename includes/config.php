@@ -626,6 +626,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 					$this_subscription['product_title'] = $swap['product_title'];
 					$this_subscription['variant_title'] = $swap['variant_title'];
 				}
+				if($this_subscription['address_id'] == '29478544' && $this_subscription)
 				$this_subscription['type'] = 'subscription';
 				$this_subscription['subscription_id'] = $subscription['id'];
 				$this_subscription['status'] = 'SKIPPED';

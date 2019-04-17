@@ -19,7 +19,6 @@ $product = get_product($db, $subscription['shopify_product_id']);
 if(!is_scent_club($product)){
 	die();
 }
-$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date = ?");
 
 // Remove any scent club onetimes
 $res = $rc->get('/onetimes', [
