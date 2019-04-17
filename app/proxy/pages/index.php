@@ -91,7 +91,11 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<div class="sc-portal-title">Your Upcoming Box</div>
 			<div class="sc-portal-subtitle">See what's headed your way this month + add your other favorites for sweet savings</div>
 			<div class="sc-portal-nextbox">
-				<?php foreach($upcoming_box['items'] as $item){ ?>
+				<?php foreach($upcoming_box['items'] as $item){
+					if($item['skipped']) {
+						continue;
+					}
+					?>
 					{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
 					{% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
 					{% assign box_variant = box_product.variants.first %}
