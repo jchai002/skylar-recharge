@@ -571,7 +571,9 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			}
 			$subscription['type'] = 'subscription';
 			$subscription['subscription_id'] = $subscription['id'];
-			$schedule[$date]['items'][] = $subscription;
+			$this_subscription = $subscription;
+			$this_subscription['test'] = 1;
+			$schedule[$date]['items'][] = $this_subscription;
 			$next_charge_time = strtotime($date.' +'.$subscription['order_interval_frequency'].' '.$subscription['order_interval_unit']);
 			if($subscription['order_interval_unit'] == 'month' && !empty($subscription['order_day_of_month'])){
 				$next_charge_time = strtotime(date('Y-m-'.$subscription['order_day_of_month'], $next_charge_time));
