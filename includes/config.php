@@ -947,7 +947,7 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $ma
 	}
 	sc_delete_month_onetime($db, $rc, $address_id, $time);
 	// Look up monthly scent
-	$scent_info = sc_get_monthly_scent($db, $time);
+	$scent_info = sc_get_monthly_scent($db, $time, $address_id == '29478544');
 	if(empty($scent_info)){
 		sc_calculate_next_charge_date($db, $rc, $address_id);
 //		echo "No monthly scent";
