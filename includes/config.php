@@ -555,10 +555,8 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		if(empty($next_charge_time)){
 			continue;
 		}
-		if(empty($products[$subscription['shopify_product_id']])){
-			$products[$subscription['shopify_product_id']] = get_product($db, $subscription['shopify_product_id']);
-		}
 
+		// Iterate through months, adding subscription as sub as individual items to each one
 		while($next_charge_time < $max_time){
 			$date = date('Y-m-d', $next_charge_time);
 			if(empty($schedule[$date])){
@@ -571,9 +569,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			}
 			$subscription['type'] = 'subscription';
 			$subscription['subscription_id'] = $subscription['id'];
-			$this_subscription = $subscription;
-			$this_subscription['test'] = 1;
-			$schedule[$date]['items'][] = $this_subscription;
+			$schedule[$date]['items'][] = $subscription;
 			$next_charge_time = strtotime($date.' +'.$subscription['order_interval_frequency'].' '.$subscription['order_interval_unit']);
 			if($subscription['order_interval_unit'] == 'month' && !empty($subscription['order_day_of_month'])){
 				$next_charge_time = strtotime(date('Y-m-'.$subscription['order_day_of_month'], $next_charge_time));
@@ -584,7 +580,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
 		// Detect skips for scent club
-		if(is_scent_club($products[$subscription['shopify_product_id']])){
+		if(is_scent_club(get_product($db, $subscription['shopify_product_id']))){
 			$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 month')));
 			while($end_of_next_month_time < $next_charge_time){
 				if(date('Y', $end_of_next_month_time) == 2019 && date('m', $end_of_next_month_time) <= 4){
