@@ -616,15 +616,8 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 					];
 				}
 				$this_subscription = $subscription;
-				$swap = sc_get_monthly_scent($db, $end_of_next_month_time);
+				$swap = sc_get_monthly_scent($db, $end_of_next_month_time, $this_subscription['address_id'] == '29478544');
 				if(!empty($swap)){
-					$this_subscription['handle'] = $swap['handle'];
-					$this_subscription['shopify_product_id'] = $swap['shopify_product_id'];
-					$this_subscription['shopify_variant_id'] = $swap['shopify_variant_id'];
-					$this_subscription['product_title'] = $swap['product_title'];
-					$this_subscription['variant_title'] = $swap['variant_title'];
-				}
-				if($this_subscription['address_id'] == '29478544' && $date == '2019-05-01'){
 					$this_subscription['handle'] = $swap['handle'];
 					$this_subscription['shopify_product_id'] = $swap['shopify_product_id'];
 					$this_subscription['shopify_variant_id'] = $swap['shopify_variant_id'];
