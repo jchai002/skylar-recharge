@@ -616,17 +616,21 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 					];
 				}
 				$this_subscription = $subscription;
-				$stmt_get_swap->execute([date('Y-m',$end_of_next_month_time).'-01']);
-				$swap = false;
-				if($stmt_get_swap->rowCount() > 0){
-					$swap = $stmt_get_swap->fetch();
+				$swap = sc_get_monthly_scent($db, $end_of_next_month_time);
+				if(!empty($swap)){
 					$this_subscription['handle'] = $swap['handle'];
 					$this_subscription['shopify_product_id'] = $swap['shopify_product_id'];
 					$this_subscription['shopify_variant_id'] = $swap['shopify_variant_id'];
 					$this_subscription['product_title'] = $swap['product_title'];
 					$this_subscription['variant_title'] = $swap['variant_title'];
 				}
-				if($this_subscription['address_id'] == '29478544' && $this_subscription)
+				if($this_subscription['address_id'] == '29478544' && $date == '2019-05-01'){
+					$this_subscription['handle'] = $swap['handle'];
+					$this_subscription['shopify_product_id'] = $swap['shopify_product_id'];
+					$this_subscription['shopify_variant_id'] = $swap['shopify_variant_id'];
+					$this_subscription['product_title'] = $swap['product_title'];
+					$this_subscription['variant_title'] = $swap['variant_title'];
+				}
 				$this_subscription['type'] = 'subscription';
 				$this_subscription['subscription_id'] = $subscription['id'];
 				$this_subscription['status'] = 'SKIPPED';
@@ -926,11 +930,12 @@ function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time
 		}
 	}
 }
-function sc_get_monthly_scent(PDO $db, $time = null){
+function sc_get_monthly_scent(PDO $db, $time = null, $admin_preview = false){
 	if(empty($time)){
 		$time = time();
 	}
-	$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=?");
+	$preview_clause = $admin_preview ? '' : 'AND sc_live = 1';
+	$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=? $preview_clause");
 	$stmt->execute([date('Y-m', $time).'-01']);
 	if($stmt->rowCount() < 1){
 		return false;
