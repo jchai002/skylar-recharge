@@ -819,6 +819,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 			$onetimes[] = $onetime;
 		}
 	}
+	print_r($onetimes);
 	$res = $rc->get('/orders', [
 		'address_id' => $address_id,
 		'scheduled_at_min' => date('Y-m-t'),
@@ -962,7 +963,8 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $ma
 		'product_title' => 'Monthly Scent Club',
 		'variant_title' => $scent_info['variant_title'],
 	]);
-	//print_r($res);
+	print_r($res);
+	usleep(500); // Delay on Recharge's side :(
 	sc_calculate_next_charge_date($db, $rc, $address_id);
 	return $res['onetime'];
 }
