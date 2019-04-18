@@ -62,7 +62,7 @@ $stmt->execute([
 $res = json_decode($res, true);
 var_dump($res);
 
-$ch = curl_init("https://a.klaviyo.com/api/v1/email-template/LTNqPw/send");
+$ch = curl_init("https://a.klaviyo.com/api/v1/email-template/HrK7rW/send");
 curl_setopt_array($ch, [
 	CURLOPT_RETURNTRANSFER => true,
 	CURLOPT_POST => true,
