@@ -277,10 +277,14 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			default:
 			    return;
             case 'swapscent':
-                ScentClub.show_swap();
+                optional_scripts.onload('mmenu', function(){
+                    ScentClub.show_swap();
+				});
                 break;
             case 'changedate':
-                ScentClub.show_date_change();
+                optional_scripts.onload('mmenu', function(){
+                    ScentClub.show_date_change();
+                });
                 break;
 
 		}
