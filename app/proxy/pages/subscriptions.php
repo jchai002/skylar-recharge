@@ -282,7 +282,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				});
                 break;
             case 'changedate':
-                optional_scripts.onload('mmenu', function(){
+                optional_scripts.onload('pignose', function(){
                     ScentClub.show_date_change();
                 });
                 break;
