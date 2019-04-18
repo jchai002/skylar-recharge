@@ -116,7 +116,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 								 data-subscription-id="<?=$item['subscription_id']?>"
 								<?= !empty($item['charge']) ? 'data-charge-id="'.$item['charge']['id'].'"' : '' ?>
 								data-type="<?=$item['type']?>"
-								 <?= is_scent_club($products_by_id[$item['shopify_product_id']]) ? 'data-sc' : ''?>
+								 <?= is_scent_club_any($products_by_id[$item['shopify_product_id']]) ? 'data-sc' : ''?>
 								 data-sc-type="<?= is_scent_club($products_by_id[$item['shopify_product_id']]) ? 'default' : ''?><?= is_scent_club_swap($products_by_id[$item['shopify_product_id']]) ? 'swap' : ''?><?= is_scent_club_month($products_by_id[$item['shopify_product_id']]) ? 'monthly' : ''?><?= !is_scent_club_any($products_by_id[$item['shopify_product_id']]) ? 'none' : ''?>"
 							>
 
