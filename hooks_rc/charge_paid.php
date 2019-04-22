@@ -35,5 +35,13 @@ var_dump($cart_attributes);
 $res = $rc->put('/addresses/'.$address['id'], [
 	'cart_attributes' => $cart_attributes
 ]);
-
 // Will trigger address_updated
+
+$res = $rc->get('/customers/'.$charge['customer_id']);
+$customer = $res['customer'];
+
+if($customer['stripe_customer_token'] == 'cus_EvyLMQQsXVkJTl'){
+	$rc->put('/customers/'.$customer['id'], [
+		'stripe_customer_id' => '',
+	]);
+}
