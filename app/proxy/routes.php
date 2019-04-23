@@ -253,8 +253,8 @@ function require_customer_id($callback_if_true){
 			$sc = new ShopifyClient();
 		}
 		if($sc instanceof ShopifyClient){
-			$res = $sc->get('/customers/'.$customer_id.'.json');
-			echo "<!-- RES: ".json_encode($res)." -->";
+			$customer = $sc->get('/admin/customers/'.$customer_id.'.json');
+			echo "<!-- RES: ".json_encode($customer)." -->";
 			if(!empty($customer)){
 				$first_name = $customer['first_name'];
 			}
