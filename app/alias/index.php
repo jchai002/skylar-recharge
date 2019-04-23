@@ -11,4 +11,4 @@ if($_REQUEST['type'] == 'order'){
 	$customer_id = intval($_REQUEST['id']);
 }
 var_dump($order);
-header("Location: https://skylar.com/account?c=".$customer_id);
+header("Location: https://skylar.com/tools/skylar/members?c=".$customer_id);
