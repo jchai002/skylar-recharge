@@ -251,9 +251,17 @@ function require_customer_id($callback_if_true){
 		return false;
 	}
 	if(!empty($alias_override)){
+		global $sc;
+		$first_name = 'Alias';
+		if($sc instanceof ShopifyClient){
+			$customer = $sc->get('/customers/'.$customer_id.'.json');
+			if(!empty($customer)){
+				$first_name = $customer['first_name'];
+			}
+		}
 		echo "
 		{% assign is_alias = customer.id != $customer_id %}
-		{% if customer.id != $customer_id %}{% assign customer_first_name = 'Alias'  %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
+		{% if customer.id != $customer_id %}{% assign customer_first_name = '$first_name'  %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
 		{% assign customer_id = $customer_id %}";
 		$callback_if_true();
 		return true;
