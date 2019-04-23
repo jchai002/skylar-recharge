@@ -10,7 +10,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		<div class="sc-portal-innercontainer">
 			<div class="sc-portal-title">Order History</div>
 			<div class="sc-portal-subtitle">Here you have the ability to view your past orders</div>
-			{% if is_alias %}Aliased accounts do not currently support order history. Please view the customer's orders from <a href="/admin/customers/{{customer_id}}" target="_blank">the Shopify admin</a>.{% else %}{% include 'sc-order-history' %}{% endif %}
+			{% if is_alias %}Aliased accounts do not currently support order history. Please view the customer's orders from <a href="/admin/customers/{{customer_id}}" target="_blank" style="text-decoration: underline;">the Shopify admin</a>.{% else %}{% include 'sc-order-history' %}{% endif %}
 		</div>
 	</div>
 </div>
