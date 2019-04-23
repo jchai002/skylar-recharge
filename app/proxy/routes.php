@@ -232,8 +232,8 @@ function require_customer_id($callback_if_true){
 	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
 	header('Content-Type: application/liquid');
 	if(array_key_exists('start_alias', $_REQUEST)){
-		setcookie('aliaskey', $_REQUEST['aliaskey'], strtotime('+24 hours'), '/', '', true, true);
-		$_COOKIE['aliaskey'] = $_REQUEST['aliaskey'];
+		setcookie('aliaskey', $_ENV['aliaskey'], strtotime('+24 hours'), '/', '', true, true);
+		$_COOKIE['aliaskey'] = $_ENV['aliaskey'];
 	}
 	$alias_override = !empty($_COOKIE['aliaskey']) && $_COOKIE['aliaskey'] == $_ENV['ALIASKEY'];
 	if(empty($customer_id)){
