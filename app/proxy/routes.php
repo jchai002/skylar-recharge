@@ -249,6 +249,7 @@ function require_customer_id($callback_if_true){
 	if(!empty($alias_override)){
 		global $sc;
 		$first_name = 'Alias';
+		echo "<!-- ".var_dump($sc)." -->";
 		if($sc instanceof ShopifyClient){
 			$customer = $sc->get('/customers/'.$customer_id.'.json');
 			echo "<!-- ".json_encode($customer)." -->";
