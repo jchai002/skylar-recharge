@@ -570,7 +570,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			$subscription['type'] = 'subscription';
 			$subscription['subscription_id'] = $subscription['id'];
 			$this_subscription = $subscription;
-			$swap = sc_get_monthly_scent($db, $next_charge_time, $this_subscription['address_id'] == '29478544');
+			$swap = sc_get_monthly_scent($db, $next_charge_time, $this_subscription['address_id'] == '31947025');
 			$this_subscription['swap'] = $swap;
 			if(!empty($swap)){
 				$this_subscription['handle'] = $swap['handle'];
