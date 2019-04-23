@@ -257,6 +257,7 @@ function require_customer_id($callback_if_true){
 			if(!empty($customer)){
 				$first_name = $customer['first_name'];
 			}
+			echo "<!-- ".json_encode($customer)." -->";
 		}
 		echo "
 		{% assign is_alias = customer.id != $customer_id %}
