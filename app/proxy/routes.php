@@ -235,7 +235,7 @@ function require_customer_id($callback_if_true){
 		setcookie('aliaskey', $_REQUEST['aliaskey'], strtotime('+24 hours'), '/', '', true, true);
 		$_COOKIE['aliaskey'] = $_REQUEST['aliaskey'];
 	}
-	$alias_override = !empty($_COOKIE['aliaskey']) && $_COOKIE['aliaskey'] == $_ENV['aliaskey'];
+	$alias_override = !empty($_COOKIE['aliaskey']) && $_COOKIE['aliaskey'] == $_ENV['ALIASKEY'];
 	if(empty($customer_id)){
 		echo "
 {% layout 'scredirect' %}
