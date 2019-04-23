@@ -231,7 +231,7 @@ function require_customer_id($callback_if_true){
 	global $admin_customers;
 	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
 	header('Content-Type: application/liquid');
-	if(!empty($_REQUEST['aliaskey'])){
+	if(array_key_exists('start_alias', $_REQUEST)){
 		setcookie('aliaskey', $_REQUEST['aliaskey'], strtotime('+24 hours'), '/', '', true, true);
 		$_COOKIE['aliaskey'] = $_REQUEST['aliaskey'];
 	}
