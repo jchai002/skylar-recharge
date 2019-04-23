@@ -85,7 +85,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<div class="sc-portal-subtitle">Update Shipping Date and Frequency</div>
 			<div class="sc-portal-box-list">
 				<?php $index = -1;
-				foreach($upcoming_shipments as $upcoming_shipment){
+				foreach($upcoming_shipments as $shipment_date => $upcoming_shipment){
 					$index++;
 					?>
 					<div class="sc-upcoming-shipment">
@@ -97,7 +97,14 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 								<span class="sc-box-date"><?=date('F j', $upcoming_shipment['ship_date_time']) ?></span>
 							<?php } ?>
 						</div>
-						<?php foreach($upcoming_shipment['items'] as $item){ ?>
+						<?php foreach($upcoming_shipment['items'] as $item){
+							if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){
+								$monthly_scent = sc_get_monthly_scent($db, strtotime($shipment_date));
+								$box_swap_image = 'data-swap-image="{{ all_products["'.$monthly_scent['handle'].'"] | file_img_url: \'30x30\' }}"';
+							} else {
+								$box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+							}
+							?>
 							{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
 							{% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
 							{% assign box_variant = box_product.variants.first %}
