@@ -231,6 +231,11 @@ function require_customer_id($callback_if_true){
 	global $admin_customers;
 	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
 	header('Content-Type: application/liquid');
+	if(!empty($_REQUEST['aliaskey'])){
+		setcookie('aliaskey', $_REQUEST['aliaskey'], strtotime('+24 hours'), '/', '', true, true);
+		$_COOKIE['aliaskey'] = $_REQUEST['aliaskey'];
+	}
+	$alias_override = !empty($_COOKIE['aliaskey']) && $_COOKIE['aliaskey'] == $_ENV['aliaskey'];
 	if(empty($customer_id)){
 		echo "
 {% layout 'scredirect' %}
@@ -245,25 +250,34 @@ function require_customer_id($callback_if_true){
 {% endif %}";
 		return false;
 	}
+	if(!empty($alias_override)){
+		echo "
+		{% assign is_alias = customer.id != $customer_id %}
+		{% if customer.id != $customer_id %}{% assign customer_first_name = 'Alias'  %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
+		{% assign customer_id = $customer_id %}";
+		$callback_if_true();
+		return true;
+	}
+
 	ob_start();
 	$callback_if_true();
 	$output = ob_get_contents();
 	ob_end_clean();
 	echo "{% assign admin_customers = '".implode('|',$admin_customers)."' %}
 {% if customer == nil %}
-{% layout 'scredirect' %}
+	{% layout 'scredirect' %}
 	<script>
 		location.href = '/account/login?next='+location.pathname;
 	</script>
-	{% elsif customer.id == $customer_id or admin_customers contains customer.id %}
+{% elsif customer.id == $customer_id or admin_customers contains customer.id %}
 	{% assign is_alias = customer.id != $customer_id %}
 	{% if customer.id != $customer_id %}{% assign customer_first_name = 'Alias'  %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
 	{% assign customer_id = $customer_id %}
 	".$output."
-	{% else %}
+{% else %}
 	<script>
 		location.search = location.search.replace('c=".$customer_id."','c={{customer.id}}');
 	</script>
-	{% endif %}";
+{% endif %}";
 	return true;
 }

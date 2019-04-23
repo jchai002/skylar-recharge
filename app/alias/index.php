@@ -11,5 +11,4 @@ if($_REQUEST['type'] == 'order'){
 	$customer_id = intval($_REQUEST['id']);
 }
 //var_dump($order);
-setcookie('aliaskey', $_ENV['aliaskey'], strtotime('+24 hours'), '/', '', true, true);
-header("Location: https://skylar.com/tools/skylar/members?c=".$customer_id);
+header("Location: https://skylar.com/tools/skylar/members?c=".$customer_id."&aliaskey=".$_ENV['aliaskey']);
