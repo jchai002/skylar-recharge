@@ -259,7 +259,7 @@ function require_customer_id($callback_if_true){
 			}
 		}
 		echo "
-		{% assign is_alias = customer.id != $customer_id %}
+		{% assign is_alias = true %}
 		{% assign account_query = 'c=$customer_id&alias=".$_REQUEST['alias']."' %}
 		{% if customer.id != $customer_id %}{% assign customer_first_name = '$first_name' %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
 		{% assign customer_id = $customer_id %}";
