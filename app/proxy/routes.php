@@ -257,7 +257,7 @@ function require_customer_id($callback_if_true){
 		}
 		echo "
 		{% assign is_alias = customer.id != $customer_id %}
-		{% assign account_query = 'c=$customer_id&alias=".$_REQUEST['alias']." %}
+		{% assign account_query = 'c=$customer_id&alias=".$_REQUEST['alias']."' %}
 		{% if customer.id != $customer_id %}{% assign customer_first_name = '$first_name' %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
 		{% assign customer_id = $customer_id %}";
 		$callback_if_true();
@@ -269,7 +269,7 @@ function require_customer_id($callback_if_true){
 	$output = ob_get_contents();
 	ob_end_clean();
 	echo "{% assign admin_customers = '".implode('|',$admin_customers)."' %}
-{% assign account_query = 'c=$customer_id %}
+{% assign account_query = 'c=$customer_id' %}
 {% if customer == nil %}
 	{% layout 'scredirect' %}
 	<script>
