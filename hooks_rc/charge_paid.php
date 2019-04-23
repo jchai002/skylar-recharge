@@ -41,7 +41,8 @@ $res = $rc->get('/customers/'.$charge['customer_id']);
 $customer = $res['customer'];
 
 if($customer['stripe_customer_token'] == 'cus_EvyLMQQsXVkJTl'){
-	$rc->put('/customers/'.$customer['id'], [
+	$res = $rc->put('/customers/'.$customer['id'], [
 		'stripe_customer_id' => '',
 	]);
+	print_r($res);
 }
