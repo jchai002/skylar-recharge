@@ -231,11 +231,6 @@ function require_customer_id($callback_if_true){
 	global $admin_customers;
 	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
 	header('Content-Type: application/liquid');
-	if(array_key_exists('start_alias', $_REQUEST)){
-		setcookie('aliaskey', $_ENV['ALIASKEY'], strtotime('+24 hours'), '/', '', true, true);
-		$_COOKIE['aliaskey'] = $_ENV['ALIASKEY'];
-	}
-	$alias_override = !empty($_COOKIE['aliaskey']) && $_COOKIE['aliaskey'] == $_ENV['ALIASKEY'];
 	if(empty($customer_id)){
 		echo "
 {% layout 'scredirect' %}
@@ -250,6 +245,7 @@ function require_customer_id($callback_if_true){
 {% endif %}";
 		return false;
 	}
+	$alias_override = !empty($_REQUEST['alias']) && $_REQUEST['alias'] == md5($_ENV['ALIASKEY'].$customer_id);
 	if(!empty($alias_override)){
 		global $sc;
 		$first_name = 'Alias';
@@ -261,7 +257,8 @@ function require_customer_id($callback_if_true){
 		}
 		echo "
 		{% assign is_alias = customer.id != $customer_id %}
-		{% if customer.id != $customer_id %}{% assign customer_first_name = '$first_name'  %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
+		{% assign account_query = '?c=$customer_id&alias=".$_REQUEST['alias']." %}
+		{% if customer.id != $customer_id %}{% assign customer_first_name = '$first_name' %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
 		{% assign customer_id = $customer_id %}";
 		$callback_if_true();
 		return true;
@@ -272,6 +269,7 @@ function require_customer_id($callback_if_true){
 	$output = ob_get_contents();
 	ob_end_clean();
 	echo "{% assign admin_customers = '".implode('|',$admin_customers)."' %}
+{% assign account_query = '?c=$customer_id %}
 {% if customer == nil %}
 	{% layout 'scredirect' %}
 	<script>
