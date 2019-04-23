@@ -6,7 +6,7 @@ $sc = new ShopifyClient();
 
 if($_REQUEST['type'] == 'order'){
 	$order = $sc->get('/admin/orders/'.$_REQUEST['id'].'.json');
-	$customer_id = $order['customer_id'];
+	$customer_id = $order['customer']['id'];
 } else {
 	$customer_id = intval($_REQUEST['id']);
 }
