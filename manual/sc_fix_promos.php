@@ -50,13 +50,6 @@ while($row = fgetcsv($f)){
 	$res = $rc->get('/subscriptions', [
 		'customer_id' => $customer['id'],
 	]);
-	if(empty($res['subscriptions'])){
-		echo "find subscription ERROR:";
-		print_r($res);
-		sleep(30);
-		continue;
-	}
-
 	$address_id = false;
 	foreach($res['subscriptions'] as $subscription){
 		if($subscription['shopify_variant_id'] == 28003712663639){
@@ -82,7 +75,7 @@ while($row = fgetcsv($f)){
 		print_r($res);
 	}
 	$res = $rc->post('/addresses/'.$address_id.'/subscriptions', [
-		'next_charge_scheduled_at' => '2019-04-22',
+		'next_charge_scheduled_at' => '2019-04-23',
 		'product_title' => 'Scent Club Promo',
 		'price' => 0,
 		'quantity' => 1,
