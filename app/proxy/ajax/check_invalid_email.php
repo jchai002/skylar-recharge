@@ -11,13 +11,14 @@ if(!empty($res)){
 if($customer['state'] != 'active'){
 	$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
 }
-if(empty($res['account_activation_url'])){
+if(empty($res)){
 	echo json_encode([
 		'success' => true,
 		'email_sent' => false,
 		'res' => $res,
 	]);
 } else {
+	$url = $res;
 	$ch = curl_init("https://a.klaviyo.com/api/v1/email-template/LkpPDS/send");
 	curl_setopt_array($ch, [
 		CURLOPT_RETURNTRANSFER => true,
@@ -32,7 +33,7 @@ if(empty($res['account_activation_url'])){
 			]),
 			'context' => json_encode([
 				'first_name' => $customer['gift_message'],
-				'account_activation_url ' => $res['account_activation_url'],
+				'account_activation_url ' => $url,
 			]),
 		]
 	]);
