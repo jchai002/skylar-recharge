@@ -26,11 +26,12 @@ if($customer['state'] != 'active'){
 		$url = $res;
 		$data = base64_encode(json_encode([
 			'token' => "KvQM7Q",
-			'event' => !empty($main_sub) ? 'request_account' : 'request_account_sc',
+			'event' => 'Sent Transactional Email',
 			'customer_properties' => [
 				'$email' => $customer['email'],
 			],
 			'properties' => [
+				'email_type' => !empty($main_sub) ? 'request_account' : 'request_account_sc',
 				'first_name' => $customer['first_name'],
 				'account_activation_url' => $url,
 			]
