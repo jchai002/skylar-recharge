@@ -26,7 +26,7 @@ if($customer['state'] != 'active'){
 		$url = $res;
 		$data = base64_encode(json_encode([
 			'token' => "KvQM7Q",
-			'event' => empty($main_sub) ? 'request_account' : 'request_account_sc',
+			'event' => !empty($main_sub) ? 'request_account' : 'request_account_sc',
 			'customer_properties' => [
 				'$email' => $customer['email'],
 			],
