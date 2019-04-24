@@ -15,6 +15,7 @@ if(empty($res['account_activation_url'])){
 	echo json_encode([
 		'success' => true,
 		'email_sent' => false,
+		'res' => $res,
 	]);
 } else {
 	$ch = curl_init("https://a.klaviyo.com/api/v1/email-template/LkpPDS/send");
@@ -39,5 +40,6 @@ if(empty($res['account_activation_url'])){
 	echo json_encode([
 		'success' => true,
 		'email_sent' => true,
+		'res' => $res,
 	]);
 }
