@@ -19,6 +19,15 @@ $router->route('/staging$/i', function() {
 	});
 	return true;
 });
+
+$router->route('/check-invalid-email$/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['email'])){
+		return false;
+	}
+	require('ajax/check_invalid_email.php');
+	return true;
+});
 $router->route('/subscriptions\/update-box-date$/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
