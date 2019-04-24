@@ -33,7 +33,7 @@ if(empty($res)){
 			]),
 			'context' => json_encode([
 				'first_name' => $customer['gift_message'],
-				'account_activation_url ' => $url,
+				'account_activation_url' => $url,
 			]),
 		]
 	]);
