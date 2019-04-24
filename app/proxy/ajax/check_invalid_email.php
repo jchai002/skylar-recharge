@@ -37,7 +37,7 @@ if(empty($res)){
 			]),
 		]
 	]);
-	$res = curl_exec($ch);
+	$res = json_decode(curl_exec($ch));
 	echo json_encode([
 		'success' => true,
 		'email_sent' => true,
