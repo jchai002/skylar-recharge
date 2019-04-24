@@ -1,4 +1,5 @@
 <?php
+global $db;
 $sc = new ShopifyClient();
 
 $res = $sc->get('/admin/customers/search.json', [
@@ -9,38 +10,46 @@ if(!empty($res)){
 	$customer = $res[0];
 }
 if($customer['state'] != 'active'){
+	$rc = new RechargeClient();
+	$main_sub = sc_get_main_subscription($db, $rc, [
+		'status' => 'ACTIVE',
+		'shopify_customer_id' => $customer['id'],
+	]);
 	$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
-}
-if(empty($res)){
+	if(empty($res)){
+		echo json_encode([
+			'success' => true,
+			'email_sent' => false,
+			'res' => $res,
+		]);
+	} else {
+		$url = $res;
+		$data = base64_encode(json_encode([
+			'token' => "KvQM7Q",
+			'event' => empty($main_sub) ? 'request_account' : 'request_account_sc',
+			'customer_properties' => [
+				'$email' => $customer['email'],
+			],
+			'properties' => [
+				'first_name' => $customer['first_name'],
+				'account_activation_url' => $url,
+			]
+		]));
+		$ch = curl_init("https://a.klaviyo.com/api/track?data=$data");
+		curl_setopt_array($ch, [
+			CURLOPT_RETURNTRANSFER => true,
+		]);
+		$res = json_decode(curl_exec($ch));
+		echo json_encode([
+			'success' => true,
+			'email_sent' => true,
+			'res' => $res,
+		]);
+	}
+} else {
 	echo json_encode([
 		'success' => true,
 		'email_sent' => false,
-		'res' => $res,
-	]);
-} else {
-	$url = $res;
-	$ch = curl_init("https://a.klaviyo.com/api/v1/email-template/LkpPDS/send");
-	curl_setopt_array($ch, [
-		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_POST => true,
-		CURLOPT_POSTFIELDS => [
-			'api_key' => $_ENV['KLAVIYO_API_KEY'],
-			'from_email' => 'hello@skylar.com',
-			'from_name' => 'Skylar',
-			'subject' => 'Activate Your Account!',
-			'to' => json_encode([
-				['email' => $customer['email']],
-			]),
-			'context' => json_encode([
-				'first_name' => $customer['gift_message'],
-				'account_activation_url' => $url,
-			]),
-		]
-	]);
-	$res = json_decode(curl_exec($ch));
-	echo json_encode([
-		'success' => true,
-		'email_sent' => true,
 		'res' => $res,
 	]);
 }
