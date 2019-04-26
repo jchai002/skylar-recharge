@@ -153,6 +153,8 @@ print_r($customer);
 			<div class="sc-tile-actions">
 				<?php if(!empty($cc_info)){?>
 					<a href="#" class="sc-edit-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Edit</a>
+				<?php } else if($customer['processor_type'] == 'paypal' || $customer['processor_type'] == 'braintree'){ ?>
+					<a href="#" class="sc-add-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Switch To Card</a>
 				<?php } else { ?>
 					<a href="#" class="sc-add-card" onclick="$('#sc-add-card').data('mmenu').open(); return false;">Add</a>
 				<?php } ?>
