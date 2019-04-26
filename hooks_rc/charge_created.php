@@ -34,6 +34,9 @@ if(empty($main_sub)){
 	foreach($charge['line_items'] as $line_item){
 		$product = get_product($db, $line_item['shopify_product_id']);
 		$next_charge_date = date('Y-m', strtotime('+1 month')).'-'.$day_of_month.' 00:00:00';
+		if(date('m') == 5){
+			$next_charge_date = date('Y-m', strtotime('+2 month')).'-'.$day_of_month.' 00:00:00';
+		}
 		var_dump($product);
 		if(is_scent_club($product)){
 			$next_charge_date_time = strtotime($next_charge_date);
