@@ -49,7 +49,8 @@ if(!empty($rc_customer_id)){
 	echo " -->";
 }
 global $db;
-$upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges);
+$months = empty($more) ? 3 : $more;
+$upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges, strtotime(date('Y-m-t',strtotime("+$months months"))));
 $products_by_id = [];
 $stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 $upcoming_box = false;
@@ -88,7 +89,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			</div>
 		<?php } else { ?>
 			<div class="sc-portal-innercontainer">
-				<div class="sc-portal-title">Your Upcoming Box</div>
+				<div class="sc-portal-title">Your Next Skylar Box</div>
 				<div class="sc-portal-subtitle">See what's headed your way this month + add your other favorites for sweet savings</div>
 				<div class="sc-portal-nextbox">
 					<?php foreach($upcoming_box['items'] as $item){ ?>
@@ -255,7 +256,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			</div>
 
 			<div class="sc-portal-innercontainer">
-				<div class="sc-portal-title">Manage Membership</div>
+				<div class="sc-portal-title">Your Upcoming Skylar Box<?= count($upcoming_shipments) > 1 ? 'es' : '' ?></div>
 				<div class="sc-portal-subtitle">Update Shipping Date and Frequency</div>
 				<div class="sc-portal-box-list">
 					<?php $index = -1;
