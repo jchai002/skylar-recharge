@@ -593,6 +593,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		if(is_scent_club(get_product($db, $subscription['shopify_product_id']))){
 			$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 month')));
 			while($end_of_next_month_time < $next_charge_time){
+				$this_subscription = $subscription;
 				if(date('Y', $end_of_next_month_time) == 2019 && date('m', $end_of_next_month_time) <= 4){
 					$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
 					continue;
@@ -601,8 +602,10 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 
 				// Search schedule for any existing SC this month
 				$date_split = explode('-', $date);
+				$this_subscription['test'] = [];
 				foreach($schedule as $sched_date=>$box){
 					$sched_date_split = explode('-', $sched_date);
+					$this_subscription['test'][] = [$sched_date_split, $date_split];
 					if($sched_date_split[0] != $date_split[0] || $sched_date_split[1] != $date_split[1]){ // Month or year doesn't match
 						continue;
 					}
@@ -623,7 +626,6 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 						'total' => 0,
 					];
 				}
-				$this_subscription = $subscription;
 				$swap = sc_get_monthly_scent($db, $end_of_next_month_time, $this_subscription['address_id'] == '29478544');
 				$this_subscription['swap'] = $swap;
 				if(!empty($swap)){
