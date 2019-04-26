@@ -1,10 +1,38 @@
 <?php
-require_once('includes/config.php');
-require_once('includes/class.ShopifyClient.php');
-require_once('includes/class.RechargeClient.php');
+require_once(__DIR__.'/includes/config.php');
+require_once(__DIR__.'/includes/class.ShopifyClient.php');
+require_once(__DIR__.'/includes/class.RechargeClient.php');
 
-$sc = new ShopifyClient();
+$rc = new RechargeClient();
+$sc = new ShopifyPrivateClient();
+$address_id = 32081736;
 
+$already_has_next_month = false;
+$stmt = $db->query("SELECT * FROM sc_product_info WHERE sc_date='".date('Y-m', strtotime('next month'))."-01'");
+if($stmt->rowCount() > 0){
+	$next_month_sc = $stmt->fetch();
+	$res = $rc->get('/orders', [
+		'address_id' => $address_id,
+		'scheduled_at_min' => date('Y-m-t', strtotime('last month')),
+		'scheduled_at_max' => date('Y-m', strtotime('next month')).'-01',
+		'status' => 'SUCCESS'
+	]);
+	$this_month_orders = $res['orders'];
+	foreach($this_month_orders as $this_month_order){
+		foreach($this_month_order['line_items'] as $line_item){
+			if($line_item['sku'] == $next_month_sc['sku']){
+				$already_has_next_month = true;
+				break 2;
+			}
+		}
+	}
+}
+
+echo $already_has_next_month ? 'yes' : 'no';
+echo PHP_EOL;
+
+
+die();
 try {
 	$res = $sc->put('/admin/customers/644696211543.json', [
 		'customer' => [

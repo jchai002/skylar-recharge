@@ -455,14 +455,15 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, typ
 	print_r($shopify_product);
 	$product_id = $db->lastInsertId();
 	$stmt = $db->prepare("INSERT INTO variants
-(product_id, shopify_id, title, price, updated_at)
-VALUES (:product_id, :shopify_id, :title, :price, :updated_at)
-ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, updated_at=:updated_at");
+(product_id, shopify_id, title, price, sku, updated_at)
+VALUES (:product_id, :shopify_id, :title, :price, :sku, :updated_at)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:sku, updated_at=:updated_at");
 	foreach($shopify_product['variants'] as $shopify_variant){
 		$stmt->execute([
 			'product_id' => $product_id,
 			'shopify_id' => $shopify_variant['id'],
 			'title' => $shopify_variant['title'],
+			'sku' => $shopify_variant['sku'],
 			'price' => $shopify_variant['price'],
 			'updated_at' => $now,
 		]);
@@ -844,11 +845,29 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 		'status' => 'SKIPPED'
 	]);
 	$charges = $res['charges'];
+	$already_has_next_month = false;
+	$next_month_scent = sc_get_monthly_scent($db, strtotime('next month'));
+	if(!empty($next_month_scent)){
+		$res = $rc->get('/orders', [
+			'address_id' => $address_id,
+			'scheduled_at_min' => date('Y-m-t', strtotime('last month')),
+			'scheduled_at_max' => date('Y-m', strtotime('next month')).'-01',
+			'status' => 'SUCCESS'
+		]);
+		$this_month_orders = $res['orders'];
+		foreach($this_month_orders as $this_month_order){
+			foreach($this_month_order['line_items'] as $line_item){
+				if($line_item['sku'] == $next_month_scent['sku']){
+					$already_has_next_month = true;
+					break 2;
+				}
+			}
+		}
+	}
 
 	$products_by_id = [];
 	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
-	$offset = 0;
-	$next_charge_month = date('Y-m', strtotime("+1 months"));
+	$offset = $already_has_next_month ? 1 : 0;
 	while(true) {
 		$offset++;
 		$next_charge_month = date('Y-m', strtotime("+$offset months"));

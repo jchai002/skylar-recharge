@@ -6,6 +6,17 @@ require_once(__DIR__.'/../includes/class.RechargeClient.php');
 $rc = new RechargeClient();
 $sc = new ShopifyPrivateClient();
 
+// Load blacklist
+$blacklist_emails = [];
+/*
+$f = fopen(__DIR__.'/email_blacklist.csv', 'r');
+$headers = fgetcsv($f);
+while($row = fgetcsv($f)){
+	$blacklist_emails[] = $row[0];
+}
+$blacklist_emails = array_values(array_unique($blacklist_emails));
+*/
+
 //$now = strtotime('tomorrow');
 $now = time();
 
@@ -13,6 +24,8 @@ $day_of_week = date('N', $now);
 $start_date = date('Y-m-d', strtotime('+2 days', $now));
 if($day_of_week == 5){ // Friday
 	$end_date = date('Y-m-d', strtotime('+6 days', $now));
+} elseif($day_of_week > 5) {
+	die("No weekend emails");
 } else {
 	$end_date = date('Y-m-d', strtotime('+4 days', $now));
 }
@@ -34,6 +47,10 @@ do {
 	]);
 	$charges = $res['charges'];
 	foreach($charges as $charge){
+		if(in_array($charge['email'], $blacklist_emails)){
+			echo "Blacklisted, skipping: ".$charge['email']." address id: ".$charge['address_id'].PHP_EOL;
+			continue;
+		}
 		$is_scent_club = false;
 		foreach($charge['line_items'] as $item){
 			$is_scent_club = is_scent_club_any(get_product($db, $item['shopify_product_id']));
