@@ -132,7 +132,7 @@ print_r($customer);
 				<div class="sc-tile-detail"><?=$cc_info->brand?>: *<?=$cc_info->last4?> <?=str_pad($cc_info->exp_month, 2, '0', STR_PAD_LEFT)?>/<?=substr($cc_info->exp_year, 2, 4)?></div>
 			<?php } else if(empty($customer)){ ?>
 				<div class="sc-tile-detail">Card Not Stored</div>
-			<?php } else if($customer['processor_type'] == 'paypal'){ ?>
+			<?php } else if($customer['processor_type'] == 'paypal' || $customer['processor_type'] == 'braintree'){ ?>
 				<div class="sc-tile-detail"><a href="https://paypal.com" target="_blank">Paypal</a></div>
 			<?php } else { ?>
 				<div class="sc-tile-detail">Card Not Stored</div>
