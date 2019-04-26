@@ -6,8 +6,8 @@ require_once(__DIR__.'/../includes/class.RechargeClient.php');
 $rc = new RechargeClient();
 $sc = new ShopifyPrivateClient();
 
-$now = strtotime('tomorrow');
-//$now = time();
+//$now = strtotime('tomorrow');
+$now = time();
 
 $day_of_week = date('N', $now);
 $start_date = date('Y-m-d', strtotime('+2 days', $now));
@@ -20,14 +20,17 @@ if($day_of_week == 5){ // Friday
 $page = 0;
 $page++;
 echo "$start_date to $end_date".PHP_EOL;
+$stmt = $db->prepare("SELECT 1 FROM event_log WHERE category='email' AND action='SUB_3DAY_WARNING' AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?");
+//echo "SELECT 1 FROM event_log WHERE category='email' AND action='SUB_3DAY_WARNING' AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?";
 do {
+	$page++;
 	$res = $rc->get('/charges', [
 		'date_min' => $start_date,
 		'date_max' => $end_date,
 		'status' => 'QUEUED',
 		'limit' => 250,
 		'page' => $page,
-		'address_id' => '29806558',
+//		'address_id' => '29919072',
 	]);
 	$charges = $res['charges'];
 	foreach($charges as $charge){
@@ -37,6 +40,13 @@ do {
 			if($is_scent_club){
 				break;
 			}
+		}
+		$stmt->execute([
+			$charge['email'],
+		]);
+		if($stmt->rowCount() > 0){
+			echo "Already sent, skipping: ".$charge['email']." address id: ".$charge['address_id'].PHP_EOL;
+			continue;
 		}
 		$data = base64_encode(json_encode([
 			'token' => "KvQM7Q",
@@ -57,4 +67,5 @@ do {
 		log_event($db, 'EMAIL', $charge['email'], 'SUB_3DAY_WARNING', json_encode($res), json_encode($charge), 'CRON');
 		echo "Sent email to: ".$charge['email']." address id: ".$charge['address_id'].PHP_EOL;
 	}
+	sleep(1);
 } while(count($charges) >= 250);

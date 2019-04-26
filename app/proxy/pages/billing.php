@@ -127,7 +127,7 @@ print_r($customer);
 			</div>
 
 			<div class="sc-portal-tile">
-				<div class="sc-tile-title">Payment Method</div>
+				<div class="sc-tile-title">Payment Method</div><!-- <?=$customer['processor_type']?> -->
 			<?php if(!empty($cc_info)){ ?>
 				<div class="sc-tile-detail"><?=$cc_info->brand?>: *<?=$cc_info->last4?> <?=str_pad($cc_info->exp_month, 2, '0', STR_PAD_LEFT)?>/<?=substr($cc_info->exp_year, 2, 4)?></div>
 			<?php } else if(empty($customer)){ ?>
