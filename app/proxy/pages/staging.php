@@ -255,9 +255,8 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				</div>
 			</div>
 
-			<div class="sc-portal-innercontainer">
+			<div class="sc-portal-innercontainer sc-schedule-conainer">
 				<div class="sc-portal-title">Your Upcoming Skylar Box<?= count($upcoming_shipments) > 1 ? 'es' : '' ?></div>
-				<div class="sc-portal-subtitle">Update Shipping Date and Frequency</div>
 				<div class="sc-portal-box-list">
 					<?php $index = -1;
 					foreach($upcoming_shipments as $upcoming_shipment){
