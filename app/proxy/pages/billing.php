@@ -133,7 +133,7 @@ print_r($customer);
 			<?php } else if(empty($customer)){ ?>
 				<div class="sc-tile-detail">Card Not Stored</div>
 			<?php } else if($customer['processor_type'] == 'paypal' || $customer['processor_type'] == 'braintree'){ ?>
-				<div class="sc-tile-detail"><a href="https://paypal.com" target="_blank">Paypal</a></div>
+				<div class="sc-tile-detail"><a href="https://paypal.com" target="_blank" style="text-decoration: underline;">Paypal</a></div>
 			<?php } else { ?>
 				<div class="sc-tile-detail">Card Not Stored</div>
 			<?php } ?>
