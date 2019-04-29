@@ -47,7 +47,6 @@ if(!empty($rc_customer_id)){
 }
 global $db;
 $upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges);
-$products_by_id = [];
 $upcoming_box = false;
 foreach($upcoming_shipments as $upcoming_shipment){
 	foreach($upcoming_shipment['items'] as $item){
@@ -89,7 +88,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						continue;
 					}
 					?>
-					{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
+					{% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
 					{% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
 					{% assign box_variant = box_product.variants.first %}
 					{% for svariant in box_product.variants %}
@@ -100,7 +99,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<div class="sc-box-item">
 						<div class="sc-item-summary">
 							<div class="sc-item-image">
-								<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
+								<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
 									<img class="lazyload" data-src="{{ 'sc-logo.svg' | file_url }}" height="100" width="100" />
 								<?php } else { ?>
 									{% if box_variant.image %}
@@ -111,13 +110,13 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 								<?php } ?>
 							</div>
 							<div>
-								<?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
+								<?php if(is_scent_club(get_product($db,$item['shopify_product_id']))){ ?>
 									<div class="sc-item-title">Monthly Scent Club</div>
-								<?php } else if(is_scent_club_month($products_by_id[$item['shopify_product_id']])){ ?>
+								<?php } else if(is_scent_club_month(get_product($db,$item['shopify_product_id']))){ ?>
 									<div class="sc-item-title">Monthly Scent Club</div>
 									<div class="sc-item-subtitle">{{ box_variant.title }}</div>
 									<div class="sc-item-link"><a href="/products/{{ box_product.handle }}">Explore This Month's Scent</a></div>
-								<?php } else if(is_scent_club_swap($products_by_id[$item['shopify_product_id']])){ ?>
+								<?php } else if(is_scent_club_swap(get_product($db,$item['shopify_product_id']))){ ?>
 									<div class="sc-item-title"><?=$item['product_title']?></div>
 									<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
 								<?php } else { ?>
@@ -134,7 +133,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 							<div>
 								<div class="sc-item-detail-label">Delivery</div>
 								<div class="sc-item-detail-value">
-									<?php if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){ ?>
+									<?php if(is_scent_club_any(get_product($db,$item['shopify_product_id']))){ ?>
 										Every Month
 									<?php } else if(empty($item['order_interval_frequency'])){ ?>
 										Once
