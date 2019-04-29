@@ -1,9 +1,13 @@
 <?php
 class RechargeClient {
-    private $authToken;
+    private $authTokens;
+    private $tokenIndex = 0;
 
     public function __construct(){
-		$this->authToken = $_ENV['RECHARGE_API_TOKEN'];
+		$this->authTokens = [$_ENV['RECHARGE_API_TOKEN']];
+		if(!empty($_ENV['RECHARGE_API_TOKENS'])){
+			$this->authTokens = explode(',',$_ENV['RECHARGE_API_TOKENS']);
+		}
 	}
 
 	function call($url, $data = [], $method='GET'){
@@ -11,11 +15,12 @@ class RechargeClient {
         $ch = curl_init();
         $original_url = $url;
         $url = 'https://api.rechargeapps.com/'.trim($url,'/');
+        $data['retry'] = empty($data['retry']) ? 0 : $data['retry'];
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => TRUE,
 			CURLOPT_HEADER => TRUE,
             CURLOPT_HTTPHEADER => [
-                'x-recharge-access-token: ' . $this->authToken,
+                'x-recharge-access-token: ' . $this->getAuthToken(),
                 'Content-Type: application/json',
             ],
         ]);
@@ -48,13 +53,15 @@ class RechargeClient {
 
         $response = json_decode($body, true);
         $response['headers'] = [];
+        $response['data'] = $data;
         foreach(explode(PHP_EOL,trim($headers)) as $header){
         	$header_split = explode(':', trim($header));
 			$response['headers'][array_shift($header_split)] = trim(implode(':', $header_split));
 		}
 
+
         if(!empty($response['warning']) && $response['warning'] == 'too many requests' && empty($data['retry'])){
-        	$data['retry'] = 1;
+        	$data['retry']++;
         	sleep(5);
         	return $this->call($original_url, $data, $method);
 		}
@@ -77,5 +84,11 @@ class RechargeClient {
     function delete($url, $data=[]){
         return $this->call($url, $data, 'DELETE');
     }
+
+    function getAuthToken(){
+    	$this->tokenIndex++;
+    	$this->tokenIndex = $this->tokenIndex % count($this->authTokens);
+    	return $this->authTokens[$this->tokenIndex];
+	}
 
 }

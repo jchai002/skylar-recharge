@@ -44,23 +44,16 @@ if(!empty($rc_customer_id)){
 			$onetimes[] = $onetime;
 		}
 	}
-	echo "<!-- ";
-	print_r($res);
-	echo " -->";
 }
 global $db;
 $upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges);
 $products_by_id = [];
-$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 $upcoming_box = false;
 foreach($upcoming_shipments as $upcoming_shipment){
 	foreach($upcoming_shipment['items'] as $item){
-		if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
-			$stmt->execute([$item['shopify_product_id']]);
-			$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
-			if(empty($upcoming_box) && is_scent_club_any($products_by_id[$item['shopify_product_id']])){
-				$upcoming_box = $upcoming_shipment;
-			}
+		if(empty($upcoming_box) && is_scent_club_any(get_product($db,$item['shopify_product_id']))){
+			$upcoming_box = $upcoming_shipment;
+			break 2;
 		}
 	}
 }

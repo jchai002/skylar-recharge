@@ -8,10 +8,10 @@ spl_autoload_register(function($class){
 	require_once(__DIR__.'/class.'.$class.'.php');
 });
 
-\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
-
 $dotenv = new Dotenv\Dotenv(__DIR__.'/..');
 $dotenv->load();
+
+\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
 
 if(strpos(getcwd(), 'production') !== false){
     define('ENV_DIR', 'skylar-recharge-production');
@@ -825,6 +825,9 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 	$res = $rc->get('/onetimes', [
 		'address_id' => $address_id,
 	]);
+	if(!array_key_exists('onetimes', $res)){
+//		print_r($res);
+	}
 	// Fix for api returning non-onetimes
 	$onetimes = [];
 	foreach($res['onetimes'] as $onetime){
@@ -838,12 +841,18 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 		'scheduled_at_min' => date('Y-m-t'),
 		'status' => 'QUEUED',
 	]);
+	if(!array_key_exists('orders', $res)){
+//		print_r($res);
+	}
 	$orders = $res['orders'];
 	$res = $rc->get('/charges', [
 		'address_id' => $address_id,
 		'date_min' => date('Y-m-t'),
 		'status' => 'SKIPPED'
 	]);
+	if(!array_key_exists('charges', $res)){
+//		print_r($res);
+	}
 	$charges = $res['charges'];
 	$already_has_next_month = false;
 	$next_month_scent = sc_get_monthly_scent($db, strtotime('next month'));
@@ -854,12 +863,17 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 			'scheduled_at_max' => date('Y-m', strtotime('next month')).'-01',
 			'status' => 'SUCCESS'
 		]);
-		$this_month_orders = $res['orders'];
-		foreach($this_month_orders as $this_month_order){
-			foreach($this_month_order['line_items'] as $line_item){
-				if($line_item['sku'] == $next_month_scent['sku']){
-					$already_has_next_month = true;
-					break 2;
+		if(!array_key_exists('orders', $res)){
+//			print_r($res);
+		}
+		if(!empty($res['orders'])){
+			$this_month_orders = $res['orders'];
+			foreach($this_month_orders as $this_month_order){
+				foreach($this_month_order['line_items'] as $line_item){
+					if($line_item['sku'] == $next_month_scent['sku']){
+						$already_has_next_month = true;
+						break 2;
+					}
 				}
 			}
 		}
