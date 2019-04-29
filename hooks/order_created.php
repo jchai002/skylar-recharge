@@ -66,7 +66,7 @@ if($order['total_line_items_price'] <= 0 && !in_array('28003712663639', array_co
 $rc = new RechargeClient();
 
 $res = $sc->get('/admin/customers/search.json', [
-	'query' => 'email:'.$_REQUEST['email'],
+	'query' => 'email:'.$order['email'],
 ]);
 if(!empty($res)){
 	$customer = $res[0];
