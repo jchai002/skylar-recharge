@@ -45,6 +45,7 @@ if($customer['state'] != 'active'){
 			'success' => true,
 			'email_sent' => true,
 			'res' => $res,
+			'url' => $url,
 		]);
 	}
 } else {

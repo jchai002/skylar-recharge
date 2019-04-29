@@ -518,7 +518,30 @@ function get_next_subscription_time($start_date, $order_interval_unit, $order_in
 	return $next_charge_time;
 }
 // Start Scent Club
-function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $onetimes = [], $charges = [], $max_time = null){
+function sc_is_address_in_blackout(PDO $db, RechargeClient $rc, $address_id){
+	$next_month_scent = sc_get_monthly_scent($db, strtotime('next month'));
+	if(!empty($next_month_scent)){
+		$res = $rc->get('/orders', [
+			'address_id' => $address_id,
+			'scheduled_at_min' => date('Y-m-t', strtotime('last month')),
+			'scheduled_at_max' => date('Y-m', strtotime('next month')).'-01',
+			'status' => 'SUCCESS'
+		]);
+		if(!empty($res['orders'])){
+			$this_month_orders = $res['orders'];
+			foreach($this_month_orders as $this_month_order){
+				foreach($this_month_order['line_items'] as $line_item){
+					if($line_item['sku'] == $next_month_scent['sku']){
+						return true;
+						break 2;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $onetimes = [], $charges = [], $max_time = null, $in_blackout = false){
 	$schedule = [];
 
 	$max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
@@ -594,13 +617,10 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
 		// Detect skips for scent club
 		if(is_scent_club(get_product($db, $subscription['shopify_product_id']))){
-			$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+1 month')));
+			$offset = $in_blackout ? 2 : 1;
+			$end_of_next_month_time = strtotime(date('Y-m-t', strtotime("+$offset months")));
 			while($end_of_next_month_time < $next_charge_time){
 				$this_subscription = $subscription;
-				if(date('Y', $end_of_next_month_time) == 2019 && date('m', $end_of_next_month_time) <= 4){
-					$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
-					continue;
-				}
 				$date = date('Y-m', $end_of_next_month_time).'-'.(!empty($subscription['order_day_of_month']) ? str_pad($subscription['order_day_of_month'], 2, '0', STR_PAD_LEFT) : date('d', $next_charge_time));
 
 				// Search schedule for any existing SC this month
@@ -856,34 +876,10 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 //		print_r($res);
 	}
 	$charges = $res['charges'];
-	$already_has_next_month = false;
-	$next_month_scent = sc_get_monthly_scent($db, strtotime('next month'));
-	if(!empty($next_month_scent)){
-		$res = $rc->get('/orders', [
-			'address_id' => $address_id,
-			'scheduled_at_min' => date('Y-m-t', strtotime('last month')),
-			'scheduled_at_max' => date('Y-m', strtotime('next month')).'-01',
-			'status' => 'SUCCESS'
-		]);
-		if(!array_key_exists('orders', $res)){
-//			print_r($res);
-		}
-		if(!empty($res['orders'])){
-			$this_month_orders = $res['orders'];
-			foreach($this_month_orders as $this_month_order){
-				foreach($this_month_order['line_items'] as $line_item){
-					if($line_item['sku'] == $next_month_scent['sku']){
-						$already_has_next_month = true;
-						break 2;
-					}
-				}
-			}
-		}
-	}
 
 	$products_by_id = [];
 	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
-	$offset = $already_has_next_month ? 1 : 0;
+	$offset = sc_is_address_in_blackout($db, $rc, $address_id) ? 1 : 0;
 	while(true) {
 		$offset++;
 		$next_charge_month = date('Y-m', strtotime("+$offset months"));
