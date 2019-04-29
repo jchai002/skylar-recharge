@@ -571,7 +571,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			$subscription['type'] = 'subscription';
 			$subscription['subscription_id'] = $subscription['id'];
 			$this_subscription = $subscription;
-			if(is_scent_club($db, $this_subscription['shopify_product_id'])){
+			if(is_scent_club(get_product($db, $this_subscription['shopify_product_id']))){
 				$swap = sc_get_monthly_scent($db, $next_charge_time, $this_subscription['address_id'] == '29478544');
 				$this_subscription['swap'] = $swap;
 				if(!empty($swap)){
