@@ -722,6 +722,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		}
 	}
 	ksort($schedule);
+	/*
 	foreach($schedule as $date=>$box){
 		foreach($box['items'] as $index=>$item){
 			$box['items'][$index]['is_sc_any'] = is_scent_club_any(get_product($db, $item['shopify_product_id']));
@@ -734,6 +735,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		});
 		$schedule[$date]['items'] = $box['items'];
 	}
+	*/
 	return $schedule;
 }
 $product_cache = [];
