@@ -571,14 +571,16 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			$subscription['type'] = 'subscription';
 			$subscription['subscription_id'] = $subscription['id'];
 			$this_subscription = $subscription;
-			$swap = sc_get_monthly_scent($db, $next_charge_time, $this_subscription['address_id'] == '29478544');
-			$this_subscription['swap'] = $swap;
-			if(!empty($swap)){
-				$this_subscription['handle'] = $swap['handle'];
-				$this_subscription['shopify_product_id'] = $swap['shopify_product_id'];
-				$this_subscription['shopify_variant_id'] = $swap['shopify_variant_id'];
-				$this_subscription['product_title'] = $swap['product_title'];
-				$this_subscription['variant_title'] = $swap['variant_title'];
+			if(is_scent_club($db, $this_subscription['shopify_product_id'])){
+				$swap = sc_get_monthly_scent($db, $next_charge_time, $this_subscription['address_id'] == '29478544');
+				$this_subscription['swap'] = $swap;
+				if(!empty($swap)){
+					$this_subscription['handle'] = $swap['handle'];
+					$this_subscription['shopify_product_id'] = $swap['shopify_product_id'];
+					$this_subscription['shopify_variant_id'] = $swap['shopify_variant_id'];
+					$this_subscription['product_title'] = $swap['product_title'];
+					$this_subscription['variant_title'] = $swap['variant_title'];
+				}
 			}
 			$schedule[$date]['items'][] = $this_subscription;
 			$next_charge_time = strtotime($date.' +'.$subscription['order_interval_frequency'].' '.$subscription['order_interval_unit']);
