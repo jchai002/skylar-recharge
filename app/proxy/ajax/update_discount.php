@@ -9,6 +9,9 @@ if(!empty($_REQUEST['discount_code'])){
 	]);
 } else {
 	$res = $rc->post('/addresses/'.intval($_REQUEST['address_id']).'/remove_discount');
+	if(!empty($res['error'])){
+		$res = $rc->post('/addresses/'.intval($_REQUEST['charge_id']).'/remove_discount');
+	}
 }
 if(!empty($res['error'])){
 	echo json_encode([
