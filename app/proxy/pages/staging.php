@@ -199,15 +199,15 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						</div>
 					<?php } ?>
 				</div>
+			</div>
+			<div class="sc-hr"></div>
+			<div class="sc-product-sections-container">
 				<div class="sc-section-menu hidden">
 					<a href="#recommendations" class="active">Your Scent Profile Recommendations</a>
 					<a href="#layering">Layering</a>
 					<a href="#best-sellers">Best Sellers</a>
 					<a href="#essentials">The Essentials</a>
 				</div>
-			</div>
-			<div class="sc-hr"></div>
-			<div class="sc-product-sections-container">
 				<div class="sc-product-section" id="recommendations">
 					<div class="sc-section-title">Recommendations based on your profile</div>
 					<div class="sc-product-carousel">
