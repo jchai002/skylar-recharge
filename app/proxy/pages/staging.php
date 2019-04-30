@@ -207,52 +207,54 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				</div>
 			</div>
 			<div class="sc-hr"></div>
-			<div class="sc-product-section" id="recommendations">
-				<div class="sc-section-title">Recommendations based on your profile</div>
-				<div class="sc-product-carousel">
-					<?php foreach($recommended_products as $product){ ?>
-						{% assign recommended_handles = '<?=$product?>' | split: '|' %}
-						{% include 'sc-product-tile' %}
-					<?php } ?>
+			<div class="sc-product-sections-container">
+				<div class="sc-product-section" id="recommendations">
+					<div class="sc-section-title">Recommendations based on your profile</div>
+					<div class="sc-product-carousel">
+						<?php foreach($recommended_products as $product){ ?>
+							{% assign recommended_handles = '<?=$product?>' | split: '|' %}
+							{% include 'sc-product-tile' %}
+						<?php } ?>
+					</div>
 				</div>
-			</div>
-			<div class="sc-product-section hidden" id="layering">
-				<div class="sc-section-title">Layering</div>
-				<div class="sc-product-carousel">
-					<?php foreach([
-									  'isle::Full Size|rollie:12235492327511:Rollie',
-									  'meadow::Full Size|rollie:12235492393047:Rollie',
-									  'capri::Full Size|rollie:12235492425815:Rollie',
-								  ] as $product){ ?>
-						{% assign recommended_handles = '<?=$product?>' | split: '|' %}
-						{% include 'sc-product-tile' %}
-					<?php } ?>
+				<div class="sc-product-section hidden" id="layering">
+					<div class="sc-section-title">Layering</div>
+					<div class="sc-product-carousel">
+						<?php foreach([
+										  'isle::Full Size|rollie:12235492327511:Rollie',
+										  'meadow::Full Size|rollie:12235492393047:Rollie',
+										  'capri::Full Size|rollie:12235492425815:Rollie',
+									  ] as $product){ ?>
+							{% assign recommended_handles = '<?=$product?>' | split: '|' %}
+							{% include 'sc-product-tile' %}
+						<?php } ?>
+					</div>
 				</div>
-			</div>
-			<div class="sc-product-section hidden" id="best-sellers">
-				<div class="sc-section-title">Best Sellers</div>
-				<div class="sc-product-carousel">
-					<?php foreach([
-									  'isle::Full Size|rollie:12235492327511:Rollie',
-									  'rollie:12235409129559:Arrow|rollie:12235492425815:Capri|rollie:12235492360279:Coral|rollie:12235492327511:Isle|rollie:12235492393047:Meadow|rollie:12588614484055:Willow',
-									  'scent-experience',
-								  ] as $product){ ?>
-						{% assign recommended_handles = '<?=$product?>' | split: '|' %}
-						{% include 'sc-product-tile' %}
-					<?php } ?>
+				<div class="sc-product-section hidden" id="best-sellers">
+					<div class="sc-section-title">Best Sellers</div>
+					<div class="sc-product-carousel">
+						<?php foreach([
+										  'isle::Full Size|rollie:12235492327511:Rollie',
+										  'rollie:12235409129559:Arrow|rollie:12235492425815:Capri|rollie:12235492360279:Coral|rollie:12235492327511:Isle|rollie:12235492393047:Meadow|rollie:12588614484055:Willow',
+										  'scent-experience',
+									  ] as $product){ ?>
+							{% assign recommended_handles = '<?=$product?>' | split: '|' %}
+							{% include 'sc-product-tile' %}
+						<?php } ?>
+					</div>
 				</div>
-			</div>
-			<div class="sc-product-section hidden" id="essentials">
-				<div class="sc-section-title">The Essentials</div>
-				<div class="sc-product-carousel">
-					<?php foreach([
-									  'sample-palette',
-									  'scent-collection',
-									  'rollie-collection',
-								  ] as $product){ ?>
-						{% assign recommended_handles = '<?=$product?>' | split: '|' %}
-						{% include 'sc-product-tile' %}
-					<?php } ?>
+				<div class="sc-product-section hidden" id="essentials">
+					<div class="sc-section-title">The Essentials</div>
+					<div class="sc-product-carousel">
+						<?php foreach([
+										  'sample-palette',
+										  'scent-collection',
+										  'rollie-collection',
+									  ] as $product){ ?>
+							{% assign recommended_handles = '<?=$product?>' | split: '|' %}
+							{% include 'sc-product-tile' %}
+						<?php } ?>
+					</div>
 				</div>
 			</div>
 			<div class="sc-hr"></div>
