@@ -206,6 +206,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<a href="#essentials">The Essentials</a>
 				</div>
 			</div>
+			<div class="sc-hr"></div>
 			<div class="sc-product-section" id="recommendations">
 				<div class="sc-section-title">Recommendations based on your profile</div>
 				<div class="sc-product-carousel">
@@ -254,7 +255,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<?php } ?>
 				</div>
 			</div>
-
+			<div class="sc-hr"></div>
 			<div class="sc-portal-innercontainer sc-schedule-conainer">
 				<div class="sc-portal-title">Your Upcoming Skylar Box<?= count($upcoming_shipments) > 1 ? 'es' : '' ?></div>
 				<div class="sc-portal-box-list">

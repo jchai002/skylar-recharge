@@ -934,13 +934,12 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 	]);
 
 	$day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
-	if($next_charge_month == '2019-04'){
-		$next_charge_month = '2019-05';
-	}
+	$max_day_of_month = date('t', strtotime($next_charge_month.'-01'));
+	$day_of_month = $day_of_month > $max_day_of_month ? $max_day_of_month : $day_of_month;
 	$res = $rc->post('/subscriptions/'.$main_sub['id'].'/set_next_charge_date',[
 		'date' => $next_charge_month.'-'.$day_of_month,
 	]);
-	log_event($db, 'subscription', 'set_next_charge_date', $next_charge_month.'-'.$day_of_month, json_encode($res));
+	log_event($db, 'subscription', $main_sub['id'], 'set_next_charge_date', $next_charge_month.'-'.$day_of_month, json_encode($res));
 	//print_r($res);
 
 	return $next_charge_month.'-'.$day_of_month;
@@ -1007,7 +1006,7 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $ma
 		'variant_title' => $scent_info['variant_title'],
 	]);
 	//print_r($res);
-	usleep(500); // Delay on Recharge's side :(
+	usleep(1000); // Delay on Recharge's side :(
 	sc_calculate_next_charge_date($db, $rc, $address_id);
 	return $res['onetime'];
 }
