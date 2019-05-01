@@ -15,7 +15,11 @@ if($customer['state'] != 'active'){
 		'status' => 'ACTIVE',
 		'shopify_customer_id' => $customer['id'],
 	]);
-	$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
+	try {
+		$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
+	} catch(ShopifyApiException $e){
+		// It's ok
+	}
 	if(empty($res)){
 		echo json_encode([
 			'success' => true,
