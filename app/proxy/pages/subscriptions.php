@@ -154,11 +154,11 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 									</div>
 									<div>
 										<?php if(is_scent_club_month($products_by_id[$item['shopify_product_id']])){ ?>
-											<div class="sc-item-title">Monthly Scent Club</div>
+											<div class="sc-item-title">Skylar Scent Club</div>
 											<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
 											<div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
 										<?php } else if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
-											<div class="sc-item-title">Monthly Scent Club</div>
+											<div class="sc-item-title">Skylar Scent Club</div>
 											<div class="sc-item-subtitle"></div>
 										<?php } else if(is_scent_club_swap($products_by_id[$item['shopify_product_id']])){ ?>
 											<div class="sc-item-title"><?=$item['product_title']?></div>

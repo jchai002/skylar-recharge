@@ -76,7 +76,7 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, $address_id, $ti
 		'properties' => $main_sub['properties'],
 		'price' => $main_sub['price'],
 		'quantity' => 1,
-		'product_title' => 'Monthly Scent Club',
+		'product_title' => 'Skylar Scent Club',
 		'variant_title' => $scent_info['variant_title'],
 	]);
 	//print_r($res);

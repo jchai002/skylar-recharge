@@ -473,17 +473,26 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 function insert_update_order(PDO $db, $shopify_order){
 	$now = date('Y-m-d H:i:s');
 	$stmt = $db->prepare("INSERT INTO orders
-(shopify_id, app_id, cart_token, `number`, total_price, created_at, updated_at)
-VALUES (:shopify_id, :app_id, :cart_token, :number, :total_price, :created_at, :updated_at)
-ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_token, `number`=:number, updated_at=:updated_at");
+(shopify_id, app_id, cart_token, `number`, total_line_items_price, total_discounts, total_price, tags, created_at, updated_at, cancelled_at, closed_at, email, note, attributes, source_name)
+VALUES (:shopify_id, :app_id, :cart_token, :number, :total_line_items_price, :total_discounts, :total_price, :tags, :created_at, :updated_at, :cancelled_at, :closed_at, :email, :note, :attributes, :source_name)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_token, `number`=:number, updated_at=:updated_at, total_line_items_price=:total_line_items_price, total_discounts=:total_discounts, total_price=:total_price, tags=:tags, cancelled_at=:cancelled_at, closed_at=:closed_at, email=:email, note=:note, attributes=:attributes, source_name=:source_name");
 	$stmt->execute([
 		'shopify_id' => $shopify_order['id'],
 		'app_id' => $shopify_order['app_id'],
 		'cart_token' => $shopify_order['cart_token'],
 		'number' => $shopify_order['number'],
+		'total_line_items_price' => $shopify_order['total_line_items_price'],
+		'total_discounts' => $shopify_order['total_discounts'],
 		'total_price' => $shopify_order['total_price'],
+		'tags' => $shopify_order['tags'],
 		'created_at' => date("Y-m-d H:i:s", strtotime($shopify_order['created_at'])),
 		'updated_at' => date("Y-m-d H:i:s", strtotime($shopify_order['updated_at'])),
+		'cancelled_at' => empty($shopify_order['cancelled_at']) ? null : date("Y-m-d H:i:s", strtotime($shopify_order['cancelled_at'])),
+		'closed_at' => empty($shopify_order['closed_at']) ? null : date("Y-m-d H:i:s", strtotime($shopify_order['closed_at'])),
+		'email' => $shopify_order['email'],
+		'note' => $shopify_order['note'],
+		'attributes' => json_encode($shopify_order['note_attributes']),
+		'source_name' => $shopify_order['source_name'],
 	]);
 	$error = $stmt->errorInfo();
 	if($error[0] != 0){
@@ -495,7 +504,23 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_
 			'value2' => json_encode($error),
 		]);
 	}
-	return $db->lastInsertId();
+	$order_id = $db->lastInsertId();
+	$stmt = $db->prepare("INSERT INTO order_line_items (shopify_id, order_id, variant_id, total_discount, price, sku, product_title, variant_title, properties) VALUES (:shopify_id, :order_id, :variant_id, :total_discount, :price, :sku, :product_title, :variant_title, :properties) ON DUPLICATE KEY UPDATE order_id=:order_id, variant_id=:variant_id, total_discount=:total_discount, price=:price, sku=:sku, product_title=:product_title, variant_title=:variant_title, properties=:properties");
+	foreach($shopify_order['line_items'] as $line_item){
+		$variant = get_variant($db, $line_item['variant_id']);
+		$stmt->execute([
+			'shopify_id' => $line_item['id'],
+			'order_id' => $order_id,
+			'variant_id' => $variant['id'],
+			'total_discount' => $line_item['total_discount'],
+			'price' => $line_item['price'],
+			'sku' => $line_item['sku'],
+			'product_title' => $line_item['title'],
+			'variant_title' => $line_item['variant_title'],
+			'properties' => json_encode($line_item['properties']),
+		]);
+	}
+	return $order_id;
 }
 if(!function_exists('divide')){
 	function divide($numerator, $denominator){
@@ -768,6 +793,16 @@ function get_product(PDO $db, $shopify_product_id){
 	}
 	return $product_cache[$shopify_product_id];
 }
+$variant_cache = [];
+function get_variant(PDO $db, $shopify_variant_id){
+	global $variant_cache;
+	if(!array_key_exists($shopify_variant_id, $variant_cache)){
+		$stmt = $db->prepare("SELECT * FROM variants WHERE shopify_id=?");
+		$stmt->execute([$shopify_variant_id]);
+		$variant_cache[$shopify_variant_id] = $stmt->fetch();
+	}
+	return $variant_cache[$shopify_variant_id];
+}
 function is_scent_club($product){
 	return $product['type'] == 'Scent Club';
 }
@@ -1002,7 +1037,7 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $ma
 		'properties' => $main_sub['properties'],
 		'price' => $main_sub['price'],
 		'quantity' => 1,
-		'product_title' => 'Monthly Scent Club',
+		'product_title' => 'Skylar Scent Club',
 		'variant_title' => $scent_info['variant_title'],
 	]);
 	//print_r($res);
@@ -1151,6 +1186,7 @@ function sc_get_profile_products($profile_data){
 	}
 	return $products;
 }
+
 function price_without_trailing_zeroes($price = 0){
 	if(!is_float($price)){
 		return number_format($price);
