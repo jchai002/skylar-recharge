@@ -48,6 +48,7 @@ if(!empty($res['charge'])){
 				]);
 			}
 		}
+		$res_all[] = sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
 	} else {
 		foreach($charge['line_items'] as $line_item){
 			$res_all[] = $res = $rc->get('/subscriptions/'.$line_item['subscription_id']);
@@ -62,7 +63,6 @@ if(!empty($res['charge'])){
 			}
 		}
 	}
-	$res_all[] = sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
 }
 
 
