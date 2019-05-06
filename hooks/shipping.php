@@ -16,12 +16,25 @@ if(empty($shop_url)){
 	die();
 }
 
-$stmt = $db->query("SELECT sku FROM variants WHERE shopify_id IN(".implode(',',array_column($ids_by_scent, 'variant')).")");
-$fullsize_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
 $total_weight = array_sum(array_column($rate['items'],'grams'))/28.35; // Grams to ounces
 $total_price = array_sum(array_column($rate['items'], 'price'))/100;
+
+$stmt = $db->query("SELECT sku FROM variants WHERE shopify_id IN(".implode(',',array_column($ids_by_scent, 'variant')).")");
+$fullsize_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $has_fullsize = !empty(array_intersect(array_column(['items'], 'sku'), $fullsize_skus));
+
+$is_test = false;
+foreach($rate['items'] as $item){
+	if(empty($item['properties'])){
+		continue;
+	}
+	foreach($item['properties'] as $property){
+		if($property['name'] == 'test' && $property['value'] == 1){
+			$is_test = true;
+			break 2;
+		}
+	}
+}
 $_RATES = [];
 
 switch($rate['destination']['country']){
@@ -74,7 +87,7 @@ switch($rate['destination']['country']){
 				$_RATES[] = [
 					'service_name' => 'Standard (7-14 days)',
 					'service_code' => 'USPS FC International',
-					'total_price' => 1200,
+					'total_price' => 1000,
 					'description' => 'USPS FC International',
 					'currency' => 'USD',
 				];
