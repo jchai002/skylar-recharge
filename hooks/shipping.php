@@ -40,25 +40,69 @@ $stmt = $db->query("SELECT sku FROM variants WHERE shopify_id IN(".implode(',',a
 $fullsize_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $has_fullsize = !empty(array_intersect(array_column(['items'], 'sku'), $fullsize_skus));
 
+$stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
+$sc_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$has_sc = !empty(array_intersect(array_column(['items'], 'sku'), $sc_skus));
+
 $_RATES = [];
 switch($rate['destination']['country']){
 	case 'US':
-		if($total_weight <= 15){
-			$_RATES[] = [
-				'service_name' => 'Standard',
-				'service_code' => 'USPS First Class',
-				'total_price' => $total_price >= 50 ? 0 : 499,
-				'description' => 'USPS First Class',
-				'currency' => 'USD',
-			];
+		if($has_sc){
+			if($total_weight <= 15){
+				$_RATES[] = [
+					'service_name' => 'Free standard shipping',
+					'service_code' => 'USPS First Class',
+					'total_price' => 0,
+					'description' => 'USPS First Class',
+					'currency' => 'USD',
+				];
+			} else {
+				$_RATES[] = [
+					'service_name' => 'Free standard shipping',
+					'service_code' => 'FedEx SmartPost',
+					'total_price' => 0,
+					'description' => 'FedEx SmartPost',
+					'currency' => 'USD',
+				];
+			}
 		} else {
-			$_RATES[] = [
-				'service_name' => 'Standard',
-				'service_code' => 'FedEx SmartPost',
-				'total_price' => $total_price >= 50 ? 0 : 499,
-				'description' => 'FedEx SmartPost',
-				'currency' => 'USD',
-			];
+			if($total_price >= 40){
+				if($total_weight <= 15){
+					$_RATES[] = [
+						'service_name' => 'Free standard shipping',
+						'service_code' => 'USPS First Class',
+						'total_price' => 0,
+						'description' => 'USPS First Class',
+						'currency' => 'USD',
+					];
+				} else {
+					$_RATES[] = [
+						'service_name' => 'Free standard shipping',
+						'service_code' => 'FedEx SmartPost',
+						'total_price' => 0,
+						'description' => 'FedEx SmartPost',
+						'currency' => 'USD',
+					];
+				}
+			} else {
+				if($total_weight <= 15){
+					$_RATES[] = [
+						'service_name' => 'Standard',
+						'service_code' => 'USPS First Class',
+						'total_price' => 499,
+						'description' => 'USPS First Class',
+						'currency' => 'USD',
+					];
+				} else {
+					$_RATES[] = [
+						'service_name' => 'Standard',
+						'service_code' => 'FedEx SmartPost',
+						'total_price' => 499,
+						'description' => 'FedEx SmartPost',
+						'currency' => 'USD',
+					];
+				}
+			}
 		}
 		$_RATES[] = [
 			'service_name' => '2 business day shipping - for orders placed before noon PST Monday through Friday',
