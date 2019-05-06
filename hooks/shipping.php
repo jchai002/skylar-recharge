@@ -134,6 +134,12 @@ switch($rate['destination']['country']){
 		break;
 }
 
+if($is_test){
+	foreach($_RATES as $index=>$v){
+		$_RATES[$index]['service_name'] = '[TEST] '.$_RATES[$index]['service_name'];
+	}
+}
+
 echo json_encode(["rates"=>$_RATES]);
 
 /*
