@@ -27,6 +27,7 @@ foreach($rate['items'] as $item){
 		}
 	}
 }
+log_event($db, 'SHIPPING_RATES', '', 'REQUESTED', json_encode($rate), json_encode($headers));
 if(!$is_test){
 	echo json_encode(["rates"=>$_RATES]);
 	die();
