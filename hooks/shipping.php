@@ -15,14 +15,6 @@ $shop_url = $headers['X-Shopify-Shop-Domain'];
 if(empty($shop_url)){
 	die();
 }
-
-$total_weight = array_sum(array_column($rate['items'],'grams'))/28.35; // Grams to ounces
-$total_price = array_sum(array_column($rate['items'], 'price'))/100;
-
-$stmt = $db->query("SELECT sku FROM variants WHERE shopify_id IN(".implode(',',array_column($ids_by_scent, 'variant')).")");
-$fullsize_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
-$has_fullsize = !empty(array_intersect(array_column(['items'], 'sku'), $fullsize_skus));
-
 $is_test = false;
 foreach($rate['items'] as $item){
 	if(empty($item['properties'])){
@@ -35,8 +27,19 @@ foreach($rate['items'] as $item){
 		}
 	}
 }
-$_RATES = [];
+if(!$is_test){
+	echo json_encode(["rates"=>$_RATES]);
+	die();
+}
 
+$total_weight = array_sum(array_column($rate['items'],'grams'))/28.35; // Grams to ounces
+$total_price = array_sum(array_column($rate['items'], 'price'))/100;
+
+$stmt = $db->query("SELECT sku FROM variants WHERE shopify_id IN(".implode(',',array_column($ids_by_scent, 'variant')).")");
+$fullsize_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$has_fullsize = !empty(array_intersect(array_column(['items'], 'sku'), $fullsize_skus));
+
+$_RATES = [];
 switch($rate['destination']['country']){
 	case 'US':
 		if($total_weight <= 15){
