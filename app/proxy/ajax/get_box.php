@@ -32,11 +32,12 @@ $onetimes = [];
 $orders = [];
 $charges = [];
 $customer = [];
+$res_all = [];
 if(!empty($res['subscriptions'])){
 	$subscriptions = $res['subscriptions'];
 	$rc_customer_id = $subscriptions[0]['customer_id'];
 } else {
-	$res = $rc->get('/customers', [
+	$res_all[] = $res = $rc->get('/customers', [
 		'shopify_customer_id' => $_REQUEST['c'],
 	]);
 	$customer = $res['customers'][0];
@@ -45,17 +46,17 @@ if(!empty($res['subscriptions'])){
 	}
 }
 if(!empty($rc_customer_id)){
-	$res = $rc->get('/orders', [
+	$res_all[] = $res = $rc->get('/orders', [
 		'customer_id' => $rc_customer_id,
 		'status' => 'QUEUED',
 	]);
 	$orders = $res['orders'];
-	$res = $rc->get('/charges', [
+	$res_all[] = $res = $rc->get('/charges', [
 		'customer_id' => $rc_customer_id,
 		'date_min' => date('Y-m-d'),
 	]);
 	$charges = $res['charges'];
-	$res = $rc->get('/onetimes', [
+	$res_all[] = $res = $rc->get('/onetimes', [
 		'customer_id' => $rc_customer_id,
 	]);
 	foreach($res['onetimes'] as $onetime){
@@ -99,6 +100,7 @@ if(empty($return_box)){
 	echo json_encode([
 		'success' => false,
 		'res' => $upcoming_shipments,
+		'res_all' => $res_all,
 		'month' => $month,
 	]);
 } else {
@@ -106,5 +108,6 @@ if(empty($return_box)){
 		'success' => true,
 		'box' => $return_box,
 		'res' => $upcoming_shipments,
+		'res_all' => $res_all,
 	]);
 }
