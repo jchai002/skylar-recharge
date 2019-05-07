@@ -20,8 +20,8 @@ foreach($rate['items'] as $item){
 	if(empty($item['properties'])){
 		continue;
 	}
-	foreach($item['properties'] as $property){
-		if($property['name'] == 'test' && $property['value'] == 1){
+	foreach($item['properties'] as $key=>$value){
+		if($key == 'test' && $value == 1){
 			$is_test = true;
 			break 2;
 		}
