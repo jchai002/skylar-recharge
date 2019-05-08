@@ -51,7 +51,7 @@ switch($rate['destination']['country']){
 			if($total_weight <= 15){
 				$_RATES[] = [
 					'service_name' => 'Standard Shipping (3-7 business days)',
-					'service_code' => 'USPS First Class',
+					'service_code' => 'DHL Ground',
 					'total_price' => 0,
 					'description' => 'Free for Scent Club Members!',
 					'currency' => 'USD',
@@ -70,7 +70,7 @@ switch($rate['destination']['country']){
 				if($total_weight <= 15){
 					$_RATES[] = [
 						'service_name' => 'Free Standard Shipping (3-7 business days)',
-						'service_code' => 'USPS First Class',
+						'service_code' => 'DHL Ground',
 						'total_price' => 0,
 						'description' => '',
 						'currency' => 'USD',
@@ -88,7 +88,7 @@ switch($rate['destination']['country']){
 				if($total_weight <= 15){
 					$_RATES[] = [
 						'service_name' => 'Standard Shipping (3-7 business days)',
-						'service_code' => '',
+						'service_code' => 'DHL Ground',
 						'total_price' => 499,
 						'description' => '',
 						'currency' => 'USD',
@@ -152,7 +152,7 @@ switch($rate['destination']['country']){
 	default: // Other international
 		if($has_fullsize){
 			$_RATES[] = [
-				'service_name' => 'Expedited (3-5 days)',
+				'service_name' => 'Expedited (3-5 business days) - Includes $23 Intl Airmail Surcharge',
 				'service_code' => 'DHL WW Express',
 				'total_price' => 2500,
 				'description' => 'Duties and taxes are not included - All prices are in USD',
