@@ -50,18 +50,18 @@ switch($rate['destination']['country']){
 		if($has_sc){
 			if($total_weight <= 15){
 				$_RATES[] = [
-					'service_name' => 'Free standard shipping',
+					'service_name' => 'Standard Shipping (3-7 business days)',
 					'service_code' => 'USPS First Class',
 					'total_price' => 0,
-					'description' => 'USPS First Class',
+					'description' => 'Free for Scent Club Members!',
 					'currency' => 'USD',
 				];
 			} else {
 				$_RATES[] = [
-					'service_name' => 'Free standard shipping',
+					'service_name' => 'Standard Shipping (3-7 business days)',
 					'service_code' => 'FedEx SmartPost',
 					'total_price' => 0,
-					'description' => 'FedEx SmartPost',
+					'description' => 'Free for Scent Club Members!',
 					'currency' => 'USD',
 				];
 			}
@@ -69,54 +69,54 @@ switch($rate['destination']['country']){
 			if($total_price >= 40){
 				if($total_weight <= 15){
 					$_RATES[] = [
-						'service_name' => 'Free standard shipping',
+						'service_name' => 'Free Standard Shipping (3-7 business days)',
 						'service_code' => 'USPS First Class',
 						'total_price' => 0,
-						'description' => 'USPS First Class',
+						'description' => '',
 						'currency' => 'USD',
 					];
 				} else {
 					$_RATES[] = [
-						'service_name' => 'Free standard shipping',
+						'service_name' => 'Free Standard Shipping (3-7 business days)',
 						'service_code' => 'FedEx SmartPost',
 						'total_price' => 0,
-						'description' => 'FedEx SmartPost',
+						'description' => '',
 						'currency' => 'USD',
 					];
 				}
 			} else {
 				if($total_weight <= 15){
 					$_RATES[] = [
-						'service_name' => 'Standard',
-						'service_code' => 'USPS First Class',
+						'service_name' => 'Standard Shipping (3-7 business days)',
+						'service_code' => '',
 						'total_price' => 499,
-						'description' => 'USPS First Class',
+						'description' => '',
 						'currency' => 'USD',
 					];
 				} else {
 					$_RATES[] = [
-						'service_name' => 'Standard',
+						'service_name' => 'Standard Shipping (3-7 business days)',
 						'service_code' => 'FedEx SmartPost',
 						'total_price' => 499,
-						'description' => 'FedEx SmartPost',
+						'description' => '',
 						'currency' => 'USD',
 					];
 				}
 			}
 		}
 		$_RATES[] = [
-			'service_name' => '2 business day shipping - for orders placed before noon PST Monday through Friday',
+			'service_name' => '2-Day Shipping (2 business days)',
 			'service_code' => 'FedEx 2-day',
 			'total_price' => 1500,
-			'description' => 'FedEx 2-day',
+			'description' => 'Order must be placed before noon PST Monday-Friday',
 			'currency' => 'USD',
 		];
 		if(!in_array($rate['destination']['province'], ['HI', 'AK', 'AS', 'FM', 'GU', 'MH', 'MP', 'PW', 'PR', 'VI', 'AE', 'AA', 'AP'])){ // Exclude outside lower 48
 			$_RATES[] = [
-				'service_name' => 'Next business day shipping - for orders placed before noon PST Monday through Friday',
+				'service_name' => 'Next Day Shipping (1 business day)',
 				'service_code' => 'FedEx next day',
 				'total_price' => 2500,
-				'description' => 'FedEx next day',
+				'description' => 'Order must be placed before noon PST Monday-Friday. Excludes AK and HI',
 				'currency' => 'USD',
 			];
 		}
@@ -124,10 +124,10 @@ switch($rate['destination']['country']){
 	case 'CA':
 		if($has_fullsize){
 			$_RATES[] = [
-				'service_name' => 'Expedited (3-5 days)',
+				'service_name' => 'Expedited (3-5 business days)',
 				'service_code' => 'UPS Standard to Canada',
 				'total_price' => 2500,
-				'description' => 'UPS Standard to Canada',
+				'description' => 'Duties and taxes are not included - All prices are in USD',
 				'currency' => 'USD',
 			];
 		} else {
@@ -136,7 +136,7 @@ switch($rate['destination']['country']){
 					'service_name' => 'Standard (7-14 days)',
 					'service_code' => 'USPS FC International',
 					'total_price' => 1000,
-					'description' => 'USPS FC International',
+					'description' => 'Duties and taxes are not included - All prices are in USD',
 					'currency' => 'USD',
 				];
 			}
@@ -144,7 +144,7 @@ switch($rate['destination']['country']){
 				'service_name' => 'Expedited (3-5 days)',
 				'service_code' => 'DHL WW Express',
 				'total_price' => 2000,
-				'description' => 'DHL WW Express',
+				'description' => 'Duties and taxes are not included - All prices are in USD',
 				'currency' => 'USD',
 			];
 		}
@@ -155,7 +155,7 @@ switch($rate['destination']['country']){
 				'service_name' => 'Expedited (3-5 days)',
 				'service_code' => 'DHL WW Express',
 				'total_price' => 2500,
-				'description' => 'DHL WW Express',
+				'description' => 'Duties and taxes are not included - All prices are in USD',
 				'currency' => 'USD',
 			];
 		} else {
@@ -164,7 +164,7 @@ switch($rate['destination']['country']){
 					'service_name' => 'Standard (7-14 days)',
 					'service_code' => 'USPS FC International',
 					'total_price' => 1200,
-					'description' => 'USPS FC International',
+					'description' => 'Duties and taxes are not included - All prices are in USD',
 					'currency' => 'USD',
 				];
 			}
@@ -172,7 +172,7 @@ switch($rate['destination']['country']){
 				'service_name' => 'Expedited (3-5 days)',
 				'service_code' => 'DHL WW Express',
 				'total_price' => 2000,
-				'description' => 'DHL WW Express',
+				'description' => 'Duties and taxes are not included - All prices are in USD',
 				'currency' => 'USD',
 			];
 		}
