@@ -28,7 +28,6 @@ foreach($rate['items'] as $item){
 	}
 }
 $_RATES = [];
-//log_event($db, 'SHIPPING_RATES', '', 'REQUESTED', json_encode($rate), json_encode($headers));
 if(!$is_test){
 //	echo json_encode(["rates"=>$_RATES]);
 //	die();
@@ -44,6 +43,7 @@ $has_fullsize = !empty(array_intersect(array_column(['items'], 'sku'), $fullsize
 $stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
 $sc_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $has_sc = !empty(array_intersect(array_column(['items'], 'sku'), $sc_skus));
+log_event($db, 'SHIPPING_RATES', '', 'REQUESTED', json_encode($rate), ['has_fullsize'=>$has_fullsize, 'has_sc' => $has_sc, json_encode($headers)]);
 
 switch($rate['destination']['country']){
 	case 'US':
