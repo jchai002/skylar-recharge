@@ -27,7 +27,8 @@ foreach($rate['items'] as $item){
 		}
 	}
 }
-log_event($db, 'SHIPPING_RATES', '', 'REQUESTED', json_encode($rate), json_encode($headers));
+$_RATES = [];
+//log_event($db, 'SHIPPING_RATES', '', 'REQUESTED', json_encode($rate), json_encode($headers));
 if(!$is_test){
 	echo json_encode(["rates"=>$_RATES]);
 	die();
@@ -44,14 +45,14 @@ $stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
 $sc_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $has_sc = !empty(array_intersect(array_column(['items'], 'sku'), $sc_skus));
 
-$_RATES = [];
 switch($rate['destination']['country']){
 	case 'US':
 		if($has_sc){
 			if($total_weight <= 15){
 				$_RATES[] = [
 					'service_name' => 'Standard Shipping (3-7 business days)',
-					'service_code' => 'DHL Ground',
+//                    'service_code' => 'DHL SmartMail Parcel Ground',
+                    'service_code' => 'Standard Weight-based',
 					'total_price' => 0,
 					'description' => 'Free for Scent Club Members!',
 					'currency' => 'USD',
@@ -59,7 +60,8 @@ switch($rate['destination']['country']){
 			} else {
 				$_RATES[] = [
 					'service_name' => 'Standard Shipping (3-7 business days)',
-					'service_code' => 'FedEx SmartPost',
+//					'service_code' => 'FedEx SmartPost',
+                    'service_code' => 'Standard Weight-based',
 					'total_price' => 0,
 					'description' => 'Free for Scent Club Members!',
 					'currency' => 'USD',
@@ -70,7 +72,8 @@ switch($rate['destination']['country']){
 				if($total_weight <= 15){
 					$_RATES[] = [
 						'service_name' => 'Free Standard Shipping (3-7 business days)',
-						'service_code' => 'DHL Ground',
+//						'service_code' => 'DHL SmartMail Parcel Ground',
+                        'service_code' => 'Standard Weight-based',
 						'total_price' => 0,
 						'description' => '',
 						'currency' => 'USD',
@@ -78,7 +81,8 @@ switch($rate['destination']['country']){
 				} else {
 					$_RATES[] = [
 						'service_name' => 'Free Standard Shipping (3-7 business days)',
-						'service_code' => 'FedEx SmartPost',
+//						'service_code' => 'FedEx SmartPost',
+                        'service_code' => 'Standard Weight-based',
 						'total_price' => 0,
 						'description' => '',
 						'currency' => 'USD',
@@ -88,7 +92,8 @@ switch($rate['destination']['country']){
 				if($total_weight <= 15){
 					$_RATES[] = [
 						'service_name' => 'Standard Shipping (3-7 business days)',
-						'service_code' => 'DHL Ground',
+//						'service_code' => 'DHL SmartMail Parcel Ground',
+                        'service_code' => 'Standard Weight-based',
 						'total_price' => 499,
 						'description' => '',
 						'currency' => 'USD',
@@ -96,7 +101,8 @@ switch($rate['destination']['country']){
 				} else {
 					$_RATES[] = [
 						'service_name' => 'Standard Shipping (3-7 business days)',
-						'service_code' => 'FedEx SmartPost',
+//						'service_code' => 'FedEx SmartPost',
+                        'service_code' => 'Standard Weight-based',
 						'total_price' => 499,
 						'description' => '',
 						'currency' => 'USD',
