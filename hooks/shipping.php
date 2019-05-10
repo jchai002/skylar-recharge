@@ -149,7 +149,7 @@ switch($rate['destination']['country']){
 			}
 			*/
 			$_RATES[] = [
-				'service_name' => 'Expedited (3-5 days)',
+				'service_name' => 'Expedited (3-5 business days)',
 				'service_code' => 'DHL WW Express',
 				'total_price' => 2000,
 				'description' => 'Duties and taxes are not included - All prices are in USD',
@@ -179,7 +179,7 @@ switch($rate['destination']['country']){
 			}
 			*/
 			$_RATES[] = [
-				'service_name' => 'Expedited (3-5 days)',
+				'service_name' => 'Expedited (3-5 business days)',
 				'service_code' => 'DHL WW Express',
 				'total_price' => 2000,
 				'description' => 'Duties and taxes are not included - All prices are in USD',
