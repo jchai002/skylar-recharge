@@ -38,11 +38,11 @@ $total_price = array_sum(array_column($rate['items'], 'price'))/100;
 
 $stmt = $db->query("SELECT sku FROM variants WHERE shopify_id IN(".implode(',',array_column($ids_by_scent, 'variant')).")");
 $fullsize_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
-$has_fullsize = !empty(array_intersect(array_column(['items'], 'sku'), $fullsize_skus));
+$has_fullsize = !empty(array_intersect(array_column($rate['items'], 'sku'), $fullsize_skus));
 
 $stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
 $sc_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
-$has_sc = !empty(array_intersect(array_column(['items'], 'sku'), $sc_skus));
+$has_sc = !empty(array_intersect(array_column($rate['items'], 'sku'), $sc_skus));
 log_event($db, 'SHIPPING_RATES', '', 'REQUESTED', json_encode($rate), json_encode(['has_fullsize'=>$has_fullsize, 'has_sc' => $has_sc, 'headers' => $headers]));
 
 switch($rate['destination']['country']){
