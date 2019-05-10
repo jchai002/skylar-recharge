@@ -162,7 +162,7 @@ switch($rate['destination']['country']){
 			$_RATES[] = [
 				'service_name' => 'Expedited (3-5 business days) - Includes $23 Intl Airmail Surcharge',
 				'service_code' => 'DHL WW Express',
-				'total_price' => 2500,
+				'total_price' => 3500,
 				'description' => 'Duties and taxes are not included - All prices are in USD',
 				'currency' => 'USD',
 			];
