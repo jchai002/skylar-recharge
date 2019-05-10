@@ -30,8 +30,8 @@ foreach($rate['items'] as $item){
 $_RATES = [];
 //log_event($db, 'SHIPPING_RATES', '', 'REQUESTED', json_encode($rate), json_encode($headers));
 if(!$is_test){
-	echo json_encode(["rates"=>$_RATES]);
-	die();
+//	echo json_encode(["rates"=>$_RATES]);
+//	die();
 }
 
 $total_weight = array_sum(array_column($rate['items'],'grams'))/28.35; // Grams to ounces
