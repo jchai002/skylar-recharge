@@ -33,7 +33,7 @@ if($day_of_week == 5){ // Friday
 $page = 0;
 $page++;
 echo "$start_date to $end_date".PHP_EOL;
-$stmt = $db->prepare("SELECT 1 FROM event_log WHERE category='email' AND action='SUB_3DAY_WARNING' AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?");
+$stmt = $db->prepare("SELECT 1 FROM event_log WHERE category='email' AND (action='SUB_3DAY_WARNING' OR action='SUB_3DAY_WARNING_SC') AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?");
 //echo "SELECT 1 FROM event_log WHERE category='email' AND action='SUB_3DAY_WARNING' AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?";
 do {
 	$page++;
@@ -72,7 +72,7 @@ do {
 				'$email' => $charge['email'],
 			],
 			'properties' => [
-				'email_type' => empty($is_scent_club) ? 'sub_3day_warning' : 'sub_3day_warning_sc',
+				'email_type' => $is_scent_club ? 'sub_3day_warning' : 'sub_3day_warning_sc',
 				'first_name' => $charge['first_name'],
 			]
 		]));
@@ -81,7 +81,7 @@ do {
 			CURLOPT_RETURNTRANSFER => true,
 		]);
 		$res = json_decode(curl_exec($ch));
-		log_event($db, 'EMAIL', $charge['email'], 'SUB_3DAY_WARNING', json_encode($res), json_encode($charge), 'CRON');
+		log_event($db, 'EMAIL', $charge['email'], 'SUB_3DAY_WARNING'.($is_scent_club ? '_SC' : ''), json_encode($res), json_encode($charge), 'CRON');
 		echo "Sent email to: ".$charge['email']." address id: ".$charge['address_id'].PHP_EOL;
 	}
 	sleep(1);
