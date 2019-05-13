@@ -31,7 +31,6 @@ if($day_of_week == 5){ // Friday
 }
 
 $page = 0;
-$page++;
 echo "$start_date to $end_date".PHP_EOL;
 $stmt = $db->prepare("SELECT 1 FROM event_log WHERE category='email' AND (action='SUB_3DAY_WARNING' OR action='SUB_3DAY_WARNING_SC') AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?");
 //echo "SELECT 1 FROM event_log WHERE category='email' AND action='SUB_3DAY_WARNING' AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?";
