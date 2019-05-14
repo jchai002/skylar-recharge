@@ -42,7 +42,7 @@ $res = $sc->put('/admin/draft_orders/'.$draft_order_id.'.json', ['draft_order' =
 <script>
     ShopifyApp.init({
         apiKey: '<?=$_ENV['SHOPIFY_APP_KEY']?>',
-		origin: 'https://<?=$sc->shop_domain?>',
+        shopOrigin: 'https://<?=$sc->shop_domain?>',
     });
     ShopifyApp.redirect('/admin/draft_orders/<?=$draft_order_id?>');
 </script>
