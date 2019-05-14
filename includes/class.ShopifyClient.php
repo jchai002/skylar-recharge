@@ -47,6 +47,9 @@ class ShopifyClient {
 
 	public function __construct($shop_domain = '', $token = '', $api_key = SHOPIFY_APP_KEY, $secret = SHOPIFY_APP_SECRET){
 		$this->name = "ShopifyClient";
+		if(empty($shop_domain)){
+			$shop_domain = reset(array_keys(self::$token_lookup));
+		}
 		$this->shop_domain = $shop_domain;
 		if(empty($this->shop_domain)){
 			if(!empty(ShopifyClient::$token_lookup)){
