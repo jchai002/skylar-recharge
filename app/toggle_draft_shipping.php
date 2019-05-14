@@ -34,5 +34,16 @@ foreach($draft_order['line_items'] as $index => $line_item){
 }
 
 $res = $sc->put('/admin/draft_orders/'.$draft_order_id.'.json', ['draft_order' => $draft_order]);
-
-header("Location: https://$sc->shop_domain/admin/draft_orders/".$draft_order_id);
+?>
+<html>
+<head></head>
+<body>
+<script src="https://cdn.shopify.com/s/assets/external/app.js"></script>
+<script>
+    ShopifyApp.init({
+        apiKey: '<?=$_ENV['SHOPIFY_APP_KEY']?>',
+    });
+    ShopifyApp.redirect('/admin/draft_orders/<?=$draft_order_id?>.json');
+</script>
+</body>
+</html>
