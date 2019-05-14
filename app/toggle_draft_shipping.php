@@ -32,7 +32,7 @@ foreach($draft_order['line_items'] as $index => $line_item){
 		];
 	}
 }
-echo $sc->shop_domain;
-$res = $sc->put('https://'.$sc->shop_domain.'/admin/draft_orders/'.$draft_order_id.'.json', ['draft_order' => $draft_order]);
 
-header("Location: /admin/draft_orders/".$draft_order_id);
+$res = $sc->put('/admin/draft_orders/'.$draft_order_id.'.json', ['draft_order' => $draft_order]);
+
+header("Location: https://$sc->shop_domain/admin/draft_orders/".$draft_order_id);
