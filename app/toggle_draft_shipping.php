@@ -11,7 +11,9 @@ $draft_order_id = $_REQUEST['id'];
 
 $draft_order = $sc->get('/admin/draft_orders/'.$draft_order_id.'.json');
 
-print_r($draft_order);
+print_r(array_column($draft_order, 'line_items'));
+
+$free_override_active = in_array('_freeship_override', array_column(array_column($draft_order['line_items'], 'properties'), 'name'));
 
 foreach($draft_order['line_items'] as $index=>$line_item){
 	
