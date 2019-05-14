@@ -30,6 +30,8 @@ define('SHOPIFY_SCOPE',implode(',',[
 	'read_shipping',
 	'write_shipping',
 	'read_analytics',
+	'read_draft_orders',
+	'write_draft_orders',
 //	'read_users',
 //	'write_users',
 ]));
