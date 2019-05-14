@@ -11,6 +11,7 @@ $draft_order_id = $_REQUEST['id'];
 
 $draft_order = $sc->get('/admin/draft_orders/'.$draft_order_id.'.json');
 
+print_r($draft_order);
 print_r(array_column($draft_order, 'line_items'));
 die();
 
