@@ -15,7 +15,7 @@ $shop_url = $headers['X-Shopify-Shop-Domain'];
 if(empty($shop_url)){
 	die();
 }
-$is_test = false;
+$free_override = $is_test = false;
 foreach($rate['items'] as $item){
 	if(empty($item['properties'])){
 		continue;
@@ -23,7 +23,9 @@ foreach($rate['items'] as $item){
 	foreach($item['properties'] as $key=>$value){
 		if($key == 'test' && $value == 1){
 			$is_test = true;
-			break 2;
+		}
+		if($key == '_freeship_override' && $value == 1){
+			$free_override = true;
 		}
 	}
 }
@@ -192,6 +194,11 @@ switch($rate['destination']['country']){
 if($is_test){
 	foreach($_RATES as $index=>$v){
 		$_RATES[$index]['service_name'] = '[TEST] '.$_RATES[$index]['service_name'];
+	}
+}
+if($free_override){
+	foreach($_RATES as $index=>$v){
+		$_RATES[$index]['total_price'] = 0;
 	}
 }
 
