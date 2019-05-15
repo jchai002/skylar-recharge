@@ -540,13 +540,19 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                 e.stopPropagation();
             });
             $('.sc-product-carousel').slick({
-                slidesToShow: 2.2,
+                slidesToShow: 3,
                 centerPadding: '100px',
                 focusOnSelect: true,
                 infinite: false,
                 arrows: false,
                 dots: true,
                 responsive: [
+                    {
+                        breakpoint: 1300,
+                        settings: {
+                            slidesToShow: 2.8,
+                        }
+                    },
                     {
                         breakpoint: 1000,
                         settings: {
