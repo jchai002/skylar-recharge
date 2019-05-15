@@ -210,7 +210,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<a href="#essentials">The Essentials</a>
 				</div>
 				<div class="sc-product-section" id="recommendations">
-					<div class="sc-section-title">Recommendations based on <strong>your profile</strong></div>
+					<div class="sc-section-title">Recommendations based on <strong>Your Profile</strong></div>
 					<div class="sc-product-carousel">
 						<?php foreach($recommended_products as $product){ ?>
 							{% assign recommended_handles = '<?=$product?>' | split: '|' %}
