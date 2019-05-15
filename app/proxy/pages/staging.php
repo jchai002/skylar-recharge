@@ -204,13 +204,13 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<div class="sc-section-title">Add items to your Next Skylar box</div>
 			<div class="sc-product-sections-container">
 				<div class="sc-section-menu">
-					<a href="#recommendations" class="active">Your Scent Profile Recommendations</a>
+					<a href="#recommendations" class="active">Profile</a>
 					<a href="#layering">Layering</a>
 					<a href="#best-sellers">Best Sellers</a>
 					<a href="#essentials">The Essentials</a>
 				</div>
 				<div class="sc-product-section" id="recommendations">
-					<div class="sc-section-title">Recommendations based on your profile</div>
+					<div class="sc-section-title">Recommendations based on <strong>your profile</strong></div>
 					<div class="sc-product-carousel">
 						<?php foreach($recommended_products as $product){ ?>
 							{% assign recommended_handles = '<?=$product?>' | split: '|' %}
@@ -219,7 +219,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					</div>
 				</div>
 				<div class="sc-product-section hidden" id="layering">
-					<div class="sc-section-title">Layering</div>
+					<div class="sc-section-title">Recommendations based on <strong>Layering</strong></div>
 					<div class="sc-product-carousel">
 						<?php foreach([
 										  'isle::Full Size|rollie:12235492327511:Rollie',
@@ -232,7 +232,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					</div>
 				</div>
 				<div class="sc-product-section hidden" id="best-sellers">
-					<div class="sc-section-title">Best Sellers</div>
+					<div class="sc-section-title">Recommendations based on <strong>Best Sellers</strong></div>
 					<div class="sc-product-carousel">
 						<?php foreach([
 										  'isle::Full Size|rollie:12235492327511:Rollie',
@@ -245,7 +245,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					</div>
 				</div>
 				<div class="sc-product-section hidden" id="essentials">
-					<div class="sc-section-title">The Essentials</div>
+					<div class="sc-section-title">Recommendations based on <strong>The Essentials</strong></div>
 					<div class="sc-product-carousel">
 						<?php foreach([
 										  'sample-palette',
