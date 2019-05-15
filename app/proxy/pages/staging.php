@@ -548,12 +548,6 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                 dots: true,
                 responsive: [
                     {
-                        breakpoint: 1250,
-                        settings: {
-                            slidesToShow: 2.8,
-                        }
-                    },
-                    {
                         breakpoint: 1000,
                         settings: {
                             slidesToShow: 3,
