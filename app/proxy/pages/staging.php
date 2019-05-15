@@ -540,7 +540,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                 e.stopPropagation();
             });
             $('.sc-product-carousel').slick({
-                slidesToShow: 3,
+                slidesToShow: 2.2,
                 centerPadding: '100px',
                 focusOnSelect: true,
                 infinite: false,
@@ -551,6 +551,12 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                         breakpoint: 1250,
                         settings: {
                             slidesToShow: 2.8,
+                        }
+                    },
+                    {
+                        breakpoint: 1000,
+                        settings: {
+                            slidesToShow: 3,
                         }
                     },
                     {
