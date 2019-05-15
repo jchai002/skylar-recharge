@@ -590,7 +590,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                     },
                 ],
             });
-			// $('.sc-product-section').slice(1).hide();
+			$('.sc-product-section').slice(1).hide();
         });
     });
 </script>
