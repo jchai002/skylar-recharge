@@ -554,9 +554,15 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                         }
                     },
                     {
+                        breakpoint: 1100,
+                        settings: {
+                            slidesToShow: 1.8,
+                        }
+                    },
+                    {
                         breakpoint: 1000,
                         settings: {
-                            slidesToShow: 3,
+                            slidesToShow: 2.8,
                         }
                     },
                     {
