@@ -382,7 +382,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<?php } ?>
 				</div>
 				<div class="sc-load-more" data-months="<?=$months?>">
-					<a href="#" class="action_button" onclick="ScentClub.load_schedule(<?=$months+3?>); return false;">Load More</a>
+					<a href="#" class="action_button" onclick="ScentClub.load_schedule(<?=$months+3?>); return false;">View More</a>
 				</div>
 			</div>
 		<?php } ?>
