@@ -203,7 +203,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<div class="sc-hr"></div>
 			<div class="sc-section-title">Add items to your Next Skylar box</div>
 			<div class="sc-product-sections-container">
-				<div class="sc-section-menu hidden">
+				<div class="sc-section-menu">
 					<a href="#recommendations" class="active">Your Scent Profile Recommendations</a>
 					<a href="#layering">Layering</a>
 					<a href="#best-sellers">Best Sellers</a>
