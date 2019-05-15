@@ -218,7 +218,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						<?php } ?>
 					</div>
 				</div>
-				<div class="sc-product-section hidden" id="layering">
+				<div class="sc-product-section" id="layering">
 					<div class="sc-section-title">Layering</div>
 					<div class="sc-product-carousel">
 						<?php foreach([
@@ -231,7 +231,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						<?php } ?>
 					</div>
 				</div>
-				<div class="sc-product-section hidden" id="best-sellers">
+				<div class="sc-product-section" id="best-sellers">
 					<div class="sc-section-title">Best Sellers</div>
 					<div class="sc-product-carousel">
 						<?php foreach([
@@ -244,7 +244,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						<?php } ?>
 					</div>
 				</div>
-				<div class="sc-product-section hidden" id="essentials">
+				<div class="sc-product-section" id="essentials">
 					<div class="sc-section-title">The Essentials</div>
 					<div class="sc-product-carousel">
 						<?php foreach([
@@ -590,6 +590,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                     },
                 ],
             });
+			$('.sc-product-section').not(':first-child').hide();
         });
     });
 </script>
