@@ -531,7 +531,8 @@ sc_conditional_billing($rc, $_REQUEST['c']);
             e.preventDefault();
             $('.sc-section-menu a').removeClass('active');
             $(this).addClass('active');
-            $('html,body').animate({scrollTop: $($(this).attr('href')).offset().top-140},'slow');
+            $('.sc-product-section').hide();
+            $($(this).attr('href')).show();
         });
         optional_scripts.onload('slick', function(){
             $('.sc-product-carousel select, .sc-product-carousel button, .sc-product-carousel label').click(function(e){
