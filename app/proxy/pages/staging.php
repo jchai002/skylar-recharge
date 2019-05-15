@@ -550,7 +550,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                     {
                         breakpoint: 1300,
                         settings: {
-                            slidesToShow: 2.8,
+                            slidesToShow: 2.2,
                         }
                     },
                     {
