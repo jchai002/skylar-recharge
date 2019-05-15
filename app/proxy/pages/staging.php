@@ -532,7 +532,8 @@ sc_conditional_billing($rc, $_REQUEST['c']);
             $('.sc-section-menu a').removeClass('active');
             $(this).addClass('active');
             $('.sc-product-section').hide();
-            $($(this).attr('href')).show();
+            $($(this).attr('href')).show()
+				.find('.sc-product-carousel').slick('setPosition');
         });
         optional_scripts.onload('slick', function(){
             $('.sc-product-carousel select, .sc-product-carousel button, .sc-product-carousel label').click(function(e){
@@ -590,7 +591,6 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                     },
                 ],
             });
-			$('.sc-product-section').slice(1).hide();
         });
     });
 </script>
