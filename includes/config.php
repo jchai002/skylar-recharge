@@ -522,6 +522,9 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_
 	}
 	return $order_id;
 }
+function insert_update_subscription(PDO $db, $recharge_subscription){
+	$stmt = $db->prepare("INSERT INTO rc_subscriptions () VALUES ()");
+}
 if(!function_exists('divide')){
 	function divide($numerator, $denominator){
 		if(empty($denominator)){

@@ -105,6 +105,7 @@ if($customer['state'] != 'active'){
 			CURLOPT_RETURNTRANSFER => true,
 		]);
 		$res = json_decode(curl_exec($ch));
+		log_event($db, 'EMAIL', 'account_activation', 'SENT', json_encode($res), json_encode($customer), 'order_created webhook');
 		echo json_encode([
 			'success' => true,
 			'email_sent' => true,
