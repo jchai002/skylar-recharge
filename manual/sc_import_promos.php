@@ -6,6 +6,7 @@ require_once(__DIR__.'/../includes/class.RechargeClient.php');
 $rc = new RechargeClient();
 $sc = new ShopifyPrivateClient();
 
+$promo_day = 19;
 
 $f = fopen(__DIR__.'/promos.csv', 'r');
 
@@ -81,7 +82,7 @@ while($row = fgetcsv($f)){
 	]);
 	print_r($res);
 
-	$date = date('d') > 22 ? date('Y-m-22', strtotime('next month')) : date('Y-m-22');
+	$date = date('d') > $promo_day ? date('Y-m-', strtotime('next month')).$promo_day : date('Y-m-').$promo_day;
 
 	$res = $rc->post('/addresses/'.$address['id'].'/subscriptions', [
 		'next_charge_scheduled_at' => $date,
@@ -92,7 +93,7 @@ while($row = fgetcsv($f)){
 		'order_interval_unit' => 'month',
 		'order_interval_frequency' => 1,
 		'charge_interval_frequency' => 11,
-		'order_day_of_month' => 22,
+		'order_day_of_month' => $promo_day,
 		'expire_after_specific_number_of_charges' => 1,
 	]);
 	if(empty($res['address'])){

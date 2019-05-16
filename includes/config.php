@@ -623,7 +623,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			$subscription['subscription_id'] = $subscription['id'];
 			$this_subscription = $subscription;
 			if(is_scent_club(get_product($db, $this_subscription['shopify_product_id']))){
-				$swap = sc_get_monthly_scent($db, $next_charge_time, $this_subscription['address_id'] == '29478544');
+				$swap = sc_get_monthly_scent($db, $next_charge_time, is_admin_address($this_subscription['address_id']));
 				$this_subscription['swap'] = $swap;
 				if(!empty($swap)){
 					$this_subscription['handle'] = $swap['handle'];
@@ -677,7 +677,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 						'total' => 0,
 					];
 				}
-				$swap = sc_get_monthly_scent($db, $end_of_next_month_time, $this_subscription['address_id'] == '29478544');
+				$swap = sc_get_monthly_scent($db, $end_of_next_month_time, is_admin_address($this_subscription['address_id']));
 				$this_subscription['swap'] = $swap;
 				if(!empty($swap)){
 					$this_subscription['handle'] = $swap['handle'];
@@ -1003,6 +1003,9 @@ function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time
 		}
 	}
 }
+function is_admin_address($address_id){
+	return in_array($address_id, [29478544, 29102064]);
+}
 function sc_get_monthly_scent(PDO $db, $time = null, $admin_preview = false){
 	if(empty($time)){
 		$time = time();
@@ -1028,7 +1031,7 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $ma
 	}
 	sc_delete_month_onetime($db, $rc, $address_id, $time);
 	// Look up monthly scent
-	$scent_info = sc_get_monthly_scent($db, $time, $address_id == '29478544');
+	$scent_info = sc_get_monthly_scent($db, $time, is_admin_address($address_id));
 	if(empty($scent_info)){
 		sc_calculate_next_charge_date($db, $rc, $address_id);
 //		echo "No monthly scent";
