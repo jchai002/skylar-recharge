@@ -96,7 +96,7 @@ while($row = fgetcsv($f)){
 		'order_day_of_month' => $promo_day,
 		'expire_after_specific_number_of_charges' => 1,
 	]);
-	if(empty($res['address'])){
+	if(empty($res['subscription'])){
 		echo "CREATE subscription ERROR:";
 		print_r($row);
 		print_r($res);
