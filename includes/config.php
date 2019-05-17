@@ -1004,7 +1004,11 @@ function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time
 	}
 }
 function is_admin_address($address_id){
-	return in_array($address_id, [29478544, 29102064, 29806558]);
+	return in_array($address_id, [
+		29478544, // Julie
+		29102064, // Jim
+		//29806558, // Tim
+	]);
 }
 function sc_get_monthly_scent(PDO $db, $time = null, $admin_preview = false){
 	if(empty($time)){
