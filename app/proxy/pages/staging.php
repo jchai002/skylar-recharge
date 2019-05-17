@@ -105,7 +105,11 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 							 data-address-id="<?=$item['address_id']?>"
 							 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
 							 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
-							 data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
+							 <?php if(is_scent_club($products_by_id[$item['shopify_product_id']])){ ?>
+								 data-master-image="{{ 'sc-logo.svg' | file_url }}"
+							 <?php } else { ?>
+								 data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
+							 <?php } ?>
 							 data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
 							 data-subscription-id="<?=$item['subscription_id']?>"
 							<?= !empty($item['charge']) ? 'data-charge-id="'.$item['charge']['id'].'"' : '' ?>
