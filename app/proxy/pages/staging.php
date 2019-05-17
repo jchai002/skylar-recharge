@@ -89,10 +89,15 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-portal-nextbox">
 					<?php foreach($upcoming_box['items'] as $item){
 						if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){
-							$monthly_scent = sc_get_monthly_scent($db, strtotime($shipment_date));
+							$monthly_scent = sc_get_monthly_scent($db, strtotime($shipment_date), is_admin_address($item['address_id']));
 							$box_swap_image = 'data-swap-image="{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+							$box_swap_text = 'data-swap-text="'.$monthly_scent['variant_title'].'"';
+						} else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){
+							$box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+							$box_swap_text = 'data-swap-text="'.$item['variant_title'].'"';
 						} else {
 							$box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+							$box_swap_text = 'data-swap-text="Monthly Scent"';
 						}
 						?>
 						{% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
@@ -104,21 +109,23 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						{% endif %}
 						{% endfor %}
 						<div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
-							 data-address-id="<?=$item['address_id']?>"
-							 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
-							 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
-							 <?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
-								 data-master-image="{{ 'sc-logo.svg' | file_url }}"
-							 <?php } else { ?>
-								 data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
-							 <?php } ?>
+							data-address-id="<?=$item['address_id']?>"
+							data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
+							data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
+							<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+								data-master-image="{{ 'sc-logo.svg' | file_url }}"
+							<?php } else { ?>
+								data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
+							<?php } ?>
 							<?=$box_swap_image?>
-							 data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
-							 data-subscription-id="<?=$item['subscription_id']?>"
+							<?=$box_swap_text?>
+							data-swap-text="<?=is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? '' : '' ?>"
+							data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
+							data-subscription-id="<?=$item['subscription_id']?>"
 							<?= !empty($item['charge']) ? 'data-charge-id="'.$item['charge']['id'].'"' : '' ?>
-							 data-type="<?=$item['type']?>"
+							data-type="<?=$item['type']?>"
 							<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
-							 data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
+							data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
 						>
 
 							<?php if(!empty($item['skipped']) && !empty($item['charge'])){ ?>
