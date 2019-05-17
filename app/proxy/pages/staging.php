@@ -52,16 +52,12 @@ global $db;
 $months = empty($more) ? 3 : $more;
 $upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges, strtotime(date('Y-m-t',strtotime("+$months months"))));
 $products_by_id = [];
-$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 $upcoming_box = false;
-foreach($upcoming_shipments as $upcoming_shipment){
+foreach($upcoming_shipments as $shipment_date => $upcoming_shipment){
 	foreach($upcoming_shipment['items'] as $item){
-		if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
-			$stmt->execute([$item['shopify_product_id']]);
-			$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
-			if(empty($upcoming_box) && is_scent_club_any($products_by_id[$item['shopify_product_id']])){
-				$upcoming_box = $upcoming_shipment;
-			}
+		if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
+			$upcoming_box = $upcoming_shipment;
+			break 2;
 		}
 	}
 }
@@ -92,7 +88,14 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-portal-title">Your Next Skylar Box</div>
 				<div class="sc-portal-subtitle">The next box that you'll be charged for</div>
 				<div class="sc-portal-nextbox">
-					<?php foreach($upcoming_box['items'] as $item){ ?>
+					<?php foreach($upcoming_box['items'] as $item){
+						if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){
+							$monthly_scent = sc_get_monthly_scent($db, strtotime($shipment_date));
+							$box_swap_image = 'data-swap-image="{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+						} else {
+							$box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+						}
+						?>
 						{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
 						{% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
 						{% assign box_variant = box_product.variants.first %}
@@ -306,7 +309,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<div class="sc-portal-title">Your Upcoming Skylar Box<?= count($upcoming_shipments) > 1 ? 'es' : '' ?></div>
 				<div class="sc-portal-box-list">
 					<?php $index = -1;
-					foreach($upcoming_shipments as $upcoming_shipment){
+					foreach($upcoming_shipments as $shipment_date => $upcoming_shipment){
 						$index++;
 						?>
 						<div class="sc-upcoming-shipment">
@@ -318,7 +321,14 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 									<span class="sc-box-date"><?=date('F j', $upcoming_shipment['ship_date_time']) ?></span>
 								<?php } ?>
 							</div>
-							<?php foreach($upcoming_shipment['items'] as $item){ ?>
+							<?php foreach($upcoming_shipment['items'] as $item){
+								if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){
+									$monthly_scent = sc_get_monthly_scent($db, strtotime($shipment_date));
+									$box_swap_image = 'data-swap-image="{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+								} else {
+									$box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+								}
+								?>
 								{% assign box_product = all_products['<?=$products_by_id[$item['shopify_product_id']]['handle']?>'] %}
 								{% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
 								{% assign box_variant = box_product.variants.first %}
@@ -332,6 +342,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 									 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
 									 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
 									 data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
+									<?=$box_swap_image?>
 									 data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
 									 data-subscription-id="<?=$item['subscription_id']?>"
 									<?= !empty($item['charge']) ? 'data-charge-id="'.$item['charge']['id'].'"' : '' ?>
