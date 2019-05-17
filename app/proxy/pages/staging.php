@@ -239,6 +239,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<?php } ?>
 				</div>
 			</div>
+			<div class="sc-spacer"></div>
 			<div class="sc-section-title">Add items to your Next Skylar box</div>
 			<div class="sc-product-sections-container">
 				<div class="sc-section-menu">
