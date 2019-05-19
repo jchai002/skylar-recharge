@@ -36,7 +36,14 @@ if(!$is_test){
 }
 
 $total_weight = array_sum(array_column($rate['items'],'grams'))/28.35; // Grams to ounces
-$total_price = array_sum(array_column($rate['items'], 'price'))/100;
+$total_price = 0;
+$total_weight = 0;
+foreach($rate['items'] as $item){
+	$total_price += $item['price']*$item['quantity'];
+	$total_price += $item['grams']*$item['quantity'];
+}
+$total_weight /= 28.35;
+$total_price /= 100;
 
 $stmt = $db->query("SELECT sku FROM variants WHERE shopify_id IN(".implode(',',array_column($ids_by_scent, 'variant')).")");
 $fullsize_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
