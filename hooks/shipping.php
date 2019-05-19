@@ -45,7 +45,6 @@ $has_fullsize = !empty(array_intersect(array_column($rate['items'], 'sku'), $ful
 $stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
 $sc_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $has_sc = !empty(array_intersect(array_column($rate['items'], 'sku'), $sc_skus));
-log_event($db, 'SHIPPING_RATES', '', 'REQUESTED', json_encode($rate), json_encode(['has_fullsize'=>$has_fullsize, 'has_sc' => $has_sc, 'headers' => $headers]));
 
 switch($rate['destination']['country']){
 	case 'US':
@@ -201,6 +200,7 @@ if($free_override){
 		$_RATES[$index]['total_price'] = 0;
 	}
 }
+log_event($db, 'SHIPPING_RATES', json_encode($_RATES), 'REQUESTED', json_encode($rate), json_encode(['has_fullsize'=>$has_fullsize, 'has_sc' => $has_sc, 'total_price' => $total_price, 'total_weight' => $total_weight, 'headers' => $headers]));
 
 echo json_encode(["rates"=>$_RATES]);
 
