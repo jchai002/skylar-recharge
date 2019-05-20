@@ -34,6 +34,8 @@ while($row = fgetcsv($f)){
 			'billing_company' => $row['company'],
 			'billing_province' => $row['state'],
 			'billing_country' => $row['country'],
+			'stripe_customer_token' => 'cus_EvyLMQQsXVkJTl',
+			'processor_type' => 'stripe',
 		]);
 		if(empty($res['customer'])){
 			echo "CREATE CUSTOMER ERROR:";
@@ -74,7 +76,7 @@ while($row = fgetcsv($f)){
 	$res = $rc->put('/addresses/'.$address['id'], [
 		'shipping_lines_override' => [
 			[
-				"code" => "Standard shipping",
+				"code" => "Standard Weight-based",
 				"price" => "0.00",
 				"title" => "Standard shipping"
 			]
@@ -83,6 +85,7 @@ while($row = fgetcsv($f)){
 	print_r($res);
 
 	$date = date('d') > $promo_day ? date('Y-m-', strtotime('next month')).$promo_day : date('Y-m-').$promo_day;
+	$date = date('Y-m-d');
 
 	$res = $rc->post('/addresses/'.$address['id'].'/subscriptions', [
 		'next_charge_scheduled_at' => $date,

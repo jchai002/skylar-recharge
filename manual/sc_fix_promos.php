@@ -68,10 +68,7 @@ while($row = fgetcsv($f)){
 	}
 
 	if(empty($customer['stripe_customer_token'])){
-		$res = $rc->put('/customers/'.$customer['id'], [
-			'stripe_customer_token' => 'cus_EvyLMQQsXVkJTl',
-			'processor_type' => 'stripe',
-		]);
+		$res = $rc->put('/customers/'.$customer['id'], ['stripe_customer_token' => 'cus_EvyLMQQsXVkJTl','processor_type' => 'stripe',]);
 		print_r($res);
 	}
 	$res = $rc->post('/addresses/'.$address_id.'/subscriptions', [
