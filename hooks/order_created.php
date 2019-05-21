@@ -170,7 +170,7 @@ if($rc_order['type'] == "RECURRING"){
 //var_dump($update_order);
 
 if($scent_club_hold){
-	$tags[] = 'HOLD: Scent Club Blackout';
+	$order_tags[] = 'HOLD: Scent Club Blackout';
 	$update_order = true;
 }
 
