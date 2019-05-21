@@ -35,12 +35,19 @@ if(!$is_test){
 //	die();
 }
 
+$stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
+$sc_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$has_sc = !empty(array_intersect(array_column($rate['items'], 'sku'), $sc_skus));
+
 $total_weight = array_sum(array_column($rate['items'],'grams'))/28.35; // Grams to ounces
 $total_price = 0;
 $total_weight = 0;
 foreach($rate['items'] as $item){
 	$total_price += $item['price']*$item['quantity'];
 	$total_price += $item['grams']*$item['quantity'];
+	if(is_scent_club_any(get_product($db, $item['product_id']))){
+		$has_sc = true;
+	}
 }
 $total_weight /= 28.35;
 $total_price /= 100;
@@ -49,9 +56,6 @@ $stmt = $db->query("SELECT sku FROM variants WHERE shopify_id IN(".implode(',',a
 $fullsize_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $has_fullsize = !empty(array_intersect(array_column($rate['items'], 'sku'), $fullsize_skus));
 
-$stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
-$sc_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
-$has_sc = !empty(array_intersect(array_column($rate['items'], 'sku'), $sc_skus));
 
 switch($rate['destination']['country']){
 	case 'US':
