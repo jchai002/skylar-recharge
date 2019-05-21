@@ -12,7 +12,7 @@ class RechargeClient {
 
 	function call($url, $data = [], $method='GET'){
     	if(strpos($url, 'webhook') !== false){
-    		$this->tokenIndex = 0;
+    		$this->tokenIndex = count($this->authTokens)-1;
 		}
         $method = strtoupper($method);
         $ch = curl_init();
