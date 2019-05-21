@@ -578,6 +578,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 
 	$stmt_get_swap = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=?");
 
+	/*
 	foreach($onetimes as $onetime){
 		$order_time = strtotime($onetime['next_charge_scheduled_at']);
 		if(empty($order_time)){
@@ -602,6 +603,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		$onetime['type'] = 'onetime';
 		$schedule[$date]['items'][] = $onetime;
 	}
+	*/
 	foreach($subscriptions as $subscription){
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
 		if(empty($next_charge_time)){
