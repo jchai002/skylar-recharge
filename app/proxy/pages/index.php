@@ -131,7 +131,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 							<?php if(!empty($item['skipped']) && !empty($item['charge'])){ ?>
 								<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 							<?php } else if(!empty($item['skipped'])){ ?>
-								<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+								<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 							<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
 								<a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
 							<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
@@ -369,7 +369,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 									<?php if(!empty($item['skipped']) && !empty($item['charge'])){ ?>
 										<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 									<?php } else if(!empty($item['skipped'])){ ?>
-										<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+										<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 									<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
 										<a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
 									<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
