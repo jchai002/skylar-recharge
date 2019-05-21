@@ -83,7 +83,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				</div>
 			</div>
 		<?php } else { ?>
-			<div class="sc-portal-innercontainer">
+			<div class="sc-portal-innercontainer sc-upcoming-shipment">
 				<div class="sc-portal-title">Your Next Skylar Box</div>
 				<div class="sc-portal-subtitle">The next box that you'll be charged for</div>
 				<div class="sc-box-info">
