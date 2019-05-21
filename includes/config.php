@@ -604,6 +604,77 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		$schedule[$date]['items'][] = $onetime;
 	}
 	*/
+	foreach($orders as $order){
+		$order_time = strtotime($order['scheduled_at']);
+		if(empty($order_time)){
+			continue;
+		}
+		if($order_time > $max_time){
+			continue;
+		}
+		$date = date('Y-m-d', $order_time);
+		if(empty($schedule[$date])){
+			$schedule[$date] = [
+				'items' => [],
+				'ship_date_time' => strtotime($date),
+				'discounts' => [], // TODO
+				'total' => 0,
+			];
+		}
+		$order['next_charge_scheduled_at'] = $order['scheduled_at'];
+		foreach($order['line_items'] as $item){
+			$item['id'] = $item['subscription_id'];
+			$item['type'] = 'order';
+			$item['order'] = $order;
+			$schedule[$date]['items'][] = $item;
+		}
+	}
+	foreach($charges as $charge){
+		if($charge['status'] != 'QUEUED' && $charge['status'] != 'SKIPPED'){
+			continue;
+		}
+		$order_time = strtotime($charge['scheduled_at']);
+		if(empty($order_time)){
+			continue;
+		}
+		if($order_time > $max_time){
+			continue;
+		}
+		if($charge['status'] == 'SKIPPED' && date('Y', $order_time) == 2019 && date('m', $order_time) <= 4){
+			continue;
+		}
+		$charge['next_charge_scheduled_at'] = $charge['scheduled_at'];
+		$date = date('Y-m-d', $order_time);
+		if(empty($schedule[$date])){
+			$schedule[$date] = [
+				'items' => [],
+				'ship_date_time' => strtotime($date),
+				'discounts' => [],
+				'total' => 0,
+			];
+		}
+		$schedule[$date]['discounts'] = $charge['discount_codes'];
+		foreach($charge['line_items'] as $item){
+			foreach($schedule[$date]['items'] as $index=>$scheduled_item){
+				if(
+					(!empty($scheduled_item['subscription_id']) && $scheduled_item['subscription_id'] == $item['subscription_id'])
+					|| ($scheduled_item['id'] == $item['subscription_id'])
+				){
+					$schedule[$date]['items'][$index]['skipped'] = $charge['status'] == 'SKIPPED';
+					$schedule[$date]['items'][$index]['charge'] = $charge;
+					$schedule[$date]['charge'] = $charge;
+					continue 2;
+				}
+			}
+			$item['id'] = $item['subscription_id'];
+			$item['type'] = 'charge';
+			$item['charge'] = $charge;
+			$item['skipped'] = $charge['status'] == 'SKIPPED';
+			$item['address_id'] = $charge['address_id'];
+			$schedule[$date]['charge'] = $charge;
+			$schedule[$date]['items'][] = $item;
+		}
+	}
 	foreach($subscriptions as $subscription){
 		$next_charge_time = strtotime($subscription['next_charge_scheduled_at']);
 		if(empty($next_charge_time)){
@@ -700,77 +771,6 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 				$schedule[$date]['items'][] = $this_subscription;
 				$end_of_next_month_time = strtotime(date('Y-m-t', strtotime('+15 day', $end_of_next_month_time)));
 			}
-		}
-	}
-	foreach($orders as $order){
-		$order_time = strtotime($order['scheduled_at']);
-		if(empty($order_time)){
-			continue;
-		}
-		if($order_time > $max_time){
-			continue;
-		}
-		$date = date('Y-m-d', $order_time);
-		if(empty($schedule[$date])){
-			$schedule[$date] = [
-				'items' => [],
-				'ship_date_time' => strtotime($date),
-				'discounts' => [], // TODO
-				'total' => 0,
-			];
-		}
-		$order['next_charge_scheduled_at'] = $order['scheduled_at'];
-		foreach($order['line_items'] as $item){
-			$item['id'] = $item['subscription_id'];
-			$item['type'] = 'order';
-			$item['order'] = $order;
-			$schedule[$date]['items'][] = $item;
-		}
-	}
-	foreach($charges as $charge){
-		if($charge['status'] != 'QUEUED' && $charge['status'] != 'SKIPPED'){
-			continue;
-		}
-		$order_time = strtotime($charge['scheduled_at']);
-		if(empty($order_time)){
-			continue;
-		}
-		if($order_time > $max_time){
-			continue;
-		}
-		if($charge['status'] == 'SKIPPED' && date('Y', $order_time) == 2019 && date('m', $order_time) <= 4){
-			continue;
-		}
-		$charge['next_charge_scheduled_at'] = $charge['scheduled_at'];
-		$date = date('Y-m-d', $order_time);
-		if(empty($schedule[$date])){
-			$schedule[$date] = [
-				'items' => [],
-				'ship_date_time' => strtotime($date),
-				'discounts' => [],
-				'total' => 0,
-			];
-		}
-		$schedule[$date]['discounts'] = $charge['discount_codes'];
-		foreach($charge['line_items'] as $item){
-			foreach($schedule[$date]['items'] as $index=>$scheduled_item){
-				if(
-					(!empty($scheduled_item['subscription_id']) && $scheduled_item['subscription_id'] == $item['subscription_id'])
-					|| ($scheduled_item['id'] == $item['subscription_id'])
-				){
-					$schedule[$date]['items'][$index]['skipped'] = $charge['status'] == 'SKIPPED';
-					$schedule[$date]['items'][$index]['charge'] = $charge;
-					$schedule[$date]['charge'] = $charge;
-					continue 2;
-				}
-			}
-			$item['id'] = $item['subscription_id'];
-			$item['type'] = 'charge';
-			$item['charge'] = $charge;
-			$item['skipped'] = $charge['status'] == 'SKIPPED';
-			$item['address_id'] = $charge['address_id'];
-			$schedule[$date]['charge'] = $charge;
-			$schedule[$date]['items'][] = $item;
 		}
 	}
 	ksort($schedule);
