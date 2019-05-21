@@ -193,11 +193,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 										<?php } ?>
 									</div>
 								</div>
-								<div>
-									<div class="sc-item-detail-label">Next Ship Date</div>
-									<div class="sc-item-detail-value"><?=date('F j, Y', strtotime($item['next_charge_scheduled_at']))?></div>
-								</div>
-								<?php /* if(!empty($item['next_charge_scheduled_at'])){ ?>
+								<?php if(!empty($item['next_charge_scheduled_at'])){ ?>
 										<div>
 											<div class="sc-item-detail-label">Next Charge</div>
 											<div class="sc-item-detail-value"><?=date('F j, Y', strtotime($item['next_charge_scheduled_at']))?></div>
@@ -209,7 +205,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 										</div>
 									<?php } else { ?>
 
-									<?php } */?>
+									<?php } ?>
 							</div>
 						</div>
 					<?php } ?>
