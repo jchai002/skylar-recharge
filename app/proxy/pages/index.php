@@ -45,7 +45,7 @@ if(!empty($rc_customer_id)){
 		}
 	}
 	echo "<!-- ";
-	print_r($res);
+//	print_r($res);
 	echo " -->";
 }
 global $db;
@@ -65,7 +65,7 @@ $recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <!--
-<?php print_r($upcoming_box); ?>
+<?php print_r($upcoming_shipments); ?>
 -->
 {% assign portal_page = 'my_box' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
