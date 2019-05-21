@@ -244,6 +244,12 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 								</div>
 							<?php }
 						} ?>
+					<?php if(!empty($upcoming_box['charge']) && !empty($upcoming_box['total_tax'])){ ?>
+						<div class="sc-box-shipping">
+							<div class="sc-shipping-title">Tax</div>
+							<div class="sc-shipping-value">$<?=price_without_trailing_zeroes($upcoming_box['total_tax'])?></div>
+						</div>
+					<?php } ?>
 						<div class="sc-box-total">
 							Grand Total: $<?= price_without_trailing_zeroes($upcoming_box['charge']['total_price']) ?>
 						</div>
