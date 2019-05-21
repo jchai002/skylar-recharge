@@ -88,7 +88,7 @@ foreach($order['line_items'] as $line_item){
 	}
 }
 print_r($customer);
-if($customer['state'] != 'active'){
+if($customer['state'] != 'enabled'){
 	$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
 	if(empty($res)){
 		echo json_encode([
