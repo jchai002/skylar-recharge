@@ -325,6 +325,9 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<?php $index = -1;
 					foreach($upcoming_shipments as $shipment_date => $upcoming_shipment){
 						$index++;
+						if($upcoming_shipment == $upcoming_box){
+							continue;
+						}
 						?>
 						<div class="sc-upcoming-shipment">
 							<div class="sc-box-info">
