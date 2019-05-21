@@ -49,7 +49,7 @@ if(!empty($rc_customer_id)){
 	echo " -->";
 }
 global $db;
-$months = empty($more) ? 3 : $more;
+$months = empty($more) ? 4 : $more;
 $upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges, strtotime(date('Y-m-t',strtotime("+$months months"))));
 $upcoming_box = false;
 foreach($upcoming_shipments as $shipment_date => $upcoming_shipment){
