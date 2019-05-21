@@ -353,7 +353,7 @@ function calculate_price_lines($subscription_group){
 	// Multi Bottle Discount
 	$fullsize_count = 0;
 	foreach($subscription_group['items'] as $item){
-		if(in_array($item['variant_id'], $scent_variant_ids)){
+		if(in_array($item['variant_id'], $scent_variant_ids) && $item['price'] == 78){
 			$fullsize_count += $item['quantity'];
 		}
 	}
