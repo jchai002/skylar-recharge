@@ -706,7 +706,16 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 					$this_subscription['variant_title'] = $swap['variant_title'];
 				}
 			}
-			$schedule[$date]['items'][] = $this_subscription;
+			$has_this_sub = false;
+			foreach($schedule[$date]['items'] as $item){
+				if(!empty($item['subscription_id']) && $item['subscription_id'] == $subscription['id']){
+					$has_this_sub = true;
+					break;
+				}
+			}
+			if(!$has_this_sub){
+				$schedule[$date]['items'][] = $this_subscription;
+			}
 			$next_charge_time = strtotime($date.' +'.$subscription['order_interval_frequency'].' '.$subscription['order_interval_unit']);
 			if($subscription['order_interval_unit'] == 'month' && !empty($subscription['order_day_of_month'])){
 				$next_charge_time = strtotime(date('Y-m-'.$subscription['order_day_of_month'], $next_charge_time));
