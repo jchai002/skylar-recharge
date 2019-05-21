@@ -87,7 +87,7 @@ foreach($order['line_items'] as $line_item){
 		}
 	}
 }
-print_r($customer);
+echo $scent_club_hold ? 'Scent Club Hold'.PHP_EOL : '';
 if($customer['state'] != 'enabled'){
 	try {
 		$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
@@ -180,7 +180,7 @@ if($update_order){
 		'id' => $order['id'],
 		'tags' => implode(',', $order_tags),
 	]]);
-//	var_dump($res);
+	var_dump($res);
 }
 
 // Get subs we need to create for this order
