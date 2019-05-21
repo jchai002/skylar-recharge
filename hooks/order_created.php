@@ -89,38 +89,42 @@ foreach($order['line_items'] as $line_item){
 }
 print_r($customer);
 if($customer['state'] != 'enabled'){
-	$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
-	if(empty($res)){
-		echo json_encode([
-			'success' => true,
-			'email_sent' => false,
-			'res' => $res,
-		]);
-	} else {
-		$url = $res;
-		$data = base64_encode(json_encode([
-			'token' => "KvQM7Q",
-			'event' => 'Sent Transactional Email',
-			'customer_properties' => [
-				'$email' => $customer['email'],
-			],
-			'properties' => [
-				'email_type' => $is_scent_club ? 'request_account_sc' : 'request_account',
-				'first_name' => $customer['first_name'],
-				'account_activation_url' => $url,
-			]
-		]));
-		$ch = curl_init("https://a.klaviyo.com/api/track?data=$data");
-		curl_setopt_array($ch, [
-			CURLOPT_RETURNTRANSFER => true,
-		]);
-		$res = json_decode(curl_exec($ch));
-		log_event($db, 'EMAIL', 'account_activation', 'SENT', json_encode($res), json_encode($customer), 'order_created webhook');
-		echo json_encode([
-			'success' => true,
-			'email_sent' => true,
-			'res' => $res,
-		]);
+	try {
+		$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
+		if(empty($res)){
+			echo json_encode([
+				'success' => true,
+				'email_sent' => false,
+				'res' => $res,
+			]);
+		} else {
+			$url = $res;
+			$data = base64_encode(json_encode([
+				'token' => "KvQM7Q",
+				'event' => 'Sent Transactional Email',
+				'customer_properties' => [
+					'$email' => $customer['email'],
+				],
+				'properties' => [
+					'email_type' => $is_scent_club ? 'request_account_sc' : 'request_account',
+					'first_name' => $customer['first_name'],
+					'account_activation_url' => $url,
+				]
+			]));
+			$ch = curl_init("https://a.klaviyo.com/api/track?data=$data");
+			curl_setopt_array($ch, [
+				CURLOPT_RETURNTRANSFER => true,
+			]);
+			$res = json_decode(curl_exec($ch));
+			log_event($db, 'EMAIL', 'account_activation', 'SENT', json_encode($res), json_encode($customer), 'order_created webhook');
+			echo json_encode([
+				'success' => true,
+				'email_sent' => true,
+				'res' => $res,
+			]);
+		}
+	} catch(ShopifyApiException $e){
+		log_event($db, 'EXCEPTION', 'SHOPIFY_API', json_encode($e), '', '', 'order_created webhook');
 	}
 }
 
