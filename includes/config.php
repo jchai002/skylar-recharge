@@ -1198,7 +1198,7 @@ function sc_get_profile_products($profile_data){
 }
 
 function price_without_trailing_zeroes($price = 0){
-	if(!is_float($price)){
+	if(floatval($price) == intval($price)){
 		return number_format($price);
 	}
 	return number_format($price, 2);
