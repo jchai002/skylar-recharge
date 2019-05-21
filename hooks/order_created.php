@@ -71,14 +71,23 @@ $res = $sc->get('/admin/customers/search.json', [
 if(!empty($res)){
 	$customer = $res[0];
 }
-if($customer['state'] != 'active'){
-	$is_scent_club = false;
-	foreach($order['line_items'] as $line_item){
-		if(is_scent_club(get_product($db, $line_item['product_id']))){
-			$is_scent_club = true;
-			break;
+$is_scent_club = false;
+$scent_club_hold = false;
+$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sku=?");
+foreach($order['line_items'] as $line_item){
+	if(is_scent_club(get_product($db, $line_item['product_id']))){
+		$is_scent_club = true;
+		$stmt->execute([$line_item['sku']]);
+		if($stmt->rowCount() < 1){
+			continue;
+		}
+		$sc_product = $stmt->fetch();
+		if(time() < strtotime($sc_product['sc_date'])){
+			$scent_club_hold = true;
 		}
 	}
+}
+if($customer['state'] != 'active'){
 	$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
 	if(empty($res)){
 		echo json_encode([
@@ -154,6 +163,11 @@ if($rc_order['type'] == "RECURRING"){
 	echo $rc_order['type'].PHP_EOL;
 }
 //var_dump($update_order);
+
+if($scent_club_hold){
+	$tags[] = 'HOLD: Scent Club Blackout';
+}
+
 if($update_order){
 	$order_tags = array_unique($order_tags);
 	$res = $sc->call("PUT", "/admin/orders/".$order['id'].'.json', ['order' => [

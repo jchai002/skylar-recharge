@@ -815,8 +815,11 @@ function is_scent_club_month($product){
 function is_scent_club_swap($product){
 	return $product['type'] == 'Scent Club Swap';
 }
+function is_scent_club_promo($product){
+	return $product['type'] == 'Scent Club Promo';
+}
 function is_scent_club_any($product){
-	return is_scent_club($product) || is_scent_club_month($product) || is_scent_club_swap($product);
+	return is_scent_club($product) || is_scent_club_month($product) || is_scent_club_swap($product) || is_scent_club_promo($product);
 }
 function sc_conditional_billing(RechargeClient $rc, $customer_id, $customer = false){
 	if(empty($customer)){
