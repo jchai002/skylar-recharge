@@ -86,6 +86,10 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<div class="sc-portal-innercontainer">
 				<div class="sc-portal-title">Your Next Skylar Box</div>
 				<div class="sc-portal-subtitle">The next box that you'll be charged for</div>
+				<div class="sc-box-info">
+					<span class="sc-box-shiplabel">Shipping Date</span>
+					<span class="sc-box-date sc-edit-date"><?=date('F j', $upcoming_box['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
+				</div>
 				<div class="sc-portal-nextbox">
 					<?php foreach($upcoming_box['items'] as $item){
 						if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){
@@ -194,19 +198,21 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 										<?php } ?>
 									</div>
 								</div>
+								<?php /*
 								<?php if(!empty($item['next_charge_scheduled_at'])){ ?>
-										<div>
-											<div class="sc-item-detail-label">Next Charge</div>
-											<div class="sc-item-detail-value"><?=date('F j, Y', strtotime($item['next_charge_scheduled_at']))?></div>
-										</div>
-									<?php } else if(!empty($item['skipped'])){ ?>
-										<div>
-											<div class="sc-item-detail-label">Next Charge</div>
-											<div class="sc-item-detail-value">Skipped</div>
-										</div>
-									<?php } else { ?>
+									<div>
+										<div class="sc-item-detail-label">Next Charge</div>
+										<div class="sc-item-detail-value"><?=date('F j, Y', strtotime($item['next_charge_scheduled_at']))?></div>
+									</div>
+								<?php } else if(!empty($item['skipped'])){ ?>
+									<div>
+										<div class="sc-item-detail-label">Next Charge</div>
+										<div class="sc-item-detail-value">Skipped</div>
+									</div>
+								<?php } else { ?>
 
-									<?php } ?>
+								<?php } ?>
+ 								*/ ?>
 							</div>
 						</div>
 					<?php } ?>
