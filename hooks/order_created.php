@@ -166,6 +166,7 @@ if($rc_order['type'] == "RECURRING"){
 
 if($scent_club_hold){
 	$tags[] = 'HOLD: Scent Club Blackout';
+	$update_order = true;
 }
 
 if($update_order){
