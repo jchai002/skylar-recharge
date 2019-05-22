@@ -53,7 +53,7 @@ if(empty($main_sub)){
 				$main_sub = $res['subscription'];
 			}
 			sleep(5);
-			sc_calculate_next_charge_date($db, $rc, $charge['address_id']);
+			echo "Next Charge Date: ".sc_calculate_next_charge_date($db, $rc, $charge['address_id']).PHP_EOL;
 
 
 			$profile_data = [];
