@@ -15,7 +15,7 @@ if(!empty($_REQUEST['id'])){
 		$res = json_decode($data, true);
 	}
 }
-var_dump($res);
+//var_dump($res);
 if(empty($res['charge'])){
 	exit;
 }
@@ -28,13 +28,13 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 	'status' => 'ACTIVE',
 	'customer_id' => $charge['customer_id'],
 ]);
-var_dump($main_sub);
+//var_dump($main_sub);
 $day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
 if(empty($main_sub)){
 	foreach($charge['line_items'] as $line_item){
 		$product = get_product($db, $line_item['shopify_product_id']);
 		$next_charge_date = date('Y-m', strtotime('+1 month')).'-'.$day_of_month.' 00:00:00';
-		var_dump($product);
+//		var_dump($product);
 		if(is_scent_club($product)){
 			$res = $rc->post('/subscriptions', [
 				'address_id' => $charge['address_id'],
@@ -48,7 +48,7 @@ if(empty($main_sub)){
 				'charge_interval_frequency' => '1',
 				'order_day_of_month' => '1',
 			]);
-			var_dump($res);
+//			var_dump($res);
 			if(!empty($res['subscription'])){
 				$main_sub = $res['subscription'];
 			}
