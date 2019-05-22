@@ -21,7 +21,7 @@ if($charge_day_of_week == 6){
 }
 $end_date = date('Y-m-d', strtotime('+1 day', strtotime($charge_date)));
 
-echo "$start_time to $end_date".PHP_EOL;
+echo "$start_date to $charge_date".PHP_EOL;
 
 $charges = [];
 
@@ -31,7 +31,7 @@ do {
 	// Load upcoming queued charges for may
 	$res = $rc->get('/charges', [
 		'date_min' => $start_date,
-		'date_max' => $end_date,
+		'date_max' => $charge_date,
 		'status' => 'QUEUED',
 		'limit' => 250,
 		'page' => $page,
@@ -53,7 +53,7 @@ do {
 $start_time = microtime(true);
 echo "Starting updates".PHP_EOL;
 foreach($charges as $index=>$charge){
-	echo "Moving charge ".$charge['id']." ";
+	echo "Moving charge ".$charge['id']." address ".$charge['address_id']." ";
 	$res = $rc->post('/charges/'.$charge['id'].'/change_next_charge_date', [
 		'next_charge_date' => $charge_date
 	]);
