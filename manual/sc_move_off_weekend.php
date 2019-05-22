@@ -21,6 +21,8 @@ if($charge_day_of_week == 6){
 }
 $end_date = date('Y-m-d', strtotime('+1 day', strtotime($charge_date)));
 
+echo "$start_time to $end_date".PHP_EOL;
+
 $charges = [];
 
 $start_time = microtime(true);
