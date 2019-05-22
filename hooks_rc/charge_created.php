@@ -21,8 +21,6 @@ if(empty($res['charge'])){
 }
 $charge = $res['charge'];
 
-
-
 // Check if customer already has a subscription
 $main_sub = sc_get_main_subscription($db, $rc, [
 	'status' => 'ACTIVE',
