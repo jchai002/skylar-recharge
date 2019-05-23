@@ -45,11 +45,11 @@ if(!empty($rc_customer_id)){
 		}
 	}
 	echo "<!-- ";
-	print_r($res);
+//	print_r($res);
 	echo " -->";
 }
 global $db;
-$months = empty($more) ? 3 : $more;
+$months = empty($more) ? 4 : $more;
 $upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges, strtotime(date('Y-m-t',strtotime("+$months months"))));
 $upcoming_box = false;
 foreach($upcoming_shipments as $shipment_date => $upcoming_shipment){
@@ -65,7 +65,7 @@ $recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <!--
-<?php print_r($upcoming_box); ?>
+<?php print_r($upcoming_shipments); ?>
 -->
 {% assign portal_page = 'my_box' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
@@ -83,9 +83,13 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				</div>
 			</div>
 		<?php } else { ?>
-			<div class="sc-portal-innercontainer">
+			<div class="sc-portal-innercontainer sc-upcoming-shipment">
 				<div class="sc-portal-title">Your Next Skylar Box</div>
 				<div class="sc-portal-subtitle">The next box that you'll be charged for</div>
+				<div class="sc-box-info">
+					<span class="sc-box-shiplabel">Shipping Date</span>
+					<span class="sc-box-date sc-edit-date"><?=date('F j', $upcoming_box['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
+				</div>
 				<div class="sc-portal-nextbox">
 					<?php foreach($upcoming_box['items'] as $item){
 						if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){
@@ -109,9 +113,9 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						{% endif %}
 						{% endfor %}
 						<div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
-							data-address-id="<?=$item['address_id']?>"
-							data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
-							data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
+							 data-address-id="<?=$item['address_id']?>"
+							 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
+							 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
 							<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
 								data-master-image="{{ 'sc-logo.svg' | file_url }}"
 							<?php } else { ?>
@@ -119,19 +123,19 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 							<?php } ?>
 							<?=$box_swap_image?>
 							<?=$box_swap_text?>
-							data-swap-text="<?=is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? '' : '' ?>"
-							data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
-							data-subscription-id="<?=$item['subscription_id']?>"
+							 data-swap-text="<?=is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? '' : '' ?>"
+							 data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
+							 data-subscription-id="<?=$item['subscription_id']?>"
 							<?= !empty($item['charge']) ? 'data-charge-id="'.$item['charge']['id'].'"' : '' ?>
-							data-type="<?=$item['type']?>"
-							<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
-							data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
+							 data-type="<?=$item['type']?>"
+							<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
+							 data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
 						>
 
 							<?php if(!empty($item['skipped']) && !empty($item['charge'])){ ?>
 								<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 							<?php } else if(!empty($item['skipped'])){ ?>
-								<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+								<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 							<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
 								<a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
 							<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
@@ -157,6 +161,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 									<?php if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
 										<div class="sc-item-title">Skylar Scent Club</div>
 										<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
+										<div class="sc-item-link"><a href="/products/{{ box_product.handle }}">Explore This Month's Scent</a></div>
 										<div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
 									<?php } else if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
 										<div class="sc-item-title">Skylar Scent Club</div>
@@ -193,19 +198,21 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 										<?php } ?>
 									</div>
 								</div>
-								<?php /* if(!empty($item['next_charge_scheduled_at'])){ ?>
-										<div>
-											<div class="sc-item-detail-label">Next Charge</div>
-											<div class="sc-item-detail-value"><?=date('F j, Y', strtotime($item['next_charge_scheduled_at']))?></div>
-										</div>
-									<?php } else if(!empty($item['skipped'])){ ?>
-										<div>
-											<div class="sc-item-detail-label">Next Charge</div>
-											<div class="sc-item-detail-value">Skipped</div>
-										</div>
-									<?php } else { ?>
+								<?php /*
+								<?php if(!empty($item['next_charge_scheduled_at'])){ ?>
+									<div>
+										<div class="sc-item-detail-label">Next Charge</div>
+										<div class="sc-item-detail-value"><?=date('F j, Y', strtotime($item['next_charge_scheduled_at']))?></div>
+									</div>
+								<?php } else if(!empty($item['skipped'])){ ?>
+									<div>
+										<div class="sc-item-detail-label">Next Charge</div>
+										<div class="sc-item-detail-value">Skipped</div>
+									</div>
+								<?php } else { ?>
 
-									<?php } */?>
+								<?php } ?>
+ 								*/ ?>
 							</div>
 						</div>
 					<?php } ?>
@@ -243,6 +250,12 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 								</div>
 							<?php }
 						} ?>
+						<?php if(!empty($upcoming_box['charge']) && !empty($upcoming_box['charge']['total_tax'])){ ?>
+							<div class="sc-box-shipping">
+								<div class="sc-shipping-title">Tax</div>
+								<div class="sc-shipping-value">$<?=price_without_trailing_zeroes($upcoming_box['charge']['total_tax'])?></div>
+							</div>
+						<?php } ?>
 						<div class="sc-box-total">
 							Grand Total: $<?= price_without_trailing_zeroes($upcoming_box['charge']['total_price']) ?>
 						</div>
@@ -312,12 +325,15 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				</div>
 			</div>
 			<div class="sc-hr"></div>
-			<div class="sc-portal-innercontainer sc-schedule-conainer">
+			<div class="sc-portal-innercontainer sc-schedule-container">
 				<div class="sc-portal-title">Your Upcoming Skylar Box<?= count($upcoming_shipments) > 1 ? 'es' : '' ?></div>
 				<div class="sc-portal-box-list">
 					<?php $index = -1;
 					foreach($upcoming_shipments as $shipment_date => $upcoming_shipment){
 						$index++;
+						if($upcoming_shipment == $upcoming_box){
+							continue;
+						}
 						?>
 						<div class="sc-upcoming-shipment">
 							<div class="sc-box-info">
@@ -365,7 +381,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 									<?php if(!empty($item['skipped']) && !empty($item['charge'])){ ?>
 										<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 									<?php } else if(!empty($item['skipped'])){ ?>
-										<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+										<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 									<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
 										<a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
 									<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
@@ -488,6 +504,39 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			</div>
 		</div>
 	</div>
+	<div id="sc-skip-confirm-modal-sc">
+		<form class="skip-reason-form">
+			<div class="sc-modal-title">Why would you like to skip this scent?</div>
+			<div class="sc-modal-subtitle"></div>
+			<div class="skip-reason-list">
+				<label>
+					<input type="checkbox" name="skip_reason" value="I have a sensitivity to an ingredient in the scent.">
+					<span>I have a sensitivity to an ingredient in the scent.</span>
+				</label>
+				<label>
+					<input type="checkbox" name="skip_reason" value="I have too many now and would like to use what I currently have.">
+					<span>I have too many now and would like to use what I currently have.</span>
+				</label>
+				<label>
+					<input type="checkbox" name="skip_reason" value="I'm not excited about the next scent.">
+					<span>I'm not excited about the next scent.</span>
+				</label>
+				<label>
+					<input type="checkbox" name="skip_reason" value="I can't afford to do it every month.">
+					<span>I can't afford to do it every month.</span>
+				</label>
+				<label>
+					<input type="checkbox" name="skip_reason" value="other">
+					<span>Other Reason</span>
+				</label>
+				<textarea name="other_reason" title="Other Reason"></textarea>
+			</div>
+			<div class="sc-skip-options">
+				<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Skip Box</a>
+				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
+			</div>
+		</form>
+	</div>
 	<div id="sc-remove-confirm-modal">
 		<div class="sc-skip-image sc-desktop">
 			<img src="" />
@@ -598,7 +647,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
             $(this).addClass('active');
             $('.sc-product-section').hide();
             $($(this).attr('href')).show()
-				.find('.sc-product-carousel').slick('setPosition');
+                .find('.sc-product-carousel').slick('setPosition');
         });
         optional_scripts.onload('slick', function(){
             $('.sc-product-carousel select, .sc-product-carousel button, .sc-product-carousel label').click(function(e){
@@ -660,57 +709,57 @@ sc_conditional_billing($rc, $_REQUEST['c']);
     });
 </script>
 <script>
-	$(document).ready(function(){
-		ScentClub.selected_box_item = $('.sc-box-item[data-sc]').eq(0);
-		if(ScentClub.selected_box_item.length < 1){
-			return;
-		}
-		switch(Shopify.queryParams.intent){
-			default:
-				return;
-			case 'swapscent':
-				ScentClub.show_swap();
-				break;
-			case 'changedate':
-				ScentClub.show_date_change();
-				break;
+    $(document).ready(function(){
+        ScentClub.selected_box_item = $('.sc-box-item[data-sc]').eq(0);
+        if(ScentClub.selected_box_item.length < 1){
+            return;
+        }
+        switch(Shopify.queryParams.intent){
+            default:
+                return;
+            case 'swapscent':
+                ScentClub.show_swap();
+                break;
+            case 'changedate':
+                ScentClub.show_date_change();
+                break;
 
-		}
-	});
-	function bind_events(){
-		$('.sc-edit-date').unbind().click(function(e){
-			ScentClub.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
-			ScentClub.show_date_change();
-		});
-		$('.sc-swap-link').unbind().click(function(e){
-			e.preventDefault();
-			ScentClub.selected_box_item = $(this).closest('.sc-box-item');
-			ScentClub.show_swap();
-		});
-		$('.sc-skip-link-club').unbind().click(function(e){
-			e.preventDefault();
-			ScentClub.selected_box_item = $(this).closest('.sc-box-item');
-			$.featherlight($('#sc-skip-modal'), {
-				variant: 'scent-club',
-				afterOpen: $.noop, // Fix dumb app bug
-			});
-		});
-		$('.sc-skip-link').unbind().click(function(e){
-			e.preventDefault();
-			ScentClub.selected_box_item = $(this).closest('.sc-box-item');
-			ScentClub.show_skip_final();
-		});
-		$('.sc-unsub-link, .sc-remove-link').unbind().click(function(e){
-			e.preventDefault();
-			ScentClub.selected_box_item = $(this).closest('.sc-box-item');
-			$('.sc-skip-image img').attr('src', ScentClub.selected_box_item.data('master-image'));
-			var text = ScentClub.selected_box_item.data('month-text')+' '+ScentClub.selected_box_item.find('.sc-item-title').text().trim().replace('Monthly ', '');
-			$('#sc-remove-confirm-modal .sc-modal-subtitle').html(text);
-			$.featherlight.close();
-			$.featherlight($('#sc-remove-confirm-modal'), {
-				variant: 'scent-club',
-				afterOpen: $.noop, // Fix dumb app bug
-			});
-		});
-	}
+        }
+    });
+    function bind_events(){
+        $('.sc-edit-date').unbind().click(function(e){
+            ScentClub.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
+            ScentClub.show_date_change();
+        });
+        $('.sc-swap-link').unbind().click(function(e){
+            e.preventDefault();
+            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
+            ScentClub.show_swap();
+        });
+        $('.sc-skip-link-club').unbind().click(function(e){
+            e.preventDefault();
+            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
+            $.featherlight($('#sc-skip-modal'), {
+                variant: 'scent-club',
+                afterOpen: $.noop, // Fix dumb app bug
+            });
+        });
+        $('.sc-skip-link').unbind().click(function(e){
+            e.preventDefault();
+            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
+            ScentClub.show_skip_final();
+        });
+        $('.sc-unsub-link, .sc-remove-link').unbind().click(function(e){
+            e.preventDefault();
+            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
+            $('.sc-skip-image img').attr('src', ScentClub.selected_box_item.data('master-image'));
+            var text = ScentClub.selected_box_item.data('month-text')+' '+ScentClub.selected_box_item.find('.sc-item-title').text().trim().replace('Monthly ', '');
+            $('#sc-remove-confirm-modal .sc-modal-subtitle').html(text);
+            $.featherlight.close();
+            $.featherlight($('#sc-remove-confirm-modal'), {
+                variant: 'scent-club',
+                afterOpen: $.noop, // Fix dumb app bug
+            });
+        });
+    }
 </script>
