@@ -1,6 +1,6 @@
 <?php
+// currently inactive
 require_once(__DIR__.'/../includes/config.php');
-require_once(__DIR__.'/../includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 // get $charge from webhook
