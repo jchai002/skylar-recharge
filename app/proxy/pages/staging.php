@@ -505,36 +505,38 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		</div>
 	</div>
 	<div id="sc-skip-reasons-modal">
-		<form class="skip-reason-form">
+		<div>
 			<div class="sc-modal-title">Why would you like to skip this scent?</div>
-			<div class="skip-reason-list">
-				<label>
-					<input type="radio" name="skip_reason" value="I have a sensitivity to an ingredient in the scent.">
-					<span>I have a sensitivity to an ingredient in the scent.</span>
-				</label>
-				<label>
-					<input type="radio" name="skip_reason" value="I have too many now and would like to use what I currently have.">
-					<span>I have too many now and would like to use what I currently have.</span>
-				</label>
-				<label>
-					<input type="radio" name="skip_reason" value="I'm not excited about the next scent.">
-					<span>I'm not excited about the next scent.</span>
-				</label>
-				<label>
-					<input type="radio" name="skip_reason" value="I can't afford to do it every month.">
-					<span>I can't afford to do it every month.</span>
-				</label>
-				<label>
-					<input type="radio" name="skip_reason" value="other">
-					<span>Other Reason</span>
-				</label>
-				<textarea name="other_reason" title="Other Reason"></textarea>
-			</div>
-			<div class="sc-skip-options">
-				<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Skip Box</a>
-				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
-			</div>
-		</form>
+			<form class="skip-reason-form">
+				<div class="skip-reason-list">
+					<label>
+						<input type="radio" name="skip_reason" value="I have a sensitivity to an ingredient in the scent.">
+						<span>I have a sensitivity to an ingredient in the scent.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="I have too many now and would like to use what I currently have.">
+						<span>I have too many now and would like to use what I currently have.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="I'm not excited about the next scent.">
+						<span>I'm not excited about the next scent.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="I can't afford to do it every month.">
+						<span>I can't afford to do it every month.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="other">
+						<span>Other Reason</span>
+					</label>
+					<textarea name="other_reason" title="Other Reason"></textarea>
+				</div>
+				<div class="sc-skip-options">
+					<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Skip Box</a>
+					<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
+				</div>
+			</form>
+		</div>
 	</div>
 	<div id="sc-remove-confirm-modal">
 		<div class="sc-skip-image sc-desktop">
