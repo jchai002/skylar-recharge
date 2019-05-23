@@ -504,7 +504,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			</div>
 		</div>
 	</div>
-	<div id="sc-skip-confirm-modal-sc">
+	<div id="sc-skip-reasons-modal-">
 		<form class="skip-reason-form">
 			<div class="sc-modal-title">Why would you like to skip this scent?</div>
 			<div class="sc-modal-subtitle"></div>
