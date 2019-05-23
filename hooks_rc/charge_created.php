@@ -12,7 +12,7 @@ if(!empty($_REQUEST['id'])){
 		$res = json_decode($data, true);
 	}
 }
-//var_dump($res);
+var_dump($res);
 if(empty($res['charge'])){
 	echo "no charge";
 	exit;
