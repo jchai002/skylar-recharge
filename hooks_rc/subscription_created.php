@@ -40,8 +40,7 @@ while($next_charge_time < $max_time){
 sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
 
 $res = $rc->get('/customers/'.$subscription['customer_id']);
-print_r($res);
-$shopify_customer_id = $res['customers'][0]['shopify_customer_id'];
+$shopify_customer_id = $res['customer'][0]['shopify_customer_id'];
 
 $sc = new ShopifyClient();
 $res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['metafield'=> [
