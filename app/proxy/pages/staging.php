@@ -507,7 +507,6 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 	<div id="sc-skip-reasons-modal">
 		<form class="skip-reason-form">
 			<div class="sc-modal-title">Why would you like to skip this scent?</div>
-			<div class="sc-modal-subtitle"></div>
 			<div class="skip-reason-list">
 				<label>
 					<input type="checkbox" name="skip_reason" value="I have a sensitivity to an ingredient in the scent.">
