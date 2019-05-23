@@ -509,23 +509,23 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<div class="sc-modal-title">Why would you like to skip this scent?</div>
 			<div class="skip-reason-list">
 				<label>
-					<input type="checkbox" name="skip_reason" value="I have a sensitivity to an ingredient in the scent.">
+					<input type="radio" name="skip_reason" value="I have a sensitivity to an ingredient in the scent.">
 					<span>I have a sensitivity to an ingredient in the scent.</span>
 				</label>
 				<label>
-					<input type="checkbox" name="skip_reason" value="I have too many now and would like to use what I currently have.">
+					<input type="radio" name="skip_reason" value="I have too many now and would like to use what I currently have.">
 					<span>I have too many now and would like to use what I currently have.</span>
 				</label>
 				<label>
-					<input type="checkbox" name="skip_reason" value="I'm not excited about the next scent.">
+					<input type="radio" name="skip_reason" value="I'm not excited about the next scent.">
 					<span>I'm not excited about the next scent.</span>
 				</label>
 				<label>
-					<input type="checkbox" name="skip_reason" value="I can't afford to do it every month.">
+					<input type="radio" name="skip_reason" value="I can't afford to do it every month.">
 					<span>I can't afford to do it every month.</span>
 				</label>
 				<label>
-					<input type="checkbox" name="skip_reason" value="other">
+					<input type="radio" name="skip_reason" value="other">
 					<span>Other Reason</span>
 				</label>
 				<textarea name="other_reason" title="Other Reason"></textarea>
