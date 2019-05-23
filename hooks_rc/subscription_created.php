@@ -1,5 +1,7 @@
 <?php
-require_once('../includes/config.php');
+require_once(__DIR__.'/../includes/config.php');
+require_once(__DIR__.'/../includes/class.RechargeClient.php');
+require_once(__DIR__.'/../includes/class.ShopifyClient.php');
 
 $rc = new RechargeClient();
 // get $charge from webhook
