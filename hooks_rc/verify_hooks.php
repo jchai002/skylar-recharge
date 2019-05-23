@@ -1,6 +1,6 @@
 <?php
-require_once('../includes/config.php');
-require_once('../includes/class.RechargeClient.php');
+require_once(__DIR__.'/../includes/config.php');
+require_once(__DIR__.'/../includes/class.RechargeClient.php');
 
 $rc = new RechargeClient();
 $hooks = $rc->get("/webhooks");
@@ -56,6 +56,8 @@ foreach($needed_hooks as $needed_hook){
 			continue 2;
 		}
 	}
+	echo "Need ".$needed_hook['topic'].' : '.$needed_hook['address'].PHP_EOL;
+	continue;
 	$res = $rc->post('/webhooks', $needed_hook);
 	echo "Created: "; var_dump($res);
 }
