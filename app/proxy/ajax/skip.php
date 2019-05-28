@@ -53,6 +53,7 @@ if($subscription['status'] == 'ONETIME'){
 				$res = $rc->post('/charges/'.$res['charges'][0]['id'].'/skip', [
 					'subscription_id' => $main_sub['id'],
 				]);
+				log_event($db, 'SUBSCRIPTION', $subscription['id'], 'SKIP', $_REQUEST['reason'], 'Skipped via user account: '.json_encode([$subscription,$res]), 'Customer');
 			}
 		}
 	}
@@ -66,6 +67,7 @@ if($subscription['status'] == 'ONETIME'){
 		$res = $rc->post('/charges/'.$charge_id.'/skip', [
 			'subscription_id' => $subscription_id
 		]);
+		log_event($db, 'SUBSCRIPTION', $subscription['id'], 'SKIP', $_REQUEST['reason'], 'Skipped via user account: '.json_encode([$subscription,$res]), 'Customer');
 		//sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
 	}
 }
