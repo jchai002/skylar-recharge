@@ -83,6 +83,7 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, $address_id, $ti
 	if(empty($res['onetime'])){
 		print_r($res);
 		sleep(5);
+		return;
 	}
 	return $res['onetime'];
 }
