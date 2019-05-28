@@ -485,7 +485,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			</div>
 		</div>
 		<div class="sc-modal-continue">
-			<a href="#" onclick="ScentClub.show_skip_final(); return false;">Continue To Skip</a>
+			<a href="#" onclick="ScentClub.show_skip_reasons(); return false;">Continue To Skip</a>
 		</div>
 	</div>
 	<div id="sc-skip-confirm-modal">
@@ -502,6 +502,45 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Yes, Skip Box</a>
 				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
 			</div>
+		</div>
+	</div>
+	<div id="sc-skip-reasons-modal">
+		<div>
+			<div class="sc-modal-title">Why would you like to skip this scent?</div>
+			<form class="skip-reason-form">
+				<div class="skip-reason-list">
+					<label>
+						<input type="radio" name="skip_reason" value="I have a sensitivity to an ingredient in the scent.">
+						<span class="radio-visual"></span>
+						<span>I have a sensitivity to an ingredient in the scent.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="I have too many now and would like to use what I currently have.">
+						<span class="radio-visual"></span>
+						<span>I have too many now and would like to use what I currently have.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="I'm not excited about the next scent.">
+						<span class="radio-visual"></span>
+						<span>I'm not excited about the next scent.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="I can't afford to do it every month.">
+						<span class="radio-visual"></span>
+						<span>I can't afford to do it every month.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="other">
+						<span class="radio-visual"></span>
+						<span>Other Reason</span>
+					</label>
+					<textarea name="other_reason" title="Other Reason"></textarea>
+				</div>
+				<div class="sc-skip-options">
+					<a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type'), ScentClub.get_skip_reason()); return false;">Skip Box</a>
+					<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
+				</div>
+			</form>
 		</div>
 	</div>
 	<div id="sc-remove-confirm-modal">
@@ -600,6 +639,21 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                     }
                 }
             });
+        });
+        $('.skip-reason-form input, .skip-reason-form textarea').change(function(){
+            if(!ScentClub.get_skip_reason()){
+                $('.skip-confirm-button').addClass('disabled');
+            } else {
+                $('.skip-confirm-button').removeClass('disabled');
+            }
+        });
+        $('.skip-reason-form textarea').on('keyup keydown', function(){
+            $('.skip-reason-form input[value=other]').prop('checked', true);
+            if(!ScentClub.get_skip_reason()){
+                $('.skip-confirm-button').addClass('disabled');
+            } else {
+                $('.skip-confirm-button').removeClass('disabled');
+            }
         });
         $('.sc-addtobox-form').hover(function(e){
             if(!$(this).data('id')){
