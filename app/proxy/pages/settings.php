@@ -152,8 +152,8 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<textarea name="other_reason" title="Other Reason"></textarea>
 				</div>
 				<div class="sc-skip-options">
-					<a class="action_button warning" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); ScentClub.cancel_main_sub(ScentClub.get_skip_reason()); return false;">Yes, Cancel My Subscription</a>
-					<a class="action_button inverted" onclick="$.featherlight.close(); return false;">No Thanks, Go Back</a>
+					<a class="action_button" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); ScentClub.cancel_main_sub(ScentClub.get_skip_reason()); return false;">Cancel Subscription</a>
+					<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Go Back</a>
 				</div>
 			</form>
 		</div>
