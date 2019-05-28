@@ -648,6 +648,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
             }
         });
         $('.skip-reason-form textarea').on('keyup', function(){
+            $('.skip-reason-form input[value=other]').prop('checked', true);
             if(!ScentClub.get_skip_reason()){
                 $('.skip-confirm-button').addClass('disabled');
             } else {
