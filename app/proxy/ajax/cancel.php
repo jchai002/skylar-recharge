@@ -11,8 +11,10 @@ foreach($res['subscriptions'] as $subscription){
 	if(!is_scent_club_any(get_product($db, $subscription['shopify_product_id']))){
 		continue;
 	}
-	$cancel_res[] = $this_res = $rc->delete('/subscriptions/'.$subscription['id']);
-	log_event($db, 'SUBSCRIPTION', $subscription['id'], 'CANCEL', json_encode($subscription), 'Cancelled via user account: '.json_encode($this_res), 'Customer');
+	$cancel_res[] = $this_res = $rc->post('/subscriptions/'.$subscription['id'].'/cancel',[
+		'cancellation_reason' => $_REQUEST['reason'],
+	]);
+	log_event($db, 'SUBSCRIPTION', $subscription['id'], 'CANCEL', $_REQUEST['reason'], 'Cancelled via user account: '.json_encode([$subscription,$this_res]), 'Customer');
 }
 
 $res = $rc->get('/onetimes/',[
