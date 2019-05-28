@@ -17,7 +17,7 @@ $charges = [];
 $start_time = microtime(true);
 do {
 	$page++;
-	// Load upcoming queued charges for may
+	// Load month's upcoming queued charges
 	$res = $rc->get('/charges', [
 		'date_min' => $start_date,
 		'date_max' => $end_date,
@@ -80,5 +80,9 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, $address_id, $ti
 		'variant_title' => $scent_info['variant_title'],
 	]);
 	//print_r($res);
+	if(empty($res['onetime'])){
+		print_r($res);
+		sleep(5);
+	}
 	return $res['onetime'];
 }
