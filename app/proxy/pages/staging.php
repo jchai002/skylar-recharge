@@ -499,7 +499,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<img src="" />
 			</div>
 			<div class="sc-skip-options">
-				<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Yes, Skip Box</a>
+				<a class="action_button skip-confirm-button" onclick="$(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Yes, Skip Box</a>
 				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
 			</div>
 		</div>
@@ -537,7 +537,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<textarea name="other_reason" title="Other Reason"></textarea>
 				</div>
 				<div class="sc-skip-options">
-					<a class="action_button" onclick="if(!ScentClub.get_skip_reason()){return false;} $(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type'), ScentClub.get_skip_reason()); return false;">Skip Box</a>
+					<a class="action_button" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type'), ScentClub.get_skip_reason()); return false;">Skip Box</a>
 					<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
 				</div>
 			</form>
@@ -639,6 +639,20 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                     }
                 }
             });
+        });
+        $('.skip-reason-form input, .skip-reason-form textarea').change(function(){
+            if(!ScentClub.get_skip_reason()){
+                $('.skip-confirm-button').addClass('disabled');
+            } else {
+                $('.skip-confirm-button').removeClass('disabled');
+            }
+        });
+        $('.skip-reason-form textarea').on('keyup', function(){
+            if(!ScentClub.get_skip_reason()){
+                $('.skip-confirm-button').addClass('disabled');
+            } else {
+                $('.skip-confirm-button').removeClass('disabled');
+            }
         });
         $('.sc-addtobox-form').hover(function(e){
             if(!$(this).data('id')){
