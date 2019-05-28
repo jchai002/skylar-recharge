@@ -647,7 +647,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                 $('.skip-confirm-button').removeClass('disabled');
             }
         });
-        $('.skip-reason-form textarea').on('keydown', function(){
+        $('.skip-reason-form textarea').on('keyup keydown', function(){
             $('.skip-reason-form input[value=other]').prop('checked', true);
             if(!ScentClub.get_skip_reason()){
                 $('.skip-confirm-button').addClass('disabled');
