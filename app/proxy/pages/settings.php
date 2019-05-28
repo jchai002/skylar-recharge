@@ -115,6 +115,44 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		</div>
 	</div>
 	<div id="sc-cancel-confirm-modal" class="sc-confirm-modal">
+		<div>
+			<div class="sc-modal-title">Why would you like to skip this scent?</div>
+			<form class="skip-reason-form">
+				<div class="skip-reason-list">
+					<label>
+						<input type="radio" name="skip_reason" value="I have a sensitivity to an ingredient in the scent.">
+						<span class="radio-visual"></span>
+						<span>I have a sensitivity to an ingredient in the scent.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="I have too many now and would like to use what I currently have.">
+						<span class="radio-visual"></span>
+						<span>I have too many now and would like to use what I currently have.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="I'm not excited about the next scent.">
+						<span class="radio-visual"></span>
+						<span>I'm not excited about the next scent.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="I can't afford to do it every month.">
+						<span class="radio-visual"></span>
+						<span>I can't afford to do it every month.</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="other">
+						<span class="radio-visual"></span>
+						<span>Other Reason</span>
+					</label>
+					<textarea name="other_reason" title="Other Reason"></textarea>
+				</div>
+				<div class="sc-skip-options">
+					<a class="action_button warning" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); ScentClub.cancel_main_sub(ScentClub.get_skip_reason()); return false;">Yes, Cancel My Subscription</a>
+					<a class="action_button inverted" onclick="$.featherlight.close(); return false;">No Thanks, Go Back</a>
+				</div>
+			</form>
+		</div>
+	</div>
 		<div class="sc-skip-image sc-desktop">
 			<img src="{{ all_products['scent-club'].featured_image | img_url: '500x' }}" />
 		</div>
@@ -134,6 +172,23 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
     $(document).ready(function(){
+
+        $('.skip-reason-form input, .skip-reason-form textarea').change(function(){
+            if(!ScentClub.get_skip_reason()){
+                $('.skip-confirm-button').addClass('disabled');
+            } else {
+                $('.skip-confirm-button').removeClass('disabled');
+            }
+        });
+        $('.skip-reason-form textarea').on('keyup keydown', function(){
+            $('.skip-reason-form input[value=other]').prop('checked', true);
+            if(!ScentClub.get_skip_reason()){
+                $('.skip-confirm-button').addClass('disabled');
+            } else {
+                $('.skip-confirm-button').removeClass('disabled');
+            }
+        });
+
         optional_scripts.onload('mmenu', function(){
             $('#sc-edit-email').mmenu({
                 offCanvas: { position: 'right', zposition : "front", pageSelector: "#content_wrapper" },
