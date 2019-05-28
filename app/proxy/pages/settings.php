@@ -120,24 +120,29 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<form class="skip-reason-form">
 				<div class="skip-reason-list">
 					<label>
-						<input type="radio" name="skip_reason" value="I have a sensitivity to an ingredient in the scent.">
+						<input type="radio" name="skip_reason" value="I don't like the scent or products">
 						<span class="radio-visual"></span>
-						<span>I have a sensitivity to an ingredient in the scent.</span>
+						<span>I don't like the scent or products</span>
 					</label>
 					<label>
-						<input type="radio" name="skip_reason" value="I have too many now and would like to use what I currently have.">
+						<input type="radio" name="skip_reason" value="I have too much">
 						<span class="radio-visual"></span>
-						<span>I have too many now and would like to use what I currently have.</span>
+						<span>I have too much</span>
 					</label>
 					<label>
-						<input type="radio" name="skip_reason" value="I'm not excited about the next scent.">
+						<input type="radio" name="skip_reason" value="I'm having a sensitivity to the product">
 						<span class="radio-visual"></span>
-						<span>I'm not excited about the next scent.</span>
+						<span>I'm having a sensitivity to the product</span>
 					</label>
 					<label>
-						<input type="radio" name="skip_reason" value="I can't afford to do it every month.">
+						<input type="radio" name="skip_reason" value="It's too expensive">
 						<span class="radio-visual"></span>
-						<span>I can't afford to do it every month.</span>
+						<span>It's too expensive</span>
+					</label>
+					<label>
+						<input type="radio" name="skip_reason" value="I just don't want a subscription">
+						<span class="radio-visual"></span>
+						<span>I just don't want a subscription</span>
 					</label>
 					<label>
 						<input type="radio" name="skip_reason" value="other">
