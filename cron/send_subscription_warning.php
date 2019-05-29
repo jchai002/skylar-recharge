@@ -18,13 +18,25 @@ $blacklist_emails = array_values(array_unique($blacklist_emails));
 */
 
 //$now = strtotime('tomorrow');
+
+/** Schedule:
+ * Monday: Thursday
+ * Tuesday: Friday
+ * Wednesday: Sat, Sun, Mon
+ * Thursday: Tuesday
+ * Friday: Wednesday
+ */
+
 $now = time();
 
 $day_of_week = date('N', $now);
 $start_date = date('Y-m-d', strtotime('+2 days', $now));
-if($day_of_week == 5){ // Friday
+if($day_of_week == 3){ // Wednesday
 	$end_date = date('Y-m-d', strtotime('+6 days', $now));
-} elseif($day_of_week > 5) {
+} elseif($day_of_week == 4 || $day_of_week == 5) { // Thursday and Friday
+	$start_date = date('Y-m-d', strtotime('+4 days', $now));
+	$end_date = date('Y-m-d', strtotime('+6 days', $now));
+} elseif($day_of_week >= 6) {
 	die("No weekend emails");
 } else {
 	$end_date = date('Y-m-d', strtotime('+4 days', $now));
