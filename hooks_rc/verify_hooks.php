@@ -59,6 +59,6 @@ foreach($needed_hooks as $needed_hook){
 		}
 	}
 	echo "Need ".$needed_hook['topic'].' : '.$needed_hook['address'].PHP_EOL;
-	$res = $rc->post('/webhooks', $needed_hook);
-	echo "Created: "; var_dump($res);
+//	$res = $rc->post('/webhooks', $needed_hook);
+//	echo "Created: "; var_dump($res);
 }

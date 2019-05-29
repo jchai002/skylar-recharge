@@ -1,6 +1,7 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
+$sc = new ShopifyClient();
 $rc = new RechargeClient();
 // get $charge from webhook
 if(!empty($_REQUEST['id'])){
@@ -40,10 +41,10 @@ sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
 $res = $rc->get('/customers/'.$subscription['customer_id']);
 $shopify_customer_id = $res['customer']['shopify_customer_id'];
 
-$sc = new ShopifyClient();
 $res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['metafield'=> [
 	'namespace' => 'scent_club',
 	'key' => 'active',
 	'value' => 1,
 	'value_type' => 'integer'
 ]]);
+print_r($res);
