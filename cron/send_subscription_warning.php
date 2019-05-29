@@ -83,7 +83,7 @@ do {
 				'$email' => $charge['email'],
 			],
 			'properties' => [
-				'email_type' => $is_scent_club ? 'sub_3day_warning' : 'sub_3day_warning_sc',
+				'email_type' => $is_scent_club ? 'sub_3day_warning_sc' : 'sub_3day_warning',
 				'first_name' => $charge['first_name'],
 			]
 		]));
