@@ -9,10 +9,10 @@ if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/addresses/'.$_REQUEST['id']);
 } else {
 	$data = file_get_contents('php://input');
-	log_event($db, 'webhook', $data, 'address_updated');
 	if(!empty($data)){
 		$res = json_decode($data, true);
 	}
+	log_event($db, 'webhook', $res['address']['id'], 'address_updated', $data);
 }
 if(empty($res['address'])){
 	exit;

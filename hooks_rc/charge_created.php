@@ -7,10 +7,10 @@ if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/charges/'.$_REQUEST['id']);
 } else {
 	$data = file_get_contents('php://input');
-	log_event($db, 'webhook', $data, 'charge_created');
 	if(!empty($data)){
 		$res = json_decode($data, true);
 	}
+	log_event($db, 'webhook', $res['charge']['id'], 'charge_paid', $data);
 }
 var_dump($res);
 if(empty($res['charge'])){
