@@ -41,10 +41,20 @@ sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
 $res = $rc->get('/customers/'.$subscription['customer_id']);
 $shopify_customer_id = $res['customer']['shopify_customer_id'];
 
-$res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['metafield'=> [
-	'namespace' => 'scent_club',
-	'key' => 'active',
-	'value' => 1,
-	'value_type' => 'integer'
-]]);
-print_r($res);
+try {
+	$res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['metafield'=> [
+		'namespace' => 'scent_club',
+		'key' => 'active',
+		'value' => 1,
+		'value_type' => 'integer'
+	]]);
+	print_r($res);
+} catch(ShopifyApiException $e){
+	log_event($db, 'API_ERROR', json_encode($e->getResponse()), 'POST customers/'.$shopify_customer_id.'/metafields.json', json_encode(['metafield'=> [
+		'namespace' => 'scent_club',
+		'key' => 'active',
+		'value' => 1,
+		'value_type' => 'integer'
+	]]), '', 'subscription_created');
+	var_dump($e->getResponse());
+}
