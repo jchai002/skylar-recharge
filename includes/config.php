@@ -528,6 +528,23 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_
 function insert_update_subscription(PDO $db, $recharge_subscription){
 	$stmt = $db->prepare("INSERT INTO rc_subscriptions () VALUES ()");
 }
+function insert_update_customer(PDO $db, $shopify_customer){
+	$stmt = $db->prepare("INSERT INTO customers (shopify_id, email, first_name, last_name, state, tags, updated_at) VALUES (:shopify_id, :email, :first_name, :last_name, :state, :tags, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), email=:email, first_name=:first_name, last_name=:last_name, state=:state, tags=:tags, updated_at=:updated_at");
+	$stmt->execute([
+		'shopify_id' => $shopify_customer['id'],
+		'email' => $shopify_customer['email'],
+		'first_name' => $shopify_customer['first_name'],
+		'last_name' => $shopify_customer['last_name'],
+		'state' => $shopify_customer['state'],
+		'tags' => $shopify_customer['tags'],
+		'updated_at' => date('Y-m-d H:i:s'),
+	]);
+	$customer_id = $db->lastInsertId();
+	return $customer_id;
+}
+function insert_update_rc_customer(PDO $db, $recharge_customer){
+
+}
 if(!function_exists('divide')){
 	function divide($numerator, $denominator){
 		if(empty($denominator)){
@@ -1007,18 +1024,17 @@ function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time
 	$res = $rc->get('/onetimes/', [
 		'address_id' => $address_id,
 	]);
-	$products_by_id = [];
-	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
+	$monthly_scent = sc_get_monthly_scent($db, $time);
 	foreach($res['onetimes'] as $onetime){
 		$ship_month = date('Y-m',strtotime($onetime['next_charge_scheduled_at']));
 		if($ship_month != $delete_month){
 			continue;
 		}
-		if(!array_key_exists($onetime['shopify_product_id'], $products_by_id)){
-			$stmt->execute([$onetime['shopify_product_id']]);
-			$products_by_id[$onetime['shopify_product_id']] = $stmt->fetch();
+		$product = get_product($db, $onetime['shopify_product_id']);
+		if(is_scent_club_month($product) && $monthly_scent['sku'] != $product['sku']){
+			continue;
 		}
-		if(is_scent_club_any($products_by_id[$onetime['shopify_product_id']])){
+		if(is_scent_club_any($product)){
 			$rc->delete('/onetimes/'.$onetime['id']);
 		}
 	}
