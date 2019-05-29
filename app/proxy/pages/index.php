@@ -91,7 +91,12 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<span class="sc-box-date sc-edit-date"><?=date('F j', $upcoming_box['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
 				</div>
 				<div class="sc-portal-nextbox">
-					<?php foreach($upcoming_box['items'] as $item){
+					<?php
+					$all_skipped = true;
+					foreach($upcoming_box['items'] as $item){
+						if(!$item['skipped']){
+							$all_skipped = false;
+						}
 						if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){
 							$monthly_scent = sc_get_monthly_scent($db, strtotime($shipment_date), is_admin_address($item['address_id']));
 							$box_swap_image = 'data-swap-image="{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
@@ -216,7 +221,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 							</div>
 						</div>
 					<?php } ?>
-					<div class="sc-box-discounts">
+					<div class="sc-box-discounts<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
 						<?php foreach($upcoming_box['discounts'] as $discount){ ?>
 							<div class="sc-box-discount">
 								<div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
@@ -244,23 +249,23 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 									continue;
 								}
 								?>
-								<div class="sc-box-shipping">
+								<div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
 									<div class="sc-shipping-title"><?=$shipping_line['title']?></div>
 									<div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
 								</div>
 							<?php }
 						} ?>
 					<?php if(!empty($upcoming_box['charge']) && !empty($upcoming_box['charge']['total_tax'])){ ?>
-						<div class="sc-box-shipping">
+						<div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
 							<div class="sc-shipping-title">Tax</div>
 							<div class="sc-shipping-value">$<?=price_without_trailing_zeroes($upcoming_box['charge']['total_tax'])?></div>
 						</div>
 					<?php } ?>
-						<div class="sc-box-total">
+						<div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
 							Grand Total: $<?= price_without_trailing_zeroes($upcoming_box['charge']['total_price']) ?>
 						</div>
 					<?php } else { ?>
-						<div class="sc-box-total">
+						<div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
 							Grand Total: $<?= price_without_trailing_zeroes(array_sum(array_column($upcoming_box['items'], 'price'))) ?>
 						</div>
 					<?php } ?>
