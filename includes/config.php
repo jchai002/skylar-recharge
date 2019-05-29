@@ -691,6 +691,9 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			$item['charge'] = $charge;
 			$item['skipped'] = $charge['status'] == 'SKIPPED';
 			$item['address_id'] = $charge['address_id'];
+			if(empty($item['product_title']) && !empty($item['title'])){
+				$item['product_title'] = $item['title'];
+			}
 			$schedule[$date]['charge'] = $charge;
 			$schedule[$date]['items'][] = $item;
 		}
