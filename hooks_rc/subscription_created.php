@@ -8,10 +8,10 @@ if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/subscriptions/'.$_REQUEST['id']);
 } else {
 	$data = file_get_contents('php://input');
-	log_event($db, 'webhook', $data, 'subscription_created');
 	if(!empty($data)){
 		$res = json_decode($data, true);
 	}
+	log_event($db, 'webhook', $res['subscription']['id'], 'subscription_created', $data);
 }
 $subscription = $res['subscription'];
 if($subscription['status'] != 'ACTIVE'){

@@ -7,10 +7,10 @@ if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/subscriptions/'.$_REQUEST['id']);
 } else {
 	$data = file_get_contents('php://input');
-	log_event($db, 'webhook', $data, 'subscription_cancelled');
 	if(!empty($data)){
 		$res = json_decode($data, true);
 	}
+	log_event($db, 'webhook', $res['subscription']['id'], 'subscription_cancelled', $data);
 }
 $subscription = $res['subscription'];
 var_dump($subscription);
