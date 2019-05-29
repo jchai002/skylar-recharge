@@ -6,6 +6,7 @@ global $db, $rc;
 if(empty($_REQUEST['charge_id']) && !empty($_REQUEST['unskip']) && !empty($_REQUEST['subscription_id'])){
 	// No charge id unskip = just move the date back
 	$res = $rc->get('/subscriptions/'.intval($_REQUEST['subscription_id']));
+	$res['line'] = 9;
 	$subscription = $res['subscription'];
 	$next_charge_date = sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
 	die(json_encode([
@@ -30,6 +31,7 @@ $res = $rc->get('/subscriptions/'.$subscription_id);
 $subscription = $res['subscription'];
 $res = $rc->get('/charges/'.$charge_id);
 $charge = $res['charge'];
+$res['line'] = 33;
 $main_sub = [];
 $reason = !empty($_REQUEST['reason']) ? $_REQUEST['reason'] : '';
 
@@ -37,6 +39,7 @@ if($subscription['status'] == 'ONETIME'){
 	// Can only 'skip' onetimes if they are scent club
 	// Can't actually skip onetimes, so delete it and put the scent club back, then skip
 	$res = $rc->delete('/onetimes/'.$subscription_id);
+	$res['line'] = 40;
 	sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
 	if(!empty($_REQUEST['unskip'])){
 		sc_swap_to_monthly($db, $rc, $subscription['address_id'], strtotime($charge['scheduled_at']));
@@ -63,11 +66,13 @@ if($subscription['status'] == 'ONETIME'){
 		$res = $rc->post('/charges/'.$charge_id.'/unskip', [
 			'subscription_id' => $subscription_id,
 		]);
+		$res['line'] = 67;
 		sc_swap_to_monthly($db, $rc, $subscription['address_id'], strtotime($charge['scheduled_at']));
 	} else {
 		$res = $rc->post('/charges/'.$charge_id.'/skip', [
 			'subscription_id' => $subscription_id,
 		]);
+		$res['line'] = 71;
 		log_event($db, 'SUBSCRIPTION', $subscription['id'], 'SKIP', $reason, 'Skipped via user account: '.json_encode([$subscription,$res]), 'Customer');
 		//sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
 	}
