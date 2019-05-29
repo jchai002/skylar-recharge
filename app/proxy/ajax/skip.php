@@ -61,12 +61,12 @@ if($subscription['status'] == 'ONETIME'){
 } else {
 	if(!empty($_REQUEST['unskip'])){
 		$res = $rc->post('/charges/'.$charge_id.'/unskip', [
-			'subscription_id' => $subscription_id
+			'subscription_id' => $subscription_id,
 		]);
 		sc_swap_to_monthly($db, $rc, $subscription['address_id'], strtotime($charge['scheduled_at']));
 	} else {
 		$res = $rc->post('/charges/'.$charge_id.'/skip', [
-			'subscription_id' => $subscription_id
+			'subscription_id' => $subscription_id,
 		]);
 		log_event($db, 'SUBSCRIPTION', $subscription['id'], 'SKIP', $reason, 'Skipped via user account: '.json_encode([$subscription,$res]), 'Customer');
 		//sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);

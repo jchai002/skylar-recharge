@@ -1031,7 +1031,7 @@ function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time
 			continue;
 		}
 		$product = get_product($db, $onetime['shopify_product_id']);
-		if(is_scent_club_month($product) && $monthly_scent['sku'] != $product['sku']){
+		if(is_scent_club_month($product) && $monthly_scent['sku'] != get_variant($db, $onetime['shopify_variant_id'])['sku']){
 			continue;
 		}
 		if(is_scent_club_any($product)){
