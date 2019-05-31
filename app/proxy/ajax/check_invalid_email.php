@@ -5,10 +5,15 @@ $sc = new ShopifyClient();
 $res = $sc->get('/admin/customers/search.json', [
 	'query' => 'email:'.$_REQUEST['email'],
 ]);
-
-if(!empty($res)){
-	$customer = $res[0];
+if(empty($res)){
+	echo json_encode([
+		'success' => false,
+		'email_sent' => false,
+		'res' => $res,
+	]);
+	exit;
 }
+$customer = $res[0];
 if($customer['state'] != 'active' && $customer['state'] != 'enabled'){
 	$rc = new RechargeClient();
 	$main_sub = sc_get_main_subscription($db, $rc, [
