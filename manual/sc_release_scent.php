@@ -37,8 +37,8 @@ do {
 	echo "Adding ".count($res['charges'])." to array - total: ".count($charges).PHP_EOL;
 	echo "Rate: ".(count($charges) / (microtime(true) - $start_time))." charges/s".PHP_EOL;
 } while(count($res['charges']) == 250);
-
-
+echo "Total: ".count($charges).PHP_EOL;
+die();
 $start_time = microtime(true);
 echo "Starting updates".PHP_EOL;
 foreach($charges as $index=>$charge){

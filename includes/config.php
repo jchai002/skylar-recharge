@@ -525,9 +525,6 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_
 	}
 	return $order_id;
 }
-function insert_update_subscription(PDO $db, $recharge_subscription){
-	$stmt = $db->prepare("INSERT INTO rc_subscriptions () VALUES ()");
-}
 function insert_update_customer(PDO $db, $shopify_customer){
 	$stmt = $db->prepare("INSERT INTO customers (shopify_id, email, first_name, last_name, state, tags, updated_at) VALUES (:shopify_id, :email, :first_name, :last_name, :state, :tags, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), email=:email, first_name=:first_name, last_name=:last_name, state=:state, tags=:tags, updated_at=:updated_at");
 	$stmt->execute([
@@ -542,8 +539,73 @@ function insert_update_customer(PDO $db, $shopify_customer){
 	$customer_id = $db->lastInsertId();
 	return $customer_id;
 }
-function insert_update_rc_customer(PDO $db, $recharge_customer){
-
+function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $sc){
+	$stmt = $db->prepare("INSERT INTO rc_customers (recharge_id, customer_id, email, first_name, last_name, processor_type, status, has_valid_payment_method, reason_payment_method_invalid, updated_at) VALUES (:recharge_id, :customer_id, :email, :first_name, :last_name, :processor_type, :status, :has_valid_payment_method, :reason_payment_method_invalid, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), recharge_id=:recharge_id, customer_id=:customer_id, email=:email, first_name=:first_name, last_name=:last_name, processor_type=:processor_type, status=:status, has_valid_payment_method=:has_valid_payment_method, reason_payment_method_invalid=:reason_payment_method_invalid, updated_at=:updated_at");
+	$customer = get_customer($db, $recharge_customer['shopify_customer_id'], $sc);
+	$stmt->execute([
+		'recharge_id' => $recharge_customer['id'],
+		'customer_id' => $customer['id'],
+		'email' => $recharge_customer['email'],
+		'first_name' => $recharge_customer['first_name'],
+		'last_name' => $recharge_customer['last_name'],
+		'processor_type' => $recharge_customer['processor_type'],
+		'status' => $recharge_customer['status'],
+		'has_valid_payment_method' => $recharge_customer['has_valid_payment_method'],
+		'reason_payment_method_invalid' => $recharge_customer['reason_payment_method_not_valid'],
+		'updated_at' => date('Y-m-d H:i:s'),
+	]);
+	return $db->lastInsertId();
+}
+function insert_update_rc_address(PDO $db, $recharge_address, RechargeClient $rc, ShopifyClient $sc){
+	$stmt = $db->prepare("INSERT INTO rc_addresses (recharge_id, rc_customer_id, line1, line2, city, province, country, zip, company, phone, note, attributes, shipping_lines, updated_at) VALUES (:recharge_id, :rc_customer_id, :line1, :line2, :city, :province, :country, :zip, :company, :phone, :note, :attributes, :shipping_lines, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), rc_customer_id=:rc_customer_id, line1=:line1, line2=:line2, city=:city, province=:province, country=:country, zip=:zip, company=:company, phone=:phone, note=:note, attributes=:attributes, shipping_lines=:shipping_lines, updated_at=:updated_at");
+	$recharge_customer = get_rc_customer($db, $recharge_address['customer_id'], $rc, $sc);
+	$stmt->execute([
+		'recharge_id' => $recharge_address['id'],
+		'rc_customer_id' => $recharge_customer['id'],
+		'line1' => $recharge_address['address1'],
+		'line2' => $recharge_address['address2'],
+		'city' => $recharge_address['city'],
+		'province' => $recharge_address['province'],
+		'country' => $recharge_address['country'],
+		'zip' => $recharge_address['zip'],
+		'company' => $recharge_address['company'],
+		'phone' => $recharge_address['phone'],
+		'note' => $recharge_address['cart_note'],
+		'attributes' => json_encode($recharge_address['note_attributes']),
+		'shipping_lines' => empty($recharge_address['shipping_lines_override']) ? json_encode($recharge_address['original_shipping_lines']) : json_encode($recharge_address['shipping_lines_override']),
+		'updated_at' => date('Y-m-d H:i:s'),
+	]);
+	return $db->lastInsertId();
+}
+function insert_update_rc_subscription(PDO $db, $recharge_subscription, RechargeClient $rc, ShopifyClient $sc){
+	$stmt = $db->prepare("INSERT INTO rc_subscriptions (recharge_id, address_id, product_title, variant_title, price, quantity, status, product_id, variant_id, order_interval_unit, order_interval_frequency, charge_interval_frequency, order_day_of_month, order_day_of_week, properties, expire_after_charges, cancellation_reason, max_retries_reached, next_charge_scheduled_at, created_at, updated_at, cancelled_at) VALUES (:recharge_id, :address_id, :product_title, :variant_title, :price, :quantity, :status, :product_id, :variant_id, :order_interval_unit, :order_interval_frequency, :charge_interval_frequency, :order_day_of_month, :order_day_of_week, :properties, :expire_after_charges, :cancellation_reason, :max_retries_reached, :next_charge_scheduled_at, :created_at, :updated_at, :cancelled_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), address_id=:address_id, product_title=:product_title, variant_title=:variant_title, price=:price, quantity=:quantity, status=:status, product_id=:product_id, variant_id=:variant_id, order_interval_unit=:order_interval_unit, order_interval_frequency=:order_interval_frequency, charge_interval_frequency=:charge_interval_frequency, order_day_of_month=:order_day_of_month, order_day_of_week=:order_day_of_week, properties=:properties, expire_after_charges=:expire_after_charges, cancellation_reason=:cancellation_reason, max_retries_reached=:max_retries_reached, next_charge_scheduled_at=:next_charge_scheduled_at, created_at=:created_at, updated_at=:updated_at, cancelled_at=:cancelled_at");
+	$rc_address = get_rc_address($db, $recharge_subscription['address_id'], $rc, $sc);
+	$variant = get_variant($db, $recharge_subscription['shopify_variant_id']);
+	$stmt->execute([
+		'recharge_id' => $recharge_subscription['id'],
+		'address_id' => $rc_address['id'],
+		'product_id' => $variant['product_id'],
+		'variant_id' => $variant['id'],
+		'price' => $recharge_subscription['price'],
+		'quantity' => $recharge_subscription['quantity'],
+		'status' => $recharge_subscription['status'],
+		'product_title' => $recharge_subscription['product_title'],
+		'variant_title' => $recharge_subscription['variant_title'],
+		'order_interval_unit' => $recharge_subscription['order_interval_unit'],
+		'order_interval_frequency' => $recharge_subscription['order_interval_frequency'],
+		'charge_interval_frequency' => $recharge_subscription['charge_interval_frequency'],
+		'order_day_of_month' => $recharge_subscription['order_day_of_month'],
+		'order_day_of_week' => $recharge_subscription['order_day_of_week'],
+		'properties' => json_encode($recharge_subscription['properties']),
+		'expire_after_charges' => $recharge_subscription['expire_after_specific_number_of_charges'],
+		'cancellation_reason' => $recharge_subscription['cancellation_reason'],
+		'max_retries_reached' => $recharge_subscription['max_retries_reached'],
+		'next_charge_scheduled_at' => date('Y-m-d', strtotime($recharge_subscription['next_charge_scheduled_at'])),
+		'created_at' => $recharge_subscription['created_at'],
+		'updated_at' => $recharge_subscription['updated_at'],
+		'cancelled_at' => $recharge_subscription['cancelled_at'],
+	]);
+	return $db->lastInsertId();
 }
 if(!function_exists('divide')){
 	function divide($numerator, $denominator){
@@ -819,6 +881,92 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 		$schedule[$date]['items'] = $box['items'];
 	}
 	return $schedule;
+}
+$customer_cache = [];
+function get_customer(PDO $db, $shopify_customer_id, ShopifyClient $sc){
+	global $customer_cache;
+	if(!array_key_exists($shopify_customer_id, $customer_cache)){
+		$stmt = $db->prepare("SELECT * FROM customers WHERE shopify_id=?");
+		$stmt->execute([$shopify_customer_id]);
+		if($stmt->rowCount() > 0){
+			$customer_cache[$shopify_customer_id] = $stmt->fetch();
+		} else {
+			// Not in the DB, load it from Shopify
+			$customer = $sc->get('/admin/customers/'.$shopify_customer_id.'.json');
+			if(!empty($customer)){
+				insert_update_customer($db, $customer);
+				$stmt->execute([$shopify_customer_id]);
+				$customer_cache[$shopify_customer_id] = $stmt->fetch();
+			}
+		}
+	}
+	return $customer_cache[$shopify_customer_id];
+}
+$rc_customer_cache = [];
+function get_rc_customer(PDO $db, $recharge_customer_id, RechargeClient $rc, ShopifyClient $sc){
+	global $rc_customer_cache;
+	if(!array_key_exists($recharge_customer_id, $rc_customer_cache)){
+		$stmt = $db->prepare("SELECT * FROM rc_customers WHERE recharge_id=?");
+		$stmt->execute([$recharge_customer_id]);
+		if($stmt->rowCount() > 0){
+			$rc_customer_cache[$recharge_customer_id] = $stmt->fetch();
+		} else {
+			// Not in the DB, load it from ReCharge
+			$res = $rc->get('/customers/'.$recharge_customer_id);
+			if(!empty($res['customer'])){
+				insert_update_rc_customer($db, $res['customer'], $sc);
+				$stmt->execute([$recharge_customer_id]);
+				$rc_customer_cache[$recharge_customer_id] = $stmt->fetch();
+			}
+		}
+		$rc_customer_cache[$recharge_customer_id]['reason_payment_method_not_valid'] = $rc_customer_cache[$recharge_customer_id]['reason_payment_method_invalid'];
+	}
+	return $rc_customer_cache[$recharge_customer_id];
+}
+$rc_address_cache = [];
+function get_rc_address(PDO $db, $recharge_address_id, RechargeClient $rc, ShopifyClient $sc){
+	global $rc_address_cache;
+	if(!array_key_exists($recharge_address_id, $rc_address_cache)){
+		$stmt = $db->prepare("SELECT * FROM rc_addresses WHERE recharge_id=?");
+		$stmt->execute([$recharge_address_id]);
+		if($stmt->rowCount() < 1){
+			// Not in the DB, load it from ReCharge
+			$res = $rc->get('/addresses/'.$recharge_address_id);
+			if(!empty($res['address'])){
+				insert_update_rc_address($db, $res['address'], $rc, $sc);
+				$stmt->execute([$recharge_address_id]);
+			}
+		}
+		$rc_address_cache[$recharge_address_id] = $stmt->fetch();
+		$rc_address_cache[$recharge_address_id]['attributes'] = json_decode($rc_address_cache[$recharge_address_id]['attributes'], true);
+		$rc_address_cache[$recharge_address_id]['shipping_lines'] = json_decode($rc_address_cache[$recharge_address_id]['shipping_lines'], true);
+		$rc_address_cache[$recharge_address_id]['original_shipping_lines'] = $rc_address_cache[$recharge_address_id]['shipping_lines_override'] = $rc_address_cache[$recharge_address_id]['shipping_lines'];
+		$rc_address_cache[$recharge_address_id]['address1'] = $rc_address_cache[$recharge_address_id]['line1'];
+		$rc_address_cache[$recharge_address_id]['address2'] = $rc_address_cache[$recharge_address_id]['line2'];
+		$rc_address_cache[$recharge_address_id]['cart_note'] = $rc_address_cache[$recharge_address_id]['note'];
+		$rc_address_cache[$recharge_address_id]['note_attributes'] = $rc_address_cache[$recharge_address_id]['attributes'];
+	}
+	return $rc_address_cache[$recharge_address_id];
+}
+$rc_subscription_cache = [];
+function get_rc_subscription(PDO $db, $recharge_subscription_id, RechargeClient $rc, ShopifyClient $sc){
+	global $rc_subscription_cache;
+	if(!array_key_exists($recharge_subscription_id, $rc_subscription_cache)){
+		$stmt = $db->prepare("SELECT * FROM rc_subscriptions WHERE recharge_id=?");
+		$stmt->execute([$recharge_subscription_id]);
+		if($stmt->rowCount() < 1){
+			// Not in the DB, load it from ReCharge
+			$res = $rc->get('/subscriptions/'.$recharge_subscription_id);
+			if(!empty($res['subscription'])){
+				insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
+				$stmt->execute([$recharge_subscription_id]);
+			}
+		}
+		$rc_subscription_cache[$recharge_subscription_id] = $stmt->fetch();
+		$rc_subscription_cache[$recharge_subscription_id]['properties'] = json_decode($rc_subscription_cache[$recharge_subscription_id]['properties'], true);
+		$rc_subscription_cache[$recharge_subscription_id]['expire_after_specific_number_of_charges'] = $rc_subscription_cache[$recharge_subscription_id]['expire_after_charges'];
+	}
+	return $rc_subscription_cache[$recharge_subscription_id];
 }
 $product_cache = [];
 function get_product(PDO $db, $shopify_product_id){
