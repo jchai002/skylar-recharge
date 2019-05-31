@@ -40,7 +40,7 @@ $res = $rc->put('/addresses/'.$address['id'], [
 $res = $rc->get('/customers/'.$charge['customer_id']);
 $customer = $res['customer'];
 
-if($customer['stripe_customer_token'] == 'cus_EvyLMQQsXVkJTl'){
+if(!empty($customer['stripe_customer_token']) && $customer['stripe_customer_token'] == 'cus_EvyLMQQsXVkJTl'){
 	$res = $rc->put('/customers/'.$customer['id'], [
 		'stripe_customer_id' => null,
 	]);
