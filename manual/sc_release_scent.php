@@ -38,7 +38,7 @@ do {
 	echo "Rate: ".(count($charges) / (microtime(true) - $start_time))." charges/s".PHP_EOL;
 } while(count($res['charges']) == 250);
 echo "Total: ".count($charges).PHP_EOL;
-die();
+
 $start_time = microtime(true);
 echo "Starting updates".PHP_EOL;
 foreach($charges as $index=>$charge){
@@ -62,7 +62,7 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, $address_id, $ti
 //		echo "No Main Sub";
 		return false;
 	}
-	sc_delete_month_onetime($db, $rc, $address_id, $time);
+//	sc_delete_month_onetime($db, $rc, $address_id, $time);
 	// Look up monthly scent
 	$scent_info = sc_get_monthly_scent($db, $time, is_admin_address($address_id));
 	if(empty($scent_info)){

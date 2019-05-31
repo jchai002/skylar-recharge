@@ -627,14 +627,42 @@ function get_next_subscription_time($start_date, $order_interval_unit, $order_in
 	}
 	return $next_charge_time;
 }
+function get_next_month($now = null){
+	if(empty($now)){
+		$now = time();
+	}
+	$month = date('m', $now);
+	$year = date('Y', $now);
+	if($month == 12){
+		$year++;
+		$month = 1;
+	} else {
+		$month++;
+	}
+	return strtotime($year.'-'.$month.'-01');
+}
+function get_last_month($now = null){
+	if(empty($now)){
+		$now = time();
+	}
+	$month = date('m', $now);
+	$year = date('Y', $now);
+	if($month == 1){
+		$year--;
+		$month = 12;
+	} else {
+		$month--;
+	}
+	return strtotime($year.'-'.$month.'-01');
+}
 // Start Scent Club
 function sc_is_address_in_blackout(PDO $db, RechargeClient $rc, $address_id){
-	$next_month_scent = sc_get_monthly_scent($db, strtotime('next month'));
+	$next_month_scent = sc_get_monthly_scent($db, get_next_month());
 	if(!empty($next_month_scent)){
 		$res = $rc->get('/orders', [
 			'address_id' => $address_id,
-			'scheduled_at_min' => date('Y-m-t', strtotime('last month')),
-			'scheduled_at_max' => date('Y-m', strtotime('next month')).'-01',
+			'scheduled_at_min' => date('Y-m-t', get_last_month()),
+			'scheduled_at_max' => date('Y-m', get_next_month()).'-01',
 			'status' => 'SUCCESS'
 		]);
 		if(!empty($res['orders'])){
