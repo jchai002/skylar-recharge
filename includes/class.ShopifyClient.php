@@ -131,6 +131,7 @@ class ShopifyClient {
 
 		if (isset($response['errors']) or ($this->last_response_headers['http_status_code'] >= 400)){
 			//var_dump($response['errors']);
+			return false;
 			throw new ShopifyApiException($method, $path, $params, $this->last_response_headers, $response);
 		}
 
@@ -191,7 +192,8 @@ class ShopifyClient {
 		$error = curl_error($ch);
 		curl_close($ch);
 
-		if ($errno) throw new ShopifyCurlException($error, $errno);
+//		if ($errno) throw new ShopifyCurlException($error, $errno);
+		if ($errno) return false;
 		list($message_headers, $message_body) = preg_split("/\r\n\r\n|\n\n|\r\r/", $response, 2);
 		$this->last_response_headers = $this->curlParseHeaders($message_headers);
 
@@ -246,6 +248,7 @@ class ShopifyClient {
 	{
 		if ($this->last_response_headers == null)
 		{
+			return false;
 			throw new Exception('Cannot be called before an API call.');
 		}
 		$params = explode('/', $this->last_response_headers['http_x_shopify_shop_api_call_limit']);
