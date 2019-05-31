@@ -40,8 +40,8 @@ if(!empty($res['subscriptions'])){
 	$res_all[] = $res = $rc->get('/customers', [
 		'shopify_customer_id' => $_REQUEST['c'],
 	]);
-	$customer = $res['customers'][0];
-	if(!empty($customer)){
+	if(!empty($res['customers'])){
+		$customer = $res['customers'][0];
 		$rc_customer_id = $customer['id'];
 	}
 }
