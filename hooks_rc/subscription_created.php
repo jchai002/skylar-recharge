@@ -57,4 +57,12 @@ try {
 		'value_type' => 'integer'
 	]]), '', 'subscription_created');
 	var_dump($e->getResponse());
+} catch(Exception $e){
+	log_event($db, 'API_ERROR', json_encode($e), 'POST customers/'.$shopify_customer_id.'/metafields.json', json_encode(['metafield'=> [
+		'namespace' => 'scent_club',
+		'key' => 'active',
+		'value' => 1,
+		'value_type' => 'integer'
+	]]), '', 'subscription_created');
+	var_dump($e);
 }

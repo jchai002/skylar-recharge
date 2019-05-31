@@ -49,6 +49,7 @@ do {
 	echo "Rate: ".(count($charges) / (microtime(true) - $start_time))." charges/s".PHP_EOL;
 } while(count($res['charges']) == 250);
 
+echo "Total: ".count($charges).PHP_EOL;
 
 $start_time = microtime(true);
 echo "Starting updates".PHP_EOL;
@@ -59,7 +60,7 @@ foreach($charges as $index=>$charge){
 	]);
 	if(empty($res['charge'])){
 		echo "Error: ";
-		print_r($res);
+		print_r($res['error']);
 		continue;
 	}
 	echo $res['charge']['scheduled_at'].PHP_EOL;
