@@ -15,6 +15,10 @@ if(!empty($_REQUEST['id'])){
 $subscription = $res['subscription'];
 var_dump($subscription);
 
+if(empty($subscription['address_id'])){
+	die();
+}
+
 $product = get_product($db, $subscription['shopify_product_id']);
 if(!is_scent_club($product)){
 	die();
