@@ -88,7 +88,7 @@ foreach($order['line_items'] as $line_item){
 	}
 }
 echo $scent_club_hold ? 'Scent Club Hold'.PHP_EOL : '';
-if($customer['state'] != 'enabled'){
+if(!empty($customer) && $customer['state'] != 'enabled'){
 	try {
 		$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
 		if(empty($res)){
