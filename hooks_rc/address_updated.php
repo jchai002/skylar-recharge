@@ -18,6 +18,11 @@ if(empty($res['address'])){
 	exit;
 }
 $address = $res['address'];
+try {
+	insert_update_rc_address($db, $address, $rc, $sc);
+} catch(\Throwable $e){
+	log_event($db, 'EXCEPTION', json_encode($e), 'address_updated_insert', $address, '', 'webhook');
+}
 
 // Get next charge for this subscription
 $res = $rc->get('/charges', [

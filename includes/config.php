@@ -541,7 +541,11 @@ function insert_update_customer(PDO $db, $shopify_customer){
 }
 function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $sc){
 	$stmt = $db->prepare("INSERT INTO rc_customers (recharge_id, customer_id, email, first_name, last_name, processor_type, status, has_valid_payment_method, reason_payment_method_invalid, updated_at) VALUES (:recharge_id, :customer_id, :email, :first_name, :last_name, :processor_type, :status, :has_valid_payment_method, :reason_payment_method_invalid, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), recharge_id=:recharge_id, customer_id=:customer_id, email=:email, first_name=:first_name, last_name=:last_name, processor_type=:processor_type, status=:status, has_valid_payment_method=:has_valid_payment_method, reason_payment_method_invalid=:reason_payment_method_invalid, updated_at=:updated_at");
-	$customer = get_customer($db, $recharge_customer['shopify_customer_id'], $sc);
+	if(empty($recharge_customer['shopify_customer_id'])){
+		$customer = ['id'=>null];
+	} else {
+		$customer = get_customer($db, $recharge_customer['shopify_customer_id'], $sc);
+	}
 	$stmt->execute([
 		'recharge_id' => $recharge_customer['id'],
 		'customer_id' => $customer['id'],
@@ -591,19 +595,19 @@ function insert_update_rc_subscription(PDO $db, $recharge_subscription, Recharge
 		'status' => $recharge_subscription['status'],
 		'product_title' => $recharge_subscription['product_title'],
 		'variant_title' => $recharge_subscription['variant_title'],
-		'order_interval_unit' => $recharge_subscription['order_interval_unit'],
-		'order_interval_frequency' => $recharge_subscription['order_interval_frequency'],
-		'charge_interval_frequency' => $recharge_subscription['charge_interval_frequency'],
-		'order_day_of_month' => $recharge_subscription['order_day_of_month'],
-		'order_day_of_week' => $recharge_subscription['order_day_of_week'],
+		'order_interval_unit' => $recharge_subscription['order_interval_unit'] ?? null,
+		'order_interval_frequency' => $recharge_subscription['order_interval_frequency'] ?? null,
+		'charge_interval_frequency' => $recharge_subscription['charge_interval_frequency'] ?? null,
+		'order_day_of_month' => $recharge_subscription['order_day_of_month'] ?? null,
+		'order_day_of_week' => $recharge_subscription['order_day_of_week'] ?? null,
 		'properties' => json_encode($recharge_subscription['properties']),
-		'expire_after_charges' => $recharge_subscription['expire_after_specific_number_of_charges'],
-		'cancellation_reason' => $recharge_subscription['cancellation_reason'],
-		'max_retries_reached' => $recharge_subscription['max_retries_reached'],
+		'expire_after_charges' => $recharge_subscription['expire_after_specific_number_of_charges'] ?? null,
+		'cancellation_reason' => $recharge_subscription['cancellation_reason'] ?? null,
+		'max_retries_reached' => $recharge_subscription['max_retries_reached'] ?? null,
 		'next_charge_scheduled_at' => date('Y-m-d', strtotime($recharge_subscription['next_charge_scheduled_at'])),
 		'created_at' => $recharge_subscription['created_at'],
 		'updated_at' => $recharge_subscription['updated_at'],
-		'cancelled_at' => $recharge_subscription['cancelled_at'],
+		'cancelled_at' => $recharge_subscription['cancelled_at'] ?? null,
 	]);
 	return $db->lastInsertId();
 }

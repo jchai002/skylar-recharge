@@ -5,8 +5,6 @@ $fh = fopen(__DIR__."/orders_export.csv", 'r');
 
 $titles = array_map('strtolower',fgetcsv($fh));
 
-//print_r($titles);
-
 $order = [];
 $order_id = 0;
 
