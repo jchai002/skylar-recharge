@@ -18,14 +18,27 @@ if(!empty($_REQUEST['id'])){
 	}
 	$subscription = $res['subscription'];
 }
+$subscription = $res['subscription'];
+var_dump($subscription);
 
-// Get next charge for this subscription
-$res = $rc->get('/charges', [
-	'subscription_id' => $subscription['id'],
-	'status' => 'QUEUED',
-]);
-if(empty($res['charges'])){
-	exit;
+try {
+	insert_update_rc_subscription($db, $subscription, $rc, $sc);
+} catch(\Throwable $e){
+	log_event($db, 'EXCEPTION', json_encode($e), 'subscription_all_insert', $subscription, '', 'webhook');
 }
-$charges = $res['charges'];
-update_charge_discounts($db, $rc, $charges);
+
+
+try {
+	// Get next charge for this subscription
+	$res = $rc->get('/charges', [
+		'subscription_id' => $subscription['id'],
+		'status' => 'QUEUED',
+	]);
+	if(empty($res['charges'])){
+		exit;
+	}
+	$charges = $res['charges'];
+	update_charge_discounts($db, $rc, $charges);
+} catch(\Throwable $e){
+	log_event($db, 'EXCEPTION', json_encode($e), 'subscription_all_rest', $subscription, '', 'webhook');
+}
