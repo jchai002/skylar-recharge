@@ -20,6 +20,10 @@ $needed_hooks = [
 		'topic' => 'address/updated',
 		'address' => 'https://ec2production.skylar.com/hooks_rc/address_updated.php',
 	],
+	[
+		'topic' => 'customer/updated',
+		'address' => 'https://ec2production.skylar.com/hooks_rc/customer_updated.php',
+	],
 	/*
 	[
 		'topic' => 'subscription/created',

@@ -11,7 +11,6 @@ $scent = null;
 
 $start_date = date('Y-m-t');
 $end_date = date('Y-m', get_next_month(get_next_month())).'-01';
-$end_date = '2019-06-03';
 
 echo "$start_date to $end_date".PHP_EOL;
 

@@ -15,10 +15,18 @@ if(!empty($_REQUEST['id'])){
 	log_event($db, 'webhook', $res['subscription']['id'], 'subscription_created', $data);
 }
 $subscription = $res['subscription'];
+var_dump($subscription);
+
+try {
+	insert_update_rc_subscription($db, $subscription, $rc, $sc);
+} catch(\Throwable $e){
+	log_event($db, 'EXCEPTION', json_encode($e), 'subscription_created_insert', $subscription, '', 'webhook');
+}
+
+
 if($subscription['status'] != 'ACTIVE'){
 	die();
 }
-var_dump($subscription);
 
 $product = get_product($db, $subscription['shopify_product_id']);
 if(!is_scent_club($product)){
@@ -58,7 +66,7 @@ try {
 		'value_type' => 'integer'
 	]]), '', 'subscription_created');
 	var_dump($e->getResponse());
-} catch(Exception $e){
+} catch(\Throwable $e){
 	log_event($db, 'API_ERROR', json_encode($e), 'POST customers/'.$shopify_customer_id.'/metafields.json', json_encode(['metafield'=> [
 		'namespace' => 'scent_club',
 		'key' => 'active',
