@@ -20,5 +20,5 @@ var_dump($customer);
 try {
 	insert_update_rc_customer($db, $customer, $sc);
 } catch(\Throwable $e){
-	log_event($db, 'EXCEPTION', [$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()], 'customer_updated_insert', $customer, '', 'webhook');
+	log_event($db, 'EXCEPTION', json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'customer_updated_insert', json_encode($customer), '', 'webhook');
 }
