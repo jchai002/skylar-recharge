@@ -1,8 +1,8 @@
 <?php
-// currently inactive
 require_once(__DIR__.'/../includes/config.php');
 
 $rc = new RechargeClient();
+$sc = new ShopifyClient();
 // get $charge from webhook
 if(!empty($_REQUEST['id'])){
 	// cheaty since we're just using it to look up the charge
