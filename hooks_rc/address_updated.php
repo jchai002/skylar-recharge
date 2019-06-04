@@ -1,10 +1,8 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-
-// Remove sample discount from address if they have one
-
 $rc = new RechargeClient();
+$sc = new ShopifyClient();
 if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/addresses/'.$_REQUEST['id']);
 } else {
