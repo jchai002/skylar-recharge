@@ -20,7 +20,7 @@ var_dump($subscription);
 try {
 	insert_update_rc_subscription($db, $subscription, $rc, $sc);
 } catch(\Throwable $e){
-	log_event($db, 'EXCEPTION', json_encode($e), 'subscription_created_insert', $subscription, '', 'webhook');
+	log_event($db, 'EXCEPTION', [$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()], 'subscription_created_insert', $subscription, '', 'webhook');
 }
 
 
@@ -67,7 +67,7 @@ try {
 	]]), '', 'subscription_created');
 	var_dump($e->getResponse());
 } catch(\Throwable $e){
-	log_event($db, 'API_ERROR', json_encode($e), 'POST customers/'.$shopify_customer_id.'/metafields.json', json_encode(['metafield'=> [
+	log_event($db, 'API_ERROR', [$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()], 'POST customers/'.$shopify_customer_id.'/metafields.json', json_encode(['metafield'=> [
 		'namespace' => 'scent_club',
 		'key' => 'active',
 		'value' => 1,

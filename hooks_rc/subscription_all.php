@@ -24,7 +24,7 @@ var_dump($subscription);
 try {
 	insert_update_rc_subscription($db, $subscription, $rc, $sc);
 } catch(\Throwable $e){
-	log_event($db, 'EXCEPTION', json_encode($e), 'subscription_all_insert', $subscription, '', 'webhook');
+	log_event($db, 'EXCEPTION', [$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()], 'subscription_all_insert', $subscription, '', 'webhook');
 }
 
 
@@ -40,5 +40,5 @@ try {
 	$charges = $res['charges'];
 	update_charge_discounts($db, $rc, $charges);
 } catch(\Throwable $e){
-	log_event($db, 'EXCEPTION', json_encode($e), 'subscription_all_rest', $subscription, '', 'webhook');
+	log_event($db, 'EXCEPTION', [$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()], 'subscription_all_rest', json_encode($subscription), '', 'webhook');
 }
