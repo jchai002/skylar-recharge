@@ -1,6 +1,6 @@
 <?php
 
-global $rc;
+global $rc, $sc;
 $res = $rc->get('/subscriptions', [
 	'shopify_customer_id' => $_REQUEST['c'],
 	'status' => 'ACTIVE',
