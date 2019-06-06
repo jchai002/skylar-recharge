@@ -76,7 +76,7 @@ try {
 
 ?>
 <!--
-<?php print_r($upcoming_shipments); ?>
+<?php print_r($charges); ?>
 -->
 {% assign portal_page = 'my_box' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
