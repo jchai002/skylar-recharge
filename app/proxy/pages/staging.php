@@ -33,7 +33,6 @@ if(!empty($rc_customer_id)){
 	$orders = $res['orders'];
 	$res = $rc->get('/charges', [
 		'customer_id' => $rc_customer_id,
-		'date_min' => date('Y-m-d'),
 	]);
 	$charges = $res['charges'];
 	$res = $rc->get('/onetimes', [
