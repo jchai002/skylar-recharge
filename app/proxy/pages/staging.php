@@ -67,7 +67,11 @@ foreach($upcoming_shipments as $shipment_date => $upcoming_shipment){
 $recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_REQUEST['c']));
 sc_conditional_billing($rc, $_REQUEST['c']);
 
-$rc_customer = get_rc_customer($db, $rc_customer_id, $rc, $sc);
+try {
+	$rc_customer = get_rc_customer($db, $rc_customer_id, $rc, $sc);
+} catch(\Throwable $e){
+	print_r($e);
+}
 
 ?>
 <!--
