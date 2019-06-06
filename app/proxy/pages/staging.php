@@ -52,6 +52,9 @@ global $db;
 $months = empty($more) ? 4 : $more;
 $upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges, strtotime(date('Y-m-t',strtotime("+$months months"))));
 $upcoming_box = false;
+$error_charges = array_filter($charges, function($charge){
+	return $charge['status'] == 'ERROR';
+});
 foreach($upcoming_shipments as $shipment_date => $upcoming_shipment){
 	foreach($upcoming_shipment['items'] as $item){
 		if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
@@ -89,6 +92,9 @@ $rc_customer = get_rc_customer($db, $rc_customer_id, $rc, $sc);
 			<div class="sc-portal-innercontainer sc-upcoming-shipment">
 				<div class="sc-portal-title">Your Next Skylar Box</div>
 				<div class="sc-portal-subtitle">The next box that you'll be charged for</div>
+				<?php if(!empty($error_charges)){ ?>
+					<div class="sc-error-box">Uh oh! Your payment method was not accepted. <a href="/tools/skylar/billing?{{ account_query }}">Please update it here</a></a></div>
+				<?php } ?>
 				<div class="sc-box-info">
 					<span class="sc-box-shiplabel">Shipping Date</span>
 					<span class="sc-box-date sc-edit-date"><?=date('F j', $upcoming_box['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
