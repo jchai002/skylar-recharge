@@ -1,6 +1,7 @@
 <?php
 
-global $rc, $sc;
+$sc = new ShopifyClient();
+global $rc;
 $res = $rc->get('/subscriptions', [
 	'shopify_customer_id' => $_REQUEST['c'],
 	'status' => 'ACTIVE',
