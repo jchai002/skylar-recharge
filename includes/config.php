@@ -48,8 +48,8 @@ $multi_bottle_discounts = [
 	4 => 112,
 ];
 
-if (!function_exists('getallheaders')){ 
-    function getallheaders(){ 
+if (!function_exists('getallheaders')){
+    function getallheaders(){
         $headers = [];
        foreach ($_SERVER as $name => $value){
            if (substr($name, 0, 5) == 'HTTP_'){
