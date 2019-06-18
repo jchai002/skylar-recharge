@@ -791,6 +791,18 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			if(empty($item['product_title']) && !empty($item['title'])){
 				$item['product_title'] = $item['title'];
 			}
+
+            if(is_scent_club(get_product($db, $item['shopify_product_id']))){
+                $swap = sc_get_monthly_scent($db, strtotime($charge['scheduled_at']), is_admin_address($item['address_id']));
+                $item['swap'] = $swap;
+                if(!empty($swap)){
+                    $item['handle'] = $swap['handle'];
+                    $item['shopify_product_id'] = $swap['shopify_product_id'];
+                    $item['shopify_variant_id'] = $swap['shopify_variant_id'];
+                    $item['product_title'] = $swap['product_title'];
+                    $item['variant_title'] = $swap['variant_title'];
+                }
+            }
 			$schedule[$date]['charge'] = $charge;
 			$schedule[$date]['items'][] = $item;
 		}
