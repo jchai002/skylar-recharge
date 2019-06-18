@@ -1204,6 +1204,9 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 	]);
 
 	$day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
+    if($day_of_month == '1'){
+        $day_of_month = date('d', offset_date_skip_weekend(strtotime($next_charge_month.'-01')));
+    }
 	$max_day_of_month = date('t', strtotime($next_charge_month.'-01'));
 	$day_of_month = $day_of_month > $max_day_of_month ? $max_day_of_month : $day_of_month;
 	$res = $rc->post('/subscriptions/'.$main_sub['id'].'/set_next_charge_date',[
