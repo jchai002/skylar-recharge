@@ -27,11 +27,13 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 //var_dump($main_sub);
 $day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
 if(empty($main_sub)){
+	echo "no main sub".PHP_EOL;
 	foreach($charge['line_items'] as $line_item){
 		$product = get_product($db, $line_item['shopify_product_id']);
 		$next_charge_date = date('Y-m', strtotime('+1 month')).'-'.$day_of_month.' 00:00:00';
 //		var_dump($product);
 		if(is_scent_club($product)){
+			echo "scent club product".PHP_EOL;
 			$res = $rc->post('/subscriptions', [
 				'address_id' => $charge['address_id'],
 				'next_charge_scheduled_at' => $next_charge_date,
@@ -74,7 +76,7 @@ if(empty($main_sub)){
 			}
 
 			$props['email'] = $charge['email'];
-			$props['$source'] = $charge['checkout'];
+			$props['$source'] = 'checkout';
 
 			$ch = curl_init('https://a.klaviyo.com/api/v2/list/KLHcef/subscribe');
 			curl_setopt_array($ch, [
