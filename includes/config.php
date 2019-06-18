@@ -1222,7 +1222,7 @@ function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time
 	$res = $rc->get('/onetimes/', [
 		'address_id' => $address_id,
 	]);
-	$monthly_scent = sc_get_monthly_scent($db, $time);
+	$monthly_scent = sc_get_monthly_scent($db, $time, is_admin_address($address_id));
 	foreach($res['onetimes'] as $onetime){
 		$ship_month = date('Y-m',strtotime($onetime['next_charge_scheduled_at']));
 		if($ship_month != $delete_month){
