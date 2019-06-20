@@ -82,7 +82,7 @@ foreach($order['line_items'] as $line_item){
 			continue;
 		}
 		$sc_product = $stmt->fetch();
-		if(time() < strtotime($sc_product['sc_date'])){
+		if(time() < strtotime($sc_product['sc_date']) + 10*60*60){ // Hold until 10 am
 			$scent_club_hold = true;
 		}
 	}
