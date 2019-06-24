@@ -75,7 +75,7 @@ $is_scent_club = false;
 $scent_club_hold = false;
 $stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sku=?");
 foreach($order['line_items'] as $line_item){
-	if(is_scent_club(get_product($db, $line_item['product_id']))){
+	if(is_scent_club_any(get_product($db, $line_item['product_id']))){
 		$is_scent_club = true;
 		$stmt->execute([$line_item['sku']]);
 		if($stmt->rowCount() < 1){
