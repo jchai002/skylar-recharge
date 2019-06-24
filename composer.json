@@ -2,7 +2,9 @@
   "require": {
     "vlucas/phpdotenv": "^2.5",
     "klaviyo/php-sdk": "dev-master",
-    "stripe/stripe-php": "^6.29"
+    "stripe/stripe-php": "^6.29",
+    "ext-curl": "*",
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": { "": "src/" }
