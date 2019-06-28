@@ -24,7 +24,7 @@ do {
 		'status' => 'QUEUED',
 		'limit' => 250,
 		'page' => $page,
-//		'address_id' => '29806558',
+//        'address_id' => '29806558',
 	]);
 	foreach($res['charges'] as $charge){
 		foreach($charge['line_items'] as $line_item){
@@ -43,7 +43,11 @@ $start_time = microtime(true);
 echo "Starting updates".PHP_EOL;
 foreach($charges as $index=>$charge){
 	echo "Swapping on address ".$charge['address_id']." ";
-	sc_swap_to_monthly_custom($db, $rc, $charge['address_id'], strtotime($charge['scheduled_at']));
+	$res = sc_swap_to_monthly_custom($db, $rc, $charge['address_id'], strtotime($charge['scheduled_at']));
+	if($res == 'cancel'){
+	    echo "Done.".PHP_EOL;
+	    continue;
+    }
 	echo sc_calculate_next_charge_date($db, $rc, $charge['address_id']).PHP_EOL;
 	if($index % 20 == 0){
 		echo "Updated: ".$index."/".count($charges)." Rate: ".($index / (microtime(true) - $start_time))." charges/s".PHP_EOL;
@@ -79,11 +83,21 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, $address_id, $ti
 		'product_title' => 'Skylar Scent Club',
 		'variant_title' => $scent_info['variant_title'],
 	]);
+	if(!empty($res['errors'])){
+	    if(!empty($res['errors']['general']) && $res['errors']['general'] == 'Must remove/fix existing error charges first'){
+	        echo "Invalid card - canceling main sub... ";
+	        $res = $rc->post('/subscriptions/'.$main_sub['id'].'/cancel', [
+	            'cancellation_reason' => 'Auto-cancelled - Invalid Payment Method Not Fixed',
+                'send_email' => true,
+            ]);
+	        return "cancel";
+        }
+    }
 	//print_r($res);
 	if(empty($res['onetime'])){
 		print_r($res);
 		sleep(5);
-		return;
+		return false;
 	}
 	return $res['onetime'];
 }

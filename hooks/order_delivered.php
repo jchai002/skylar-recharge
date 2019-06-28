@@ -12,17 +12,18 @@ if(!empty($headers['X-Shopify-Shop-Domain'])){
 if(empty($shop_url)){
 	$shop_url = 'maven-and-muse.myshopify.com';
 }
-$sc = new ShopifyPrivateClient($shop_url);
+$sc = new ShopifyClient();
 
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
 } else {
 	$data = file_get_contents('php://input');
-	$fulfillment_event = json_decode($data, true);
-	if($fulfillment_event['status'] != 'delivered'){
+	$fulfillment = json_decode($data, true);
+	insert_update_fulfillment($db, $fulfillment);
+	if($fulfillment['status'] != 'delivered'){
 		die();
 	}
-	$order = $sc->call('GET', '/admin/orders/'.intval($fulfillment_event['order_id']).'.json');
+	$order = $sc->call('GET', '/admin/orders/'.intval($fulfillment['order_id']).'.json');
 }
 
 $cart_attributes = [];

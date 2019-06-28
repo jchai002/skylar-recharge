@@ -539,6 +539,29 @@ function insert_update_customer(PDO $db, $shopify_customer){
 	$customer_id = $db->lastInsertId();
 	return $customer_id;
 }
+function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
+    $stmt = $db->prepare("SELECT delivered_at FROM fulfillments WHERE shopify_id = ?");
+    $stmt->execute([$shopify_fulfillment['id']]);
+    $delivered_at = $stmt->fetchColumn();
+    if(empty($delivered_at) && $shopify_fulfillment['shipment_status'] == 'delivered'){
+        $delivered_at = $shopify_fulfillment['updated_at'];
+    }
+    $stmt = $db->prepare("INSERT INTO fulfillments (shopify_id, name, service, shipment_status, status, delivered_at) VALUES (:shopify_id, :name, :service, :shipment_status, :status, :delivered_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), name=:name, service=:service, shipment_status=:shipment_status, status=:status, delivered_at=:delivered_at");
+    $stmt->execute([
+        'shopify_id' => $shopify_fulfillment['id'],
+        'name' => $shopify_fulfillment['name'],
+        'service' => $shopify_fulfillment['service'],
+        'shipment_status' => $shopify_fulfillment['shipment_status'],
+        'status' => $shopify_fulfillment['status'],
+        'delivered_at' => $delivered_at,
+    ]);
+    $id = $db->lastInsertId();
+    $stmt = $db->prepare("UPDATE order_line_items SET fulfillment_id = ? WHERE shopify_id=?");
+    foreach($shopify_fulfillment['line_items'] as $line_item){
+        $stmt->execute([$id, $line_item['id']]);
+    }
+    return $id;
+}
 function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $sc){
 	$stmt = $db->prepare("INSERT INTO rc_customers (recharge_id, customer_id, email, first_name, last_name, processor_type, status, has_valid_payment_method, reason_payment_method_invalid, updated_at) VALUES (:recharge_id, :customer_id, :email, :first_name, :last_name, :processor_type, :status, :has_valid_payment_method, :reason_payment_method_invalid, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), recharge_id=:recharge_id, customer_id=:customer_id, email=:email, first_name=:first_name, last_name=:last_name, processor_type=:processor_type, status=:status, has_valid_payment_method=:has_valid_payment_method, reason_payment_method_invalid=:reason_payment_method_invalid, updated_at=:updated_at");
 	if(empty($recharge_customer['shopify_customer_id'])){
@@ -1436,4 +1459,50 @@ function price_without_trailing_zeroes($price = 0){
 		return number_format($price);
 	}
 	return number_format($price, 2);
+}
+function klaviyo_send_transactional_email(PDO $db, $to_email, $email_type, $properties=[]){
+    $properties['email_type'] = $email_type;
+    $stmt = $db->prepare("SELECT 1 FROM transactional_emails_sent WHERE email_type=:email_type AND to_address=:to_email AND DATE(date_created) = '".date('Y-m-d')."'");
+    $stmt->execute([
+        'email_type' => $email_type,
+        'to_email' => $to_email,
+    ]);
+    if($stmt->rowCount() > 0){
+        return false;
+    }
+    $res = klaviyo_send_event([
+        'token' => "KvQM7Q",
+        'event' => 'Sent Transactional Email',
+        'customer_properties' => [
+            '$email' => $to_email,
+        ],
+        'properties' => $properties,
+    ]);
+    $stmt = $db->prepare("INSERT INTO transactional_emails_sent (email_type, to_address, properties, response, date_created) VALUES (:email_type, :to_email, :properties, :response, :date_created)");
+    $stmt->execute([
+        'email_type' => $email_type,
+        'to_email' => $to_email,
+        'properties' => json_encode($properties),
+        'response' => json_encode($res),
+        'date_created' => date('Y-m-d H:i:s'),
+    ]);
+    return [
+        'id' => $db->lastInsertId(),
+        'email_type' => $email_type,
+        'to_email' => $to_email,
+        'properties' => $properties,
+        'response' => $res,
+        'date_created' => date('Y-m-d H:i:s'),
+    ];
+}
+function klaviyo_send_event($data){
+    if(empty($data['token'])){
+        $data['token'] = 'KvQM7Q';
+    }
+    $ch = curl_init("https://a.klaviyo.com/api/track?data=".base64_encode(json_encode($data)));
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+    ]);
+    $res = json_decode(curl_exec($ch));
+    return $res;
 }
