@@ -24,7 +24,7 @@ if(empty($order)){
 	die('no data');
 }
 
-echo insert_update_order($db, $order);
+echo insert_update_order($db, $order, $sc);
 
 $alert_id = 2;
 $smother_message = false;
