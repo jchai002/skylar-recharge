@@ -26,11 +26,11 @@ do {
 		'status' => 'QUEUED',
 		'limit' => 250,
 		'page' => $page,
-//		'address_id' => '32968759',
+//		'address_id' => '29806558',
 	]);
 	foreach($res['charges'] as $charge){
 		foreach($charge['line_items'] as $line_item){
-			if(is_scent_club_any(get_product($db, $line_item['shopify_product_id']))){
+			if($line_item['sku'] == '10213904-112' && is_scent_club_month(get_product($db, $line_item['shopify_product_id']))){
 				$charges[] = $charge;
 				break;
 			}
@@ -39,8 +39,10 @@ do {
 	echo "Adding ".count($res['charges'])." to array - total: ".count($charges).PHP_EOL;
 	echo "Rate: ".(count($charges) / (microtime(true) - $start_time))." charges/s".PHP_EOL;
 } while(count($res['charges']) == 250);
-
+print_r(array_column($charges, 'address_id'));
 echo "Total: ".count($charges).PHP_EOL;
+
+//exit;
 
 $processed_addresses = [];
 $start_time = microtime(true);
