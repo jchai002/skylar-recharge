@@ -1460,6 +1460,11 @@ function price_without_trailing_zeroes($price = 0){
 	}
 	return number_format($price, 2);
 }
+// Autocharge
+function is_autocharge_product($product){
+    return $product['shopify_id'] == 3875807395927;
+}
+// Klaviyo
 function klaviyo_send_transactional_email(PDO $db, $to_email, $email_type, $properties=[]){
     $properties['email_type'] = $email_type;
     $stmt = $db->prepare("SELECT 1 FROM transactional_emails_sent WHERE email_type=:email_type AND to_address=:to_email AND DATE(date_created) = '".date('Y-m-d')."'");
