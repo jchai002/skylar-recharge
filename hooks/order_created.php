@@ -137,6 +137,14 @@ if(empty($rc_order['orders'])){
 }
 $rc_order = $rc_order['orders'][0];
 
+// Insert any autocharge items
+foreach($order['line_items'] as $line_item){
+    if(is_autocharge_product(get_product($db, $line_item['product_id']))){
+        $stmt = $db->prepare("INSERT IGNORE INTO ac_orders (order_line_item_id) VALUES (?)");
+        $stmt->execute([$line_item['id']]);
+    }
+}
+
 // Tag orders that aren't samples as either onetime or subscription, with subscription
 $order_tags = explode(',',$order['tags']);
 $res = $rc->get('/subscriptions/', ['address_id' => $rc_order['address_id']]);
@@ -183,6 +191,8 @@ if($update_order){
 	var_dump($res);
 }
 
+
+// Legacy Autocharge
 // Get subs we need to create for this order
 $has_subscription_line_item = false;
 $subs_to_create = [];
