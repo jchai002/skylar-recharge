@@ -539,19 +539,28 @@ function insert_update_customer(PDO $db, $shopify_customer){
 	$customer_id = $db->lastInsertId();
 	return $customer_id;
 }
-function insert_update_fulfillments(PDO $db, $shopify_fulfillment){
-    $stmt = $db->prepare("INSERT INTO fulfillments (shopify_id, name, service, shipment_status, status) VALUES (:shopify_id, :name, :service, :shipment_status, :status) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), name=:name, service=:service, shipment_status=:shipment_status, status=:status");
+function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
+    $stmt = $db->prepare("SELECT delivered_at FROM fulfillments WHERE shopify_id = ?");
+    $stmt->execute([$shopify_fulfillment['id']]);
+    $delivered_at = $stmt->fetchColumn();
+    if(empty($delivered_at) && $shopify_fulfillment['shipment_status'] == 'delivered'){
+        $delivered_at = $shopify_fulfillment['updated_at'];
+    }
+    $stmt = $db->prepare("INSERT INTO fulfillments (shopify_id, name, service, shipment_status, status, delivered_at) VALUES (:shopify_id, :name, :service, :shipment_status, :status, :delivered_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), name=:name, service=:service, shipment_status=:shipment_status, status=:status, delivered_at=:delivered_at");
     $stmt->execute([
         'shopify_id' => $shopify_fulfillment['id'],
         'name' => $shopify_fulfillment['name'],
+        'service' => $shopify_fulfillment['service'],
         'shipment_status' => $shopify_fulfillment['shipment_status'],
         'status' => $shopify_fulfillment['status'],
+        'delivered_at' => $delivered_at,
     ]);
     $id = $db->lastInsertId();
     $stmt = $db->prepare("UPDATE order_line_items SET fulfillment_id = ? WHERE shopify_id=?");
     foreach($shopify_fulfillment['line_items'] as $line_item){
         $stmt->execute([$id, $line_item['id']]);
     }
+    return $id;
 }
 function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $sc){
 	$stmt = $db->prepare("INSERT INTO rc_customers (recharge_id, customer_id, email, first_name, last_name, processor_type, status, has_valid_payment_method, reason_payment_method_invalid, updated_at) VALUES (:recharge_id, :customer_id, :email, :first_name, :last_name, :processor_type, :status, :has_valid_payment_method, :reason_payment_method_invalid, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), recharge_id=:recharge_id, customer_id=:customer_id, email=:email, first_name=:first_name, last_name=:last_name, processor_type=:processor_type, status=:status, has_valid_payment_method=:has_valid_payment_method, reason_payment_method_invalid=:reason_payment_method_invalid, updated_at=:updated_at");
