@@ -713,11 +713,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 
 	$max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
 
-	$products = [];
-
-	$stmt_get_swap = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=?");
-
-	/*
+	/* // Because they show up as charges?
 	foreach($onetimes as $onetime){
 		$order_time = strtotime($onetime['next_charge_scheduled_at']);
 		if(empty($order_time)){
@@ -1463,8 +1459,25 @@ function price_without_trailing_zeroes($price = 0){
 	return number_format($price, 2);
 }
 // Autocharge
-function is_autocharge_product($product){
-    return $product['shopify_id'] == 3875807395927;
+function is_ac_initial_product($sample_product){
+    return $sample_product['shopify_id'] == 3875807395927; // Will probably have to be product type
+}
+function is_ac_followup_lineitem($followup_line_item){
+	if(empty($followup_line_item['properties'])){
+		return false;
+	}
+	if(!empty($followup_line_item['_ac_product'])){
+		return true;
+	}
+	// Check if it's an indexed array (with name and value properties)
+	if(array_keys($followup_line_item['properties'][0]) == 0){
+		foreach($followup_line_item['properties'] as $property){
+			if($property['name'] == '_ac_product' && !empty($property['value'])){
+				return true;
+			}
+		}
+	}
+	return false;
 }
 // Klaviyo
 function klaviyo_send_transactional_email(PDO $db, $to_email, $email_type, $properties=[]){
