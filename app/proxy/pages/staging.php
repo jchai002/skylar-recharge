@@ -44,9 +44,9 @@ if(!empty($rc_customer_id)){
 			$onetimes[] = $onetime;
 		}
 	}
-	echo "<!-- ";
+//	echo "<!-- ";
 //	print_r($res);
-	echo " -->";
+//	echo " -->";
 }
 global $db;
 $months = empty($more) ? 4 : $more;
@@ -65,6 +65,7 @@ $recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <!--
+<?php print_r($upcoming_shipments['2019-08-01']['items'][1]['properties']); ?>
 <?php print_r($upcoming_shipments); ?>
 -->
 {% assign portal_page = 'my_box' %}
