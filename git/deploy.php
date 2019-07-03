@@ -1,5 +1,5 @@
 <?php
-
+print_r($_REQUEST);
 if(empty($_REQUEST['ref'])){
 	echo "Empty Payload";
 	exit;
