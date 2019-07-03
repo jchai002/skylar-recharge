@@ -58,7 +58,7 @@ foreach($webhooks_required as $req_hook){
 		}
 	}
 	if(!$hook_exists){
-		echo "Creating webhook ".$req_hook['type'];
+		echo "Creating webhook ".$req_hook['type'].PHP_EOL;
 		$response = $sc->call("POST", "/admin/webhooks.json", ["webhook" => ["topic"=>$req_hook['type'], "address"=>$req_hook['address'], "format"=>"json"]]);
 		print_r($response);
 	}
