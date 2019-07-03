@@ -1,17 +1,14 @@
 <?php
-$hook_data = file_get_contents('php://input');
-if(!empty($hook_data)){
-	$hook_data = json_decode($hook_data, true);
-}
-if(empty($hook_data)){
+
+if(empty($_REQUEST['ref'])){
 	echo "Empty Payload";
 	exit;
 }
-if(strpos(getcwd(), 'production') !== false && $hook_data['ref'] != 'refs/heads/master'){
+if(strpos(getcwd(), 'production') !== false && $_REQUEST['ref'] != 'refs/heads/master'){
 	echo "Production / not master branch";
 	exit;
 }
-if(strpos(getcwd(), 'staging') !== false && $hook_data['ref'] != 'refs/heads/staging'){
+if(strpos(getcwd(), 'staging') !== false && $_REQUEST['ref'] != 'refs/heads/staging'){
 	echo "Staging / not staging branch";
 	exit;
 }
