@@ -137,6 +137,22 @@ class SubscriptionSchedule {
 			}
 		}
 
+		ksort($this->schedule);
+		foreach($this->schedule as $date => $shipment_list){
+			foreach($shipment_list['addresses'] as $address_id => $shipment){
+				usort($shipment['items'], function($a, $b){
+					if($a['is_sc_any'] != $b['is_sc_any']){
+						return $a['is_sc_any'] ? -1 : 1;
+					}
+					if($a['is_ac_followup'] != $b['is_ac_followup']){
+						return $a['is_ac_followup'] ? -1 : 1;
+					}
+					return 0;
+				});
+				$this->schedule[$date]['addresses'][$address_id]['items'] = $shipment;
+			}
+		}
+
 		return $this->schedule;
 	}
 
@@ -202,6 +218,12 @@ class SubscriptionSchedule {
 		return true;
 	}
 
+	private function normalize_item($item){
+		$item['is_sc_any'] = is_scent_club_any(get_product($this->db, $item['shopify_product_id']));
+		$item['is_ac_followup'] = is_ac_followup_lineitem($item);
+		return $item;
+	}
+
 	private function normalize_order($order){
 		$order['next_charge_scheduled_at'] = $order['scheduled_at'];
 		$order['scheduled_at_time'] = strtotime($order['scheduled_at']);
@@ -212,7 +234,7 @@ class SubscriptionSchedule {
 			$item['scheduled_at'] = $order['scheduled_at'];
 			$item['scheduled_at_time'] = $order['scheduled_at_time'];
 			$item['address_id'] = $order['address_id'];
-			$order['line_items'][$index] = $item;
+			$order['line_items'][$index] = $this->normalize_item($item);
 		}
 		return $order;
 	}
@@ -233,7 +255,7 @@ class SubscriptionSchedule {
 				$item['product_title'] = $item['title'];
 			}
 
-			$charge['line_items'][$index] = $item;
+			$charge['line_items'][$index] = $this->normalize_item($item);
 		}
 		return $charge;
 	}
@@ -251,7 +273,7 @@ class SubscriptionSchedule {
 			$subscription['order_interval_index'] = false;
 		}
 
-		return $subscription;
+		return $this->normalize_item($subscription);
 	}
 
 	private function get_subscription_time_by_index($index, $start_time, $order_interval_frequency, $order_interval_unit, $order_interval_index = false){
