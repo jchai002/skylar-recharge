@@ -23,4 +23,4 @@ if(empty($order)){
 	die('no data');
 }
 //print_r($order);
-echo insert_update_order($db, $order);
+echo insert_update_order($db, $order, $sc);

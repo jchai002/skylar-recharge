@@ -19,12 +19,21 @@ $webhooks_required = [
 		'type'=>'products/create',
 		'address' => 'https://ec2production.skylar.com/hooks/product_updated.php',
 	],
-	// Sync product
-	[
-		'type'=>'products/update',
-		'address' => 'https://ec2production.skylar.com/hooks/product_updated.php',
-	],
-	// Gift notification
+    // Sync product
+    [
+        'type'=>'products/update',
+        'address' => 'https://ec2production.skylar.com/hooks/product_updated.php',
+    ],
+    // Sync customer
+    [
+        'type'=>'customer/update',
+        'address' => 'https://ec2production.skylar.com/hooks/customer_updated.php',
+    ],
+    [
+        'type'=>'customer/create',
+        'address' => 'https://ec2production.skylar.com/hooks/customer_updated.php',
+    ],
+	// Gift notification / sync fulfillments
 	[
 		'type'=>'fulfillments/update',
 		'address' => 'https://ec2production.skylar.com/hooks/order_delivered.php',
@@ -49,7 +58,7 @@ foreach($webhooks_required as $req_hook){
 		}
 	}
 	if(!$hook_exists){
-		echo "Creating webhook ".$req_hook['type'];
+		echo "Creating webhook ".$req_hook['type'].PHP_EOL;
 		$response = $sc->call("POST", "/admin/webhooks.json", ["webhook" => ["topic"=>$req_hook['type'], "address"=>$req_hook['address'], "format"=>"json"]]);
 		print_r($response);
 	}

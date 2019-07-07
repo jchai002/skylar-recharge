@@ -24,7 +24,7 @@ while($row = fgetcsv($f)){
 	$row = array_combine($headers, $row);
 
 	// Check if the charge is scent club
-	if($row['item sku'] != 857243008252){
+	if($row['item sku'] != '10213904-112'){
 		continue;
 	}
 	if($last_charge_id == $row['recharge charge id']){

@@ -48,8 +48,8 @@ $multi_bottle_discounts = [
 	4 => 112,
 ];
 
-if (!function_exists('getallheaders')){ 
-    function getallheaders(){ 
+if (!function_exists('getallheaders')){
+    function getallheaders(){
         $headers = [];
        foreach ($_SERVER as $name => $value){
            if (substr($name, 0, 5) == 'HTTP_'){
@@ -473,14 +473,16 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 	}
 	return $product_id;
 }
-function insert_update_order(PDO $db, $shopify_order){
+function insert_update_order(PDO $db, $shopify_order, ShopifyClient $sc){
 	$now = date('Y-m-d H:i:s');
+	$customer = get_customer($db, $shopify_order['customer_id'], $sc);
 	$stmt = $db->prepare("INSERT INTO orders
-(shopify_id, app_id, cart_token, `number`, total_line_items_price, total_discounts, total_price, tags, created_at, updated_at, cancelled_at, closed_at, email, note, attributes, source_name)
-VALUES (:shopify_id, :app_id, :cart_token, :number, :total_line_items_price, :total_discounts, :total_price, :tags, :created_at, :updated_at, :cancelled_at, :closed_at, :email, :note, :attributes, :source_name)
-ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), app_id=:app_id, cart_token=:cart_token, `number`=:number, updated_at=:updated_at, total_line_items_price=:total_line_items_price, total_discounts=:total_discounts, total_price=:total_price, tags=:tags, cancelled_at=:cancelled_at, closed_at=:closed_at, email=:email, note=:note, attributes=:attributes, source_name=:source_name");
+(shopify_id, customer_id, app_id, cart_token, `number`, total_line_items_price, total_discounts, total_price, tags, created_at, updated_at, cancelled_at, closed_at, email, note, attributes, source_name)
+VALUES (:shopify_id, :customer_id, :app_id, :cart_token, :number, :total_line_items_price, :total_discounts, :total_price, :tags, :created_at, :updated_at, :cancelled_at, :closed_at, :email, :note, :attributes, :source_name)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=:app_id, cart_token=:cart_token, `number`=:number, updated_at=:updated_at, total_line_items_price=:total_line_items_price, total_discounts=:total_discounts, total_price=:total_price, tags=:tags, cancelled_at=:cancelled_at, closed_at=:closed_at, email=:email, note=:note, attributes=:attributes, source_name=:source_name");
 	$stmt->execute([
 		'shopify_id' => $shopify_order['id'],
+		'customer_id' => $customer['id'],
 		'app_id' => $shopify_order['app_id'],
 		'cart_token' => $shopify_order['cart_token'],
 		'number' => $shopify_order['number'],
@@ -538,6 +540,29 @@ function insert_update_customer(PDO $db, $shopify_customer){
 	]);
 	$customer_id = $db->lastInsertId();
 	return $customer_id;
+}
+function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
+    $stmt = $db->prepare("SELECT delivered_at FROM fulfillments WHERE shopify_id = ?");
+    $stmt->execute([$shopify_fulfillment['id']]);
+    $delivered_at = $stmt->fetchColumn();
+    if(empty($delivered_at) && $shopify_fulfillment['shipment_status'] == 'delivered'){
+        $delivered_at = $shopify_fulfillment['updated_at'];
+    }
+    $stmt = $db->prepare("INSERT INTO fulfillments (shopify_id, name, service, shipment_status, status, delivered_at) VALUES (:shopify_id, :name, :service, :shipment_status, :status, :delivered_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), name=:name, service=:service, shipment_status=:shipment_status, status=:status, delivered_at=:delivered_at");
+    $stmt->execute([
+        'shopify_id' => $shopify_fulfillment['id'],
+        'name' => $shopify_fulfillment['name'],
+        'service' => $shopify_fulfillment['service'],
+        'shipment_status' => $shopify_fulfillment['shipment_status'],
+        'status' => $shopify_fulfillment['status'],
+        'delivered_at' => $delivered_at,
+    ]);
+    $id = $db->lastInsertId();
+    $stmt = $db->prepare("UPDATE order_line_items SET fulfillment_id = ? WHERE shopify_id=?");
+    foreach($shopify_fulfillment['line_items'] as $line_item){
+        $stmt->execute([$id, $line_item['id']]);
+    }
+    return $id;
 }
 function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $sc){
 	$stmt = $db->prepare("INSERT INTO rc_customers (recharge_id, customer_id, email, first_name, last_name, processor_type, status, has_valid_payment_method, reason_payment_method_invalid, updated_at) VALUES (:recharge_id, :customer_id, :email, :first_name, :last_name, :processor_type, :status, :has_valid_payment_method, :reason_payment_method_invalid, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), recharge_id=:recharge_id, customer_id=:customer_id, email=:email, first_name=:first_name, last_name=:last_name, processor_type=:processor_type, status=:status, has_valid_payment_method=:has_valid_payment_method, reason_payment_method_invalid=:reason_payment_method_invalid, updated_at=:updated_at");
@@ -688,11 +713,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 
 	$max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
 
-	$products = [];
-
-	$stmt_get_swap = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=?");
-
-	/*
+	/* // Because they show up as charges?
 	foreach($onetimes as $onetime){
 		$order_time = strtotime($onetime['next_charge_scheduled_at']);
 		if(empty($order_time)){
@@ -791,6 +812,18 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 			if(empty($item['product_title']) && !empty($item['title'])){
 				$item['product_title'] = $item['title'];
 			}
+
+            if(is_scent_club(get_product($db, $item['shopify_product_id']))){
+                $swap = sc_get_monthly_scent($db, strtotime($charge['scheduled_at']), is_admin_address($item['address_id']));
+                $item['swap'] = $swap;
+                if(!empty($swap)){
+                    $item['handle'] = $swap['handle'];
+                    $item['shopify_product_id'] = $swap['shopify_product_id'];
+                    $item['shopify_variant_id'] = $swap['shopify_variant_id'];
+                    $item['product_title'] = $swap['product_title'];
+                    $item['variant_title'] = $swap['variant_title'];
+                }
+            }
 			$schedule[$date]['charge'] = $charge;
 			$schedule[$date]['items'][] = $item;
 		}
@@ -906,6 +939,7 @@ function generate_subscription_schedule(PDO $db, $orders, $subscriptions, $oneti
 	foreach($schedule as $date=>$box){
 		foreach($box['items'] as $index=>$item){
 			$box['items'][$index]['is_sc_any'] = is_scent_club_any(get_product($db, $item['shopify_product_id']));
+			$box['items'][$index]['is_ac_followup'] = is_ac_followup_lineitem($box['items'][$index]);
 		}
 		usort($box['items'], function($a, $b) use ($db) {
 			if($a['is_sc_any'] == $b['is_sc_any']) {
@@ -1210,7 +1244,7 @@ function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time
 	$res = $rc->get('/onetimes/', [
 		'address_id' => $address_id,
 	]);
-	$monthly_scent = sc_get_monthly_scent($db, $time);
+	$monthly_scent = sc_get_monthly_scent($db, $time, is_admin_address($address_id));
 	foreach($res['onetimes'] as $onetime){
 		$ship_month = date('Y-m',strtotime($onetime['next_charge_scheduled_at']));
 		if($ship_month != $delete_month){
@@ -1424,4 +1458,72 @@ function price_without_trailing_zeroes($price = 0){
 		return number_format($price);
 	}
 	return number_format($price, 2);
+}
+// Autocharge
+function is_ac_initial_product($sample_product){
+    return $sample_product['shopify_id'] == 3875807395927; // Will probably have to be product type
+}
+function is_ac_followup_lineitem($followup_line_item){
+	if(empty($followup_line_item['properties'])){
+		return false;
+	}
+	if(!empty($followup_line_item['_ac_product'])){
+		return true;
+	}
+	// Check if it's an indexed array (with name and value properties)
+	if(array_keys($followup_line_item['properties'])[0] == 0){
+		foreach($followup_line_item['properties'] as $property){
+			if($property['name'] == '_ac_product' && !empty($property['value'])){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+// Klaviyo
+function klaviyo_send_transactional_email(PDO $db, $to_email, $email_type, $properties=[]){
+    $properties['email_type'] = $email_type;
+    $stmt = $db->prepare("SELECT 1 FROM transactional_emails_sent WHERE email_type=:email_type AND to_address=:to_email AND DATE(date_created) = '".date('Y-m-d')."'");
+    $stmt->execute([
+        'email_type' => $email_type,
+        'to_email' => $to_email,
+    ]);
+    if($stmt->rowCount() > 0){
+        return false;
+    }
+    $res = klaviyo_send_event([
+        'token' => "KvQM7Q",
+        'event' => 'Sent Transactional Email',
+        'customer_properties' => [
+            '$email' => $to_email,
+        ],
+        'properties' => $properties,
+    ]);
+    $stmt = $db->prepare("INSERT INTO transactional_emails_sent (email_type, to_address, properties, response, date_created) VALUES (:email_type, :to_email, :properties, :response, :date_created)");
+    $stmt->execute([
+        'email_type' => $email_type,
+        'to_email' => $to_email,
+        'properties' => json_encode($properties),
+        'response' => json_encode($res),
+        'date_created' => date('Y-m-d H:i:s'),
+    ]);
+    return [
+        'id' => $db->lastInsertId(),
+        'email_type' => $email_type,
+        'to_email' => $to_email,
+        'properties' => $properties,
+        'response' => $res,
+        'date_created' => date('Y-m-d H:i:s'),
+    ];
+}
+function klaviyo_send_event($data){
+    if(empty($data['token'])){
+        $data['token'] = 'KvQM7Q';
+    }
+    $ch = curl_init("https://a.klaviyo.com/api/track?data=".base64_encode(json_encode($data)));
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+    ]);
+    $res = json_decode(curl_exec($ch));
+    return $res;
 }

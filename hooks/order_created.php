@@ -24,7 +24,7 @@ if(empty($order)){
 	die('no data');
 }
 
-echo insert_update_order($db, $order);
+echo insert_update_order($db, $order, $sc);
 
 $alert_id = 2;
 $smother_message = false;
@@ -75,14 +75,14 @@ $is_scent_club = false;
 $scent_club_hold = false;
 $stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sku=?");
 foreach($order['line_items'] as $line_item){
-	if(is_scent_club(get_product($db, $line_item['product_id']))){
+	if(is_scent_club_any(get_product($db, $line_item['product_id']))){
 		$is_scent_club = true;
 		$stmt->execute([$line_item['sku']]);
 		if($stmt->rowCount() < 1){
 			continue;
 		}
 		$sc_product = $stmt->fetch();
-		if(time() < strtotime($sc_product['sc_date'])){
+		if(time() < strtotime($sc_product['sc_date']) + 10*60*60){ // Hold until 10 am
 			$scent_club_hold = true;
 		}
 	}
@@ -137,6 +137,14 @@ if(empty($rc_order['orders'])){
 }
 $rc_order = $rc_order['orders'][0];
 
+// Insert any autocharge items
+foreach($order['line_items'] as $line_item){
+    if(is_autocharge_product(get_product($db, $line_item['product_id']))){
+        $stmt = $db->prepare("INSERT IGNORE INTO ac_orders (order_line_item_id) VALUES (?)");
+        $stmt->execute([$line_item['id']]);
+    }
+}
+
 // Tag orders that aren't samples as either onetime or subscription, with subscription
 $order_tags = explode(',',$order['tags']);
 $res = $rc->get('/subscriptions/', ['address_id' => $rc_order['address_id']]);
@@ -183,6 +191,8 @@ if($update_order){
 	var_dump($res);
 }
 
+
+// Legacy Autocharge
 // Get subs we need to create for this order
 $has_subscription_line_item = false;
 $subs_to_create = [];

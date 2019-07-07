@@ -30,6 +30,6 @@ ORDER BY o.created_at DESC");
 foreach($stmt->fetchAll(PDO::FETCH_COLUMN) as $order_id){
 	$order = $sc->get('/admin/orders/'.$order_id.'.json');
 	if(!empty($order)){
-		echo insert_update_order($db, $order).PHP_EOL;
+		echo insert_update_order($db, $order, $sc).PHP_EOL;
 	}
 }

@@ -7,13 +7,14 @@ $titles = array_map('strtolower',fgetcsv($fh));
 
 $order = [];
 $order_id = 0;
+$sc = new ShopifyClient();
 
 while($row = fgetcsv($fh)){
 
 	$row = array_combine($titles, $row);
 
 	if(!empty($row['id']) && !empty($order)){
-		$order_id = insert_update_order($db, $order);
+		$order_id = insert_update_order($db, $order, $sc);
 		print_r($order);
 	}
 	if(!empty($row['id'])){
