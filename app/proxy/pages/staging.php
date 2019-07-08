@@ -182,74 +182,72 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                     }
                     ?>
                 </div>
+                <div class="sc-spacer"></div>
+                <div class="sc-section-title">Add items to your Next Skylar box</div>
+                <div class="sc-product-sections-container">
+                    <div class="sc-section-menu">
+                        <a href="#recommendations" class="active">Profile</a>
+                        <a href="#layering">Layering</a>
+                        <a href="#best-sellers">Best Sellers</a>
+                        <a href="#essentials">The Essentials</a>
+                    </div>
+                    <div class="sc-product-section" id="recommendations">
+                        <div class="sc-section-title">Recommendations based on <strong>Your Profile</strong></div>
+                        <div class="sc-product-carousel">
+                            <?php foreach($recommended_products as $product){ ?>
+                                {% assign recommended_handles = '<?=$product?>' | split: '|' %}
+                                {% include 'sc-product-tile' %}
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="sc-product-section hidden" id="layering">
+                        <div class="sc-section-title">Recommendations based on <strong>Layering</strong></div>
+                        <div class="sc-product-carousel">
+                            <?php foreach([
+                                'isle::Full Size|rollie:12235492327511:Rollie',
+                                'meadow::Full Size|rollie:12235492393047:Rollie',
+                                'capri::Full Size|rollie:12235492425815:Rollie',
+                            ] as $product){ ?>
+                                {% assign recommended_handles = '<?=$product?>' | split: '|' %}
+                                {% include 'sc-product-tile' %}
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="sc-product-section hidden" id="best-sellers">
+                        <div class="sc-section-title">Recommendations based on <strong>Best Sellers</strong></div>
+                        <div class="sc-product-carousel">
+                            <?php foreach([
+                                'isle::Full Size|rollie:12235492327511:Rollie',
+                                'rollie:12235409129559:Arrow|rollie:12235492425815:Capri|rollie:12235492360279:Coral|rollie:12235492327511:Isle|rollie:12235492393047:Meadow|rollie:12588614484055:Willow',
+                                'scent-experience',
+                            ] as $product){ ?>
+                                {% assign recommended_handles = '<?=$product?>' | split: '|' %}
+                                {% include 'sc-product-tile' %}
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="sc-product-section hidden" id="essentials">
+                        <div class="sc-section-title">Recommendations based on <strong>The Essentials</strong></div>
+                        <div class="sc-product-carousel">
+                            <?php foreach([
+                                'sample-palette',
+                                'scent-collection',
+                                'rollie-collection',
+                            ] as $product){ ?>
+                                {% assign recommended_handles = '<?=$product?>' | split: '|' %}
+                                {% include 'sc-product-tile' %}
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="sc-hr"></div>
+                <div class="sc-portal-innercontainer sc-schedule-container">
+                    <div class="sc-portal-title">Your Upcoming Skylar Box<?= count($schedule->get()) > 2 ? 'es' : '' ?></div>
+                    <div class="sc-portal-box-list">
+                <?php } ?>
             </div>
-            <div class="sc-spacer"></div>
-            <div class="sc-section-title">Add items to your Next Skylar box</div>
-            <div class="sc-product-sections-container">
-                <div class="sc-section-menu">
-                    <a href="#recommendations" class="active">Profile</a>
-                    <a href="#layering">Layering</a>
-                    <a href="#best-sellers">Best Sellers</a>
-                    <a href="#essentials">The Essentials</a>
-                </div>
-                <div class="sc-product-section" id="recommendations">
-                    <div class="sc-section-title">Recommendations based on <strong>Your Profile</strong></div>
-                    <div class="sc-product-carousel">
-                        <?php foreach($recommended_products as $product){ ?>
-                            {% assign recommended_handles = '<?=$product?>' | split: '|' %}
-                            {% include 'sc-product-tile' %}
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="sc-product-section hidden" id="layering">
-                    <div class="sc-section-title">Recommendations based on <strong>Layering</strong></div>
-                    <div class="sc-product-carousel">
-                        <?php foreach([
-                            'isle::Full Size|rollie:12235492327511:Rollie',
-                            'meadow::Full Size|rollie:12235492393047:Rollie',
-                            'capri::Full Size|rollie:12235492425815:Rollie',
-                        ] as $product){ ?>
-                            {% assign recommended_handles = '<?=$product?>' | split: '|' %}
-                            {% include 'sc-product-tile' %}
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="sc-product-section hidden" id="best-sellers">
-                    <div class="sc-section-title">Recommendations based on <strong>Best Sellers</strong></div>
-                    <div class="sc-product-carousel">
-                        <?php foreach([
-                            'isle::Full Size|rollie:12235492327511:Rollie',
-                            'rollie:12235409129559:Arrow|rollie:12235492425815:Capri|rollie:12235492360279:Coral|rollie:12235492327511:Isle|rollie:12235492393047:Meadow|rollie:12588614484055:Willow',
-                            'scent-experience',
-                        ] as $product){ ?>
-                            {% assign recommended_handles = '<?=$product?>' | split: '|' %}
-                            {% include 'sc-product-tile' %}
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="sc-product-section hidden" id="essentials">
-                    <div class="sc-section-title">Recommendations based on <strong>The Essentials</strong></div>
-                    <div class="sc-product-carousel">
-                        <?php foreach([
-                            'sample-palette',
-                            'scent-collection',
-                            'rollie-collection',
-                        ] as $product){ ?>
-                            {% assign recommended_handles = '<?=$product?>' | split: '|' %}
-                            {% include 'sc-product-tile' %}
-                        <?php } ?>
-                    </div>
-                </div>
-            </div>
-            <div class="sc-hr"></div>
-            <div class="sc-portal-innercontainer sc-schedule-container">
-                <div class="sc-portal-title">Your Upcoming Skylar Box<?= count($schedule->get()) > 2 ? 'es' : '' ?></div>
-                <div class="sc-portal-box-list">
-            <?php } ?>
-                </div>
-                <div class="sc-load-more" data-months="<?=$months?>">
-                    <a href="#" class="action_button" onclick="ScentClub.load_schedule(<?=$months+3?>); return false;">View More</a>
-                </div>
+            <div class="sc-load-more" data-months="<?=$months?>">
+                <a href="#" class="action_button" onclick="ScentClub.load_schedule(<?=$months+3?>); return false;">View More</a>
             </div>
         </div>
     </div>
