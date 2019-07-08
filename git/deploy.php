@@ -4,7 +4,10 @@ echo $hook_data;
 if(!empty($hook_data)){
 	$hook_data = json_decode($hook_data, true);
 }
-if(!empty($hook_data)){
+if(empty($hook_data)){
+	echo "Empty Payload";
+} else {
+	print_r($hook_data);
 	if(strpos(getcwd(), 'production') !== false && $hook_data['ref'] != 'refs/heads/master'){
 		echo "Production / not master branch";
 		exit;
@@ -13,8 +16,6 @@ if(!empty($hook_data)){
 		echo "Staging / not staging branch";
 		exit;
 	}
-} else {
-	echo "Empty Payload";
 }
 $commands = [
 	'echo $PWD',
