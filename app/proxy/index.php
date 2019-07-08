@@ -2,8 +2,9 @@
 
 require_once dirname(__FILE__).'/../../includes/config.php';
 if(ENV_TYPE == 'LIVE' && !empty($_REQUEST['staging'])){
-	header("Location: ec2staging.skylar.com".$_SERVER['REQUEST_URI'].'?'.$_SERVER['QUERY_STRING']);
-	exit;
+	// Header is redirected to shopify... doesn't work
+//	header("Location: ec2staging.skylar.com".$_SERVER['REQUEST_URI'].'?'.$_SERVER['QUERY_STRING']);
+//	exit;
 }
 
 $rc = new RechargeClient();
