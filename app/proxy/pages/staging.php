@@ -11,7 +11,7 @@ if($stmt->rowCount() > 1){
 	$res = $rc->get('/customers', [
 		'shopify_customer_id' => intval($_REQUEST['c']),
 	]);
-	if(!empty($res)){
+	if(!empty($res['customers'])){
 		$rc_customer_id = $res['customers'][0]['id'];
 	}
 }
@@ -21,7 +21,7 @@ if(!empty($rc_customer_id)){
 	$schedule = new SubscriptionSchedule($db, $rc, $rc_customer_id, strtotime(date('Y-m-t',strtotime("+$months months"))));
 }
 
-if(empty($schedule->get())){
+if(empty($rc_customer_id) || empty($schedule->get())){
     require_once(__DIR__.'/no-subscriptions.php');
     exit;
 }
