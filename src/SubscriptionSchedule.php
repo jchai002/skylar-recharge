@@ -149,7 +149,7 @@ class SubscriptionSchedule {
 					}
 					return 0;
 				});
-				$this->schedule[$date]['addresses'][$address_id]['items'] = $shipment;
+				$this->schedule[$date]['addresses'][$address_id]['items'] = $shipment['items'];
 			}
 		}
 
