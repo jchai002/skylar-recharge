@@ -26,30 +26,15 @@ if(empty($schedule->get())){
     exit;
 }
 
-$featured_box = false;
-foreach($schedule->get() as $shipment_date => $shipment_list){
-	foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
-		foreach($upcoming_shipment['items'] as $item){
-			if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
-				// TODO: Show autocharge here as well
-				$featured_box = $upcoming_shipment;
-				break 3;
-			}
-		}
-	}
-}
-
 $recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_REQUEST['c']));
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <!--
+$schedule
 <?php print_r($schedule->get()); ?>
 -->
 {% assign portal_page = 'my_box' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
-<?php if(!empty($featured_box['charge_id'])){ ?>
-    {% assign add_to_box_charge_id = '<?=$featured_box['charge_id']?>' %}
-<?php } ?>
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
     {% include 'sc-member-nav' %}
     <div class="sc-portal-content">
