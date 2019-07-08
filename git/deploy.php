@@ -1,5 +1,7 @@
 <?php
 $hook_data = file_get_contents('php://input');
+print_r($_REQUEST);
+echo $hook_data;
 if(!empty($hook_data)){
 	$hook_data = json_decode($hook_data, true);
 }
