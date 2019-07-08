@@ -1,11 +1,17 @@
 <?php
 
 require_once dirname(__FILE__).'/../../includes/config.php';
+if(ENV_TYPE == 'LIVE' && !empty($_REQUEST['staging'])){
+	header("Location: ec2staging.skylar.com".$_SERVER['REQUEST_URI'].'?'.$_SERVER['QUERY_STRING']);
+	exit;
+}
 
 $rc = new RechargeClient();
 
 require_once dirname(__FILE__).'/routes.php';
 $path = str_replace('/app/proxy/', '', parse_url($_SERVER['REQUEST_URI'])['path']);
+
+
 $json_output = false;
 try {
 	ob_start();

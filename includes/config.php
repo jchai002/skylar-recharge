@@ -15,11 +15,13 @@ $dotenv->load();
 
 if(strpos(getcwd(), 'production') !== false){
     define('ENV_DIR', 'skylar-recharge-production');
+    define('ENV_TYPE', 'LIVE');
 	ini_set('display_errors', 0);
 	ini_set('display_startup_errors', 0);
 	ini_set('log_errors', 1);
 } else {
     define('ENV_DIR', 'skylar-recharge-staging');
+	define('ENV_TYPE', 'STAGING');
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
