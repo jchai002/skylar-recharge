@@ -2,6 +2,7 @@
 
 require_once dirname(__FILE__).'/../../includes/config.php';
 
+$sc = new ShopifyClient();
 $rc = new RechargeClient();
 
 require_once dirname(__FILE__).'/routes.php';
