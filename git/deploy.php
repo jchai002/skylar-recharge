@@ -5,18 +5,17 @@ echo $hook_data;
 if(!empty($hook_data)){
 	$hook_data = json_decode($hook_data, true);
 }
-if(empty($hook_data)){
-	echo "Empty Payload";
-	exit;
+if(!empty($hook_data)){
+	if(strpos(getcwd(), 'production') !== false && $hook_data['ref'] != 'refs/heads/master'){
+		echo "Production / not master branch";
+		exit;
+	}
+	if(strpos(getcwd(), 'staging') !== false && $hook_data['ref'] != 'refs/heads/staging'){
+		echo "Staging / not staging branch";
+		exit;
+	}
 }
-if(strpos(getcwd(), 'production') !== false && $hook_data['ref'] != 'refs/heads/master'){
-	echo "Production / not master branch";
-	exit;
-}
-if(strpos(getcwd(), 'staging') !== false && $hook_data['ref'] != 'refs/heads/staging'){
-	echo "Staging / not staging branch";
-	exit;
-}
+echo "Empty Payload";
 $commands = [
 	'echo $PWD',
 	'whoami',
