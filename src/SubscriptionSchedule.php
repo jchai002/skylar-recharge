@@ -186,7 +186,7 @@ class SubscriptionSchedule {
 		}
 
 		// Check if duplicate
-		foreach($this->schedule[$date][$address_id]['items'] as $index => $scheduled_item){
+		foreach($this->schedule[$date]['addresses'][$address_id]['items'] as $index => $scheduled_item){
 			if($scheduled_item['subscription_id'] == $item['subscription_id']){
 				// Duplicate, merge in information then skip
 				if(!empty($item['skipped'])){
@@ -194,9 +194,9 @@ class SubscriptionSchedule {
 				}
 				if(!empty($item['charge_id'])){
 					$scheduled_item['charge_id'] = $item['charge_id'];
-					$this->schedule[$date][$address_id]['charge_id'] = $item['charge_id'];
+					$this->schedule[$date]['addresses'][$address_id]['charge_id'] = $item['charge_id'];
 				}
-				$this->schedule[$date][$address_id]['items'][$index] = $scheduled_item;
+				$this->schedule[$date]['addresses'][$address_id]['items'][$index] = $scheduled_item;
 				return true;
 			}
 		}
