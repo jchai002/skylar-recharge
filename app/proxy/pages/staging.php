@@ -173,6 +173,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                                         </div>
                                     </div>
                                 <?php } ?>
+                            </div>
                         </div>
                     <?php
                     }
