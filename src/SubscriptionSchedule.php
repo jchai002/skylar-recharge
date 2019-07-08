@@ -287,7 +287,7 @@ class SubscriptionSchedule {
 				$date_month -= 12;
 				$date_year += 1;
 			}
-			$max_day = date('T', implode('-',[$date_year,$date_month,'01']));
+			$max_day = date('T', strtotime(implode('-',[$date_year,$date_month,'01'])));
 			if(!empty($order_interval_index)){
 				$date_day = $order_interval_index;
 			}
