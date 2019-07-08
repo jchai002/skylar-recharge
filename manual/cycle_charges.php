@@ -27,9 +27,8 @@ while($row = fgetcsv($f)){
 
 	// Check if the charge is scent club
     if(!in_array($row['item sku'],[
-        '10450503-101',
-        '10450502-103',
-        '10450502-105',
+        '10450501-102',
+        '10450502-104',
     ])){
         continue;
     }
