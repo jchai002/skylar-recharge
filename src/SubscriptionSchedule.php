@@ -181,6 +181,7 @@ class SubscriptionSchedule {
 				'items' => [],
 				'charge_id' => null,
 				'ship_date_time' => strtotime($date), // compatibility TODO Remove
+				'discounts' => [],
 				'total' => 0,
 			];
 		}
@@ -219,6 +220,7 @@ class SubscriptionSchedule {
 	}
 
 	private function normalize_item($item){
+		$item['skipped'] = $item['skipped'] ?? false;
 		$item['is_sc_any'] = is_scent_club_any(get_product($this->db, $item['shopify_product_id']));
 		$item['is_ac_followup'] = is_ac_followup_lineitem($item);
 		return $item;
