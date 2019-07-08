@@ -360,59 +360,60 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 										<?php } else if(!empty($item['charge_id'])){ ?>
 											<a class="sc-skip-link<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '-club' : '' ?>" href="#"><span>Skip Box</span></a>
 										<?php } ?>
-										<div class="sc-item-summary">
-											<div class="sc-item-image">
-												<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
-													<img class="lazyload" data-src="{{ 'sc-logo.svg' | file_url }}" height="100" width="100" />
-												<?php } else { ?>
-													{% if box_variant.image %}
-													<img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
-													{% else %}
-													<img class="lazyload" data-srcset="{{ box_product | img_url: '100x100' }} 1x, {{ box_product | img_url: '200x200' }} 2x" />
-													{% endif %}
-												<?php } ?>
-											</div>
-											<div>
-												<?php if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
-													<div class="sc-item-title">Skylar Scent Club</div>
-													<div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
-													<div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
-												<?php } else if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
-													<div class="sc-item-title">Skylar Scent Club</div>
-													<div class="sc-item-subtitle"></div>
-												<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
-													<div class="sc-item-title"><?=$item['product_title']?></div>
-													<div class="sc-item-subtitle"><?=$item['variant_title']?></div>
-													<div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
-												<?php } else { ?>
-													<div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
-													{% if box_variant.title != 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
-													<?php if($item['type'] != 'onetime'){ ?>
-														<a class="sc-unsub-link" href="#"><span>Remove</span></a>
-													<?php } ?>
-												<?php } ?>
-											</div>
-										</div>
-										<div class="sc-item-details">
-											<div>
-												<div class="sc-item-detail-label">Total</div>
-												<div class="sc-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
-											</div>
-											<div>
-												<div class="sc-item-detail-label">Delivery</div>
-												<div class="sc-item-detail-value">
-													<?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
-														Every Month
-													<?php } else if(empty($item['order_interval_frequency'])){ ?>
-														Once
-													<?php } else if($item['order_interval_frequency'] == '1'){ ?>
-														Every <?=$item['order_interval_unit']?>
+                                        <div class="sc-item-info">
+                                            <div class="sc-item-summary">
+                                                <div class="sc-item-image">
+													<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+                                                        <img class="lazyload" data-src="{{ 'sc-logo.svg' | file_url }}" height="100" width="100" />
 													<?php } else { ?>
-														Every <?=$item['order_interval_frequency']?> <?=$item['order_interval_unit']?>s
+                                                        {% if box_variant.image %}
+                                                        <img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
+                                                        {% else %}
+                                                        <img class="lazyload" data-srcset="{{ box_product | img_url: '100x100' }} 1x, {{ box_product | img_url: '200x200' }} 2x" />
+                                                        {% endif %}
 													<?php } ?>
-												</div>
-											</div>
-											<?php /* if(!empty($item['next_charge_scheduled_at'])){ ?>
+                                                </div>
+                                                <div>
+													<?php if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
+                                                        <div class="sc-item-title">Skylar Scent Club</div>
+                                                        <div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
+                                                        <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
+													<?php } else if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+                                                        <div class="sc-item-title">Skylar Scent Club</div>
+                                                        <div class="sc-item-subtitle"></div>
+													<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
+                                                        <div class="sc-item-title"><?=$item['product_title']?></div>
+                                                        <div class="sc-item-subtitle"><?=$item['variant_title']?></div>
+                                                        <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" /> <span>Swap Scent</span></a></div>
+													<?php } else { ?>
+                                                        <div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
+                                                        {% if box_variant.title != 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
+														<?php if($item['type'] != 'onetime'){ ?>
+                                                            <a class="sc-unsub-link" href="#"><span>Remove</span></a>
+														<?php } ?>
+													<?php } ?>
+                                                </div>
+                                            </div>
+                                            <div class="sc-item-details">
+                                                <div>
+                                                    <div class="sc-item-detail-label">Total</div>
+                                                    <div class="sc-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
+                                                </div>
+                                                <div>
+                                                    <div class="sc-item-detail-label">Delivery</div>
+                                                    <div class="sc-item-detail-value">
+														<?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+                                                            Every Month
+														<?php } else if(empty($item['order_interval_frequency'])){ ?>
+                                                            Once
+														<?php } else if($item['order_interval_frequency'] == '1'){ ?>
+                                                            Every <?=$item['order_interval_unit']?>
+														<?php } else { ?>
+                                                            Every <?=$item['order_interval_frequency']?> <?=$item['order_interval_unit']?>s
+														<?php } ?>
+                                                    </div>
+                                                </div>
+												<?php /* if(!empty($item['next_charge_scheduled_at'])){ ?>
 											<div>
 												<div class="sc-item-detail-label">Next Charge</div>
 												<div class="sc-item-detail-value"><?=date('F j, Y', strtotime($item['next_charge_scheduled_at']))?></div>
@@ -425,7 +426,8 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 										<?php } else { ?>
 
 										<?php } */?>
-										</div>
+                                            </div>
+                                        </div>
 									</div>
 								<?php } ?>
 							</div>
