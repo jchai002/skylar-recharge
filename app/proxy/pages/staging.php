@@ -28,7 +28,7 @@ foreach($schedule->get() as $shipment_date => $shipment_list){
 			if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
 				// TODO: Show autocharge here as well
 				$featured_box = $upcoming_shipment;
-				break 2;
+				break 3;
 			}
 		}
 	}
@@ -43,12 +43,12 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 {% assign portal_page = 'my_box' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <?php if(!empty($featured_box['charge_id'])){ ?>
-    {% assign add_to_box_charge_id = '<?=$schedule->charges()[$featured_box['charge_id']]?>' %}
+    {% assign add_to_box_charge_id = '<?=$featured_box['charge_id']?>' %}
 <?php } ?>
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
     {% include 'sc-member-nav' %}
     <div class="sc-portal-content">
-		<?php if(empty($featured_box)){ ?>
+		<?php if(empty($schedule->get())){ ?>
             <div class="sc-portal-innercontainer">
                 <div class="sc-portal-title">You have no upcoming shipments.</div>
                 <div>
