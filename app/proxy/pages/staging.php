@@ -172,10 +172,10 @@ sc_conditional_billing($rc, $_REQUEST['c']);
                                             </div>
                                         </div>
                                     </div>
-                                <?php } ?>
                             </div>
                         </div>
-                    <?php
+						<?php
+                        }
                     }
                     if($shipment_index != 0){ // TODO: Scent club only
                         continue;
