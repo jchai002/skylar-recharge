@@ -2,9 +2,6 @@
 
 require_once dirname(__FILE__).'/../../includes/config.php';
 
-// Right now, assume they are a scent club member
-$scent_club_active = true;
-
 $rc = new RechargeClient();
 
 require_once dirname(__FILE__).'/routes.php';
