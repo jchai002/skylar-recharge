@@ -1,6 +1,6 @@
 <?php
 
-global $db, $sc, $rc;
+global $db, $sc, $rc, $ids_by_scent;
 
 $customer = get_customer($db, $_REQUEST['c'], $sc);
 $stmt = $db->prepare("SELECT recharge_id FROM rc_customers WHERE id=?");
