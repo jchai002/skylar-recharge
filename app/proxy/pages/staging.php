@@ -166,6 +166,7 @@ $schedule
                                             <img class="ac-swap-icon" src="{{ 'swapscent-black.svg' | file_url }}" alt="swap icon" />
                                             <span>Change My Scent</span>
                                             <div class="ac-choose-plus">+</div>
+                                            <div class="ac-choose-minus">-</div>
                                         </div>
                                         <form class="ac-choose-container">
                                             <div class="ac-choose-title">You can change the full sized bottle by choosing any of the<br />options below and confirming.</div>
@@ -634,6 +635,7 @@ $schedule
         });
         $('.ac-choose-button').click(function(){
             $(this).siblings('.ac-choose-container').slideToggle();
+            $(this).find('.ac-choose-plus, .ac-choose-minus').toggle();
         });
     }
 </script>
