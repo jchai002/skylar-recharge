@@ -55,6 +55,18 @@ $router->route('/subscriptions\/update-box-date$/i', function() use(&$json_outpu
 	require('ajax/update_box_date.php');
 	return true;
 });
+$router->route('/subscriptions\/ac_swap/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/ac_swap.php');
+	return true;
+});
 $router->route('/subscriptions\/swap/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
