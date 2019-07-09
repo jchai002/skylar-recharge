@@ -30,7 +30,11 @@ $alert_id = 2;
 $smother_message = false;
 $alert_sent = false;
 $msg = null;
-if($order['total_line_items_price'] <= 0 && !in_array('28003712663639', array_column($order['line_items'], 'variant_id'))){
+if(
+	$order['source_name'] != 'shopify_draft_order'
+	&& $order['total_line_items_price'] <= 0
+	&& !in_array('28003712663639', array_column($order['line_items'], 'variant_id'))
+){
 	$to = implode(', ',[
 		'tim@timnolansolutions.com',
 //		'sarah@skylar.com',
