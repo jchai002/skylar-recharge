@@ -1058,7 +1058,7 @@ $variant_cache = [];
 function get_variant(PDO $db, $shopify_variant_id){
 	global $variant_cache;
 	if(!array_key_exists($shopify_variant_id, $variant_cache)){
-		$stmt = $db->prepare("SELECT * FROM variants WHERE shopify_id=?");
+		$stmt = $db->prepare("SELECT v.*, p.shopify_id AS shopify_product_id, p.title AS product_title FROM variants v LEFT JOIN products p ON p.id=v.product_id WHERE v.shopify_id=?");
 		$stmt->execute([$shopify_variant_id]);
 		$variant_cache[$shopify_variant_id] = $stmt->fetch();
 	}
