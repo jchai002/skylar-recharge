@@ -632,5 +632,8 @@ $schedule
                 afterOpen: $.noop, // Fix dumb app bug
             });
         });
+        $('.ac-choose-button').click(function(){
+            $(this).siblings('.ac-choose-container').slideToggle();
+        });
     }
 </script>
