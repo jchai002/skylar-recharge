@@ -644,7 +644,7 @@ $schedule
         $('.ac-choose-container').submit(function(e){
             e.preventDefault();
             console.log(e);
-            // AccountController.ac_swap_scent()
+            AccountController.ac_swap_scent(e.target.subscription_id.value, e.target.variant_id.value);
         });
         $('.ac-choose-button').click(function(){
             $(this).siblings('.ac-choose-container').slideToggle();
