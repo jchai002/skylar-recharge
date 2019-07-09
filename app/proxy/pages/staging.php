@@ -174,13 +174,14 @@ $schedule
                                             <div class="ac-choose-minus">-</div>
                                         </div>
                                         <form class="ac-choose-container">
+                                            <input type="hidden" name="subscription_id" value="<?=$item['subscription_id']?>" />
                                             <div class="ac-choose-title">You can change the full sized bottle by choosing any of the<br />options below and confirming.</div>
                                             <div class="ac-scent-options">
                                                 <?php foreach($ids_by_scent as $handle => $scent_ids){
                                                     ?>
                                                     {% assign ac_choose_product = all_products['<?=$handle?>'] %}
                                                     <label class="ac-scent-option">
-                                                        <input type="radio" name="ac_scent" value="{{ ac_choose_products.variants.first.id }}" <?= $item['shopify_product_id'] == $scent_ids['product'] ? 'checked ' : '' ?>/>
+                                                        <input type="radio" name="variant_id" value="{{ ac_choose_product.variants.first.id }}" <?= $item['shopify_product_id'] == $scent_ids['product'] ? 'checked ' : '' ?>/>
                                                         <div class="ac-scent-image">
                                                             <img class="lazyload lazypreload ac-check-image" data-srcset="{{ 'ac-checkmark.png' | file_img_url: '52x52' }} 1x, {{ 'ac-checkmark.png' | file_img_url: '104x104' }} 2x" alt="checked" />
                                                             <img class="lazyload lazypreload" alt="<?=$handle?> product image" data-srcset="{{ ac_choose_product | img_url: '270x270' }} 1x, {{ ac_choose_product | img_url: '540x540' }} 2x" />
