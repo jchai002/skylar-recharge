@@ -164,7 +164,7 @@ $schedule
                                     <?php if(is_ac_followup_lineitem($item)){ ?>
                                         <div class="ac-choose-button">
                                             <div>
-                                                <span class="ac-swap-icon">{{ 'swapscent-black.svg' | file_url }}</span>
+                                                <span class="ac-swap-icon"><img src="{{ 'swapscent-black.svg' | file_url }}" /></span>
                                                 Change My Scent
                                             </div>
                                             <div class="ac-choose-plus">+</div>
