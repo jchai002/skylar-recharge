@@ -161,6 +161,36 @@ $schedule
                                             </div>
                                         </div>
                                     </div>
+                                    <?php if(is_ac_followup_lineitem($item)){ ?>
+                                        <div class="ac-choose-button">
+                                            <div>
+                                                <span class="ac-swap-icon">{{ 'swapscent-black.svg' | file_url }}</span>
+                                                Change My Scent
+                                            </div>
+                                            <div class="ac-choose-plus">+</div>
+                                        </div>
+                                        <form class="ac-choose-container">
+                                            <div class="ac-choose-title">You can change the full sized bottle by choosing any of the<br />options below and confirming.</div>
+                                            <div class="ac-scent-options">
+                                                <?php foreach($ids_by_scent as $handle => $scent_ids){
+                                                    ?>
+                                                    {% assign ac_choose_product = all_products['<?=$handle?>'] %}
+                                                    <label class="ac-scent-option">
+                                                        <input type="radio" name="ac_scent" value="{{ ac_choose_products.variants.first.id }}" />
+                                                        <div class="ac-scent-image">
+                                                            <img class="lazyload lazypreload" alt="<?=$handle?> product image" data-srcset="{{ ac_choose_product | img_url: '270x270' }} 1x, {{ ac_choose_product | img_url: '540x540' }} 2x" />
+                                                        </div>
+                                                        <div class="ac-scent-title">{{ ac_choose_product.title }}</div>
+                                                        <div class="ac-scent-desc">{{ ac_choose_product.metafields.skylar.scent_tags }}</div>
+                                                    </label>
+                                                <?php } ?>
+                                            </div>
+                                            <div class="ac-choose-footer">
+                                                <input type="submit" class="action_button ac-choose-submit" value="Update Order" />
+                                                <div class="ac-choose-note">If you do not select a scent, Isle will be automatically shipped</div>
+                                            </div>
+                                        </form>
+                                     <?php } ?>
                                 </div>
 							<?php } ?>
 							<?php if($shipment_index == 0 && !$has_ac_followup){ ?>
