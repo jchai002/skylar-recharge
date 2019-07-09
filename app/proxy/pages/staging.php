@@ -244,7 +244,7 @@ $schedule
                         </div>
                     <?php
                     }
-                    if($shipment_index != 0){ // TODO: Scent club only
+                    if($shipment_index != 0){
                         continue;
                     }
                     ?>
