@@ -38,7 +38,7 @@ $schedule
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
     {% include 'sc-member-nav' %}
     <div class="sc-portal-content">
-        <div class="sc-portal-innercontainer sc-upcoming-shipment">
+        <div class="sc-portal-innercontainer">
             <div class="sc-portal-title">Your Next Skylar Box</div>
             <div class="sc-portal-subtitle">The next box that you'll be charged for</div>
             <?php
@@ -47,7 +47,7 @@ $schedule
 			        $shipment_index++;
         			foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
         			    ?>
-                        <div class="sc-upcoming-shipment">
+                        <div class="sc-upcoming-shipment sc-portal-nextbox">
                             <div class="sc-box-info">
                                 <span class="sc-box-shiplabel">Shipping Date</span>
                                 <?php if($shipment_index == 0){ ?>
