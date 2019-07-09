@@ -46,6 +46,7 @@ $schedule
                 foreach($schedule->get() as $shipment_date => $shipment_list){
 			        $shipment_index++;
         			foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
+        			    $has_ac_followup = false;
         			    ?>
                         <div class="sc-upcoming-shipment">
                             <div class="sc-box-info">
@@ -63,6 +64,9 @@ $schedule
 								} else {
 									$box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
 								}
+								if(is_ac_followup_lineitem($item)){
+								    $has_ac_followup = true;
+                                }
 								?>
                                 {% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
                                 {% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
@@ -159,7 +163,7 @@ $schedule
                                     </div>
                                 </div>
 							<?php } ?>
-							<?php if($shipment_index == 0){ ?>
+							<?php if($shipment_index == 0 && !$has_ac_followup){ ?>
                                 <div class="sc-box-discounts<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
 									<?php foreach($upcoming_shipment['discounts'] as $discount){ ?>
                                         <div class="sc-box-discount">
