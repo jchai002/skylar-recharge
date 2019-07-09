@@ -176,7 +176,7 @@ $schedule
                                                     ?>
                                                     {% assign ac_choose_product = all_products['<?=$handle?>'] %}
                                                     <label class="ac-scent-option">
-                                                        <input type="radio" name="ac_scent" value="{{ ac_choose_products.variants.first.id }}" />
+                                                        <input type="radio" name="ac_scent" value="{{ ac_choose_products.variants.first.id }}" <?= $item['shopify_product_id'] == $scent_ids['product'] ? 'checked ' : '' ?>/>
                                                         <div class="ac-scent-image">
                                                             <img class="lazyload lazypreload" alt="<?=$handle?> product image" data-srcset="{{ ac_choose_product | img_url: '270x270' }} 1x, {{ ac_choose_product | img_url: '540x540' }} 2x" />
                                                         </div>
