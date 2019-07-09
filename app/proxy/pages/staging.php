@@ -47,7 +47,7 @@ $schedule
 			        $shipment_index++;
         			foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
         			    ?>
-                        <div class="sc-upcoming-shipment sc-portal-nextbox">
+                        <div class="sc-upcoming-shipment">
                             <div class="sc-box-info">
                                 <span class="sc-box-shiplabel">Shipping Date</span>
                                 <?php if($shipment_index == 0){ ?>
