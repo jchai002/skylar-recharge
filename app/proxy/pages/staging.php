@@ -158,56 +158,56 @@ $schedule
                                         </div>
                                     </div>
                                 </div>
-                                <?php if($shipment_index == 0){ ?>
-                                    <div class="sc-box-discounts<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-										<?php foreach($upcoming_box['discounts'] as $discount){ ?>
-                                            <div class="sc-box-discount">
-                                                <div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
-												<?php if($discount['type'] == 'percentage'){ ?>
-                                                    <div class="sc-discount-value"><?=$discount['amount']?>% ($<?=price_without_trailing_zeroes($discount['amount']*array_sum(array_column($upcoming_box['items'], 'price'))/100)?>)</div>
-												<?php } else { ?>
-                                                    <div class="sc-discount-value">$<?=price_without_trailing_zeroes($discount['amount']) ?></div>
-												<?php } ?>
-                                            </div>
-										<?php } ?>
-                                        <div class="sc-discount-link" onclick="$('.sc-add-discount').show();$(this).hide();">Got a promo code?</div>
-                                        <form class="sc-add-discount" style="display: none;">
-                                            <div><input type="text" name="discount_code" /></div>
-                                            <div><input type="submit" value="Apply" class="action_button inverted" /></div>
-											<?php if(!empty($upcoming_box['charge_id'])){ ?>
-                                                <input type="hidden" name="address_id" value="<?=$schedule->charges()[$upcoming_box['charge_id']]['address_id']?>" />
-                                                <input type="hidden" name="charge_id" value="<?=$upcoming_box['charge_id']?>" />
+							<?php } ?>
+							<?php if($shipment_index == 0){ ?>
+                                <div class="sc-box-discounts<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+									<?php foreach($upcoming_shipment['discounts'] as $discount){ ?>
+                                        <div class="sc-box-discount">
+                                            <div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
+											<?php if($discount['type'] == 'percentage'){ ?>
+                                                <div class="sc-discount-value"><?=$discount['amount']?>% ($<?=price_without_trailing_zeroes($discount['amount']*array_sum(array_column($upcoming_shipment['items'], 'price'))/100)?>)</div>
+											<?php } else { ?>
+                                                <div class="sc-discount-value">$<?=price_without_trailing_zeroes($discount['amount']) ?></div>
 											<?php } ?>
-                                        </form>
-                                    </div>
-									<?php if(!empty($upcoming_box['charge_id'])){ ?>
-										<?php if(!empty($schedule->charges()[$upcoming_box['charge_id']]['shipping_lines'])){
-											foreach($schedule->charges()[$upcoming_box['charge_id']]['shipping_lines'] as $shipping_line){
-												if(empty($shipping_line['price']) || $shipping_line['price'] == 0){
-													continue;
-												}
-												?>
-                                                <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                                    <div class="sc-shipping-title"><?=$shipping_line['title']?></div>
-                                                    <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
-                                                </div>
-											<?php }
-										} ?>
-										<?php if(!empty($upcoming_box['charge_id']) && !empty($schedule->charges()[$upcoming_box['charge_id']]['total_tax'])){ ?>
-                                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                                <div class="sc-shipping-title">Tax</div>
-                                                <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($schedule->charges()[$upcoming_box['charge_id']]['total_tax'])?></div>
-                                            </div>
-										<?php } ?>
-                                        <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                            Grand Total: $<?= price_without_trailing_zeroes($schedule->charges()[$upcoming_box['charge_id']]['total_price']) ?>
-                                        </div>
-									<?php } else { ?>
-                                        <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                            Grand Total: $<?= price_without_trailing_zeroes(array_sum(array_column($upcoming_box['items'], 'price'))) ?>
                                         </div>
 									<?php } ?>
-                                <?php } ?>
+                                    <div class="sc-discount-link" onclick="$('.sc-add-discount').show();$(this).hide();">Got a promo code?</div>
+                                    <form class="sc-add-discount" style="display: none;">
+                                        <div><input type="text" name="discount_code" /></div>
+                                        <div><input type="submit" value="Apply" class="action_button inverted" /></div>
+										<?php if(!empty($upcoming_shipment['charge_id'])){ ?>
+                                            <input type="hidden" name="address_id" value="<?=$schedule->charges()[$upcoming_shipment['charge_id']]['address_id']?>" />
+                                            <input type="hidden" name="charge_id" value="<?=$upcoming_shipment['charge_id']?>" />
+										<?php } ?>
+                                    </form>
+                                </div>
+								<?php if(!empty($upcoming_shipment['charge_id'])){ ?>
+									<?php if(!empty($schedule->charges()[$upcoming_shipment['charge_id']]['shipping_lines'])){
+										foreach($schedule->charges()[$upcoming_shipment['charge_id']]['shipping_lines'] as $shipping_line){
+											if(empty($shipping_line['price']) || $shipping_line['price'] == 0){
+												continue;
+											}
+											?>
+                                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+                                                <div class="sc-shipping-title"><?=$shipping_line['title']?></div>
+                                                <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
+                                            </div>
+										<?php }
+									} ?>
+									<?php if(!empty($upcoming_shipment['charge_id']) && !empty($schedule->charges()[$upcoming_shipment['charge_id']]['total_tax'])){ ?>
+                                        <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+                                            <div class="sc-shipping-title">Tax</div>
+                                            <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($schedule->charges()[$upcoming_shipment['charge_id']]['total_tax'])?></div>
+                                        </div>
+									<?php } ?>
+                                    <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+                                        Grand Total: $<?= price_without_trailing_zeroes($schedule->charges()[$upcoming_shipment['charge_id']]['total_price']) ?>
+                                    </div>
+								<?php } else { ?>
+                                    <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+                                        Grand Total: $<?= price_without_trailing_zeroes(array_sum(array_column($upcoming_shipment['items'], 'price'))) ?>
+                                    </div>
+								<?php } ?>
 							<?php } ?>
                         </div>
                     <?php
