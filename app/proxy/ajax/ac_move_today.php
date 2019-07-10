@@ -22,9 +22,10 @@ if(empty($res['charges'])){
 }
 
 $charge = $res['charges'][0];
+$date = new DateTime("now", new DateTimeZone('UTC') );
 
 $res = $rc->post('/charges/'.$charge['id'].'/change_next_charge_date', [
-	'next_charge_date' => date('Y-m-d'),
+	'next_charge_date' => $date->format('Y-m-d'),
 ]);
 
 foreach($charge['line_items'] as $line_item){
