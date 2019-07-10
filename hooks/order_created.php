@@ -33,7 +33,6 @@ foreach($order['discount_applications'] as $discount){
 	if($discount['code'] != 'TESTORDER'){
 		continue;
 	}
-	echo "Canceling order - Test".PHP_EOL;
 	cancel_and_refund_order($order, $sc, $rc);
 	break;
 }
@@ -301,7 +300,6 @@ foreach($subs_to_create as $sub_data){
 }
 
 function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc = null){
-	return false;
 	$sc->post('/admin/orders/'.$order['id'].'/cancel.json', [
 		'amount' => $order['total_price_set']['shop_money']['amount'],
 		'currency' => $order['total_price_set']['shop_money']['currency'],
