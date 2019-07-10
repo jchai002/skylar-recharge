@@ -33,6 +33,7 @@ foreach($order['discount_applications'] as $discount){
 	if($discount['code'] != 'TESTORDER'){
 		continue;
 	}
+	echo "Canceling order, test".PHP_EOL;
 	cancel_and_refund_order($order, $sc, $rc);
 	break;
 }
