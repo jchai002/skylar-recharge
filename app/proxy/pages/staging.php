@@ -57,16 +57,14 @@ $schedule
                                 }
                             }
                         }
-
-        			    $has_ac_followup = array_reduce($upcoming_shipment['items'], function($carry, $item){
-        			        return $carry || is_ac_followup_lineitem($item);
-                        }, false);
         			    ?>
                         <div class="sc-upcoming-shipment">
                             <div class="sc-box-info">
                                 <span class="sc-box-shiplabel">Shipping Date</span>
-                                <?php if($has_ac_followup){ // TODO Check if already skipped ?>
+								<?php if($has_ac_followup && $ac_allow_pushback){ ?>
                                     <span class="sc-box-date ac-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
+								<?php } else if($has_ac_followup){ ?>
+                                    <span class="sc-box-date"><?=date('F j', $shipment_list['ship_date_time']) ?></span>
                                 <?php } else if($shipment_index == 0){ ?>
                                     <span class="sc-box-date sc-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
                                 <?php } else { ?>
