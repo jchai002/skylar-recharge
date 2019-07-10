@@ -342,32 +342,32 @@ $schedule
     <div id="ac-move-save-modal" class="sc-save-modal">
         <div class="sc-modal-title">Did you know you can...</div>
         <div class="sc-modal-links">
-            <div class="sc-modal-linkbox ac-linkbox-ordernow" onclick="AccountController.ac_move_to_today();">
+            <div class="sc-modal-linkbox ac-linkbox-ordernow" onclick="AccountController.ac_move_to_today(); $.featherlight.close();">
                 <div><img src="{{ 'cart.svg' | asset_url }}" class="sc-linkbox-icon" /></div>
                 <div class="sc-linkbox-label">Order today and receive $10 off</div>
                 <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
             </div>
         </div>
         <div class="sc-modal-continue">
-            <a href="#" onclick="AccountController.ac_push_back(); return false;">No thanks, I need more time</a>
+            <a href="#" onclick="AccountController.ac_push_back(); $.featherlight.close(); return false;">No thanks, I need more time</a>
         </div>
     </div>
     <div id="ac-cancel-save-modal" class="sc-save-modal">
         <div class="sc-modal-title">Are you sure you want to cancel?</div>
         <div class="sc-modal-links">
-            <div class="sc-modal-linkbox ac-linkbox-ordernow" style="display: none;" onclick="AccountController.ac_move_to_today();">
+            <div class="sc-modal-linkbox ac-linkbox-ordernow" style="display: none;" onclick="AccountController.ac_move_to_today(); $.featherlight.close();">
                 <div><img src="{{ 'cart.svg' | asset_url }}" class="sc-linkbox-icon" /></div>
                 <div class="sc-linkbox-label">Order today and receive $10 off</div>
                 <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
             </div>
-            <div class="sc-modal-linkbox ac-linkbox-pushback" onclick="AccountController.ac_push_back();">
+            <div class="sc-modal-linkbox ac-linkbox-pushback" onclick="AccountController.ac_push_back(); $.featherlight.close();">
                 <div><img src="{{ 'cart.svg' | asset_url }}" class="sc-linkbox-icon" /></div>
                 <div class="sc-linkbox-label">No, I just need a little more time</div>
                 <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
             </div>
         </div>
         <div class="sc-modal-continue">
-            <a href="#" onclick="AccountController.ac_cancel_followup(); return false;">Yes, I'd like to cancel</a>
+            <a href="#" onclick="AccountController.ac_cancel_followup(); $.featherlight.close(); return false;">Yes, I'd like to cancel</a>
         </div>
     </div>
     <div id="sc-skip-modal">
