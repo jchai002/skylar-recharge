@@ -39,7 +39,11 @@ $router->route('/members$/i', function() {
 });
 $router->route('/schedule/i', function() {
 	require_customer_id(function(){
-		require('pages/schedule.php');
+		if(!empty($_REQUEST['theme_id'])){
+			require('pages/schedule.php');
+		} else {
+			require('pages/index.php');
+		}
 	});
 	return true;
 });
