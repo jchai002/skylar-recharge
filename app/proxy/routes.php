@@ -345,9 +345,9 @@ function require_customer_id($callback_if_true){
 		echo "
 		{% assign is_alias = true %}
 		{% if theme.id == 73040330839 %}
-		{% assign theme_query = '&theme_id=' | append: theme.id %}
-		{% else %}
 		{% assign theme_query = '' %}
+		{% else %}
+		{% assign theme_query = '&theme_id=' | append: theme.id %}
 		{% endif %}
 		{% assign account_query = 'c=$customer_id&alias=".$_REQUEST['alias']."' | append: theme_query %}
 		{% if customer.id != $customer_id %}{% assign customer_first_name = '$first_name' %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
@@ -362,9 +362,9 @@ function require_customer_id($callback_if_true){
 	ob_end_clean();
 	echo "{% assign admin_customers = '".implode('|',$admin_customers)."' %}
 {% if theme.id == 73040330839 %}
-{% assign theme_query = '&theme_id=' | append: theme.id %}
-{% else %}
 {% assign theme_query = '' %}
+{% else %}
+{% assign theme_query = '&theme_id=' | append: theme.id %}
 {% endif %}
 {% assign account_query = 'c=$customer_id' | append: theme_query %}
 {% if customer == nil %}
