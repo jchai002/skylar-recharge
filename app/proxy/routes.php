@@ -67,6 +67,42 @@ $router->route('/subscriptions\/ac-swap/i', function() use(&$json_output) {
 	require('ajax/ac_swap.php');
 	return true;
 });
+$router->route('/subscriptions\/ac-cancel/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/ac_cancel.php');
+	return true;
+});
+$router->route('/subscriptions\/ac-move-today/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/ac_move_today.php');
+	return true;
+});
+$router->route('/subscriptions\/ac-move-back/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/ac_move_back.php');
+	return true;
+});
 $router->route('/subscriptions\/swap/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
