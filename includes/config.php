@@ -1474,7 +1474,7 @@ function is_ac_followup_lineitem($followup_line_item){
 	if(empty($followup_line_item['properties'])){
 		return false;
 	}
-	if(!empty($followup_line_item['_ac_product'])){
+	if(!empty($followup_line_item['properties']['_ac_product'])){
 		return true;
 	}
 	// Check if it's an indexed array (with name and value properties)
@@ -1491,7 +1491,7 @@ function is_ac_pushed_back($followup_line_item){
 	if(empty($followup_line_item['properties'])){
 		return false;
 	}
-	if(!empty($followup_line_item['_ac_pushed_back'])){
+	if(!empty($followup_line_item['properties']['_ac_pushed_back'])){
 		return true;
 	}
 	// Check if it's an indexed array (with name and value properties)
