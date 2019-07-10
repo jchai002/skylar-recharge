@@ -223,6 +223,7 @@ class SubscriptionSchedule {
 		$item['skipped'] = $item['skipped'] ?? false;
 		$item['is_sc_any'] = is_scent_club_any(get_product($this->db, $item['shopify_product_id']));
 		$item['is_ac_followup'] = is_ac_followup_lineitem($item);
+		$item['ac_pushed_back'] = is_ac_pushed_back($item);
 		return $item;
 	}
 

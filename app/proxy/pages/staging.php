@@ -99,7 +99,7 @@ $schedule
 									<?php } else if(!empty($item['skipped'])){ ?>
                                         <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 									<?php } else if(is_ac_followup_lineitem($item)){ ?>
-                                        <a class="ac-item-corner-link" href="#"><span>Cancel My Trial</span></a>
+                                        <a class="ac-item-corner-link ac-cancel-link" href="#"><span>Cancel My Trial</span></a>
 									<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
                                         <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
 									<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
@@ -329,6 +329,37 @@ $schedule
     </div>
 </div>
 <div class="hidden">
+    <div id="ac-move-save-modal" class="sc-save-modal">
+        <div class="sc-modal-title">Did you know you can...</div>
+        <div class="sc-modal-links">
+            <div class="sc-modal-linkbox ac-linkbox-ordernow" onclick="AccountController.ac_move_to_today();">
+                <div><img src="{{ 'cart.svg' | file_url }}" /></div>
+                <div class="sc-linkbox-label">Order today and receive $10 off</div>
+                <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
+            </div>
+        </div>
+        <div class="sc-modal-continue">
+            <a href="#" onclick="AccountController.ac_push_back(); return false;">No thanks, I need more time</a>
+        </div>
+    </div>
+    <div id="ac-cancel-save-modal" class="sc-save-modal">
+        <div class="sc-modal-title">Are you sure you want to cancel?</div>
+        <div class="sc-modal-links">
+            <div class="sc-modal-linkbox ac-linkbox-ordernow" style="display: none;" onclick="AccountController.ac_move_to_today();">
+                <div><img src="{{ 'cart.svg' | file_url }}" /></div>
+                <div class="sc-linkbox-label">Order today and receive $10 off</div>
+                <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
+            </div>
+            <div class="sc-modal-linkbox ac-linkbox-pushback" onclick="AccountController.ac_push_back();">
+                <div><img src="{{ 'cart.svg' | file_url }}" /></div>
+                <div class="sc-linkbox-label">No, I just need a little more time</div>
+                <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
+            </div>
+        </div>
+        <div class="sc-modal-continue">
+            <a href="#" onclick="AccountController.ac_cancel_followup(); return false;">Yes, I'd like to cancel</a>
+        </div>
+    </div>
     <div id="sc-skip-modal">
         <div class="sc-modal-title">Did you know you can...</div>
         <div class="sc-modal-links">
@@ -650,6 +681,15 @@ $schedule
         $('.ac-choose-button').click(function(){
             $(this).siblings('.ac-choose-container').slideToggle();
             $(this).find('.ac-choose-plus, .ac-choose-minus').toggle();
+        });
+        $('.ac-cancel-link').unbind().click(function(e){
+            e.preventDefault();
+            AccountController.selected_box_item = $(this).closest('.sc-box-item');
+            AccountController.show_ac_cancel_save();
+        });
+        $('.ac-edit-date').unbind().click(function(e){
+            AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
+            AccountController.show_ac_move_save();
         });
     }
 </script>
