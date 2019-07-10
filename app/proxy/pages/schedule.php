@@ -33,7 +33,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 $schedule
 <?php print_r($schedule->get()); ?>
 -->
-{% assign portal_page = 'my_box' %}
+{% assign portal_page = 'schedule' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
     {% include 'sc-member-nav' %}
