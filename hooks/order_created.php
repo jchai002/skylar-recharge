@@ -34,7 +34,7 @@ foreach($order['discount_applications'] as $discount){
 		continue;
 	}
 	echo "Canceling order, test".PHP_EOL;
-	cancel_and_refund_order($order, $sc, $rc);
+//	cancel_and_refund_order($order, $sc, $rc);
 	break;
 }
 
@@ -149,9 +149,6 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
 print_r($rc_order);
 if(empty($rc_order['orders'])){
-	if($discount){
-		$sc->post('/admin/orders/'.$order['id'].'/cancel.json');
-	}
 	die('no rc order');
 }
 $rc_order = $rc_order['orders'][0];
