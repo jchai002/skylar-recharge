@@ -220,6 +220,13 @@ class SubscriptionSchedule {
 	}
 
 	private function normalize_item($item){
+		if(!empty($item['properties']) && array_keys($item['properties'])[0] == 0){
+			$properties = [];
+			foreach($item['properties'] as $property){
+				$properties[$property['name']] = $property['value'];
+			}
+			$item['properties'] = $properties;
+		}
 		$item['skipped'] = $item['skipped'] ?? false;
 		$item['is_sc_any'] = is_scent_club_any(get_product($this->db, $item['shopify_product_id']));
 		$item['is_ac_followup'] = is_ac_followup_lineitem($item);

@@ -46,6 +46,18 @@ $schedule
                 foreach($schedule->get() as $shipment_date => $shipment_list){
 			        $shipment_index++;
         			foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
+
+        			    $has_ac_followup = false;
+        			    $ac_allow_pushback = true;
+        			    foreach($upcoming_shipment['items'] as $item){
+        			        if(is_ac_followup_lineitem($item)){
+        			            $has_ac_followup = true;
+        			            if(is_ac_pushed_back($item)){
+        			                $ac_allow_pushback = false;
+                                }
+                            }
+                        }
+
         			    $has_ac_followup = array_reduce($upcoming_shipment['items'], function($carry, $item){
         			        return $carry || is_ac_followup_lineitem($item);
                         }, false);
