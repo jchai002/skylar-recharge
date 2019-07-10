@@ -15,7 +15,7 @@ if(!empty($_REQUEST['id'])){
 $subscription = $res['subscription'];
 var_dump($subscription);
 
-if(empty($subscription['address_id'])){
+if(empty($subscription['created_at'])){
 	// Deleted
 	$stmt = $db->prepare("UPDATE rc_subscriptions SET deleted_at=:deleted_at WHERE recharge_id=:recharge_id");
 	$stmt->execute([

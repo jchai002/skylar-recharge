@@ -1,15 +1,42 @@
 <?php
 
 $router = new Router();
-$router->route('',function(){
-	require_customer_id(function(){
-		require('pages/index.php');
+$router->route('',function() use($db, $rc){
+	require_customer_id(function() use($db, $rc){
+		if(!empty(sc_get_main_subscription($db, $rc, [
+			'shopify_customer_id' => intval($_REQUEST['c']),
+			'status' => 'ACTIVE'
+		]))){
+			require('pages/index.php');
+//			require('pages/members.php');
+		} else {
+			$stmt = $db->prepare("SELECT 1 FROM rc_subscriptions s
+									LEFT JOIN rc_addresses a ON s.address_id=a.id
+									LEFT JOIN rc_customers rcc ON a.rc_customer_id=rcc.id
+									LEFT JOIN customers c ON c.id=rcc.customer_id
+									WHERE c.shopify_id = ?
+										AND (s.status='ACTIVE' OR s.status='ONETIME')
+										AND s.deleted_at IS NULL
+									LIMIT 1");
+			$stmt->execute([$_REQUEST['c']]);
+			if($stmt->rowCount() > 0){
+				require('pages/schedule.php');
+			} else {
+				require('pages/orderhistory.php');
+			}
+		}
 	});
 	return true;
 });
 $router->route('/members$/i', function() {
 	require_customer_id(function(){
 		require('pages/members.php');
+	});
+	return true;
+});
+$router->route('/schedule/i', function() {
+	require_customer_id(function(){
+		require('pages/schedule.php');
 	});
 	return true;
 });
