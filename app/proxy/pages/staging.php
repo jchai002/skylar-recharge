@@ -46,12 +46,16 @@ $schedule
                 foreach($schedule->get() as $shipment_date => $shipment_list){
 			        $shipment_index++;
         			foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
-        			    $has_ac_followup = false;
+        			    $has_ac_followup = array_reduce($upcoming_shipment['items'], function($carry, $item){
+        			        return $carry || is_ac_followup_lineitem($item);
+                        }, false);
         			    ?>
                         <div class="sc-upcoming-shipment">
                             <div class="sc-box-info">
                                 <span class="sc-box-shiplabel">Shipping Date</span>
-                                <?php if($shipment_index == 0){ ?>
+                                <?php if($has_ac_followup){ // TODO Check if already skipped ?>
+                                    <span class="sc-box-date ac-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
+                                <?php } else if($shipment_index == 0){ ?>
                                     <span class="sc-box-date sc-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
                                 <?php } else { ?>
                                     <span class="sc-box-date"><?=date('F j', $shipment_list['ship_date_time']) ?></span>
@@ -64,9 +68,6 @@ $schedule
 								} else {
 									$box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
 								}
-								if(is_ac_followup_lineitem($item)){
-								    $has_ac_followup = true;
-                                }
 								?>
                                 {% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
                                 {% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
