@@ -31,7 +31,10 @@ foreach($charge['line_items'] as $line_item){
 	if(!is_ac_followup_lineitem($line_item)){
 		continue;
 	}
-	$properties = $line_item['properties'];
+	$properties = [];
+	foreach($line_item['properties'] as $property){
+		$properties[$property['name']] = $property['value'];
+	}
 	$properties['_ac_pushed_back'] = 1;
 	$res = $rc->put('/onetimes/'.$subscription_id, [
 		'properties' => $properties,
