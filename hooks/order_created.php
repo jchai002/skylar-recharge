@@ -12,6 +12,7 @@ if(empty($shop_url)){
 	$shop_url = 'maven-and-muse.myshopify.com';
 }
 $sc = new ShopifyClient($shop_url);
+$rc = new RechargeClient();
 
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
@@ -22,6 +23,19 @@ if(!empty($_REQUEST['id'])){
 }
 if(empty($order)){
 	die('no data');
+}
+
+// Cancel and refund test orders
+foreach($order['discount_applications'] as $discount){
+	if($discount['type'] != 'discount_code'){
+		continue;
+	}
+	if($discount['code'] != 'TESTORDER'){
+		continue;
+	}
+	echo "Canceling order - Test".PHP_EOL;
+	cancel_and_refund_order($order, $sc, $rc);
+	break;
 }
 
 echo insert_update_order($db, $order, $sc);
@@ -66,8 +80,6 @@ if(
 		'date_created' => date('Y-m-d H:i:s'),
 	]);
 }
-
-$rc = new RechargeClient();
 
 $res = $sc->get('/admin/customers/search.json', [
 	'query' => 'email:'.$order['email'],
@@ -137,6 +149,9 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
 print_r($rc_order);
 if(empty($rc_order['orders'])){
+	if($discount){
+		$sc->post('/admin/orders/'.$order['id'].'/cancel.json');
+	}
 	die('no rc order');
 }
 $rc_order = $rc_order['orders'][0];
@@ -283,4 +298,23 @@ foreach($subs_to_create as $sub_data){
 
 	$subscription = add_subscription($rc, $product, $variant, $rc_order['address_id'], $next_charge_time, 1, $sub_data['frequency']);
 	$subscription_id = $subscription['id'];
+}
+
+function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc = null){
+	return false;
+	$sc->post('/admin/orders/'.$order['id'].'/cancel.json', [
+		'amount' => $order['total_price_set']['shop_money']['amount'],
+		'currency' => $order['total_price_set']['shop_money']['currency'],
+	]);
+	$res = $rc->get('/charges', [
+		'shopify_order_id' => $order['id'],
+	]);
+	if(empty($res['charges'])){
+		return true;
+	}
+	$charge = $res['charges'][0];
+	$rc->post('/charges/'.$charge['id'].'/refund', [
+		'amount' => $charge['total_price'],
+	]);
+	return true;
 }
