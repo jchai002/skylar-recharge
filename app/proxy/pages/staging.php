@@ -103,6 +103,8 @@ $schedule
                                      data-type="<?=$item['type']?>"
 									<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
                                      data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
+									<?= is_ac_followup_lineitem($item) ? 'data-ac' : '' ?>
+									<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
                                 >
 									<?php if(!empty($item['skipped']) && !empty($item['charge_id'])){ ?>
                                         <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge_id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
