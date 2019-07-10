@@ -7,8 +7,11 @@ $router->route('',function() use($db, $rc){
 			'shopify_customer_id' => intval($_REQUEST['c']),
 			'status' => 'ACTIVE'
 		]))){
-			require('pages/index.php');
-//			require('pages/members.php');
+			if(!empty($_REQUEST['theme_id'])){
+				require('pages/members.php');
+			} else {
+				require('pages/index.php');
+			}
 		} else {
 			$stmt = $db->prepare("SELECT 1 FROM rc_subscriptions s
 									LEFT JOIN rc_addresses a ON s.address_id=a.id
