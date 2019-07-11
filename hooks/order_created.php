@@ -35,7 +35,7 @@ foreach($order['discount_applications'] as $discount){
 		continue;
 	}
 	echo "Canceling order, test".PHP_EOL;
-//	cancel_and_refund_order($order, $sc, $rc);
+	cancel_and_refund_order($order, $sc, $rc);
 	break;
 }
 
@@ -317,7 +317,6 @@ foreach($subs_to_create as $sub_data){
 }
 
 function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc = null){
-	return false;
 	$restock_line_items = [];
 	foreach($order['line_items'] as $line_item){
 		$restock_line_items[] = [
