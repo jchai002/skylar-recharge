@@ -349,6 +349,7 @@ function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc =
 		]);
 //		print_r($res);
 	} else {
+		print_r($sc->last_error);
 		$res = $sc->post('/admin/orders/'.$order['id'].'/cancel.json', [
 			'note' => 'Test',
 			'restock' => true,
@@ -360,7 +361,6 @@ function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc =
 	$res = $rc->get('/charges', [
 		'shopify_order_id' => $order['id'],
 	]);
-	print_r($sc->last_error);
 	if(empty($res['charges'])){
 		return true;
 	}
