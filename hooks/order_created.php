@@ -158,7 +158,7 @@ $rc_order = $rc_order['orders'][0];
 foreach($order['line_items'] as $line_item){
 	if(is_ac_initial_product(get_product($db, $line_item['product_id']))){
 		echo "Attempting to create AC onetime... ";
-    	$res = $rc->post('/address/'.$rc_order['address_id'].'/onetimes/',[
+    	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
     		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+14 days')),
 			'price' => '78',
 			'quantity' => 1,
@@ -169,7 +169,6 @@ foreach($order['line_items'] as $line_item){
 				'_ac_product' => $line_item['product_id'],
 			],
 		]);
-    	var_dump($res);
     	if(!empty($res['onetime'])){
     		$subscription_id = insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
 			$stmt = $db->prepare("INSERT IGNORE INTO ac_orders (order_line_item_id, followup_subscription_id) VALUES (?, ?)");
