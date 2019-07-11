@@ -348,7 +348,9 @@ $schedule
                 <?php } ?>
             </div>
             <div class="sc-load-more" data-months="<?=$months?>">
-                <a href="#" class="action_button" onclick="AccountController.load_schedule(<?=$months+3?>); return false;">View More</a>
+                <?php if(count($schedule->subscriptions()) > 0){ ?>
+                    <a href="#" class="action_button" onclick="AccountController.load_schedule(<?=$months+3?>); return false;">View More</a>
+                <?php } ?>
             </div>
         </div>
     </div>
