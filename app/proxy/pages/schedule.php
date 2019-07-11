@@ -690,11 +690,15 @@ $schedule
         $('.ac-choose-container').submit(function(e){
             e.preventDefault();
             console.log(e);
+            $([document.documentElement, document.body]).animate({
+                scrollTop: AccountController.selected_box_item.closest('.sc-upcoming-shipment').offset().top -70
+            }, 1000);
+            $(this).siblings('.ac-choose-container').slideUp();
+            $(this).find('.ac-choose-plus, .ac-choose-minus').toggle();
             AccountController.ac_swap_scent(e.target.subscription_id.value, e.target.variant_id.value);
         });
         $('.ac-choose-button').click(function(){
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
-            $(this).siblings('.ac-choose-container').slideToggle();
             $(this).find('.ac-choose-plus, .ac-choose-minus').toggle();
         });
         $('.ac-cancel-link').unbind().click(function(e){
