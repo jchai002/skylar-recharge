@@ -1130,14 +1130,11 @@ function sc_skip_future_charge(RechargeClient $rc, $subscription_id, $time){
 }
 function sc_get_main_subscription(PDO $db, RechargeClient $rc, $filters = []){
 	$res = $rc->get('/subscriptions', $filters);
-	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 	if(empty($res['subscriptions'])){
 		return false;
 	}
 	foreach($res['subscriptions'] as $subscription){
-		$stmt->execute([$subscription['shopify_product_id']]);
-		$product = $stmt->fetch();
-		if(is_scent_club($product)){
+		if(is_scent_club(get_product($db, $subscription['shopify_product_id']))){
 			return $subscription;
 		}
 	}
