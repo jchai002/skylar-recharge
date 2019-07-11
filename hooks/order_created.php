@@ -181,6 +181,7 @@ foreach($order['line_items'] as $line_item){
     		var_dump($subscription_id);
 			$stmt = $db->prepare("INSERT INTO ac_orders (order_line_item_id, followup_subscription_id) VALUES (?, ?)");
 			$stmt->execute([$line_item['id'], $subscription_id]);
+			print_r($stmt->errorInfo());
 			echo "Created ".$res['onetime']['id']." (".$db->lastInsertId().")".PHP_EOL;
 		} else {
     		print_r($res);
