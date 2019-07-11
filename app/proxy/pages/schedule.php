@@ -26,6 +26,11 @@ if(empty($rc_customer_id) || empty($schedule->get())){
     exit;
 }
 
+$sc_main_sub = sc_get_main_subscription($db, $rc, [
+    'customer_id' => $rc_customer_id,
+    'status' => 'ACTIVE',
+]);
+
 $recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_REQUEST['c']));
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
@@ -47,15 +52,11 @@ $schedule
                     $shipment_index = -1;
                     foreach($schedule->get() as $shipment_date => $shipment_list){
                         $shipment_index++;
-        				$has_scent_club = false;
                         foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
 
                             $has_ac_followup = false;
                             $ac_allow_pushback = true;
                             foreach($upcoming_shipment['items'] as $item){
-                                if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
-                                    $has_scent_club = true;
-                                }
                                 if(is_ac_followup_lineitem($item)){
                                     $has_ac_followup = true;
                                     if(is_ac_pushed_back($item)){
@@ -277,7 +278,7 @@ $schedule
                         if(count($schedule->get()) == 1){
                             continue;
                         }
-                        if(!$has_scent_club){
+                        if(!empty($sc_main_sub)){
                             continue;
                         }
                         ?>
