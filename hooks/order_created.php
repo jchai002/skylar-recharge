@@ -159,8 +159,9 @@ $rc_order = $rc_order['orders'][0];
 foreach($order['line_items'] as $line_item){
 	if(is_ac_initial_product(get_product($db, $line_item['product_id']))){
 		echo "Attempting to create AC onetime... ";
-		$stmt = $db->prepare("SELECT 1 FROM ac_orders WHERE order_line_item_id=?");
+		$stmt = $db->prepare("SELECT * FROM ac_orders WHERE order_line_item_id=?");
 		$stmt->execute([$line_item['id']]);
+		echo $line_item['id'];
 		print_r($stmt->errorInfo());
 		if($stmt->rowCount() > 0){
 			echo "Skipping, already exists";
