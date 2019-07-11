@@ -158,6 +158,7 @@ foreach($order['line_items'] as $line_item){
     if(is_autocharge_product(get_product($db, $line_item['product_id']))){
         $stmt = $db->prepare("INSERT IGNORE INTO ac_orders (order_line_item_id) VALUES (?)");
         $stmt->execute([$line_item['id']]);
+        // TODO: Create autocharge followup item
     }
 }
 
