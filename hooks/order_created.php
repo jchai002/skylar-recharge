@@ -169,6 +169,7 @@ foreach($order['line_items'] as $line_item){
 				'_ac_product' => $line_item['product_id'],
 			],
 		]);
+    	var_dump($res);
     	if(!empty($res['onetime'])){
     		$subscription_id = insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
 			$stmt = $db->prepare("INSERT IGNORE INTO ac_orders (order_line_item_id, followup_subscription_id) VALUES (?, ?)");
