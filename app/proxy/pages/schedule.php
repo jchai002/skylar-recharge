@@ -699,6 +699,7 @@ $schedule
         });
         $('.ac-choose-button').click(function(){
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
+            $(this).siblings('.ac-choose-container').slideToggle();
             $(this).find('.ac-choose-plus, .ac-choose-minus').toggle();
         });
         $('.ac-cancel-link').unbind().click(function(e){
