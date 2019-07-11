@@ -6,6 +6,7 @@ class SubscriptionSchedule {
 	private $rc;
 	private $rc_customer_id;
 	private $max_time;
+	private $min_time;
 	private $schedule = [];
 	private $orders = [];
 	private $subscriptions = [];
@@ -16,6 +17,7 @@ class SubscriptionSchedule {
 		$this->rc = $rc;
 		$this->rc_customer_id = $rc_customer_id;
 		$this->max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
+		$this->min_time = strtotime(date('Y-m-d'));
 	}
 
 	public function get(){
@@ -76,7 +78,6 @@ class SubscriptionSchedule {
 		if(empty($this->orders)){
 			$res = $this->rc->get('/orders', [
 				'customer_id' => $this->rc_customer_id,
-				'status' => 'QUEUED',
 			]);
 			if(!empty($res['orders'])){
 				$this->orders($res['orders']);
@@ -165,7 +166,7 @@ class SubscriptionSchedule {
 		if($item['scheduled_at_time'] > $this->max_time){
 			return false;
 		}
-		if($item['scheduled_at_time'] < time()){
+		if($item['scheduled_at_time'] < $this->min_time){
 			return false;
 		}
 
