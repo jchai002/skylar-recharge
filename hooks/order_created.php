@@ -166,6 +166,7 @@ foreach($order['line_items'] as $line_item){
 			echo "Skipping, already exists";
 			continue;
 		}
+		print_r($stmt->fetchAll());
     	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
     		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+14 days')),
 			'price' => '78',
