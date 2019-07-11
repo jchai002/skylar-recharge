@@ -24,6 +24,7 @@ if(!empty($_REQUEST['id'])){
 if(empty($order)){
 	die('no data');
 }
+print_r($order);
 
 // Cancel and refund test orders
 foreach($order['discount_applications'] as $discount){
