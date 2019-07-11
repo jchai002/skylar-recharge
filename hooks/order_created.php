@@ -161,7 +161,7 @@ foreach($order['line_items'] as $line_item){
 		echo "Attempting to create AC onetime... ";
 		$stmt = $db->prepare("SELECT 1 FROM ac_orders WHERE order_line_item_id=?");
 		$stmt->execute([$line_item['id']]);
-		if($stmt->rowCount() > 1){
+		if($stmt->rowCount() > 0){
 			echo "Skipping, already exists";
 			continue;
 		}
