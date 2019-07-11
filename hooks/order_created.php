@@ -157,6 +157,7 @@ $rc_order = $rc_order['orders'][0];
 // Create and insert any autocharge items
 foreach($order['line_items'] as $line_item){
 	if(is_ac_initial_product(get_product($db, $line_item['product_id']))){
+		echo "Attempting to create AC onetime... ";
     	$res = $rc->post('/address/'.$rc_order['address_id'].'/onetimes/',[
     		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+14 days')),
 			'price' => '78',
@@ -172,7 +173,7 @@ foreach($order['line_items'] as $line_item){
     		$subscription_id = insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
 			$stmt = $db->prepare("INSERT IGNORE INTO ac_orders (order_line_item_id, followup_subscription_id) VALUES (?, ?)");
 			$stmt->execute([$line_item['id'], $subscription_id]);
-			echo "Created AC Onetime ".$res['onetime']['id']." (".$db->lastInsertId().")".PHP_EOL;
+			echo "Created ".$res['onetime']['id']." (".$db->lastInsertId().")".PHP_EOL;
 		}
     }
 }
