@@ -338,7 +338,7 @@ function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc =
 		],
 	]);
 	if(!empty($res)){
-		print_r($res);
+//		print_r($res);
 		$refund = $res;
 		foreach($res['transactions'] as $index => $transaction){
 			$refund['transactions'][$index]['kind'] = 'refund';
@@ -347,7 +347,7 @@ function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc =
 			'note' => 'Test',
 			'refund' => $refund,
 		]);
-		print_r($res);
+//		print_r($res);
 	} else {
 		$res = $sc->post('/admin/orders/'.$order['id'].'/cancel.json', [
 			'note' => 'Test',
@@ -355,7 +355,7 @@ function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc =
 			'amount' => $order['financial_status'] == 'refunded' ? 0 : $order['total_price_set']['shop_money']['amount'],
 			'currency' => $order['total_price_set']['shop_money']['currency_code'],
 		]);
-		print_r($res);
+//		print_r($res);
 	}
 	$res = $rc->get('/charges', [
 		'shopify_order_id' => $order['id'],
