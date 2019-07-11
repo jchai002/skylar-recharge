@@ -352,7 +352,7 @@ function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc =
 		$res = $sc->post('/admin/orders/'.$order['id'].'/cancel.json', [
 			'note' => 'Test',
 			'restock' => true,
-			'amount' => $order['total_price_set']['shop_money']['amount'],
+			'amount' => $order['financial_status'] == 'refunded' ? 0 : $order['total_price_set']['shop_money']['amount'],
 			'currency' => $order['total_price_set']['shop_money']['currency_code'],
 		]);
 		print_r($res);
