@@ -1479,7 +1479,7 @@ function is_ac_followup_lineitem($followup_line_item){
 		return true;
 	}
 	// Check if it's an indexed array (with name and value properties)
-	if(array_keys($followup_line_item['properties'])[0] == 0){
+	if(array_keys($followup_line_item['properties'])[0] === 0){
 		foreach($followup_line_item['properties'] as $property){
 			if($property['name'] == '_ac_product' && !empty($property['value'])){
 				return true;
@@ -1496,7 +1496,7 @@ function is_ac_pushed_back($followup_line_item){
 		return true;
 	}
 	// Check if it's an indexed array (with name and value properties)
-	if(array_keys($followup_line_item['properties'])[0] == 0){
+	if(array_keys($followup_line_item['properties'])[0] === 0){
 		foreach($followup_line_item['properties'] as $property){
 			if($property['name'] == '_ac_pushed_back' && !empty($property['value'])){
 				return true;
