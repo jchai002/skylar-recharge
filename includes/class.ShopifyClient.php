@@ -41,6 +41,7 @@ class ShopifyClient {
 	public $api_key;
 	public $secret;
 	public $last_response_headers = null;
+	public $last_error;
 	public static $token_lookup = [
         'maven-and-muse.myshopify.com' => '',
     ];
@@ -130,7 +131,7 @@ class ShopifyClient {
 		$response = json_decode($response, true);
 
 		if (isset($response['errors']) or ($this->last_response_headers['http_status_code'] >= 400)){
-			//var_dump($response['errors']);
+			$this->last_error = $response;
 			return false;
 			throw new ShopifyApiException($method, $path, $params, $this->last_response_headers, $response);
 		}

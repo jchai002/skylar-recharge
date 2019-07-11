@@ -336,6 +336,7 @@ function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc =
 		],
 	]);
 	print_r($res);
+	print_r($sc->last_error);
 	$refund = $res;
 	foreach($res['transactions'] as $index => $transaction){
 		$refund['transactions'][$index]['kind'] = 'refund';
