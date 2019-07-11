@@ -76,7 +76,7 @@ print_r($schedule->get());
                                 <div class="sc-box-info">
                                     <span class="sc-box-shiplabel">Shipping Date</span>
 									<?php if($has_ac_followup && !$ac_delivered){ ?>
-                                        <span class="sc-box-date">Pending Delivery</span>
+                                        <span class="sc-box-date sc-box-date-pending">Pending Sample Delivery</span>
 									<?php } else if($has_ac_followup && $ac_allow_pushback){ ?>
                                         <span class="sc-box-date ac-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
                                     <?php } else if($has_ac_followup){ ?>
