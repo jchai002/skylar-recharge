@@ -101,6 +101,9 @@ class SubscriptionSchedule {
 		$this->schedule = [];
 
 		foreach($this->orders as $order){
+			if($order['status'] != 'QUEUED' && $order['status'] != 'SKIPPED'){
+				continue;
+			}
 			foreach($order['line_items'] as $item){
 				$this->add_item_to_schedule($item);
 			}
