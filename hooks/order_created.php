@@ -323,7 +323,7 @@ function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc =
 			'id' => $line_item['id'],
 			'quantity' => $line_item['quantity'],
 			'restock_type' => 'cancel',
-			'location_id' => $line_item['original_location']['id'],
+			'location_id' => 36244366,
 		];
 	}
 	$res = $sc->post('/admin/orders/'.$order['id'].'/refunds/calculate.json', [
