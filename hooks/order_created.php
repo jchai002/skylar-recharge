@@ -158,6 +158,11 @@ $rc_order = $rc_order['orders'][0];
 foreach($order['line_items'] as $line_item){
 	if(is_ac_initial_product(get_product($db, $line_item['product_id']))){
 		echo "Attempting to create AC onetime... ";
+		$stmt = $db->prepare("SELECT 1 FROM ac_orders WHERE order_line_item_id=?");
+		$stmt->execute([$line_item['id']]);
+		if($stmt->rowCount() > 1){
+			echo "Skipping, already exists";
+		}
     	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
     		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+14 days')),
 			'price' => '78',
