@@ -353,7 +353,7 @@ function cancel_and_refund_order($order, ShopifyClient $sc, RechargeClient $rc =
 			'note' => 'Test',
 			'restock' => true,
 			'amount' => $order['total_price_set']['shop_money']['amount'],
-			'currency' => $order['total_price_set']['shop_money']['currency'],
+			'currency' => $order['total_price_set']['shop_money']['currency_code'],
 		]);
 		print_r($res);
 	}
