@@ -47,11 +47,15 @@ $schedule
                     $shipment_index = -1;
                     foreach($schedule->get() as $shipment_date => $shipment_list){
                         $shipment_index++;
+        				$has_scent_club = false;
                         foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
 
                             $has_ac_followup = false;
                             $ac_allow_pushback = true;
                             foreach($upcoming_shipment['items'] as $item){
+                                if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
+                                    $has_scent_club = true;
+                                }
                                 if(is_ac_followup_lineitem($item)){
                                     $has_ac_followup = true;
                                     if(is_ac_pushed_back($item)){
@@ -267,7 +271,13 @@ $schedule
                             </div>
                         <?php
                         }
-                        if($shipment_index != 0){ // TODO: Scent club only
+                        if($shipment_index != 0){
+                            continue;
+                        }
+                        if(count($schedule->get()) == 1){
+                            continue;
+                        }
+                        if(!$has_scent_club){
                             continue;
                         }
                         ?>
