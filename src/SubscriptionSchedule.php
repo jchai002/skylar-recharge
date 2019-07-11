@@ -87,6 +87,7 @@ class SubscriptionSchedule {
 				'customer_id' => $this->rc_customer_id,
 				'date_min' => date('Y-m-d', strtotime('-1 day')),
 //				'date_min' => date('Y-m-d'),
+				'status' => 'QUEUED',
 			]);
 			if(!empty($res['charges'])){
 				$this->charges($res['charges']);
