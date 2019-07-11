@@ -281,7 +281,7 @@ print_r($schedule->get());
                         if(count($schedule->get()) == 1){
                             continue;
                         }
-                        if(!empty($sc_main_sub)){
+                        if(empty($sc_main_sub)){
                             continue;
                         }
                         ?>
