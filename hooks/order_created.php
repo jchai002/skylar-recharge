@@ -163,6 +163,7 @@ foreach($order['line_items'] as $line_item){
 		$stmt->execute([$line_item['id']]);
 		if($stmt->rowCount() > 1){
 			echo "Skipping, already exists";
+			continue;
 		}
     	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
     		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+14 days')),
