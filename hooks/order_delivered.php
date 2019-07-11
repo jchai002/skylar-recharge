@@ -1,4 +1,5 @@
 <?php
+http_response_code(200);
 require_once('../includes/config.php');
 require_once('../includes/class.ShopifyClient.php');
 ini_set('display_errors', 1);
@@ -13,6 +14,7 @@ if(empty($shop_url)){
 	$shop_url = 'maven-and-muse.myshopify.com';
 }
 $sc = new ShopifyClient();
+$rc = new RechargeClient();
 
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
@@ -30,6 +32,33 @@ $cart_attributes = [];
 foreach($order['note_attributes'] as $attribute){
 	$cart_attributes[$attribute['name']] = $attribute['value'];
 }
+
+// Autocharge
+$stmt = $db->prepare("SELECT s.recharge_id AS id FROM skylar.ac_orders aco
+LEFT JOIN rc_subscriptions s ON aco.followup_subscription_id=s.id
+WHERE s.id IS NOT NULL AND s.deleted_at IS NULL
+AND aco.order_line_item_id=?");
+$stmt_get_order_line = $db->prepare("SELECT id FROM order_line_items WHERE shopify_id=?");
+foreach($fulfillment['line_items'] as $line_item){
+	$stmt_get_order_line->execute([$line_item['id']]);
+	$oli_id = $stmt_get_order_line->fetchColumn();
+	$stmt->execute([$oli_id]);
+	if($stmt->rowCount() == 0){
+		continue;
+	}
+	// Has AC order, update ship date
+	$subscription_id = $stmt->fetchColumn();
+	$rc->put('/onetimes/'.$subscription_id, [
+		'next_charge_scheduled_at' => date('Y-m-d', offset_date_skip_weekend(strtotime('+14 days'))),
+		'properties' => [
+			'_ac_product' => $line_item['product_id'],
+			'_ac_delivered' => 1,
+		]
+	]);
+
+}
+
+// Gift message
 if(empty($cart_attributes['gift_message']) || empty($cart_attributes['gift_message_email'])){
 	die();
 }

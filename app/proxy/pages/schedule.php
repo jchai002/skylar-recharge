@@ -58,6 +58,7 @@ print_r($schedule->get());
                         foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
 
                             $has_ac_followup = false;
+							$ac_delivered = false;
                             $ac_allow_pushback = true;
                             foreach($upcoming_shipment['items'] as $item){
                                 if(is_ac_followup_lineitem($item)){
@@ -65,13 +66,18 @@ print_r($schedule->get());
                                     if(is_ac_pushed_back($item)){
                                         $ac_allow_pushback = false;
                                     }
+                                    if(is_ac_delivered($item)){
+                                        $ac_delivered = true;
+                                    }
                                 }
                             }
                             ?>
                             <div class="sc-upcoming-shipment">
                                 <div class="sc-box-info">
                                     <span class="sc-box-shiplabel">Shipping Date</span>
-                                    <?php if($has_ac_followup && $ac_allow_pushback){ ?>
+									<?php if($has_ac_followup && !$ac_delivered){ ?>
+                                        <span class="sc-box-date">Pending Delivery</span>
+									<?php } else if($has_ac_followup && $ac_allow_pushback){ ?>
                                         <span class="sc-box-date ac-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
                                     <?php } else if($has_ac_followup){ ?>
                                         <span class="sc-box-date"><?=date('F j', $shipment_list['ship_date_time']) ?></span>

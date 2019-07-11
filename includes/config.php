@@ -1502,6 +1502,23 @@ function is_ac_pushed_back($followup_line_item){
 	}
 	return false;
 }
+function is_ac_delivered($followup_line_item){
+	if(empty($followup_line_item['properties'])){
+		return false;
+	}
+	if(!empty($followup_line_item['properties']['_ac_delivered'])){
+		return true;
+	}
+	// Check if it's an indexed array (with name and value properties)
+	if(array_keys($followup_line_item['properties'])[0] === 0){
+		foreach($followup_line_item['properties'] as $property){
+			if($property['name'] == '_ac_delivered' && !empty($property['value'])){
+				return true;
+			}
+		}
+	}
+	return false;
+}
 // Klaviyo
 function klaviyo_send_transactional_email(PDO $db, $to_email, $email_type, $properties=[]){
     $properties['email_type'] = $email_type;

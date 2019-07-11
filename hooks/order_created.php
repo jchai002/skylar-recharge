@@ -156,11 +156,14 @@ if(empty($rc_order['orders'])){
 $rc_order = $rc_order['orders'][0];
 
 // Create and insert any autocharge items
+$stmt_get_order_line = $db->prepare("SELECT id FROM order_line_items WHERE shopify_id=?");
 foreach($order['line_items'] as $line_item){
 	if(is_ac_initial_product(get_product($db, $line_item['product_id']))){
 		echo "Attempting to create AC onetime... ";
+		$stmt_get_order_line->execute([$line_item['id']]);
+		$oli_id = $stmt_get_order_line->fetchColumn();
 		$stmt = $db->prepare("SELECT * FROM ac_orders WHERE order_line_item_id=?");
-		$stmt->execute([$line_item['id']]);
+		$stmt->execute([$oli_id]);
 		echo $line_item['id'];
 		print_r($stmt->errorInfo());
 		if($stmt->rowCount() > 0){
@@ -169,7 +172,7 @@ foreach($order['line_items'] as $line_item){
 		}
 		print_r($stmt->fetchAll());
     	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
-    		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+14 days')),
+    		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+28 days')),
 			'price' => '78',
 			'quantity' => 1,
 			'shopify_variant_id' => 31022109635, // Isle full size
@@ -181,9 +184,9 @@ foreach($order['line_items'] as $line_item){
 		]);
     	if(!empty($res['onetime'])){
     		$subscription_id = insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
-    		var_dump($subscription_id);
+			var_dump($subscription_id);
 			$stmt = $db->prepare("INSERT INTO ac_orders (order_line_item_id, followup_subscription_id) VALUES (?, ?)");
-			$stmt->execute([$line_item['id'], $subscription_id]);
+			$stmt->execute([$oli_id, $subscription_id]);
 			print_r($stmt->errorInfo());
 			echo "Created ".$res['onetime']['id']." (".$db->lastInsertId().")".PHP_EOL;
 		} else {
