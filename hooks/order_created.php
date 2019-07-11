@@ -172,6 +172,7 @@ foreach($order['line_items'] as $line_item){
     		$subscription_id = insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
 			$stmt = $db->prepare("INSERT IGNORE INTO ac_orders (order_line_item_id, followup_subscription_id) VALUES (?, ?)");
 			$stmt->execute([$line_item['id'], $subscription_id]);
+			echo "Created AC Onetime ".$res['onetime']['id']." (".$db->lastInsertId().")".PHP_EOL;
 		}
     }
 }
