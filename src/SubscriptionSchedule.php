@@ -85,8 +85,8 @@ class SubscriptionSchedule {
 		if(empty($this->charges)){
 			$res = $this->rc->get('/charges', [
 				'customer_id' => $this->rc_customer_id,
-//				'date_min' => date('Y-m-d', strtotime('-1 day')),
-				'date_min' => date('Y-m-d'),
+				'date_min' => date('Y-m-d', strtotime('-1 day')),
+//				'date_min' => date('Y-m-d'),
 			]);
 			if(!empty($res['charges'])){
 				$this->charges($res['charges']);
