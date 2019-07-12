@@ -157,6 +157,10 @@ $rc_order = $rc_order['orders'][0];
 
 // Create and insert any autocharge items
 $stmt_get_order_line = $db->prepare("SELECT id FROM order_line_items WHERE shopify_id=?");
+$sc_main_sub = sc_get_main_subscription($db, $rc, [
+	'customer_id' => $rc_order['customer_id'],
+	'status' => 'ACTIVE',
+]);
 foreach($order['line_items'] as $line_item){
 	if(is_ac_initial_product(get_product($db, $line_item['product_id']))){
 		echo "Attempting to create AC onetime... ";
@@ -173,7 +177,7 @@ foreach($order['line_items'] as $line_item){
 		print_r($stmt->fetchAll());
     	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
     		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+28 days')),
-			'price' => '78',
+			'price' => !empty($sc_main_sub) ? '70.20' : '78',
 			'quantity' => 1,
 			'shopify_variant_id' => 31022109635, // Isle full size
 			'product_title' => 'Isle',
