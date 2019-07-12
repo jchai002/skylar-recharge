@@ -210,7 +210,7 @@ print_r($schedule->get());
                                             </div>
                                             <form class="ac-choose-container">
                                                 <input type="hidden" name="subscription_id" value="<?=$item['subscription_id']?>" />
-                                                <div class="ac-choose-title">You can change the full sized bottle by choosing any of the<br />options below and confirming.</div>
+                                                <div class="ac-choose-title">You can change the full sized bottle by choosing any of the options below.</div>
                                                 <div class="ac-scent-options">
                                                     <?php foreach($ids_by_scent as $handle => $scent_ids){
                                                         ?>
@@ -378,7 +378,7 @@ print_r($schedule->get());
             </div>
         </div>
         <div class="sc-modal-continue">
-            <a href="#" onclick="AccountController.ac_push_back(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close(); return false;">No thanks, I need more time</a>
+            <a href="#" onclick="AccountController.ac_push_back(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close(); return false;">No thanks, delay my order by a week</a>
         </div>
     </div>
     <div id="ac-cancel-save-modal" class="sc-save-modal">
