@@ -463,7 +463,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, typ
 		'updated_at' => $now,
 		'published_at' => $shopify_product['published_at']
 	]);
-	print_r($shopify_product);
+//	print_r($shopify_product);
 	$product_id = $db->lastInsertId();
 	$stmt = $db->prepare("INSERT INTO variants
 (product_id, shopify_id, title, price, sku, updated_at)
