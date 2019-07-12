@@ -714,7 +714,7 @@ print_r($schedule->get());
             }, 1000);
             $(this).slideUp();
             $(this).siblings('.ac-choose-button').find('.ac-choose-plus, .ac-choose-minus').toggle();
-            AccountController.ac_swap_scent(e.target.subscription_id.value, e.target.variant_id.value);
+            AccountController.ac_swap_scent(e.currentTarget.subscription_id.value, e.currentTarget.variant_id.value);
         });
         $('.ac-choose-button').click(function(){
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
