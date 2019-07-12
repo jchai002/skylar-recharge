@@ -12,7 +12,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 		<div class="sc-portal-innercontainer">
 			<div class="sc-portal-title">You have no upcoming shipments.</div>
 			<div>
-				<a href="/pages/scent-club">Check out our Scent Club to get a new scent each month!</a>
+                <a href="/pages/scent-club" style="text-decoration: underline;">Check out our Scent Club</a> to get a new scent each month!
 			</div>
 		</div>
 	</div>
