@@ -461,6 +461,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, typ
 		'type' => $shopify_product['product_type'],
 		'tags' => $shopify_product['tags'],
 		'updated_at' => $now,
+		'published_at' => $shopify_product['published_at']
 	]);
 	print_r($shopify_product);
 	$product_id = $db->lastInsertId();
