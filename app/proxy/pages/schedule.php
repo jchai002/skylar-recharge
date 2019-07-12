@@ -75,7 +75,7 @@ print_r($schedule->get());
                             <div class="sc-upcoming-shipment">
                                 <div class="sc-box-info">
                                     <span class="sc-box-shiplabel">Shipping Date</span>
-									<?php if($has_ac_followup && !$ac_delivered){ ?>
+									<?php if($has_ac_followup && !$ac_delivered && $ac_allow_pushback){ ?>
                                         <span class="sc-box-date sc-box-date-pending">Pending Sample Delivery</span>
 									<?php } else if($has_ac_followup && $ac_allow_pushback){ ?>
                                         <span class="sc-box-date ac-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
@@ -120,7 +120,8 @@ print_r($schedule->get());
                                         <?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
                                          data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
                                         <?= is_ac_followup_lineitem($item) ? 'data-ac' : '' ?>
-                                        <?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
+										<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
+										<?= is_ac_delivered($item) ? 'data-ac-delivered' : '' ?>
                                     >
                                         <?php if(!empty($item['skipped']) && !empty($item['charge_id'])){ ?>
                                             <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge_id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
