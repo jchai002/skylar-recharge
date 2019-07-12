@@ -11,14 +11,17 @@ foreach($recommended_products as $recommended_product){
 }
 
 $stmt = $db->prepare("SELECT p.handle FROM orders o
+LEFT JOIN customers c ON o.customer_id=c.id
 LEFT JOIN order_line_items oli ON oli.order_id=o.id
-LEFT JOIN variants v ON v.id=oli.variant_id
+LEFT JOIN sku_updates su ON oli.sku=su.old_sku
+LEFT JOIN variants v ON v.sku = coalesce(su.new_sku, oli.sku)
 LEFT JOIN products p ON p.id=v.product_id
 LEFT JOIN fulfillments f ON oli.fulfillment_id=f.id
 WHERE c.shopify_id = ?
 AND p.type = 'Scent Club Month'
 AND f.delivered_at IS NOT NULL
-GROUP BY handle;");
+AND p.published_at IS NOT NULL
+GROUP BY p.handle;");
 $stmt->execute([$_REQUEST['c']]);
 $sc_received_handles = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
