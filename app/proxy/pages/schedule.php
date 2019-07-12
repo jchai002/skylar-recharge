@@ -59,13 +59,18 @@ print_r($schedule->get());
 
                             $has_ac_followup = false;
 							$ac_delivered = false;
-                            $ac_allow_pushback = true;
+							$ac_allow_pushback = true;
+							$ac_pushed_up = false;
                             foreach($upcoming_shipment['items'] as $item){
                                 if(is_ac_followup_lineitem($item)){
                                     $has_ac_followup = true;
-                                    if(is_ac_pushed_back($item)){
-                                        $ac_allow_pushback = false;
-                                    }
+									if(is_ac_pushed_back($item)){
+										$ac_allow_pushback = false;
+									}
+									if(is_ac_pushed_up($item)){
+										$ac_allow_pushback = false;
+										$ac_pushed_up = true;
+									}
                                     if(is_ac_delivered($item)){
                                         $ac_delivered = true;
                                     }
@@ -75,7 +80,7 @@ print_r($schedule->get());
                             <div class="sc-upcoming-shipment">
                                 <div class="sc-box-info">
                                     <span class="sc-box-shiplabel">Shipping Date</span>
-									<?php if($has_ac_followup && !$ac_delivered && $ac_allow_pushback){ ?>
+									<?php if($has_ac_followup && !$ac_delivered && $ac_pushed_up){ ?>
                                         <span class="sc-box-date sc-box-date-pending">Pending Sample Delivery</span>
 									<?php } else if($has_ac_followup && $ac_allow_pushback){ ?>
                                         <span class="sc-box-date ac-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>

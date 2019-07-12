@@ -1502,6 +1502,23 @@ function is_ac_pushed_back($followup_line_item){
 	}
 	return false;
 }
+function is_ac_pushed_up($followup_line_item){
+	if(empty($followup_line_item['properties'])){
+		return false;
+	}
+	if(!empty($followup_line_item['properties']['_ac_pushed_up'])){
+		return true;
+	}
+	// Check if it's an indexed array (with name and value properties)
+	if(array_keys($followup_line_item['properties'])[0] === 0){
+		foreach($followup_line_item['properties'] as $property){
+			if($property['name'] == '_ac_pushed_up' && !empty($property['value'])){
+				return true;
+			}
+		}
+	}
+	return false;
+}
 function is_ac_delivered($followup_line_item){
 	if(empty($followup_line_item['properties'])){
 		return false;
