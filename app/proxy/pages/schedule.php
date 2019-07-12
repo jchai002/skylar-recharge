@@ -220,10 +220,6 @@ print_r($schedule->get());
                                                         </label>
                                                     <?php } ?>
                                                 </div>
-                                                <div class="ac-choose-footer">
-                                                    <input type="submit" class="action_button ac-choose-submit" value="Update Order" />
-                                                    <div class="ac-choose-note">If you do not select a scent, Isle will be automatically shipped</div>
-                                                </div>
                                             </form>
                                          <?php } ?>
                                     </div>
@@ -710,7 +706,7 @@ print_r($schedule->get());
                 afterOpen: $.noop, // Fix dumb app bug
             });
         });
-        $('.ac-choose-container').submit(function(e){
+        $('.ac-choose-container').on('change submit', function(e){
             e.preventDefault();
             console.log(e);
             $([document.documentElement, document.body]).animate({
