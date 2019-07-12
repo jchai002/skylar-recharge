@@ -22,7 +22,7 @@ define('SHOPIFY_SCOPE',implode(',',[
 	'write_customers',
 	'read_orders',
 	'write_orders',
-//	'read_all_orders',
+	'read_all_orders',
 	'read_script_tags',
 	'write_script_tags',
 	'read_fulfillments',
