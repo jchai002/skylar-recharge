@@ -9,6 +9,7 @@ foreach($recommended_products as $recommended_product){
 	$key = mt_rand(0,count($parts)-1);
 	$single_reco_products[] = $parts[$key];
 }
+$db->prepare("SELECT ")
 ?>
 {% assign portal_page = 'portal' %}
 {% assign recommended_product_handles = '<?=implode('|',$single_reco_products)?>' | split: '|' %}
