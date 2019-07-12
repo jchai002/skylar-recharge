@@ -451,9 +451,9 @@ function offset_date_skip_weekend($time){
 function insert_update_product(PDO $db, $shopify_product){
 	$now = date('Y-m-d H:i:s');
 	$stmt = $db->prepare("INSERT INTO products
-(shopify_id, handle, title, type, tags, updated_at)
-VALUES (:shopify_id, :handle, :title, :type, :tags, :updated_at)
-ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, type=:type, tags=:tags, updated_at=:updated_at");
+(shopify_id, handle, title, type, tags, updated_at, published_at)
+VALUES (:shopify_id, :handle, :title, :type, :tags, :updated_at, :published_at)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, type=:type, tags=:tags, updated_at=:updated_at, published_at=:published_at");
 	$stmt->execute([
 		'shopify_id' => $shopify_product['id'],
 		'handle' => $shopify_product['handle'],
