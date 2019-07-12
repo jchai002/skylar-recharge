@@ -210,7 +210,7 @@ print_r($schedule->get());
                                             </div>
                                             <form class="ac-choose-container">
                                                 <input type="hidden" name="subscription_id" value="<?=$item['subscription_id']?>" />
-                                                <div class="ac-choose-title">You can change the full sized bottle by choosing any of the options below.</div>
+                                                <div class="ac-choose-title">You can change the full-size bottle by choosing any of the options below.</div>
                                                 <div class="ac-scent-options">
                                                     <?php foreach($ids_by_scent as $handle => $scent_ids){
                                                         ?>
