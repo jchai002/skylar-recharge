@@ -13,7 +13,8 @@ do {
 	$orders = $sc->get("/admin/orders.json", [
 		'limit' => $page_size,
 		'page' => $page,
-		'order' => 'created_at desc',
+		'order' => 'created_at asc',
+		'status' => 'any',
 	]);
 
 	foreach($orders as $order){
