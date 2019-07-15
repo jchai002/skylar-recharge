@@ -1471,59 +1471,34 @@ function price_without_trailing_zeroes($price = 0){
 	return number_format($price, 2);
 }
 // Autocharge
-function is_ac_initial_product($sample_product){
-    return $sample_product['shopify_id'] == 3875807395927; // Will probably have to be product type
+function get_oli_attribute($line_item, $attribute_name){
+	if(empty($line_item['properties'])){
+		return null;
+	}
+	if(array_key_exists($attribute_name, $line_item['properties'])){
+		return $line_item['properties']['_ac_product'];
+	}
+	// Check if it's an indexed array (with name and value properties)
+	if(array_keys($line_item['properties'])[0] === 0){
+		foreach($line_item['properties'] as $property){
+			if($property['name'] == $attribute_name){
+				return $property['value'];
+			}
+		}
+	}
+	return null;
+}
+function is_ac_initial_lineitem($initial_lineitem){
+	return !empty(get_oli_attribute($initial_lineitem, '_ac_trigger'));
 }
 function is_ac_followup_lineitem($followup_line_item){
-	if(empty($followup_line_item['properties'])){
-		return false;
-	}
-	if(!empty($followup_line_item['properties']['_ac_product'])){
-		return true;
-	}
-	// Check if it's an indexed array (with name and value properties)
-	if(array_keys($followup_line_item['properties'])[0] === 0){
-		foreach($followup_line_item['properties'] as $property){
-			if($property['name'] == '_ac_product' && !empty($property['value'])){
-				return true;
-			}
-		}
-	}
-	return false;
+	return !empty(get_oli_attribute($followup_line_item, '_ac_product'));
 }
 function is_ac_pushed_back($followup_line_item){
-	if(empty($followup_line_item['properties'])){
-		return false;
-	}
-	if(!empty($followup_line_item['properties']['_ac_pushed_back'])){
-		return true;
-	}
-	// Check if it's an indexed array (with name and value properties)
-	if(array_keys($followup_line_item['properties'])[0] === 0){
-		foreach($followup_line_item['properties'] as $property){
-			if($property['name'] == '_ac_pushed_back' && !empty($property['value'])){
-				return true;
-			}
-		}
-	}
-	return false;
+	return !empty(get_oli_attribute($followup_line_item, '_ac_pushed_back'));
 }
 function is_ac_pushed_up($followup_line_item){
-	if(empty($followup_line_item['properties'])){
-		return false;
-	}
-	if(!empty($followup_line_item['properties']['_ac_pushed_up'])){
-		return true;
-	}
-	// Check if it's an indexed array (with name and value properties)
-	if(array_keys($followup_line_item['properties'])[0] === 0){
-		foreach($followup_line_item['properties'] as $property){
-			if($property['name'] == '_ac_pushed_up' && !empty($property['value'])){
-				return true;
-			}
-		}
-	}
-	return false;
+	return !empty(get_oli_attribute($followup_line_item, '_ac_pushed_up'));
 }
 function is_ac_delivered($followup_line_item){
 	if(empty($followup_line_item['properties'])){

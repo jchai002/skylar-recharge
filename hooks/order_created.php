@@ -162,7 +162,7 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
 	'status' => 'ACTIVE',
 ]);
 foreach($order['line_items'] as $line_item){
-	if(is_ac_initial_product(get_product($db, $line_item['product_id']))){
+	if(is_ac_initial_lineitem(get_product($db, $line_item['product_id']))){
 		echo "Attempting to create AC onetime... ";
 		$stmt_get_order_line->execute([$line_item['id']]);
 		$oli_id = $stmt_get_order_line->fetchColumn();
