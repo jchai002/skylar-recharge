@@ -396,22 +396,30 @@ print_r($schedule->get());
             <a href="#" onclick="AccountController.ac_push_back(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close(); return false;">No thanks, delay my order by a week</a>
         </div>
     </div>
-    <div id="ac-cancel-save-modal" class="sc-save-modal">
+    <div id="ac-cancel-save-delay-modal" class="sc-save-modal">
         <div class="sc-modal-title">Are you sure you want to cancel?</div>
+        <div class="sc-modal-links">
+            <div class="sc-modal-linkbox ac-linkbox-pushback" onclick="AccountController.ac_push_back(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close();">
+                <div><img src="{{ 'delay-icon.svg' | file_url }}" class="sc-linkbox-icon" /></div>
+                <div class="sc-linkbox-label">No, I'd Just Like To Delay One Week</div>
+                <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
+            </div>
+        </div>
+        <div class="sc-modal-continue">
+            <a href="#" onclick="AccountController.show_ac_cancel_final_save(); return false;">Yes, Cancel My Trial</a>
+        </div>
+    </div>
+    <div id="ac-cancel-save-final-modal" class="sc-save-modal">
+        <div class="sc-modal-title">Are you sure?</div>
         <div class="sc-modal-links">
             <div class="sc-modal-linkbox ac-linkbox-ordernow" style="display: none;" onclick="AccountController.ac_move_to_today(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close();">
                 <div><img src="{{ 'cart-icon.svg' | file_url }}" class="sc-linkbox-icon" /></div>
                 <div class="sc-linkbox-label">Order today and receive $10 off</div>
                 <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
             </div>
-            <div class="sc-modal-linkbox ac-linkbox-pushback" onclick="AccountController.ac_push_back(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close();">
-                <div><img src="{{ 'delay-icon.svg' | file_url }}" class="sc-linkbox-icon" /></div>
-                <div class="sc-linkbox-label">No, I just need a little more time</div>
-                <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
-            </div>
         </div>
         <div class="sc-modal-continue">
-            <a href="#" onclick="AccountController.ac_cancel_followup(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close(); return false;">Yes, I'd like to cancel</a>
+            <a href="#" onclick="AccountController.ac_cancel_followup(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close(); return false;">Yes, Cancel My Trial</a>
         </div>
     </div>
     <div id="sc-skip-modal">
