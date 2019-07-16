@@ -8,6 +8,7 @@ class SubscriptionSchedule {
 	private $max_time;
 	private $min_time;
 	private $schedule = [];
+	private $metadata = [];
 	private $orders = [];
 	private $subscriptions = [];
 	private $charges = [];
@@ -99,6 +100,7 @@ class SubscriptionSchedule {
 	private function generate(){
 		$this->load();
 		$this->schedule = [];
+		$this->metadata = [];
 
 		foreach($this->orders as $order){
 			if($order['status'] != 'QUEUED' && $order['status'] != 'SKIPPED'){

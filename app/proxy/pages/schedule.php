@@ -31,6 +31,17 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
     'status' => 'ACTIVE',
 ]);
 
+// figure out when to put the add to box section
+$next_section_index = 0;
+$i = -1;
+foreach($schedule->get() as $shipment_list){
+    $i++;
+    if($shipment_list['has_ac_followup']){
+        $next_section_index = $i;
+    }
+
+}
+
 $recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_REQUEST['c']));
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
@@ -283,7 +294,7 @@ print_r($schedule->get());
                             </div>
                         <?php
                         }
-                        if($shipment_index != 0){
+                        if($shipment_index < $next_section_index){
                             continue;
                         }
                         if(count($schedule->get()) == 1){
