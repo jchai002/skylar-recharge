@@ -412,7 +412,7 @@ print_r($schedule->get());
     <div id="ac-cancel-save-final-modal" class="sc-save-modal">
         <div class="sc-modal-title">Are you sure?</div>
         <div class="sc-modal-links">
-            <div class="sc-modal-linkbox ac-linkbox-ordernow" style="display: none;" onclick="AccountController.ac_move_to_today(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close();">
+            <div class="sc-modal-linkbox ac-linkbox-ordernow" onclick="AccountController.ac_move_to_today(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close();">
                 <div><img src="{{ 'cart-icon.svg' | file_url }}" class="sc-linkbox-icon" /></div>
                 <div class="sc-linkbox-label">Order today and receive $10 off</div>
                 <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
