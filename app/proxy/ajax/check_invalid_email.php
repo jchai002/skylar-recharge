@@ -43,6 +43,7 @@ if($customer['state'] != 'active' && $customer['state'] != 'enabled'){
 				'email_type' => !empty($main_sub) ? 'request_account' : 'request_account_sc',
 				'first_name' => $customer['first_name'],
 				'account_activation_url' => $url,
+				'source' => 'auto_login',
 			]
 		]));
 		$ch = curl_init("https://a.klaviyo.com/api/track?data=$data");

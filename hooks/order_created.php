@@ -127,6 +127,7 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 					'email_type' => $is_scent_club ? 'request_account_sc' : 'request_account',
 					'first_name' => $customer['first_name'],
 					'account_activation_url' => $url,
+					'source' => 'order_created',
 				]
 			]));
 			$ch = curl_init("https://a.klaviyo.com/api/track?data=$data");
