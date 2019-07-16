@@ -39,8 +39,8 @@ foreach($schedule->get() as $shipment_list){
     if($shipment_list['has_ac_followup']){
         $next_section_index = $i;
     }
-
 }
+$next_section_shown = false;
 
 $recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_REQUEST['c']));
 sc_conditional_billing($rc, $_REQUEST['c']);
@@ -294,6 +294,9 @@ print_r($schedule->get());
                             </div>
                         <?php
                         }
+                        if($next_section_shown){
+                            continue;
+                        }
                         if($shipment_index < $next_section_index){
                             continue;
                         }
@@ -303,6 +306,7 @@ print_r($schedule->get());
                         if(empty($sc_main_sub)){
                             continue;
                         }
+        				$next_section_shown = true;
                         ?>
                     </div>
                 </div>
