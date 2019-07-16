@@ -53,7 +53,7 @@ print_r($schedule->get());
             <div class="sc-upcoming-container">
                 <?php
                     $shipment_index = -1;
-                    foreach($schedule->get() as $shipment_date => $shipment_list){
+                    foreach($schedule->get() as $shipment_list){
                         $shipment_index++;
                         foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
 
@@ -94,7 +94,7 @@ print_r($schedule->get());
                                 </div>
                                 <?php foreach($upcoming_shipment['items'] as $item){
                                     if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){
-                                        $monthly_scent = sc_get_monthly_scent($db, strtotime($shipment_date));
+                                        $monthly_scent = sc_get_monthly_scent($db, $shipment_list['ship_date_time']);
                                         $box_swap_image = 'data-swap-image="{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
                                     } else {
                                         $box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';

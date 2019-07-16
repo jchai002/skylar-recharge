@@ -143,8 +143,13 @@ class SubscriptionSchedule {
 			}
 		}
 
-		ksort($this->schedule);
-		foreach($this->schedule as $date => $shipment_list){
+		$this->schedule = $this->sort($this->schedule);
+
+		return $this->schedule;
+	}
+
+	private function sort($schedule){
+		foreach($schedule as $date => $shipment_list){
 			foreach($shipment_list['addresses'] as $address_id => $shipment){
 				usort($shipment['items'], function($a, $b){
 					if($a['is_sc_any'] != $b['is_sc_any']){
@@ -155,11 +160,17 @@ class SubscriptionSchedule {
 					}
 					return 0;
 				});
-				$this->schedule[$date]['addresses'][$address_id]['items'] = $shipment['items'];
+				$schedule[$date]['addresses'][$address_id]['items'] = $shipment['items'];
 			}
 		}
-
-		return $this->schedule;
+		ksort($schedule);
+		usort($schedule, function($a, $b){
+			if($a['has_ac_pending'] != $b['has_ac_pending']){
+				return $a['has_ac_pending'] ? -1 : 1;
+			}
+			return 0;
+		});
+		return $schedule;
 	}
 
 	private function add_item_to_schedule($item){
@@ -222,6 +233,12 @@ class SubscriptionSchedule {
 		}
 
 		$this->schedule[$date]['addresses'][$address_id]['items'][] = $item;
+		if($item['is_ac_followup']){
+			$this->schedule[$date]['has_ac_followup'] = true;
+		}
+		if($item['is_ac_followup'] && empty($item['ac_delivered']) && empty($item['ac_pushed_up'])){
+			$this->schedule[$date]['has_ac_pending'] = true;
+		}
 		return true;
 	}
 
@@ -236,7 +253,9 @@ class SubscriptionSchedule {
 		$item['skipped'] = $item['skipped'] ?? false;
 		$item['is_sc_any'] = is_scent_club_any(get_product($this->db, $item['shopify_product_id']));
 		$item['is_ac_followup'] = is_ac_followup_lineitem($item);
+		$item['ac_delivered'] = is_ac_delivered($item);
 		$item['ac_pushed_back'] = is_ac_pushed_back($item);
+		$item['ac_pushed_up'] = is_ac_pushed_up($item);
 		return $item;
 	}
 
