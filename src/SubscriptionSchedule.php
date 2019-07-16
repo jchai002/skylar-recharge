@@ -233,12 +233,8 @@ class SubscriptionSchedule {
 		}
 
 		$this->schedule[$date]['addresses'][$address_id]['items'][] = $item;
-		if($item['is_ac_followup']){
-			$this->schedule[$date]['has_ac_followup'] = true;
-		}
-		if($item['is_ac_followup'] && empty($item['ac_delivered']) && empty($item['ac_pushed_up'])){
-			$this->schedule[$date]['has_ac_pending'] = true;
-		}
+		$this->schedule[$date]['has_ac_followup'] = $item['is_ac_followup'];
+		$this->schedule[$date]['has_ac_pending'] = $item['is_ac_followup'] && empty($item['ac_delivered']) && empty($item['ac_pushed_up']);
 		return true;
 	}
 
