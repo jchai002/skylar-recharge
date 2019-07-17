@@ -358,7 +358,7 @@ print_r($schedule->get());
                         <div class="sc-section-title">Recommendations based on <strong>The Essentials</strong></div>
                         <div class="sc-product-carousel">
                             <?php foreach([
-                                'sample-palette',
+//                                'sample-palette',
                                 'scent-collection',
                                 'rollie-collection',
                             ] as $product){ ?>
