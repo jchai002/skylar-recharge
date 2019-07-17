@@ -153,6 +153,7 @@ class SubscriptionSchedule {
 				$item['scheduled_at_time'] = $next_charge_time;
 				$item['index'] = $subscription_index;
 				$item['skipped'] = true;
+				$item['skipped_via_iteration'] = true;
 				$this->add_item_to_schedule($item);
 
 				$subscription_index--;
