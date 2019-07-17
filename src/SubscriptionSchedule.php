@@ -146,7 +146,7 @@ class SubscriptionSchedule {
 
 			// Show skipped subscriptions (iterate backwards)
 			$subscription_index = -1;
-			$next_charge_time = self::get_subscription_time_by_index($subscription_index, $next_charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
+			$next_charge_time = self::get_subscription_time_by_index($subscription_index, $charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
 			while($next_charge_time >= $this->min_time){
 				$item = $subscription;
 				$item['scheduled_at'] = date('Y-m-d', $next_charge_time);
