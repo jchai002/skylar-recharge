@@ -143,7 +143,7 @@ class SubscriptionSchedule {
 					throw new Exception('Too many loops');
 				}
 			}
-			
+
 			// Show skipped subscriptions (iterate backwards)
 			$subscription_index = -1;
 			$next_charge_time = $this->get_subscription_time_by_index($subscription_index, $next_charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);

@@ -359,6 +359,7 @@ print_r($schedule->get());
                         <div class="sc-product-carousel">
                             <?php foreach([
 //                                'sample-palette',
+                                '4-candle-collection',
                                 'scent-collection',
                                 'rollie-collection',
                             ] as $product){ ?>
