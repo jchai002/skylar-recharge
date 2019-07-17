@@ -310,13 +310,17 @@ class SubscriptionSchedule {
 		return $this->normalize_item($subscription);
 	}
 
-	private function get_subscription_time_by_index($index, $start_time, $order_interval_frequency, $order_interval_unit, $order_interval_index = false){
+	public static function get_subscription_time_by_index($index, $start_time, $order_interval_frequency, $order_interval_unit, $order_interval_index = false){
 		if($order_interval_unit == 'month'){
 			// PHP doesn't count months well, do it manually
 			$date_year = date('Y', $start_time);
 			$date_month = date('m', $start_time);
 			$date_day = date('d', $start_time);
 			$date_month += $order_interval_frequency*$index;
+			while($date_month < 0){
+				$date_month += 12;
+				$date_year -= 1;
+			}
 			while($date_month > 12){
 				$date_month -= 12;
 				$date_year += 1;
@@ -330,7 +334,7 @@ class SubscriptionSchedule {
 			}
 			$next_time = strtotime(implode('-', [$date_year, $date_month, $date_day]));
 		} else { // week
-			$next_time = strtotime('+'.(7*$index).' days', $start_time);
+			$next_time = strtotime(($index >= 0 ? '+ ' : '').(7*$index).' days', $start_time);
 			if($order_interval_index !== false){
 				$next_day_of_week = date('N', $next_time);
 				$order_interval_index++; // Recharge 0 = monday, php 1 = monday
