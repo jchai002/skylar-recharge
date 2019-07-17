@@ -229,6 +229,8 @@ class SubscriptionSchedule {
 		foreach($this->schedule[$date]['addresses'][$address_id]['items'] as $index => $scheduled_item){
 			if($scheduled_item['subscription_id'] == $item['subscription_id']){
 				// Duplicate, merge in information then skip
+				$scheduled_item['types'][] = $item['type'];
+				$scheduled_item[$item['type']] = $item;
 				if(!empty($item['skipped'])){
 					$scheduled_item['skipped'] = true;
 				}
@@ -268,6 +270,7 @@ class SubscriptionSchedule {
 			}
 			$item['properties'] = $properties;
 		}
+		$item['types'] = $item['types'] ?? [$item['type']];
 		$item['skipped'] = $item['skipped'] ?? false;
 		$item['is_sc_any'] = is_scent_club_any(get_product($this->db, $item['shopify_product_id']));
 		$item['is_ac_followup'] = is_ac_followup_lineitem($item);
