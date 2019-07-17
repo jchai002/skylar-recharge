@@ -359,9 +359,9 @@ print_r($schedule->get());
                         <div class="sc-product-carousel">
                             <?php foreach([
 //                                'sample-palette',
-                                '4-candle-collection',
                                 'scent-collection',
                                 'rollie-collection',
+                                '4-candle-collection',
                             ] as $product){ ?>
                                 {% assign recommended_handles = '<?=$product?>' | split: '|' %}
                                 {% include 'sc-product-tile' %}
