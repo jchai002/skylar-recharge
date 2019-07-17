@@ -332,7 +332,7 @@ class SubscriptionSchedule {
 		return $this->normalize_item($subscription);
 	}
 
-	public static function get_subscription_time_by_index($index, $start_time, $order_interval_frequency, $order_interval_unit, $order_interval_index = false){
+	private function get_subscription_time_by_index($index, $start_time, $order_interval_frequency, $order_interval_unit, $order_interval_index = false){
 		if($order_interval_unit == 'month'){
 			// PHP doesn't count months well, do it manually
 			$date_year = date('Y', $start_time);
