@@ -7,11 +7,7 @@ $router->route('',function() use($db, $rc){
 			'shopify_customer_id' => intval($_REQUEST['c']),
 			'status' => 'ACTIVE'
 		]))){
-			if(!empty($_REQUEST['theme_id'])){
-				require('pages/members.php');
-			} else {
-				require('pages/index.php');
-			}
+			require('pages/members.php');
 		} else {
 			$stmt = $db->prepare("SELECT 1 FROM rc_subscriptions s
 									LEFT JOIN rc_addresses a ON s.address_id=a.id
@@ -39,11 +35,7 @@ $router->route('/members$/i', function() {
 });
 $router->route('/schedule/i', function() {
 	require_customer_id(function(){
-		if(!empty($_REQUEST['theme_id'])){
-			require('pages/schedule.php');
-		} else {
-			require('pages/index.php');
-		}
+		require('pages/schedule.php');
 	});
 	return true;
 });
