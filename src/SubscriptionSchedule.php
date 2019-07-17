@@ -123,6 +123,7 @@ class SubscriptionSchedule {
 			}
 		}
 
+		// TODO: Calculate skipped subscriptions
 		foreach($this->subscriptions as $subscription){
 			$next_charge_time = $charge_time = strtotime($subscription['next_charge_scheduled_at']);
 			if(empty($charge_time)){
