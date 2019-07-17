@@ -123,7 +123,6 @@ class SubscriptionSchedule {
 			}
 		}
 
-		// TODO: Calculate skipped subscriptions
 		foreach($this->subscriptions as $subscription){
 			$next_charge_time = $charge_time = strtotime($subscription['next_charge_scheduled_at']);
 			if(empty($charge_time)){
@@ -144,6 +143,25 @@ class SubscriptionSchedule {
 					throw new Exception('Too many loops');
 				}
 			}
+			
+			// Show skipped subscriptions (iterate backwards)
+			$subscription_index = -1;
+			$next_charge_time = $this->get_subscription_time_by_index($subscription_index, $next_charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
+			while($next_charge_time >= $this->min_time){
+				$item = $subscription;
+				$item['scheduled_at'] = date('Y-m-d', $next_charge_time);
+				$item['scheduled_at_time'] = $next_charge_time;
+				$item['index'] = $subscription_index;
+				$item['skipped'] = true;
+				$this->add_item_to_schedule($item);
+
+				$subscription_index--;
+				$next_charge_time = $this->get_subscription_time_by_index($subscription_index, $next_charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
+				if(abs($subscription_index) > 100){
+					throw new Exception('Too many loops');
+				}
+			}
+
 		}
 
 		$this->schedule = $this->sort($this->schedule);
