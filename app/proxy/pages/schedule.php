@@ -693,10 +693,10 @@ print_r($schedule->get());
             default:
                 return;
             case 'swapscent':
-                AccountController.show_swap();
+                // AccountController.show_swap();
                 break;
             case 'changedate':
-                AccountController.show_date_change();
+                // AccountController.show_date_change();
                 break;
 
         }
