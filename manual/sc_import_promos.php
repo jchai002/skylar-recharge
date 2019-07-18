@@ -121,7 +121,7 @@ while($rawrow = fgetcsv($f)){
 		'shopify_variant_id' => 28003712663639,
 		'order_interval_unit' => 'month',
 		'order_interval_frequency' => 1,
-		'charge_interval_frequency' => $months_to_charge,
+		'charge_interval_frequency' => $row['shipments'] ?? $months_to_charge,
 		'order_day_of_month' => $promo_day,
 		'expire_after_specific_number_of_charges' => 1,
 	]);
