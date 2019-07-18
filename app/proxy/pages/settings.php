@@ -99,12 +99,12 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 	<div id="sc-cancel-modal">
 		<div class="sc-modal-title">Did you know you can...</div>
 		<div class="sc-modal-links">
-			<div class="sc-modal-linkbox" onclick="location.href='/tools/skylar/subscriptions?{{ account_query }}&intent=changedate'; return false;">
+			<div class="sc-modal-linkbox" onclick="location.href='/tools/skylar/schedule?{{ account_query }}&intent=changedate'; return false;">
 				<div><img src="{{ 'calendar.svg' | file_url }}" /></div>
 				<div class="sc-linkbox-label">Change Shipping Date</div>
 				<div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
 			</div>
-			<div class="sc-modal-linkbox" onclick="location.href='/tools/skylar/subscriptions?{{ account_query }}&intent=swapscent'; return false;">
+			<div class="sc-modal-linkbox" onclick="location.href='/tools/skylar/schedule?{{ account_query }}&intent=swapscent'; return false;">
 				<div><img src="{{ 'swapscent-black.svg' | file_url }}" /></div>
 				<div class="sc-linkbox-label">Swap Scents</div>
 				<div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
