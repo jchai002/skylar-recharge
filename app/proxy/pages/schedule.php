@@ -135,7 +135,7 @@ print_r($schedule->get());
                                          data-subscription-id="<?=$item['subscription_id']?>"
                                         <?= !empty($item['charge_id']) ? 'data-charge-id="'.$item['charge_id'].'"' : '' ?>
                                          data-type="<?=$item['type']?>"
-                                        <?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
+                                        <?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
                                          data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
                                         <?= is_ac_followup_lineitem($item) ? 'data-ac' : '' ?>
 										<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
