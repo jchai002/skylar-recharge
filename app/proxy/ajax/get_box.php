@@ -1,6 +1,5 @@
 <?php
-global $db;
-$rc = new RechargeClient();
+global $db, $sc, $rc;
 
 $month = empty($_REQUEST['month']) ? date('Y-m',strtotime('+1 months')) : date('Y-m', strtotime($_REQUEST['month']));
 
@@ -13,101 +12,58 @@ $year2 = date('Y', $ts2);
 $month1 = date('m', $ts1);
 $month2 = date('m', $ts2);
 
-if($year2 == 2019 && $month2 <= 4){
-	$month2 = 5;
-	$month = date('Y-m', strtotime('2019-05-01'));
-}
-
 $months = (($year2 - $year1) * 12) + ($month2 - $month1);
 
 
-
-global $rc;
-$res = $rc->get('/subscriptions', [
-	'shopify_customer_id' => $_REQUEST['c'],
-	'status' => 'ACTIVE',
-]);
-$subscriptions = [];
-$onetimes = [];
-$orders = [];
-$charges = [];
-$customer = [];
-$res_all = [];
-if(!empty($res['subscriptions'])){
-	$subscriptions = $res['subscriptions'];
-	$rc_customer_id = $subscriptions[0]['customer_id'];
+$customer = get_customer($db, $_REQUEST['c'], $sc);
+$stmt = $db->prepare("SELECT recharge_id FROM rc_customers WHERE customer_id=?");
+$stmt->execute([$customer['id']]);
+if($stmt->rowCount() > 1){
+	$rc_customer_id = $stmt->fetchColumn();
 } else {
-	$res_all[] = $res = $rc->get('/customers', [
-		'shopify_customer_id' => $_REQUEST['c'],
+	$res = $rc->get('/customers', [
+		'shopify_customer_id' => intval($_REQUEST['c']),
 	]);
 	if(!empty($res['customers'])){
-		$customer = $res['customers'][0];
-		$rc_customer_id = $customer['id'];
+		$rc_customer_id = $res['customers'][0]['id'];
 	}
 }
+
 if(!empty($rc_customer_id)){
-	$res_all[] = $res = $rc->get('/orders', [
-		'customer_id' => $rc_customer_id,
-		'status' => 'QUEUED',
+	$schedule = new SubscriptionSchedule($db, $rc, $rc_customer_id, strtotime(date('Y-m-t',strtotime("+$months months"))));
+}
+if(empty($rc_customer_id) || empty($schedule->get())){
+	echo json_encode([
+		'success' => false,
+		'res' => $schedule->get(),
+		'month' => $month,
 	]);
-	$orders = $res['orders'];
-	$res_all[] = $res = $rc->get('/charges', [
-		'customer_id' => $rc_customer_id,
-		'date_min' => date('Y-m-d'),
-	]);
-	$charges = $res['charges'];
-	$res_all[] = $res = $rc->get('/onetimes', [
-		'customer_id' => $rc_customer_id,
-	]);
-	foreach($res['onetimes'] as $onetime){
-		// Fix for api returning non-onetimes
-		if(empty($onetime['status']) || $onetime['status'] == 'ONETIME'){
-			$onetimes[] = $onetime;
+	exit;
+}
+
+foreach($schedule->get() as $shipment_list){
+	foreach($shipment_list['addresses'] as $upcoming_shipment){
+		foreach($upcoming_shipment['items'] as $item){
+			if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
+				$return_box = $upcoming_shipment;
+				$return_box['sc_product'] = get_product($db, $item['shopify_product_id']);
+				break 2;
+			}
 		}
 	}
 }
-global $db;
-
-$upcoming_shipments = generate_subscription_schedule($db, $orders, $subscriptions, $onetimes, $charges, strtotime(date('Y-m-t',strtotime("+$months months"))));
-$products_by_id = [];
-$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
-foreach($upcoming_shipments as $upcoming_shipment){
-	foreach($upcoming_shipment['items'] as $item){
-		if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
-			$stmt->execute([$item['shopify_product_id']]);
-			$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
-		}
-	}
-}
-
-$return_box = [];
-foreach($upcoming_shipments as $upcoming_shipment){
-	if(date('Y-m', $upcoming_shipment['ship_date_time']) != $month){
-		continue;
-	}
-	foreach($upcoming_shipment['items'] as $item){
-		$product = get_product($db, $item['shopify_product_id']);
-		if(is_scent_club_any($product)){
-			$return_box = $upcoming_shipment;
-			$return_box['sc_product'] = $product;
-			break 2;
-		}
-	}
-}
-
 
 if(empty($return_box)){
 	echo json_encode([
 		'success' => false,
-		'res' => $upcoming_shipments,
-		'res_all' => $res_all,
+		'res' => $schedule->get(),
 		'month' => $month,
 	]);
 } else {
 	echo json_encode([
 		'success' => true,
 		'box' => $return_box,
-		'res' => $upcoming_shipments,
-		'res_all' => $res_all,
+		'res' => $schedule->get(),
+		'month' => $month,
 	]);
 }
