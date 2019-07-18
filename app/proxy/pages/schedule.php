@@ -693,10 +693,14 @@ print_r($schedule->get());
             default:
                 return;
             case 'swapscent':
-                // AccountController.show_swap();
+                optional_scripts.onload('mmenu', function(){
+                    AccountController.show_swap();
+                });
                 break;
             case 'changedate':
-                // AccountController.show_date_change();
+                optional_scripts.onload('pignose', function(){
+                    AccountController.show_date_change();
+                });
                 break;
 
         }
