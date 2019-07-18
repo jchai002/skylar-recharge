@@ -347,7 +347,7 @@ print_r($customer);
 
             $('#sc-edit-address form').submit(function(e){
                 e.preventDefault();
-                ScentClub.update_address($(this).serializeJSON());
+                AccountController.update_address($(this).serializeJSON());
 			});
 		});
         optional_scripts.onload('stripe', function(){
@@ -360,42 +360,42 @@ print_r($customer);
                 }
 			};
             window.elements = window.stripe.elements({});
-            ScentClub.cardNumber = window.elements.create('cardNumber', {
+            AccountController.cardNumber = window.elements.create('cardNumber', {
                 'style': elementStyle,
                 disabled: false,
 			});
-            ScentClub.cardNumber.mount('#sc-card-number');
-            ScentClub.cardExpiry = window.elements.create('cardExpiry', {
+            AccountController.cardNumber.mount('#sc-card-number');
+            AccountController.cardExpiry = window.elements.create('cardExpiry', {
                 'style': elementStyle,
                 disabled: false,
 			});
-            ScentClub.cardExpiry.mount('#sc-card-expiration');
-            ScentClub.cardCvc = window.elements.create('cardCvc', {
+            AccountController.cardExpiry.mount('#sc-card-expiration');
+            AccountController.cardCvc = window.elements.create('cardCvc', {
                 'style': elementStyle,
 				disabled: false,
 			});
-            ScentClub.cardCvc.mount('#sc-card-cvc');
+            AccountController.cardCvc.mount('#sc-card-cvc');
             $('#sc-add-card form').submit(function(e){
                 $('.loader').fadeIn();
                 $('.sc-input-error').html('');
                 e.preventDefault();
-                var tokenRes = window.stripe.createToken(ScentClub.cardNumber);
+                var tokenRes = window.stripe.createToken(AccountController.cardNumber);
                 // window.setInterval(function(){
-                    // window.ScentClub.cardNumber.update({disabled: false});
-                    // window.ScentClub.cardExpiry.update({disabled: false});
-                    // window.ScentClub.cardCvc.update({disabled: false});
+                    // window.AccountController.cardNumber.update({disabled: false});
+                    // window.AccountController.cardExpiry.update({disabled: false});
+                    // window.AccountController.cardCvc.update({disabled: false});
                 // }, 1000);
                 tokenRes.then(function(response){
                     console.log(response);
                     if(response.token){
-                        ScentClub.assign_token(response.token.id);
+                        AccountController.assign_token(response.token.id);
 					} else {
-                        window.ScentClub.cardNumber.update({disabled: false});
-                        window.ScentClub.cardExpiry.update({disabled: false});
-                        window.ScentClub.cardCvc.update({disabled: false});
-                        // ScentClub.cardNumber.unmount().mount('#sc-card-number');
-                        // ScentClub.cardExpiry.unmount().mount('#sc-card-expiration');
-                        // ScentClub.cardCvc.unmount().mount('#sc-card-cvc');
+                        window.AccountController.cardNumber.update({disabled: false});
+                        window.AccountController.cardExpiry.update({disabled: false});
+                        window.AccountController.cardCvc.update({disabled: false});
+                        // AccountController.cardNumber.unmount().mount('#sc-card-number');
+                        // AccountController.cardExpiry.unmount().mount('#sc-card-expiration');
+                        // AccountController.cardCvc.unmount().mount('#sc-card-cvc');
                         $('.loader').fadeOut();
                         if(response.error.message){
                             $('.sc-input-error').html(response.error.message);

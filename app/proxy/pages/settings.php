@@ -111,7 +111,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			</div>
 		</div>
 		<div class="sc-modal-continue">
-			<a href="#" onclick="ScentClub.show_cancel_final(); return false;">Continue To Cancel</a>
+			<a href="#" onclick="AccountController.show_cancel_final(); return false;">Continue To Cancel</a>
 		</div>
 	</div>
 	<div id="sc-cancel-confirm-modal" class="sc-confirm-modal">
@@ -152,7 +152,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<textarea name="other_reason" title="Other Reason"></textarea>
 				</div>
 				<div class="sc-skip-options">
-					<a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); ScentClub.cancel_main_sub(ScentClub.get_skip_reason()); return false;">Cancel Subscription</a>
+					<a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); AccountController.cancel_main_sub(AccountController.get_skip_reason()); return false;">Cancel Subscription</a>
 					<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Go Back</a>
 				</div>
 			</form>
@@ -168,7 +168,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<img src="{{ all_products['scent-club'].featured_image | img_url: 'x300' }}" />
 			</div>
 			<div class="sc-skip-options">
-				<a class="action_button warning" onclick="$(this).addClass('disabled'); ScentClub.cancel_main_sub(); return false;">Yes, Cancel My Subscription</a>
+				<a class="action_button warning" onclick="$(this).addClass('disabled'); AccountController.cancel_main_sub(); return false;">Yes, Cancel My Subscription</a>
 				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">No Thanks, Go Back</a>
 			</div>
 		</div>
@@ -179,7 +179,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
     $(document).ready(function(){
 
         $('.skip-reason-form input, .skip-reason-form textarea').change(function(){
-            if(!ScentClub.get_skip_reason()){
+            if(!AccountController.get_skip_reason()){
                 $('.skip-confirm-button').addClass('disabled');
             } else {
                 $('.skip-confirm-button').removeClass('disabled');
@@ -187,7 +187,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
         });
         $('.skip-reason-form textarea').on('keyup keydown', function(){
             $('.skip-reason-form input[value=other]').prop('checked', true);
-            if(!ScentClub.get_skip_reason()){
+            if(!AccountController.get_skip_reason()){
                 $('.skip-confirm-button').addClass('disabled');
             } else {
                 $('.skip-confirm-button').removeClass('disabled');

@@ -138,9 +138,9 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 						>
 
 							<?php if(!empty($item['skipped']) && !empty($item['charge'])){ ?>
-								<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+								<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 							<?php } else if(!empty($item['skipped'])){ ?>
-								<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+								<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 							<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
 								<a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
 							<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
@@ -384,9 +384,9 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 								>
 
 									<?php if(!empty($item['skipped']) && !empty($item['charge'])){ ?>
-										<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+										<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge']['id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 									<?php } else if(!empty($item['skipped'])){ ?>
-										<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); ScentClub.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+										<a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
 									<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
 										<a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
 									<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
@@ -468,7 +468,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<?php } ?>
 				</div>
 				<div class="sc-load-more" data-months="<?=$months?>">
-					<a href="#" class="action_button" onclick="ScentClub.load_schedule(<?=$months+3?>); return false;">View More</a>
+					<a href="#" class="action_button" onclick="AccountController.load_schedule(<?=$months+3?>); return false;">View More</a>
 				</div>
 			</div>
 		<?php } ?>
@@ -478,19 +478,19 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 	<div id="sc-skip-modal">
 		<div class="sc-modal-title">Did you know you can...</div>
 		<div class="sc-modal-links">
-			<div class="sc-modal-linkbox" onclick="$.featherlight.close();ScentClub.show_date_change();">
+			<div class="sc-modal-linkbox" onclick="$.featherlight.close();AccountController.show_date_change();">
 				<div><img src="{{ 'calendar.svg' | file_url }}" /></div>
 				<div class="sc-linkbox-label">Change Shipping Date</div>
 				<div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
 			</div>
-			<div class="sc-modal-linkbox" onclick="$.featherlight.close();ScentClub.show_swap();">
+			<div class="sc-modal-linkbox" onclick="$.featherlight.close();AccountController.show_swap();">
 				<div><img src="{{ 'swapscent-black.svg' | file_url }}" /></div>
 				<div class="sc-linkbox-label">Swap Scents</div>
 				<div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
 			</div>
 		</div>
 		<div class="sc-modal-continue">
-			<a href="#" onclick="ScentClub.show_skip_reasons(); return false;">Continue To Skip</a>
+			<a href="#" onclick="AccountController.show_skip_reasons(); return false;">Continue To Skip</a>
 		</div>
 	</div>
 	<div id="sc-skip-confirm-modal">
@@ -504,7 +504,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<img src="" />
 			</div>
 			<div class="sc-skip-options">
-				<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type')); return false;">Yes, Skip Box</a>
+				<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.skip_charge(AccountController.selected_box_item.data('subscription-id'), AccountController.selected_box_item.data('charge-id'), AccountController.selected_box_item.data('type')); return false;">Yes, Skip Box</a>
 				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
 			</div>
 		</div>
@@ -542,7 +542,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<textarea name="other_reason" title="Other Reason"></textarea>
 				</div>
 				<div class="sc-skip-options">
-					<a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); $.featherlight.close(); ScentClub.skip_charge(ScentClub.selected_box_item.data('subscription-id'), ScentClub.selected_box_item.data('charge-id'), ScentClub.selected_box_item.data('type'), ScentClub.get_skip_reason()); return false;">Skip Box</a>
+					<a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); $.featherlight.close(); AccountController.skip_charge(AccountController.selected_box_item.data('subscription-id'), AccountController.selected_box_item.data('charge-id'), AccountController.selected_box_item.data('type'), AccountController.get_skip_reason()); return false;">Skip Box</a>
 					<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
 				</div>
 			</form>
@@ -559,7 +559,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 				<img src="" />
 			</div>
 			<div class="sc-skip-options">
-				<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); ScentClub.remove_sub(ScentClub.selected_box_item.data('subscription-id')); return false;">Yes, Remove</a>
+				<a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id')); return false;">Yes, Remove</a>
 				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
 			</div>
 		</div>
@@ -646,7 +646,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
             });
         });
         $('.skip-reason-form input, .skip-reason-form textarea').change(function(){
-            if(!ScentClub.get_skip_reason()){
+            if(!AccountController.get_skip_reason()){
                 $('.skip-confirm-button').addClass('disabled');
             } else {
                 $('.skip-confirm-button').removeClass('disabled');
@@ -654,7 +654,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
         });
         $('.skip-reason-form textarea').on('keyup keydown', function(){
             $('.skip-reason-form input[value=other]').prop('checked', true);
-            if(!ScentClub.get_skip_reason()){
+            if(!AccountController.get_skip_reason()){
                 $('.skip-confirm-button').addClass('disabled');
             } else {
                 $('.skip-confirm-button').removeClass('disabled');
@@ -736,35 +736,35 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 </script>
 <script>
     $(document).ready(function(){
-        ScentClub.selected_box_item = $('.sc-box-item[data-sc]').eq(0);
-        if(ScentClub.selected_box_item.length < 1){
+        AccountController.selected_box_item = $('.sc-box-item[data-sc]').eq(0);
+        if(AccountController.selected_box_item.length < 1){
             return;
         }
         switch(Shopify.queryParams.intent){
             default:
                 return;
             case 'swapscent':
-                ScentClub.show_swap();
+                AccountController.show_swap();
                 break;
             case 'changedate':
-                ScentClub.show_date_change();
+                AccountController.show_date_change();
                 break;
 
         }
     });
     function bind_events(){
         $('.sc-edit-date').unbind().click(function(e){
-            ScentClub.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
-            ScentClub.show_date_change();
+            AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
+            AccountController.show_date_change();
         });
         $('.sc-swap-link').unbind().click(function(e){
             e.preventDefault();
-            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
-            ScentClub.show_swap();
+            AccountController.selected_box_item = $(this).closest('.sc-box-item');
+            AccountController.show_swap();
         });
         $('.sc-skip-link-club').unbind().click(function(e){
             e.preventDefault();
-            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
+            AccountController.selected_box_item = $(this).closest('.sc-box-item');
             $.featherlight($('#sc-skip-modal'), {
                 variant: 'scent-club',
                 afterOpen: $.noop, // Fix dumb app bug
@@ -772,14 +772,14 @@ sc_conditional_billing($rc, $_REQUEST['c']);
         });
         $('.sc-skip-link').unbind().click(function(e){
             e.preventDefault();
-            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
-            ScentClub.show_skip_final();
+            AccountController.selected_box_item = $(this).closest('.sc-box-item');
+            AccountController.show_skip_final();
         });
         $('.sc-unsub-link, .sc-remove-link').unbind().click(function(e){
             e.preventDefault();
-            ScentClub.selected_box_item = $(this).closest('.sc-box-item');
-            $('.sc-skip-image img').attr('src', ScentClub.selected_box_item.data('master-image'));
-            var text = ScentClub.selected_box_item.data('month-text')+' '+ScentClub.selected_box_item.find('.sc-item-title').text().trim().replace('Monthly ', '');
+            AccountController.selected_box_item = $(this).closest('.sc-box-item');
+            $('.sc-skip-image img').attr('src', AccountController.selected_box_item.data('master-image'));
+            var text = AccountController.selected_box_item.data('month-text')+' '+AccountController.selected_box_item.find('.sc-item-title').text().trim().replace('Monthly ', '');
             $('#sc-remove-confirm-modal .sc-modal-subtitle').html(text);
             $.featherlight.close();
             $.featherlight($('#sc-remove-confirm-modal'), {
