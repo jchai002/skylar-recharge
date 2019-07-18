@@ -190,6 +190,9 @@ class SubscriptionSchedule {
 		}
 		ksort($schedule);
 		usort($schedule, function($a, $b){
+			if(empty($a['has_ac_pending']) && empty($b['has_ac_pending'])){
+				return 0;
+			}
 			if($a['has_ac_pending'] != $b['has_ac_pending']){
 				return $a['has_ac_pending'] ? -1 : 1;
 			}
