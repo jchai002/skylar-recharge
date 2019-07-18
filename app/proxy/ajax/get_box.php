@@ -41,6 +41,13 @@ if(empty($rc_customer_id) || empty($schedule->get())){
 	]);
 	exit;
 }
+echo json_encode([
+	'success' => false,
+	'res' => $schedule->get(),
+	'month' => $month,
+	'res_all' => [$schedule->subscriptions(), $schedule->charges(), $schedule->orders()],
+]);
+exit;
 
 foreach($schedule->get() as $shipment_list){
 	foreach($shipment_list['addresses'] as $upcoming_shipment){
