@@ -173,6 +173,9 @@ class SubscriptionSchedule {
 	private function sort($schedule){
 		foreach($schedule as $date => $shipment_list){
 			foreach($shipment_list['addresses'] as $address_id => $shipment){
+				if(empty($shipment['items'])){
+					continue;
+				}
 				usort($shipment['items'], function($a, $b){
 					if($a['is_sc_any'] != $b['is_sc_any']){
 						return $a['is_sc_any'] ? -1 : 1;
