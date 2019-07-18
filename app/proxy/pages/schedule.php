@@ -698,7 +698,7 @@ print_r($schedule->get());
                 });
                 break;
             case 'changedate':
-                optional_scripts.onload('pignose', function(){
+                optional_scripts.onload(['pignose','mmenu'], function(){
                     AccountController.show_date_change();
                 });
                 break;
