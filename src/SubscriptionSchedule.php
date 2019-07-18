@@ -103,7 +103,7 @@ class SubscriptionSchedule {
 		$this->metadata = [];
 
 		foreach($this->orders as $order){
-			if($order['status'] != 'QUEUED' && $order['status'] != 'SKIPPED'){
+			if($order['status'] != 'QUEUED' && $order['status'] != 'SKIPPED' || $order['scheduled_at_time'] > $this->max_time || $order['scheduled_at_time'] < $this->min_time){
 				continue;
 			}
 			foreach($order['line_items'] as $item){
@@ -112,7 +112,7 @@ class SubscriptionSchedule {
 		}
 
 		foreach($this->charges as $charge){
-			if($charge['status'] != 'QUEUED' && $charge['status'] != 'SKIPPED'){
+			if($charge['status'] != 'QUEUED' && $charge['status'] != 'SKIPPED' || $charge['scheduled_at_time'] > $this->max_time || $charge['scheduled_at_time'] < $this->min_time){
 				continue;
 			}
 			foreach($charge['line_items'] as $item){
