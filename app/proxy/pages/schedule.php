@@ -107,7 +107,7 @@ print_r($schedule->get());
                                     if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){
                                         $monthly_scent = sc_get_monthly_scent($db, $shipment_list['ship_date_time'], is_admin_address($item['address_id']));
                                         $box_swap_image = 'data-swap-image="{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
-									} else if(is_scent_club_month($item['shopify_product_id'])) {
+									} else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))) {
 										$box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
 									} else {
                                         $box_swap_image = 'data-swap-image="{{ \'sc-logo.svg\' | file_url }}"';
