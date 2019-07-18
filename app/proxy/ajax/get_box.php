@@ -16,7 +16,7 @@ $months = (($year2 - $year1) * 12) + ($month2 - $month1);
 
 
 $customer = get_customer($db, $_REQUEST['c'], $sc);
-$stmt = $db->prepare("SELECT recharge_id FROM rc_customers WHERE customer_id=?");
+$stmt = $db->prepare("SELECT recharge_id FROM rc_customers WHERE id=?");
 $stmt->execute([$customer['id']]);
 if($stmt->rowCount() > 1){
 	$rc_customer_id = $stmt->fetchColumn();
