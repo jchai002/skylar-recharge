@@ -4,7 +4,8 @@ require_once('../../includes/class.ShopifyClient.php');
 
 $sc = new ShopifyClient();
 
-if($_REQUEST['type'] == 'order'){
+$type = $_REQUEST['type'] ?? 'customer';
+if($type == 'order'){
 	$order = $sc->get('/admin/orders/'.$_REQUEST['id'].'.json');
 	$customer_id = $order['customer']['id'];
 } else {

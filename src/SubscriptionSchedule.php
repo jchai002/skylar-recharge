@@ -144,10 +144,32 @@ class SubscriptionSchedule {
 				}
 			}
 
-			// Show skipped subscriptions (iterate backwards)
+			if(!is_scent_club(get_product($this->db, $subscription['shopify_product_id']))){
+				continue;
+			}
+			// Show skipped SC subscriptions (iterate backwards)
 			$subscription_index = -1;
 			$next_charge_time = self::get_subscription_time_by_index($subscription_index, $charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
 			while($next_charge_time >= $this->min_time){
+				// Check if other scent club is in this month already
+				$next_charge_date_parts = explode('-', date('Y-m-d', $next_charge_time));
+				foreach($this->schedule as $ship_date => $shipment_list){
+					$ship_date_parts = explode('-', $ship_date);
+					if($ship_date_parts[0] != $next_charge_date_parts[0] || $ship_date_parts[1] != $next_charge_date_parts[1]){
+						// Month or year doesn't match
+						continue;
+					}
+					foreach($shipment_list['addresses'] as $shipments){
+						foreach($shipments['items'] as $shipment_item){
+							if(is_scent_club_any(get_product($this->db, $shipment_item['shopify_product_id']))){
+								$subscription_index--;
+								$next_charge_time = self::get_subscription_time_by_index($subscription_index, $charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
+								continue 4;
+							}
+						}
+					}
+				}
+
 				$item = $subscription;
 				$item['scheduled_at'] = date('Y-m-d', $next_charge_time);
 				$item['scheduled_at_time'] = $next_charge_time;
