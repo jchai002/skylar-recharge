@@ -224,6 +224,9 @@ class SubscriptionSchedule {
 				'total' => 0,
 			];
 		}
+		
+		$this->schedule[$date]['has_ac_followup'] = $item['is_ac_followup'];
+		$this->schedule[$date]['has_ac_pending'] = $item['is_ac_followup'] && empty($item['ac_delivered']) && empty($item['ac_pushed_up']);
 
 		// Check if duplicate
 		foreach($this->schedule[$date]['addresses'][$address_id]['items'] as $index => $scheduled_item){
@@ -257,8 +260,6 @@ class SubscriptionSchedule {
 		}
 
 		$this->schedule[$date]['addresses'][$address_id]['items'][] = $item;
-		$this->schedule[$date]['has_ac_followup'] = $item['is_ac_followup'];
-		$this->schedule[$date]['has_ac_pending'] = $item['is_ac_followup'] && empty($item['ac_delivered']) && empty($item['ac_pushed_up']);
 		return true;
 	}
 
