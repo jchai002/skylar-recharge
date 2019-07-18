@@ -13,12 +13,12 @@ class SubscriptionSchedule {
 	private $subscriptions = [];
 	private $charges = [];
 
-	public function __construct(PDO $db, RechargeClient $rc, $rc_customer_id, $max_time = null){
+	public function __construct(PDO $db, RechargeClient $rc, $rc_customer_id, $max_time = null, $min_time = null){
 		$this->db = $db;
 		$this->rc = $rc;
 		$this->rc_customer_id = $rc_customer_id;
-		$this->max_time = empty($max_time) ? strtotime('+12 months') : $max_time;
-		$this->min_time = strtotime(date('Y-m-d'));
+		$this->max_time = $max_time ?? strtotime('+12 months');
+		$this->min_time = $min_time ?? strtotime(date('Y-m-d'));
 	}
 
 	public function get(){
