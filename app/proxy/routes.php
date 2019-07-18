@@ -232,9 +232,10 @@ $router->route('/subscriptions\/remove-item/i', function() use(&$json_output) {
 	require('ajax/remove_item.php');
 	return true;
 });
+// Old, should be unused 7/18/19
 $router->route('/subscriptions$/i', function() {
 	require_customer_id(function(){
-		require('pages/subscriptions.php');
+		require('pages/schedule.php');
 	});
 	return true;
 });
