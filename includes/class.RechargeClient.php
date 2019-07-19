@@ -64,10 +64,10 @@ class RechargeClient {
 
 
         if(
-		(!empty($response['warning']) && $response['warning'] == 'too many requests' && empty($data['retry']))
+		(!empty($response['warning']) && $response['warning'] == 'too many requests' && $data['retry'] < 5)
 		|| (!empty($response['error']) && $response['error'] == 'A call to this route is already in progress.')){
         	$data['retry']++;
-        	sleep(5);
+        	sleep(5*$data['retry']);
         	return $this->call($original_url, $data, $method);
 		}
 
