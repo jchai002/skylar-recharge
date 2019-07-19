@@ -1155,7 +1155,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 	}
 	// Fix for api returning non-onetimes
 	$onetimes = [];
-	foreach($res['onetimes'] as $onetime){
+	foreach(($res['onetimes'] ?? []) as $onetime){
 		if($onetime['status'] == 'ONETIME'){
 			$onetimes[] = $onetime;
 		}
@@ -1169,7 +1169,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 	if(!array_key_exists('orders', $res)){
 //		print_r($res);
 	}
-	$orders = $res['orders'];
+	$orders = $res['orders'] ?? [];
 	$res = $rc->get('/charges', [
 		'address_id' => $address_id,
 		'date_min' => date('Y-m-t'),
@@ -1178,7 +1178,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 	if(!array_key_exists('charges', $res)){
 //		print_r($res);
 	}
-	$charges = $res['charges'];
+	$charges = $res['charges'] ?? [];
 
 	$products_by_id = [];
 	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");

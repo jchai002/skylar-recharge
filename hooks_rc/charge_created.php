@@ -65,7 +65,7 @@ if(empty($main_sub)){
 				$stmt = $db->prepare("INSERT INTO sc_profile_data (shopify_customer_id, data_key, data_value) VALUES (:shopify_customer_id, :data_key, :data_value) ON DUPLICATE KEY UPDATE data_value=:data_value");
 				if(empty($shopify_customer_id)){
 					$customer_res = $rc->get('/customers/'.$charge['customer_id']);
-					$shopify_customer_id = $customer_res['shopify_customer_id'];
+					$shopify_customer_id = $customer_res['customer']['shopify_customer_id'];
 				}
 				foreach($profile_data as $key=>$value){
 					$stmt->execute([
