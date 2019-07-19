@@ -27,12 +27,12 @@ while($row = fgetcsv($f)) {
         die();
     }
 
-    $res['order']['line_items'][0]['sku'] = '10213904-112';
+    $res['order']['line_items'][0]['sku'] = '10213905-113';
     $res['order']['line_items'][0]['product_id'] = $res['order']['line_items'][0]['shopify_product_id'];
     $res['order']['line_items'][0]['variant_id'] = $res['order']['line_items'][0]['shopify_variant_id'];
 
     $line_item = [
-        'sku' => '10213904-112',
+        'sku' => '10213905-113',
         'price' => $res['order']['line_items'][0]['price'],
         'properties' => $res['order']['line_items'][0]['properties'],
         'quantity' => $res['order']['line_items'][0]['quantity'],
