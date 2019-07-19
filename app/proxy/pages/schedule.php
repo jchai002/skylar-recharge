@@ -278,7 +278,7 @@ print_r($schedule->get());
                                                 </div>
                                             <?php }
                                         } ?>
-                                        <?php if(!empty($upcoming_shipment['charge_id']) && !empty($schedule->charges()[$upcoming_shipment['charge_id']]['total_tax'])){ ?>
+                                        <?php if(!empty($schedule->charges()[$upcoming_shipment['charge_id']]['total_tax'])){ ?>
                                             <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                                 <div class="sc-shipping-title">Tax</div>
                                                 <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($schedule->charges()[$upcoming_shipment['charge_id']]['total_tax'])?></div>

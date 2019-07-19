@@ -8,6 +8,8 @@ $f = fopen(__DIR__.'/upcoming_promos.csv', 'r');
 
 $headers = fgetcsv($f);
 
+$new_sku = '10213905-113';
+
 $rownum = 0;
 while($row = fgetcsv($f)) {
     $rownum++;
@@ -26,13 +28,13 @@ while($row = fgetcsv($f)) {
         echo "Not 1 line item!";
         die();
     }
-
-    $res['order']['line_items'][0]['sku'] = '10213905-113';
-    $res['order']['line_items'][0]['product_id'] = $res['order']['line_items'][0]['shopify_product_id'];
-    $res['order']['line_items'][0]['variant_id'] = $res['order']['line_items'][0]['shopify_variant_id'];
+//    print_r($res);
+    if($res['order']['status'] != 'QUEUED'){
+    	continue;
+	}
 
     $line_item = [
-        'sku' => '10213905-113',
+        'sku' => $new_sku,
         'price' => $res['order']['line_items'][0]['price'],
         'properties' => $res['order']['line_items'][0]['properties'],
         'quantity' => $res['order']['line_items'][0]['quantity'],
@@ -45,8 +47,9 @@ while($row = fgetcsv($f)) {
     ];
 
     $res = $rc->put('/orders/'.$row['order_id'], ['line_items' => [$line_item]]);
+//    $res = $rc->post('/orders/'.$row['order_id'].'/change_date', ['scheduled_at' => '2019-07-19T00:00:00']);
     print_r($res);
-    if(empty($res['order'])){
+    if(empty($res['order']) || $res['order']['line_items'][0]['sku'] != $new_sku){
         print_r($res);
         echo "ERROR CANNOT UPDATE ORDER";
         die();
