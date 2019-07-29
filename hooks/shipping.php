@@ -38,6 +38,7 @@ if(!$is_test){
 $stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
 $sc_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $has_sc = !empty(array_intersect(array_column($rate['items'], 'sku'), $sc_skus));
+$has_ac = !empty(array_intersect(array_column($rate['items'], 'sku'), ["10450506-101"]));
 
 $total_weight = array_sum(array_column($rate['items'],'grams'))/28.35; // Grams to ounces
 $total_price = 0;
@@ -59,7 +60,7 @@ $has_fullsize = !empty(array_intersect(array_column($rate['items'], 'sku'), $ful
 
 switch($rate['destination']['country']){
 	case 'US':
-		if($has_sc){
+		if($has_sc || $has_ac){
 			if($total_weight <= 15){
 				$_RATES[] = [
 					'service_name' => 'Standard Shipping (3-7 business days)',
