@@ -11,7 +11,12 @@ spl_autoload_register(function($class){
 $dotenv = new Dotenv\Dotenv(__DIR__.'/..');
 $dotenv->load();
 
-\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
+if(!empty($_ENV['STRIPE_API_KEY'])){
+	\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
+}
+if(!empty($_ENV['EASYPOST_API_KEY'])){
+	\EasyPost\EasyPost::setApiKey($_ENV['EASYPOST_API_KEY']);
+}
 
 if(strpos(getcwd(), 'production') !== false){
     define('ENV_DIR', 'skylar-recharge-production');

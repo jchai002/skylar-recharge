@@ -16,5 +16,10 @@ if(empty($fulfillments) || empty($fulfillments[0]) || empty($fulfillments[0]['id
 	die('No data');
 }
 foreach($fulfillments as $fulfillment){
-	insert_update_fulfillment($db, $fulfillment);
+	$fulfillment_id = insert_update_fulfillment($db, $fulfillment);
+	$tracker = \EasyPost\Tracker::create([
+		'tracking_code' => $fulfillment['tracking_number'],
+		'carrier' => $fulfillment['tracking_company'],
+	]);
+	var_dump($tracker);
 }
