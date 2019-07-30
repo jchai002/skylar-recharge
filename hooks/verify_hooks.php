@@ -26,11 +26,11 @@ $webhooks_required = [
     ],
     // Sync customer
     [
-        'type'=>'customer/update',
+        'type'=>'customers/update',
         'address' => 'https://ec2production.skylar.com/hooks/customer_updated.php',
     ],
     [
-        'type'=>'customer/create',
+        'type'=>'customers/create',
         'address' => 'https://ec2production.skylar.com/hooks/customer_updated.php',
     ],
 	// Gift notification / sync fulfillments
