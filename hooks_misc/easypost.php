@@ -29,9 +29,7 @@ function insert_update_tracker(PDO $db, $tracker){
 		'created_at' => $tracker['created_at'],
 		'updated_at' => $tracker['updated_at'],
 	]);
-	print_r($stmt->errorInfo());
 	$tracker_id = $db->lastInsertId();
-	print_r($db->errorInfo());
 	$stmt = $db->prepare("INSERT INTO ep_tracker_details (tracker_id, message, status, source, created_at) VALUES (:tracker_id, :message, :status, :source, :created_at) ON DUPLICATE KEY UPDATE message=:message");
 	foreach($tracker['tracking_details'] as $detail){
 		$stmt->execute([
