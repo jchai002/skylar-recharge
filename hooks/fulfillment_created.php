@@ -6,6 +6,7 @@ $sc = new ShopifyClient();
 
 if(!empty($_REQUEST['id'])){
 	$fulfillments = $sc->get('/admin/orders/'.intval($_REQUEST['id']).'/fulfillments.json');
+	var_dump($sc->last_error);
 	var_dump($fulfillments);
 } else {
 	$data = file_get_contents('php://input');
