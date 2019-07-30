@@ -59,6 +59,13 @@ foreach($fulfillment['line_items'] as $line_item){
 
 }
 
+// Mark as processed
+$stmt = $db->prepare("UPDATE fulfillments SET delivery_processed_at=:now WHERE shopify_id=:id");
+$stmt->execute([
+	'now' => date('Y-m-d H:i:s'),
+	'id' => $fulfillment['id'],
+]);
+
 // Gift message
 if(empty($cart_attributes['gift_message']) || empty($cart_attributes['gift_message_email'])){
 	die();
