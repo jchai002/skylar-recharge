@@ -589,10 +589,14 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
 		$stmt = $db->prepare("SELECT 1 FROM ep_trackers WHERE tracking_code=?");
 		$stmt->execute([$shopify_fulfillment['tracking_number']]);
 		if($stmt->rowCount() < 1){
-			$tracker = \EasyPost\Tracker::create([
-				'tracking_code' => $shopify_fulfillment['tracking_number'],
-				'carrier' => $shopify_fulfillment['tracking_company'],
-			]);
+			try {
+				$tracker = \EasyPost\Tracker::create([
+					'tracking_code' => $shopify_fulfillment['tracking_number'],
+					'carrier' => $shopify_fulfillment['tracking_company'],
+				]);
+			} catch(\Throwable $e){
+				log_event($db, 'EXCEPTION', json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'fulfillment_tracker_create', json_encode($shopify_fulfillment), '', '');
+			}
 		}
 	}
 
