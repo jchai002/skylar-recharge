@@ -1,5 +1,12 @@
 {
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/EasyPost/easypost-php"
+    }
+  ],
   "require": {
+    "easypost/easypost-php": "~3.0",
     "vlucas/phpdotenv": "^2.5",
     "klaviyo/php-sdk": "dev-master",
     "stripe/stripe-php": "^6.29",
