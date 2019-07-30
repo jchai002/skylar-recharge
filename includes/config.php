@@ -584,6 +584,18 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
     foreach($shopify_fulfillment['line_items'] as $line_item){
         $stmt->execute([$id, $line_item['id']]);
     }
+
+    if(!empty($shopify_fulfillment['tracking_number'])){
+		$stmt = $db->prepare("SELECT 1 FROM ep_trackers WHERE tracking_code=?");
+		$stmt->execute([$shopify_fulfillment['tracking_number']]);
+		if($stmt->rowCount() < 1){
+			$tracker = \EasyPost\Tracker::create([
+				'tracking_code' => $shopify_fulfillment['tracking_number'],
+				'carrier' => $shopify_fulfillment['tracking_company'],
+			]);
+		}
+	}
+
     return $id;
 }
 function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $sc){
