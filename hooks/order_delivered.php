@@ -22,6 +22,7 @@ if(!empty($_REQUEST['id'])){
 	$data = file_get_contents('php://input');
 	$fulfillment = json_decode($data, true);
 	insert_update_fulfillment($db, $fulfillment);
+	log_event($db, 'webhook', $fulfillment['id'], 'fulfillment_updated', $data);
 	if($fulfillment['status'] != 'delivered'){
 		die();
 	}
