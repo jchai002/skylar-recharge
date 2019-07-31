@@ -1,8 +1,11 @@
 <?php
-require_once('../includes/config.php');
+require_once(__DIR__.'/../includes/config.php');
+
+$rc = new RechargeClient();
 
 $stmt = $db->prepare("SELECT * FROM fulfillments WHERE delivered_at >= ? AND delivery_processed_at IS NULL");
-$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
+//$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
+$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*14))]);
 $fulfillments = $stmt->fetchAll();
 
 
@@ -18,8 +21,9 @@ AND aco.order_line_item_id=?");
 
 $stmt_get_attributes = $db->prepare("SELECT o.attributes FROM orders o LEFT JOIN order_line_items oli ON oli.order_id=o.id WHERE oli.fulfillment_id=?");
 
-$stmt_mark_processed = $db->prepare("UPDATE fulfillments SET delivery_processed_at=:now WHERE shopify_id=:id");
+$stmt_mark_processed = $db->prepare("UPDATE fulfillments SET delivery_processed_at=:now WHERE id=:id");
 foreach($fulfillments as $fulfillment){
+	echo "Processing fulfillment ID ".$fulfillment['id']." (".$fulfillment['shopify_id'].")".PHP_EOL;
 
 	$stmt_get_order_lines->execute([$fulfillment['id']]);
 	foreach($stmt_get_order_lines->fetchAll() as $line_item){
@@ -28,15 +32,17 @@ foreach($fulfillments as $fulfillment){
 		if($stmt_get_subscription_id->rowCount() == 0){
 			continue;
 		}
+		echo "Has AC Order... ";
 		// Has AC order, update ship date
 		$subscription_id = $stmt_get_subscription_id->fetchColumn();
-		$rc->put('/onetimes/'.$subscription_id, [
-			'next_charge_scheduled_at' => date('Y-m-d', offset_date_skip_weekend(strtotime('+14 days'))),
+		$res = $rc->put('/onetimes/'.$subscription_id, [
+			'next_charge_scheduled_at' => date('Y-m-d', offset_date_skip_weekend(strtotime('+14 days', strtotime($fulfillment['delivered_at'])))),
 			'properties' => [
 				'_ac_product' => $line_item['product_id'],
 				'_ac_delivered' => 1,
 			]
 		]);
+		echo "Moved onetime id ".$subscription_id." to ".$res['onetime']['next_charge_scheduled_at'].PHP_EOL;
 	}
 
 
@@ -45,6 +51,7 @@ foreach($fulfillments as $fulfillment){
 
 	// Gift message
 	if(!empty($cart_attributes['gift_message']) && !empty($cart_attributes['gift_message_email'])){
+		echo "Has gift message... ";
 		$ch = curl_init('https://a.klaviyo.com/api/v2/list/HSQctC/subscribe');
 
 		curl_setopt_array($ch, [
@@ -100,7 +107,8 @@ foreach($fulfillments as $fulfillment){
 			'response' => $res,
 		]);
 		$res = json_decode($res, true);
-		var_dump($res);
+		echo "Sent to ".$cart_attributes['gift_message_email'].PHP_EOL;
+//		var_dump($res);
 	}
 
 
@@ -108,4 +116,5 @@ foreach($fulfillments as $fulfillment){
 		'now' => date('Y-m-d H:i:s'),
 		'id' => $fulfillment['id'],
 	]);
+	echo "Marked as processed".PHP_EOL;
 }
