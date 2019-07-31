@@ -12,7 +12,8 @@
     "stripe/stripe-php": "^6.29",
     "ext-curl": "*",
     "ext-json": "*",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "theiconic/php-ga-measurement-protocol": "^2.7"
   },
   "autoload": {
     "psr-4": { "": "src/" }
