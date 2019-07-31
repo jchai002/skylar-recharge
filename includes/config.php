@@ -1241,7 +1241,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 	$offset = sc_is_address_in_blackout($db, $rc, $address_id) ? 1 : 0;
 	while(true) {
 		$offset++;
-		$next_charge_month = date('Y-m', strtotime("+$offset months"));
+		$next_charge_month = date('Y-m', get_month_by_offset($offset));
 		foreach($onetimes as $item){
 			$charge_date = date('Y-m', strtotime($item['next_charge_scheduled_at']));
 			if($charge_date != $next_charge_month){
