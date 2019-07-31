@@ -1,6 +1,6 @@
 <?php
 http_response_code(200);
-require_once('../includes/config.php');
+require_once(__DIR__.'/../includes/config.php');
 
 $data = file_get_contents('php://input');
 $event = json_decode($data, true);
