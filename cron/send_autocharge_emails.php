@@ -9,13 +9,15 @@ require_once(__DIR__.'/../includes/config.php');
 // Send email
 
 $send_threshold = date('Y-m-d', strtotime('-5 days'));
-//$send_threshold = date('Y-m-d', strtotime('+5 days')); // TODO Remove
 $stmt = $db->prepare("SELECT aco.id, oli.sku, DATE(f.delivered_at) AS delivered_at, o.email FROM ac_orders aco
 LEFT JOIN order_line_items oli ON oli.id=aco.order_line_item_id
 LEFT JOIN fulfillments f ON oli.fulfillment_id=f.id
 LEFT JOIN orders o ON o.id=oli.order_id
+LEFT JOIN rc_subscriptions s ON s.id=aco.followup_subscription_id
 WHERE aco.reminder_email_id IS NULL
-AND f.shipment_status='delivered'
+AND s.variant_id = 115
+AND s.deleted_at IS NULL
+AND f.delivered_at IS NOT NULL
 AND f.delivered_at <= ?");
 
 $stmt->execute([$send_threshold]);
