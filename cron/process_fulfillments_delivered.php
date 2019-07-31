@@ -3,6 +3,8 @@ require_once('../includes/config.php');
 
 $stmt = $db->prepare("SELECT * FROM fulfillments WHERE delivered_at >= ? AND delivery_processed_at IS NULL");
 $stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
+$fulfillments = $stmt->fetchAll();
+
 
 $stmt_get_order_lines = $db->prepare("SELECT oli.id, p.shopify_id AS product_id FROM order_line_items oli
 LEFT JOIN variants v ON oli.variant_id=v.id
@@ -17,7 +19,7 @@ AND aco.order_line_item_id=?");
 $stmt_get_attributes = $db->prepare("SELECT o.attributes FROM orders o LEFT JOIN order_line_items oli ON oli.order_id=o.id WHERE oli.fulfillment_id=?");
 
 $stmt_mark_processed = $db->prepare("UPDATE fulfillments SET delivery_processed_at=:now WHERE shopify_id=:id");
-foreach($stmt->fetchAll() as $fulfillment){
+foreach($fulfillments as $fulfillment){
 
 	$stmt_get_order_lines->execute([$fulfillment['id']]);
 	foreach($stmt_get_order_lines->fetchAll() as $line_item){
