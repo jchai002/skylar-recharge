@@ -581,19 +581,18 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
     $stmt = $db->prepare("SELECT delivered_at FROM fulfillments WHERE shopify_id = ?");
     $stmt->execute([$shopify_fulfillment['id']]);
     $delivered_at = $stmt->fetchColumn();
-    if(empty($delivered_at) && $shopify_fulfillment['shipment_status'] == 'delivered'){
-        $delivered_at = $shopify_fulfillment['updated_at'];
-    }
-    if(empty($delivered_at)){
+    if(empty($delivered_at) || $delivered_at == '0000-00-00 00:00:00'){
     	if($shopify_fulfillment['shipment_status'] == 'delivered'){
 			$delivered_at = $shopify_fulfillment['updated_at'];
 		} else if(!empty($tracker) && $tracker->status == 'delivered'){
     		foreach($tracker->tracking_details as $detail){
     			if($detail->status == 'delivered'){
-    				$delivered_at = $detail->datetime;
+    				$delivered_at = date('Y-m-d H:i:s', strtotime($detail->datetime));
     				break;
 				}
 			}
+		} else {
+			$delivered_at = null;
 		}
 	}
     $stmt = $db->prepare("INSERT INTO fulfillments (shopify_id, name, service, tracking_company, tracking_number, tracking_url, shipment_status, status, delivered_at) VALUES (:shopify_id, :name, :service, :tracking_company, :tracking_number, :tracking_url, :shipment_status, :status, :delivered_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), name=:name, service=:service, tracking_company=:tracking_company, tracking_number=:tracking_number, tracking_url=:tracking_url, shipment_status=:shipment_status, status=:status, delivered_at=:delivered_at");
