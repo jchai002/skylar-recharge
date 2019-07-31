@@ -561,12 +561,41 @@ function insert_update_customer(PDO $db, $shopify_customer){
 	return $customer_id;
 }
 function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
+
+	if(!empty($shopify_fulfillment['tracking_number'])){
+		$stmt = $db->prepare("SELECT 1 FROM ep_trackers WHERE tracking_code=?");
+		$stmt->execute([$shopify_fulfillment['tracking_number']]);
+		if(true || $stmt->rowCount() < 1){
+			try {
+				$tracker = \EasyPost\Tracker::create([
+					'tracking_code' => $shopify_fulfillment['tracking_number'],
+					'carrier' => $shopify_fulfillment['tracking_company'],
+				]);
+			} catch(\Throwable $e){
+				var_dump($e);
+				log_event($db, 'EXCEPTION', json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'fulfillment_tracker_create', json_encode($shopify_fulfillment), '', '');
+			}
+		}
+	}
+
     $stmt = $db->prepare("SELECT delivered_at FROM fulfillments WHERE shopify_id = ?");
     $stmt->execute([$shopify_fulfillment['id']]);
     $delivered_at = $stmt->fetchColumn();
     if(empty($delivered_at) && $shopify_fulfillment['shipment_status'] == 'delivered'){
         $delivered_at = $shopify_fulfillment['updated_at'];
     }
+    if(empty($delivered_at)){
+    	if($shopify_fulfillment['shipment_status'] == 'delivered'){
+			$delivered_at = $shopify_fulfillment['updated_at'];
+		} else if(!empty($tracker) && $tracker->status == 'delivered'){
+    		foreach($tracker->tracking_details as $detail){
+    			if($detail->status == 'delivered'){
+    				$delivered_at = $detail->datetime;
+    				break;
+				}
+			}
+		}
+	}
     $stmt = $db->prepare("INSERT INTO fulfillments (shopify_id, name, service, tracking_company, tracking_number, tracking_url, shipment_status, status, delivered_at) VALUES (:shopify_id, :name, :service, :tracking_company, :tracking_number, :tracking_url, :shipment_status, :status, :delivered_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), name=:name, service=:service, tracking_company=:tracking_company, tracking_number=:tracking_number, tracking_url=:tracking_url, shipment_status=:shipment_status, status=:status, delivered_at=:delivered_at");
     $stmt->execute([
         'shopify_id' => $shopify_fulfillment['id'],
@@ -584,23 +613,6 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
     foreach($shopify_fulfillment['line_items'] as $line_item){
         $stmt->execute([$id, $line_item['id']]);
     }
-
-    if(!empty($shopify_fulfillment['tracking_number'])){
-		$stmt = $db->prepare("SELECT 1 FROM ep_trackers WHERE tracking_code=?");
-		$stmt->execute([$shopify_fulfillment['tracking_number']]);
-		if($stmt->rowCount() < 1){
-			try {
-				/*
-				$tracker = \EasyPost\Tracker::create([
-					'tracking_code' => $shopify_fulfillment['tracking_number'],
-					'carrier' => $shopify_fulfillment['tracking_company'],
-				]);
-				*/
-			} catch(\Throwable $e){
-				log_event($db, 'EXCEPTION', json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'fulfillment_tracker_create', json_encode($shopify_fulfillment), '', '');
-			}
-		}
-	}
 
     return $id;
 }
@@ -723,6 +735,24 @@ function get_last_month($now = null){
 		$month--;
 	}
 	return strtotime($year.'-'.$month.'-01');
+}
+function get_month_by_offset($offset, $now = null){
+	if(empty($now)){
+		$now = time();
+	}
+	if($offset > 0){
+		for($i = 0; $i < $offset; $i++){
+			$now = get_next_month($now);
+		}
+		return $now;
+	}
+	if($offset < 0){
+		for($i = 0; $i > $offset; $i--){
+			$now = get_last_month($now);
+		}
+		return $now;
+	}
+	return strtotime(date('Y-m', $now).'-01');
 }
 // Start Scent Club
 function sc_is_address_in_blackout(PDO $db, RechargeClient $rc, $address_id){
