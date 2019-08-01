@@ -10,7 +10,9 @@ $page = 0;
 $scent = null;
 
 $start_date = date('Y-m-t');
-$end_date = date('Y-m', strtotime('+2 months')).'-01';
+$end_date = date('Y-m-01', get_next_month(get_next_month()));
+
+echo "Getting $start_date to $end_date".PHP_EOL;
 
 $charges = [];
 
