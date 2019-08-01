@@ -14,7 +14,7 @@ $analytics
 	->setDataSource('test');
 
 $analytics->setTransactionId($order['number'])
-	->setAffiliation('Skylar')
+	->setAffiliation('Skylar Offline')
 	->setRevenue($order['total_price_set']['shop_money']['amount'])
 	->setTax($order['total_tax_set']['shop_money']['amount'])
 	->setShipping($order['total_shipping_price_set']['shop_money']['amount']);
