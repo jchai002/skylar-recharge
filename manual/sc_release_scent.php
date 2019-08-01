@@ -10,7 +10,7 @@ $page = 0;
 $scent = null;
 
 $start_date = date('Y-m-t');
-$end_date = date('Y-m-01', get_next_month(get_next_month()));
+$end_date = date('Y-m-01', get_month_by_offset(2));
 
 echo "Getting $start_date to $end_date".PHP_EOL;
 
