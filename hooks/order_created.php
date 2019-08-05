@@ -169,6 +169,7 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
 foreach($order['line_items'] as $line_item){
 	if(is_ac_followup_lineitem($line_item)){
 		$order_tags[] = 'HOLD: AC Followup';
+		$update_order = true;
 		continue;
 	}
 	if(is_ac_initial_lineitem($line_item)){
