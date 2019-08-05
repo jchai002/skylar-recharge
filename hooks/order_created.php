@@ -150,6 +150,7 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 	}
 }
 
+$order_tags = explode(',',$order['tags']);
 
 // Get recharge version of order
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
@@ -166,6 +167,10 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
 	'status' => 'ACTIVE',
 ]);
 foreach($order['line_items'] as $line_item){
+	if(is_ac_followup_lineitem($line_item)){
+		$order_tags[] = 'HOLD: AC Followup';
+		continue;
+	}
 	if(is_ac_initial_lineitem($line_item)){
 		echo "Attempting to create AC onetime... ";
 		$stmt_get_order_line->execute([$line_item['id']]);
@@ -205,7 +210,6 @@ foreach($order['line_items'] as $line_item){
 }
 
 // Tag orders that aren't samples as either onetime or subscription, with subscription
-$order_tags = explode(',',$order['tags']);
 $res = $rc->get('/subscriptions/', ['address_id' => $rc_order['address_id']]);
 $subscriptions = [];
 $update_order = false;
