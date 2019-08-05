@@ -1619,3 +1619,30 @@ function klaviyo_send_event($data){
     $res = json_decode(curl_exec($ch));
     return $res;
 }
+
+// https://stackoverflow.com/questions/15273570/continue-processing-php-after-sending-http-response/38918192
+function respondOK(){
+	// check if fastcgi_finish_request is callable
+	if (is_callable('fastcgi_finish_request')) {
+		/*
+		 * This works in Nginx but the next approach not
+		 */
+		session_write_close();
+		fastcgi_finish_request();
+
+		return;
+	}
+
+	ignore_user_abort(true);
+
+	ob_start();
+	$serverProtocole = filter_input(INPUT_SERVER, 'SERVER_PROTOCOL', FILTER_SANITIZE_STRING);
+	header($serverProtocole.' 200 OK');
+	header('Content-Encoding: none');
+	header('Content-Length: '.ob_get_length());
+	header('Connection: close');
+
+	ob_end_flush();
+	ob_flush();
+	flush();
+}
