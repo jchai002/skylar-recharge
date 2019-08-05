@@ -1,10 +1,37 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
+$sc = new ShopifyClient();
+$order = $sc->get('/admin/orders/1066783244375.json');
+
+$views = [
+	'all_web_data' => '146856754',
+	'littledata' => '178268161',
+	'test' => '199478891',
+	'testuid' => '199553029',
+];
+
 $analytics = initializeAnalytics();
 
+$dateRange = new Google_Service_AnalyticsReporting_DateRange();
+$dateRange->setStartDate("today");
+$dateRange->setEndDate("today");
 
+$sessions = new Google_Service_AnalyticsReporting_Metric();
+$sessions->setExpression("ga:sessions");
+$sessions->setAlias("sessions");
 
+$request = new Google_Service_AnalyticsReporting_SearchUserActivityRequest();
+$request->setViewId($views['all_web_data']);
+$user = new Google_Service_AnalyticsReporting_User();
+$user->setType('USER_ID');
+$user->setUserId($order['customer']['id']);
+$request->setUser($user);
+
+$body = new Google_Service_AnalyticsReporting_GetReportsRequest();
+$body->setReportRequests( array( $request) );
+$response = $analytics->reports->batchGet( $body );
+var_dump($response->getReports());
 
 
 die();

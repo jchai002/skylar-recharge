@@ -34,8 +34,8 @@ foreach($order['line_items'] as $index=>$item){
 }
 $analytics->setProductActionToPurchase();
 
-$response = $analytics->setEventCategory('Ecommerce')
-	->setEventAction('Offline Checkout')
+$response = $analytics->setEventCategory('ecommerce')
+	->setEventAction('offline purchase')
 	->setEventLabel($order['number'])
 	->setNonInteractionHit(1)
 	->sendEvent();
