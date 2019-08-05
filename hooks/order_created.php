@@ -181,13 +181,14 @@ foreach($order['line_items'] as $line_item){
 		print_r($stmt->fetchAll());
     	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
     		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+28 days')),
-			'price' => !empty($sc_main_sub) ? '70.20' : '78',
+			'price' => '58',
 			'quantity' => 1,
 			'shopify_variant_id' => 31022109635, // Isle full size
 			'product_title' => 'Isle',
 			'variant_title' => '',
 			'properties' => [
 				'_ac_product' => $line_item['product_id'],
+				'_ac_testcase' => get_oli_attribute($line_item, '_ac_testcase') ?? '1',
 			],
 		]);
     	if(!empty($res['onetime'])){
