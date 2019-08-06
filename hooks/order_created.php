@@ -167,6 +167,7 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
 	'status' => 'ACTIVE',
 ]);
 foreach($order['line_items'] as $line_item){
+	echo "Checking line items".PHP_EOL;
 	if(is_ac_followup_lineitem($line_item)){
 		echo "Add AC Followup Hold Tag".PHP_EOL;
 		$order_tags[] = 'HOLD: AC Followup';
