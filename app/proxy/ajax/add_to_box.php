@@ -24,6 +24,7 @@ if(empty($_REQUEST['charge_id'])){
 //var_dump($charge);
 $sc = new ShopifyClient();
 $product = $sc->get("/admin/products/".intval($_REQUEST['product_id']).'.json');
+$product['type'] = $product['product_type'];
 foreach($product['variants'] as $variant){
 	if($variant['id'] == $_REQUEST['variant_id']){
 		break;
