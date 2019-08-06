@@ -32,12 +32,13 @@ foreach($product['variants'] as $variant){
 
 $frequency = empty($_REQUEST['frequency']) ? 'onetime' : $_REQUEST['frequency'];
 $res_id = false;
+$price = is_scent_club_month($product) ? $variant['price'] : round($variant['price']*.9, 2);
 if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 	$res = $rc->post('/addresses/'.$charge['address_id'].'/onetimes', [
 		'address_id' => $charge['address_id'],
 		'next_charge_scheduled_at' => $charge['scheduled_at'],
 		'product_title' => $product['title'],
-		'price' => round($variant['price']*.9, 2),
+		'price' => $price,
 		'quantity' => 1,
 		'shopify_variant_id' => $variant['id'],
 	]);
@@ -52,7 +53,7 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'address_id' => $charge['address_id'],
 		'next_charge_scheduled_at' => $charge['scheduled_at'],
 		'product_title' => $product['title'],
-		'price' => round($variant['price']*.9, 2),
+		'price' => $price,
 		'quantity' => 1,
 		'shopify_variant_id' => $variant['id'],
 		'order_interval_unit' => 'month',
