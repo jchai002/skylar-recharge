@@ -218,7 +218,6 @@ foreach($order['line_items'] as $line_item){
 // Tag orders that aren't samples as either onetime or subscription, with subscription
 $res = $rc->get('/subscriptions/', ['address_id' => $rc_order['address_id']]);
 $subscriptions = [];
-$update_order = false;
 foreach($res['subscriptions'] as $subscription){
 	$subscriptions[$subscription['id']] = $subscription;
 }
@@ -244,7 +243,6 @@ if($rc_order['type'] == "RECURRING"){
 } else {
 	echo $rc_order['type'].PHP_EOL;
 }
-//var_dump($update_order);
 
 if($scent_club_hold){
 	$order_tags[] = 'HOLD: Scent Club Blackout';
