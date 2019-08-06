@@ -154,7 +154,7 @@ $order_tags = explode(',',$order['tags']);
 
 // Get recharge version of order
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
-print_r($rc_order);
+//print_r($rc_order);
 if(empty($rc_order['orders'])){
 	die('no rc order');
 }
@@ -168,6 +168,7 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
 ]);
 foreach($order['line_items'] as $line_item){
 	if(is_ac_followup_lineitem($line_item)){
+		echo "Add AC Followup Hold Tag".PHP_EOL;
 		$order_tags[] = 'HOLD: AC Followup';
 		$update_order = true;
 		continue;
@@ -184,7 +185,7 @@ foreach($order['line_items'] as $line_item){
 			echo "Skipping, already exists";
 			continue;
 		}
-		print_r($stmt->fetchAll());
+//		print_r($stmt->fetchAll());
     	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
     		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+28 days')),
 			'price' => '58',
@@ -205,7 +206,7 @@ foreach($order['line_items'] as $line_item){
 			print_r($stmt->errorInfo());
 			echo "Created ".$res['onetime']['id']." (".$db->lastInsertId().")".PHP_EOL;
 		} else {
-    		print_r($res);
+//    		print_r($res);
 		}
     }
 }
