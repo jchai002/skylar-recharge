@@ -363,7 +363,7 @@ print_r($schedule->get());
 //                                'sample-palette',
                                 'scent-collection',
                                 'rollie-collection',
-                                '4-candle-collection',
+                                'isle-meadow-duo',
                             ] as $product){ ?>
                                 {% assign recommended_handles = '<?=$product?>' | split: '|' %}
                                 {% include 'sc-product-tile' %}
