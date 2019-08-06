@@ -32,7 +32,12 @@ foreach($product['variants'] as $variant){
 
 $frequency = empty($_REQUEST['frequency']) ? 'onetime' : $_REQUEST['frequency'];
 $res_id = false;
-$price = is_scent_club_month($product) ? $variant['price'] : round($variant['price']*.9, 2);
+if(is_scent_club_month($product)){
+	$price = $variant['price'];
+	$product['title'] = 'Skylar Scent Club';
+} else {
+	$price = round($variant['price']*.9, 2);
+}
 if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 	$res = $rc->post('/addresses/'.$charge['address_id'].'/onetimes', [
 		'address_id' => $charge['address_id'],
