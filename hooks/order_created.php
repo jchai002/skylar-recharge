@@ -255,7 +255,7 @@ if($update_order){
 		'id' => $order['id'],
 		'tags' => implode(',', $order_tags),
 	]]);
-	var_dump($res);
+//	var_dump($res);
 }
 
 
