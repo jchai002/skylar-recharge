@@ -69,5 +69,6 @@ if(!empty($res['error'])){
 		'success' => true,
 		'id' => $res_id,
 		'res' => $res,
+		'product' => $product,
 	]);
 }
