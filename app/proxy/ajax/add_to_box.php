@@ -33,7 +33,7 @@ foreach($product['variants'] as $variant){
 
 $frequency = empty($_REQUEST['frequency']) ? 'onetime' : $_REQUEST['frequency'];
 $res_id = false;
-if(is_scent_club_month($product)){
+if(is_scent_club_month(get_product($db, $product['id']))){
 	$price = $variant['price'];
 	$product['title'] = 'Skylar Scent Club';
 } else {
@@ -83,6 +83,5 @@ if(!empty($res['error'])){
 		'success' => true,
 		'res' => $res,
 		'id' => $res_id,
-		'product' => $product,
 	]);
 }
