@@ -25,7 +25,7 @@ if(!empty($_REQUEST['id'])){
 if(empty($order)){
 	die('no data');
 }
-print_r($order);
+//print_r($order);
 
 // Cancel and refund test orders
 foreach($order['discount_applications'] as $discount){
@@ -40,8 +40,9 @@ foreach($order['discount_applications'] as $discount){
 	break;
 }
 
-echo insert_update_order($db, $order, $sc);
+echo insert_update_order($db, $order, $sc).PHP_EOL;
 
+echo "Checking alert".PHP_EOL;
 $alert_id = 2;
 $smother_message = false;
 $alert_sent = false;
@@ -83,6 +84,7 @@ if(
 	]);
 }
 
+echo "Checking SC hold logic".PHP_EOL;
 $res = $sc->get('/admin/customers/search.json', [
 	'query' => 'email:'.$order['email'],
 ]);
@@ -109,6 +111,7 @@ foreach($order['line_items'] as $line_item){
 	}
 }
 echo $scent_club_hold ? 'Scent Club Hold'.PHP_EOL : '';
+echo "Check account activation".PHP_EOL;
 if(!empty($customer) && $customer['state'] != 'enabled'){
 	try {
 		$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
@@ -166,8 +169,8 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
 	'customer_id' => $rc_order['customer_id'],
 	'status' => 'ACTIVE',
 ]);
+echo "Checking line items".PHP_EOL;
 foreach($order['line_items'] as $line_item){
-	echo "Checking line items".PHP_EOL;
 	if(is_ac_followup_lineitem($line_item)){
 		echo "Add AC Followup Hold Tag".PHP_EOL;
 		$order_tags[] = 'HOLD: AC Followup';
