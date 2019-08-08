@@ -422,7 +422,7 @@ print_r($schedule->get());
             </div>
         </div>
         <div class="sc-modal-continue">
-            <a href="#" onclick="AccountController.ac_cancel_followup(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close(); return false;">Yes, Cancel My Trial</a>
+            <a href="#" onclick="AccountController.show_ac_cancel_reason(); return false;">Yes, Cancel My Trial</a>
         </div>
     </div>
     <div id="ac-cancel-reason-modal" class="sc-confirm-modal">
