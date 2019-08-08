@@ -428,7 +428,7 @@ print_r($schedule->get());
     <div id="ac-cancel-reason-modal" class="sc-confirm-modal">
         <div>
             <div class="sc-modal-title">Why would you like to cancel your trial?</div>
-            <form id="ac-cancel-reason-form" class="sc-cancel-reason-form">
+            <form id="ac-cancel-reason-form" class="skip-reason-form">
                 <div class="skip-reason-list">
                     <label>
                         <input type="radio" name="skip_reason" value="It's too expensive">
