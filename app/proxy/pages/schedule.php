@@ -425,6 +425,55 @@ print_r($schedule->get());
             <a href="#" onclick="AccountController.ac_cancel_followup(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close(); return false;">Yes, Cancel My Trial</a>
         </div>
     </div>
+    <div id="ac-cancel-reason-modal" class="sc-confirm-modal">
+        <div>
+            <div class="sc-modal-title">Why would you like to cancel your subscription?</div>
+            <form id="ac-cancel-reason-form" class="ac-cancel-reason-form">
+                <div class="skip-reason-list">
+                    <label>
+                        <input type="radio" name="skip_reason" value="It's too expensive">
+                        <span class="radio-visual"></span>
+                        <span>It's too expensive</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I don't like any of the scents">
+                        <span class="radio-visual"></span>
+                        <span>I don't like any of the scents</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I want to use what I already have">
+                        <span class="radio-visual"></span>
+                        <span>I want to use what I already have</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I need more time sampling">
+                        <span class="radio-visual"></span>
+                        <span>I need more time sampling</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I have a sensitivity to the product">
+                        <span class="radio-visual"></span>
+                        <span>I have a sensitivity to the product</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="The scents don't last long">
+                        <span class="radio-visual"></span>
+                        <span>The scents don't last long</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="other">
+                        <span class="radio-visual"></span>
+                        <span>Other Reason</span>
+                    </label>
+                    <textarea name="other_reason" title="Other Reason"></textarea>
+                </div>
+                <div class="sc-skip-options">
+                    <a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); AccountController.ac_cancel_followup(AccountController.selected_box_item.data('subscription-id'), AccountController.get_skip_reason($('#ac-cancel-reason-form'))); return false;">Cancel Subscription</a>
+                    <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Go Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
     <div id="sc-skip-modal">
         <div class="sc-modal-title">Did you know you can...</div>
         <div class="sc-modal-links">
