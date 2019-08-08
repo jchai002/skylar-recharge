@@ -25,7 +25,7 @@ if(!empty($_REQUEST['id'])){
 if(empty($order)){
 	die('no data');
 }
-print_r($order);
+//print_r($order);
 
 // Cancel and refund test orders
 foreach($order['discount_applications'] as $discount){
@@ -40,8 +40,9 @@ foreach($order['discount_applications'] as $discount){
 	break;
 }
 
-echo insert_update_order($db, $order, $sc);
+echo insert_update_order($db, $order, $sc).PHP_EOL;
 
+echo "Checking alert".PHP_EOL;
 $alert_id = 2;
 $smother_message = false;
 $alert_sent = false;
@@ -83,6 +84,7 @@ if(
 	]);
 }
 
+echo "Checking SC hold logic".PHP_EOL;
 $res = $sc->get('/admin/customers/search.json', [
 	'query' => 'email:'.$order['email'],
 ]);
@@ -109,6 +111,7 @@ foreach($order['line_items'] as $line_item){
 	}
 }
 echo $scent_club_hold ? 'Scent Club Hold'.PHP_EOL : '';
+echo "Check account activation".PHP_EOL;
 if(!empty($customer) && $customer['state'] != 'enabled'){
 	try {
 		$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
@@ -150,10 +153,11 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 	}
 }
 
+$order_tags = explode(',',$order['tags']);
 
 // Get recharge version of order
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
-print_r($rc_order);
+//print_r($rc_order);
 if(empty($rc_order['orders'])){
 	die('no rc order');
 }
@@ -165,7 +169,14 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
 	'customer_id' => $rc_order['customer_id'],
 	'status' => 'ACTIVE',
 ]);
+echo "Checking line items".PHP_EOL;
 foreach($order['line_items'] as $line_item){
+	if(is_ac_followup_lineitem($line_item)){
+		echo "Add AC Followup Hold Tag".PHP_EOL;
+		$order_tags[] = 'HOLD: AC Followup';
+		$update_order = true;
+		continue;
+	}
 	if(is_ac_initial_lineitem($line_item)){
 		echo "Attempting to create AC onetime... ";
 		$stmt_get_order_line->execute([$line_item['id']]);
@@ -178,16 +189,17 @@ foreach($order['line_items'] as $line_item){
 			echo "Skipping, already exists";
 			continue;
 		}
-		print_r($stmt->fetchAll());
+//		print_r($stmt->fetchAll());
     	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
     		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+28 days')),
-			'price' => !empty($sc_main_sub) ? '70.20' : '78',
+			'price' => '58',
 			'quantity' => 1,
 			'shopify_variant_id' => 31022109635, // Isle full size
 			'product_title' => 'Isle',
 			'variant_title' => '',
 			'properties' => [
 				'_ac_product' => $line_item['product_id'],
+				'_ac_testcase' => get_oli_attribute($line_item, '_ac_testcase') ?? '1',
 			],
 		]);
     	if(!empty($res['onetime'])){
@@ -198,16 +210,14 @@ foreach($order['line_items'] as $line_item){
 			print_r($stmt->errorInfo());
 			echo "Created ".$res['onetime']['id']." (".$db->lastInsertId().")".PHP_EOL;
 		} else {
-    		print_r($res);
+//    		print_r($res);
 		}
     }
 }
 
 // Tag orders that aren't samples as either onetime or subscription, with subscription
-$order_tags = explode(',',$order['tags']);
 $res = $rc->get('/subscriptions/', ['address_id' => $rc_order['address_id']]);
 $subscriptions = [];
-$update_order = false;
 foreach($res['subscriptions'] as $subscription){
 	$subscriptions[$subscription['id']] = $subscription;
 }
@@ -233,7 +243,6 @@ if($rc_order['type'] == "RECURRING"){
 } else {
 	echo $rc_order['type'].PHP_EOL;
 }
-//var_dump($update_order);
 
 if($scent_club_hold){
 	$order_tags[] = 'HOLD: Scent Club Blackout';
@@ -246,7 +255,7 @@ if($update_order){
 		'id' => $order['id'],
 		'tags' => implode(',', $order_tags),
 	]]);
-	var_dump($res);
+//	var_dump($res);
 }
 
 

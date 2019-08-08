@@ -39,7 +39,7 @@ foreach($charge['line_items'] as $line_item){
 	$properties['_ac_pushed_up'] = 1;
 	$res = $rc->put('/onetimes/'.$subscription_id, [
 		'properties' => $properties,
-		'price' => $line_item['quantity']*78 - 10, // Will need to update this if we test price
+		'price' => $line_item['quantity']*78 - 20, // Will need to update this if we test price
 	]);
 }
 

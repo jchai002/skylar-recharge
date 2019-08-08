@@ -363,7 +363,7 @@ print_r($schedule->get());
 //                                'sample-palette',
                                 'scent-collection',
                                 'rollie-collection',
-                                '4-candle-collection',
+                                'isle-meadow-duo',
                             ] as $product){ ?>
                                 {% assign recommended_handles = '<?=$product?>' | split: '|' %}
                                 {% include 'sc-product-tile' %}
@@ -391,7 +391,7 @@ print_r($schedule->get());
         <div class="sc-modal-links">
             <div class="sc-modal-linkbox ac-linkbox-ordernow" onclick="AccountController.ac_move_to_today(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close();">
                 <div><img src="{{ 'cart-icon.svg' | file_url }}" class="sc-linkbox-icon" /></div>
-                <div class="sc-linkbox-label">Order today and receive $10 off</div>
+                <div class="sc-linkbox-label">Order today and receive $20 off</div>
                 <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
             </div>
         </div>
@@ -417,7 +417,7 @@ print_r($schedule->get());
         <div class="sc-modal-links">
             <div class="sc-modal-linkbox ac-linkbox-ordernow" onclick="AccountController.ac_move_to_today(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close();">
                 <div><img src="{{ 'cart-icon.svg' | file_url }}" class="sc-linkbox-icon" /></div>
-                <div class="sc-linkbox-label">Order today and receive $10 off</div>
+                <div class="sc-linkbox-label">Order today and receive $20 off</div>
                 <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
             </div>
         </div>
