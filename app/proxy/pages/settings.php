@@ -9,6 +9,8 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
+{{ 'featherlight.js' | asset_url | script_tag }}
+{{ 'featherlight.css' | asset_url | stylesheet_tag }}
 {% assign portal_page = 'settings' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
