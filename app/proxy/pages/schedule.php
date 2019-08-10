@@ -415,7 +415,7 @@ print_r($schedule->get());
     <div id="ac-cancel-save-final-modal" class="sc-save-modal">
         <div class="sc-modal-title">Are you sure?</div>
         <div class="sc-modal-subtitle">If you cancel, you'll lose your $20 credit.</div>
-        <div class="sc-modal-continue">
+        <div class="sc-modal-save">
             <a href="#" class="action_button" onclick="$.featherlight.close(); return false;">No, Keep My Credit</a>
         </div>
         <div class="sc-modal-continue">
