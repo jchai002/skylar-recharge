@@ -414,12 +414,9 @@ print_r($schedule->get());
     </div>
     <div id="ac-cancel-save-final-modal" class="sc-save-modal">
         <div class="sc-modal-title">Are you sure?</div>
-        <div class="sc-modal-links">
-            <div class="sc-modal-linkbox ac-linkbox-ordernow" onclick="AccountController.ac_move_to_today(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close();">
-                <div><img src="{{ 'cart-icon.svg' | file_url }}" class="sc-linkbox-icon" /></div>
-                <div class="sc-linkbox-label">Use your $20 credit to go toward your full-size scent purchase today!</div>
-                <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
-            </div>
+        <div class="sc-modal-subtitle">If you cancel, you'll lose your $20 credit.</div>
+        <div class="sc-modal-continue">
+            <a href="#" class="action_button" onclick="$.featherlight.close(); return false;">No, Keep My Credit</a>
         </div>
         <div class="sc-modal-continue">
             <a href="#" onclick="AccountController.show_ac_cancel_reason(); return false;">Yes, Cancel My Trial</a>
