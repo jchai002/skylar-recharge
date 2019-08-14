@@ -268,8 +268,15 @@ class SubscriptionSchedule {
 				if(!empty($item['skipped'])){
 					$scheduled_item['skipped'] = true;
 				}
-				if(!empty($item['charge_id'])){
-					$scheduled_item['charge_id'] = $item['charge_id'];
+				foreach([
+					'charge_id',
+					'order_day_of_month',
+					'order_interval_frequency',
+					'order_interval_unit',
+				] as $duplicate_key){
+					if(!empty($item[$duplicate_key])){
+						$scheduled_item[$duplicate_key] = $item[$duplicate_key];
+					}
 				}
 				$this->schedule[$date]['addresses'][$address_id]['items'][$index] = $scheduled_item;
 				return true;
