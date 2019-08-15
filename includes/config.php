@@ -451,7 +451,7 @@ function offset_date_skip_weekend($time){
 		$time += 24*60*60; //  Add a day
 	}
 	// Labor day
-	if($time == strtotime('first monday '.date('Y-m'))){
+	if($time == strtotime('first monday '.date('Y-m', $time))){
 		$time += 24*60*60; //  Add a day
 	}
 	return $time;
