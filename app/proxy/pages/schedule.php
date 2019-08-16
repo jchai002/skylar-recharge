@@ -788,7 +788,7 @@ print_r($schedule->get());
                 afterOpen: $.noop, // Fix dumb app bug
             });
         });
-        $('.ac-choose-container').on('change submit', function(e){
+        $('.ac-choose-container').on('submit', function(e){
             e.preventDefault();
             console.log(e);
             $([document.documentElement, document.body]).animate({
@@ -797,6 +797,9 @@ print_r($schedule->get());
             $(this).slideUp();
             $(this).siblings('.ac-choose-button').find('.ac-choose-plus, .ac-choose-minus').toggle();
             AccountController.ac_swap_scent(e.currentTarget.subscription_id.value, e.currentTarget.variant_id.value);
+        });
+        $('.ac-choose-container input[variant_id]').on('change', function(){
+            $(this).closest('form').submit();
         });
         $('.ac-choose-button').click(function(){
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
