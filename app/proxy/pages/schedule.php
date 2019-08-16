@@ -796,7 +796,6 @@ print_r($schedule->get());
             $(this).slideUp();
             $(this).siblings('.ac-choose-button').find('.ac-choose-plus, .ac-choose-minus').toggle();
             var data = $(this).closest('form').serializeJSON();
-            console.log(data);
             AccountController.ac_swap_scent(data.subscription_id, data.variant_id);
         });
         $('.ac-choose-button').click(function(){
