@@ -796,12 +796,7 @@ print_r($schedule->get());
             }, 1000);
             $(this).slideUp();
             $(this).siblings('.ac-choose-button').find('.ac-choose-plus, .ac-choose-minus').toggle();
-            var form = $(this);
-            if(form[0].tagName !== 'FORM'){
-                form = $(this).closest('form');
-            }
-            var data = form.serializeJSON();
-            console.log(data);
+            var data = $(this).closest('form').serializeJSON();
             AccountController.ac_swap_scent(data.subscription_id, data.variant_id);
         });
         $('.ac-choose-button').click(function(){
