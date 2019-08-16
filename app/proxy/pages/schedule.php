@@ -798,7 +798,7 @@ print_r($schedule->get());
             $(this).siblings('.ac-choose-button').find('.ac-choose-plus, .ac-choose-minus').toggle();
             AccountController.ac_swap_scent(e.currentTarget.subscription_id.value, e.currentTarget.variant_id.value);
         });
-        $('.ac-choose-container input[variant_id]').on('change', function(){
+        $('.ac-choose-container input[name=variant_id]').on('change', function(){
             $(this).closest('form').submit();
         });
         $('.ac-choose-button').click(function(){
