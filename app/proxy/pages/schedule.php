@@ -790,7 +790,6 @@ print_r($schedule->get());
         });
         $('.ac-choose-container').on('change submit', function(e){
             e.preventDefault();
-            console.log(e);
             $([document.documentElement, document.body]).animate({
                 scrollTop: AccountController.selected_box_item.closest('.sc-upcoming-shipment').offset().top -70
             }, 1000);
