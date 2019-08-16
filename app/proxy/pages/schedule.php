@@ -796,7 +796,12 @@ print_r($schedule->get());
             }, 1000);
             $(this).slideUp();
             $(this).siblings('.ac-choose-button').find('.ac-choose-plus, .ac-choose-minus').toggle();
-            AccountController.ac_swap_scent(e.currentTarget.subscription_id.value, e.currentTarget.variant_id.value);
+            var form = $(this);
+            if(form[0].tagName != 'FORM'){
+                form = $(this).closest('form');
+            }
+            var data = form.serializeJSON();
+            AccountController.ac_swap_scent(data.subscription_id, data.variant_id);
         });
         $('.ac-choose-button').click(function(){
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
