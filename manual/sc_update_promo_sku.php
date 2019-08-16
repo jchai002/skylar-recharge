@@ -8,7 +8,7 @@ $f = fopen(__DIR__.'/upcoming_promos.csv', 'r');
 
 $headers = fgetcsv($f);
 
-$new_sku = '10213905-113';
+$new_sku = '10213906-114';
 
 $rownum = 0;
 while($row = fgetcsv($f)) {
