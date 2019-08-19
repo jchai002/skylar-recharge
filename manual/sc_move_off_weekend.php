@@ -11,15 +11,11 @@ $scent = null;
 
 $start_date = date('Y-m-t');
 $charge_date = date('Y-m', get_next_month()).'-01';
-$charge_day_of_week = date('N', strtotime($charge_date));
-if($charge_day_of_week == 6){
-	$charge_date = date('Y-m', get_next_month()).'-03';
-} elseif($charge_day_of_week == 7){
-	$charge_date = date('Y-m', get_next_month()).'-02';
-} else {
-	die("1st is not a weekend");
+$charge_time = offset_date_skip_weekend(strtotime($charge_date));
+if($charge_time == strtotime($charge_date)){
+	die('1st is not a weekend');
 }
-$end_date = date('Y-m-d', strtotime('+1 day', strtotime($charge_date)));
+$charge_date = date('Y-m-d', $charge_time);
 
 echo "$start_date to $charge_date".PHP_EOL;
 
@@ -53,6 +49,7 @@ echo "Total: ".count($charges).PHP_EOL;
 
 $start_time = microtime(true);
 echo "Starting updates".PHP_EOL;
+// TODO: Add progress messages every 20 calls
 foreach($charges as $index=>$charge){
 	echo "Moving charge ".$charge['id']." address ".$charge['address_id']." ";
 	$res = $rc->post('/charges/'.$charge['id'].'/change_next_charge_date', [

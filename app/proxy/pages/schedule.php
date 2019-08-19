@@ -391,7 +391,7 @@ print_r($schedule->get());
         <div class="sc-modal-links">
             <div class="sc-modal-linkbox ac-linkbox-ordernow" onclick="AccountController.ac_move_to_today(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close();">
                 <div><img src="{{ 'cart-icon.svg' | file_url }}" class="sc-linkbox-icon" /></div>
-                <div class="sc-linkbox-label">Order today and receive $20 off</div>
+                <div class="sc-linkbox-label">Order today and your $20 credit will be applied to your full-size purchase.</div>
                 <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
             </div>
         </div>
@@ -414,15 +414,61 @@ print_r($schedule->get());
     </div>
     <div id="ac-cancel-save-final-modal" class="sc-save-modal">
         <div class="sc-modal-title">Are you sure?</div>
-        <div class="sc-modal-links">
-            <div class="sc-modal-linkbox ac-linkbox-ordernow" onclick="AccountController.ac_move_to_today(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close();">
-                <div><img src="{{ 'cart-icon.svg' | file_url }}" class="sc-linkbox-icon" /></div>
-                <div class="sc-linkbox-label">Order today and receive $20 off</div>
-                <div><img src="{{ 'sc-link-arrow.svg' | file_url }}" /></div>
-            </div>
+        <div class="sc-modal-subtitle">If you cancel, you'll lose your $20 credit.</div>
+        <div class="sc-modal-save">
+            <a href="#" class="action_button" onclick="$.featherlight.close(); return false;">No, Keep My Credit</a>
         </div>
         <div class="sc-modal-continue">
-            <a href="#" onclick="AccountController.ac_cancel_followup(AccountController.selected_box_item.data('subscription-id')); $.featherlight.close(); return false;">Yes, Cancel My Trial</a>
+            <a href="#" onclick="AccountController.show_ac_cancel_reason(); return false;">Yes, Cancel My Trial</a>
+        </div>
+    </div>
+    <div id="ac-cancel-reason-modal" class="sc-confirm-modal">
+        <div>
+            <div class="sc-modal-title">Why would you like to cancel your trial?</div>
+            <form id="ac-cancel-reason-form" class="skip-reason-form">
+                <div class="skip-reason-list">
+                    <label>
+                        <input type="radio" name="skip_reason" value="It's too expensive">
+                        <span class="radio-visual"></span>
+                        <span>It's too expensive</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I don't like any of the scents">
+                        <span class="radio-visual"></span>
+                        <span>I don't like any of the scents</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I want to use what I already have">
+                        <span class="radio-visual"></span>
+                        <span>I want to use what I already have</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I need more time sampling">
+                        <span class="radio-visual"></span>
+                        <span>I need more time sampling</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I have a sensitivity to the product">
+                        <span class="radio-visual"></span>
+                        <span>I have a sensitivity to the product</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="The scents don't last long">
+                        <span class="radio-visual"></span>
+                        <span>The scents don't last long</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="other">
+                        <span class="radio-visual"></span>
+                        <span>Other Reason</span>
+                    </label>
+                    <textarea name="other_reason" title="Other Reason"></textarea>
+                </div>
+                <div class="sc-skip-options">
+                    <a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); AccountController.ac_cancel_followup(AccountController.selected_box_item.data('subscription-id'), AccountController.get_skip_reason($('#ac-cancel-reason-form'))); return false;">Cancel Subscription</a>
+                    <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Go Back</a>
+                </div>
+            </form>
         </div>
     </div>
     <div id="sc-skip-modal">
@@ -744,13 +790,13 @@ print_r($schedule->get());
         });
         $('.ac-choose-container').on('change submit', function(e){
             e.preventDefault();
-            console.log(e);
             $([document.documentElement, document.body]).animate({
                 scrollTop: AccountController.selected_box_item.closest('.sc-upcoming-shipment').offset().top -70
             }, 1000);
             $(this).slideUp();
             $(this).siblings('.ac-choose-button').find('.ac-choose-plus, .ac-choose-minus').toggle();
-            AccountController.ac_swap_scent(e.currentTarget.subscription_id.value, e.currentTarget.variant_id.value);
+            var data = $(this).closest('form').serializeJSON();
+            AccountController.ac_swap_scent(data.subscription_id, data.variant_id);
         });
         $('.ac-choose-button').click(function(){
             AccountController.selected_box_item = $(this).closest('.sc-box-item');

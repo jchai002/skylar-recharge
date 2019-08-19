@@ -9,6 +9,8 @@ $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
+{{ 'featherlight.js' | asset_url | script_tag }}
+{{ 'featherlight.css' | asset_url | stylesheet_tag }}
 {% assign portal_page = 'settings' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
@@ -117,7 +119,7 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 	<div id="sc-cancel-confirm-modal" class="sc-confirm-modal">
 		<div>
 			<div class="sc-modal-title">Why would you like to cancel your subscription?</div>
-			<form class="skip-reason-form">
+			<form id="sc-cancel-reason-form" class="skip-reason-form">
 				<div class="skip-reason-list">
 					<label>
 						<input type="radio" name="skip_reason" value="I don't like the scent or products">
@@ -156,21 +158,6 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 					<a class="action_button inverted" onclick="$.featherlight.close(); return false;">Go Back</a>
 				</div>
 			</form>
-		</div>
-	</div>
-		<div class="sc-skip-image sc-desktop">
-			<img src="{{ all_products['scent-club'].featured_image | img_url: '500x' }}" />
-		</div>
-		<div>
-			<div class="sc-modal-title">Are you sure you want to cancel your Scent Club subscription?</div>
-			<div class="sc-modal-subtitle"></div>
-			<div class="sc-skip-image sc-mobile sc-tablet">
-				<img src="{{ all_products['scent-club'].featured_image | img_url: 'x300' }}" />
-			</div>
-			<div class="sc-skip-options">
-				<a class="action_button warning" onclick="$(this).addClass('disabled'); AccountController.cancel_main_sub(); return false;">Yes, Cancel My Subscription</a>
-				<a class="action_button inverted" onclick="$.featherlight.close(); return false;">No Thanks, Go Back</a>
-			</div>
 		</div>
 	</div>
 </div>
