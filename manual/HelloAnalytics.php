@@ -10,7 +10,7 @@ $views = [
 	'test' => '199478891',
 ];
 
-$KEY_FILE_LOCATION = __DIR__ . '/googlekey.json';
+$KEY_FILE_LOCATION = __DIR__ . '/../'. $_ENV['GOOGLE_API_FILE'];
 
 // Create and configure a new client object.
 $client = new Google_Client();
