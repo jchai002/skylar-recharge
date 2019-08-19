@@ -153,6 +153,24 @@ class SubscriptionSchedule {
 			while($next_charge_time >= $this->min_time){
 				// Check if other scent club is in this month already
 				$next_charge_date_parts = explode('-', date('Y-m-d', $next_charge_time));
+
+				// Need to check historical orders
+				foreach($this->orders as $order){
+					$ship_date_parts = explode('-', date('Y-m', strtotime($order['scheduled_at'])));
+					if($ship_date_parts[0] != $next_charge_date_parts[0] || $ship_date_parts[1] != $next_charge_date_parts[1]){
+						// Month or year doesn't match
+						continue;
+					}
+					foreach($order['line_items'] as $order_item){
+						if(is_scent_club_any(get_product($this->db, $order_item['shopify_product_id']))){
+							$subscription_index--;
+							$next_charge_time = self::get_subscription_time_by_index($subscription_index, $charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
+							continue 3;
+						}
+					}
+				}
+
+				// Check future as well
 				foreach($this->schedule as $ship_date => $shipment_list){
 					$ship_date_parts = explode('-', $ship_date);
 					if($ship_date_parts[0] != $next_charge_date_parts[0] || $ship_date_parts[1] != $next_charge_date_parts[1]){
