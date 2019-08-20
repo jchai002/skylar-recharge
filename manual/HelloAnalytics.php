@@ -13,7 +13,6 @@ $views = [
 ];
 
 $KEY_FILE_LOCATION = __DIR__ . '/../'. $_ENV['GOOGLE_API_FILE'];
-echo $KEY_FILE_LOCATION.PHP_EOL;
 
 // Create and configure a new client object.
 $client = new Google_Client();
@@ -30,6 +29,37 @@ $request = new Google_Service_AnalyticsReporting_SearchUserActivityRequest([
 	'viewId' => '199478891'
 ]);
 $response = $analytics->userActivity->search($request);
-print_r($response);
 
-die();
+?>
+<table>
+	<thead>
+	<tr>
+		<td>Activity Type</td>
+		<td>Source</td>
+		<td>Medium</td>
+		<td>Campaign</td>
+	</tr>
+	</thead>
+	<tbody>
+	<?php
+	/* @var $session Google_Service_AnalyticsReporting_UserActivitySession
+	 */
+	foreach($response->getSessions() as $session){ ?>
+		<tr>
+			<td>Session ID: <?= $session->getSessionId() ?> </td>
+		</tr>
+		<?php
+		/* @var $activity Google_Service_AnalyticsReporting_Activity
+		 */
+		foreach($session->getActivities() as $activity){ ?>
+			<tr>
+				<td><?= $activity->getActivityType() ?></td>
+				<td><?= $activity->getSource() ?></td>
+				<td><?= $activity->getMedium() ?></td>
+				<td><?= $activity->getCampaign() ?></td>
+			</tr>
+		<?php } ?>
+	<?php } ?>
+	</tbody>
+</table>
+<pre><?php print_r($response); ?></pre>
