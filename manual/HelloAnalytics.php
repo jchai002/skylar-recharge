@@ -34,10 +34,15 @@ $response = $analytics->userActivity->search($request);
 <table>
 	<thead>
 	<tr>
-		<td>Activity Type</td>
+		<td>Time</td>
+		<td>Type</td>
 		<td>Source</td>
 		<td>Medium</td>
 		<td>Campaign</td>
+		<td>Channel Grouping</td>
+		<td>Ecommerce</td>
+		<td>Event</td>
+		<td>Goals</td>
 	</tr>
 	</thead>
 	<tbody>
@@ -53,10 +58,15 @@ $response = $analytics->userActivity->search($request);
 		 */
 		foreach($session->getActivities() as $activity){ ?>
 			<tr>
+				<td><?= $activity->getActivityTime() ?></td>
 				<td><?= $activity->getActivityType() ?></td>
 				<td><?= $activity->getSource() ?></td>
 				<td><?= $activity->getMedium() ?></td>
 				<td><?= $activity->getCampaign() ?></td>
+				<td><?= $activity->getChannelGrouping() ?></td>
+				<td><?= print_r($activity->getEcommerce()) ?></td>
+				<td><?= print_r($activity->getEvent()) ?></td>
+				<td><?= print_r($activity->getGoals()) ?></td>
 				<!--<?php print_r($activity); ?> -->
 			</tr>
 		<?php } ?>
