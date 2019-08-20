@@ -31,6 +31,16 @@ $request = new Google_Service_AnalyticsReporting_SearchUserActivityRequest([
 $response = $analytics->userActivity->search($request);
 
 ?>
+<html lang="en-us">
+<head>
+	<title>GA Test</title>
+	<style>
+		.scrollbox {
+			max-height: 200px
+			overflow: auto;
+		}
+	</style>
+</head>
 <table>
 	<thead>
 	<tr>
@@ -64,9 +74,9 @@ $response = $analytics->userActivity->search($request);
 				<td><?= $activity->getMedium() ?></td>
 				<td><?= $activity->getCampaign() ?></td>
 				<td><?= $activity->getChannelGrouping() ?></td>
-				<td><?= print_r($activity->getEcommerce()) ?></td>
-				<td><?= print_r($activity->getEvent()) ?></td>
-				<td><?= print_r($activity->getGoals()) ?></td>
+				<td><div class="scrollbox"><?= print_r($activity->getEcommerce()) ?></div></td>
+				<td><div class="scrollbox"><?= print_r($activity->getEvent()) ?></div></td>
+				<td><div class="scrollbox"><?= print_r($activity->getGoals()) ?></div></td>
 				<!--<?php print_r($activity); ?> -->
 			</tr>
 		<?php } ?>
@@ -74,3 +84,5 @@ $response = $analytics->userActivity->search($request);
 	</tbody>
 </table>
 <pre><?php print_r($response); ?></pre>
+
+</html>
