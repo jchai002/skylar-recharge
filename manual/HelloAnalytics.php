@@ -74,9 +74,9 @@ $response = $analytics->userActivity->search($request);
 				<td><?= $activity->getMedium() ?></td>
 				<td><?= $activity->getCampaign() ?></td>
 				<td><?= $activity->getChannelGrouping() ?></td>
-				<td><div class="scrollbox"><?= print_r($activity->getEcommerce()) ?></div></td>
-				<td><div class="scrollbox"><?= print_r($activity->getEvent()) ?></div></td>
-				<td><div class="scrollbox"><?= print_r($activity->getGoals()) ?></div></td>
+				<td><pre class="scrollbox"><?= print_r($activity->getEcommerce()) ?></pre></td>
+				<td><pre class="scrollbox"><?= print_r($activity->getEvent()) ?></pre></td>
+				<td><pre class="scrollbox"><?= print_r($activity->getGoals()) ?></pre></td>
 				<!--<?php print_r($activity); ?> -->
 			</tr>
 		<?php } ?>
