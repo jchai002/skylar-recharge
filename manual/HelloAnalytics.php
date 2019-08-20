@@ -46,7 +46,7 @@ $response = $analytics->userActivity->search($request);
 	 */
 	foreach($response->getSessions() as $session){ ?>
 		<tr>
-			<td>Session ID: <?= $session->getSessionId() ?> </td>
+			<td colspan="4">Session ID: <?= $session->getSessionId() ?> </td>
 		</tr>
 		<?php
 		/* @var $activity Google_Service_AnalyticsReporting_Activity
@@ -57,6 +57,7 @@ $response = $analytics->userActivity->search($request);
 				<td><?= $activity->getSource() ?></td>
 				<td><?= $activity->getMedium() ?></td>
 				<td><?= $activity->getCampaign() ?></td>
+				<!--<?php print_r($activity); ?> -->
 			</tr>
 		<?php } ?>
 	<?php } ?>
