@@ -44,6 +44,7 @@ $response = $analytics->userActivity->search($request);
 <table>
 	<thead>
 	<tr>
+		<td>Time</td>
 		<td>Type</td>
 		<td>Source</td>
 		<td>Medium</td>
@@ -67,6 +68,7 @@ $response = $analytics->userActivity->search($request);
 		 */
 		foreach($session->getActivities() as $activity){ ?>
 			<tr>
+				<td><?= $activity->getActivityTime() ?></td>
 				<td><?= $activity->getActivityType() ?></td>
 				<td><?= $activity->getSource() ?></td>
 				<td><?= $activity->getMedium() ?></td>
