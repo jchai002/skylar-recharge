@@ -27,6 +27,10 @@ $request = new Google_Service_AnalyticsReporting_SearchUserActivityRequest([
 		'userId' => $_REQUEST['id'] ?? '1254926881.1562696173',
 	],
 	'viewId' => $views['all_web_data'],
+	'dateRange' => [
+		'startDate' => '2019-07-09',
+		'endDate' => '2019-07-09',
+	]
 ]);
 $response = $analytics->userActivity->search($request);
 
