@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 require_once(__DIR__.'/../includes/config.php');
 
 $sc = new ShopifyClient();
-$order = $sc->get('/admin/orders/1332307787863.json');
+$order = $sc->get('/admin/orders/1290188816471.json');
 
 $views = [
 	'all_web_data' => '146856754',
@@ -26,7 +26,7 @@ $request = new Google_Service_AnalyticsReporting_SearchUserActivityRequest([
 		'type' => 'CLIENT_ID',
 		'userId' => '1085142703.1550250382',
 	],
-	'viewId' => '199478891'
+	'viewId' => $views['all_web_data'],
 ]);
 $response = $analytics->userActivity->search($request);
 
