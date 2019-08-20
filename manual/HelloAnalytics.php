@@ -13,6 +13,7 @@ $views = [
 ];
 
 $KEY_FILE_LOCATION = __DIR__ . '/../'. $_ENV['GOOGLE_API_FILE'];
+echo $KEY_FILE_LOCATION.PHP_EOL;
 
 // Create and configure a new client object.
 $client = new Google_Client();
