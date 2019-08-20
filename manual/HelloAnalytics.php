@@ -36,7 +36,7 @@ $response = $analytics->userActivity->search($request);
 	<title>GA Test</title>
 	<style>
 		.scrollbox {
-			max-height: 200px
+			max-height: 200px;
 			overflow: auto;
 		}
 	</style>
