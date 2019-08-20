@@ -22,10 +22,12 @@ $client->setScopes(['https://www.googleapis.com/auth/analytics.readonly']);
 $analytics = new Google_Service_AnalyticsReporting($client);
 
 $request = new Google_Service_AnalyticsReporting_SearchUserActivityRequest([
+	/*
 	'user' => [
 		'type' => 'CLIENT_ID',
 		'userId' => $_REQUEST['id'] ?? '1254926881.1562696173',
 	],
+	*/
 	'viewId' => $views['all_web_data'],
 	'dateRange' => [
 		'startDate' => '2019-07-09',
