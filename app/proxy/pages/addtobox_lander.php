@@ -26,14 +26,13 @@ foreach($charges as $charge){
 	}
 }
 
-print_r($add_to_charge);
 if(!empty($add_to_charge)){
 	$variant = get_variant($db, $_REQUEST['v']);
 	$product = get_product($db, $variant['shopify_product_id']);
 	$subscription_price = round($variant['price']*.9);
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
 
-	$res = $sc->post('/addresses/'.$add_to_charge['address_id'].'/onetimes', [
+	$res = $rc->post('/addresses/'.$add_to_charge['address_id'].'/onetimes', [
 		'next_charge_scheduled_at' => $charge['scheduled_at'],
 		'price' => $subscription_price,
 		'quantity' => 1,
@@ -41,9 +40,9 @@ if(!empty($add_to_charge)){
 		'product_title' => $product['title'],
 		'variant_title' => $variant['title'],
 	]);
-	var_dump($res);
 }
 header('Content-Type: application/liquid');
+echo "<!-- ".print_r($res, true)." -->";
 ?>
 
 {% assign portal_page = 'lander-addtobox' %}
