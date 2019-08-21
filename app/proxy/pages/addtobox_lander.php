@@ -25,3 +25,11 @@ header('Content-Type: application/liquid');
 		<a href="/account" class="action_button">Login to My Account</a>
 	</div>
 </div>
+<style>
+	.promo_banner, .header {
+		position: fixed;
+	}
+	.promo_banner ~ .header {
+		top: 60px !important;
+	}
+</style>
