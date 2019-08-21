@@ -6,6 +6,7 @@ $variant = get_variant($db, $_REQUEST['v']);
 $product = get_product($db, $variant['product_id']);
 $subscription_price = round($variant['price']*.9);
 
+header('Content-Type: application/liquid');
 ?>
 
 {% assign portal_page = 'lander-addtobox' %}
