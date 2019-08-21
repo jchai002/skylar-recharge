@@ -11,23 +11,25 @@ if(strpos($_REQUEST['c'], '@') !== false){
 		'shopify_customer_id' => $_REQUEST['c'],
 	]);
 }
-$customer = $res['customers'][0];
-$res = $rc->get('/charges', [
-	'customer_id' => $customer['id'],
-	'status' => 'QUEUED',
-]);
-$charges = $res['charges'];
-usort($charges, function ($item1, $item2) {
-	if (strtotime($item1['scheduled_at']) == strtotime($item2['scheduled_at'])) return 0;
-	return strtotime($item1['scheduled_at']) < strtotime($item2['scheduled_at']) ? -1 : 1;
-});
+if(!empty($res['customers'])){
+	$customer = $res['customers'][0];
+	$res = $rc->get('/charges', [
+		'customer_id' => $customer['id'],
+		'status' => 'QUEUED',
+	]);
+	$charges = $res['charges'];
+	usort($charges, function ($item1, $item2) {
+		if (strtotime($item1['scheduled_at']) == strtotime($item2['scheduled_at'])) return 0;
+		return strtotime($item1['scheduled_at']) < strtotime($item2['scheduled_at']) ? -1 : 1;
+	});
 
-$add_to_charge = $charges[0];
-foreach($charges as $charge){
-	foreach($charge['line_items'] as $line_item){
-		if(is_scent_club_any(get_product($db, $line_item['shopify_product_id']))){
-			$add_to_charge = $charge;
-			break 2;
+	$add_to_charge = $charges[0];
+	foreach($charges as $charge){
+		foreach($charge['line_items'] as $line_item){
+			if(is_scent_club_any(get_product($db, $line_item['shopify_product_id']))){
+				$add_to_charge = $charge;
+				break 2;
+			}
 		}
 	}
 }
