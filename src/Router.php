@@ -20,6 +20,9 @@ class Router {
 			if(empty($pattern)){
 				continue;
 			}
+			if($uri == 'add' && $pattern == '/add$/i'){
+				var_dump(preg_match($pattern, $uri));
+			}
 			if (preg_match($pattern, $uri, $params) === 1) {
 				array_shift($params);
 				$res = call_user_func_array($callback, array_values($params));
