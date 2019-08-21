@@ -26,6 +26,7 @@ foreach($charges as $charge){
 	}
 }
 
+print_r($add_to_charge);
 if(!empty($add_to_charge)){
 	$variant = get_variant($db, $_REQUEST['v']);
 	$product = get_product($db, $variant['shopify_product_id']);
