@@ -19,7 +19,7 @@ header('Content-Type: application/liquid');
 		<img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center', scale: 2 }} 2x" />
 	</div>
 	<div class="sc-lander-note">
-		This item will ship with your <?=$month?> box. <br />Need to make more changes to your box? Log into your account now.
+		This item will ship with your <?=$month?> box. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
 	</div>
 	<div class="sc-lander-button">
 		<a href="/account" class="action_button">Login to My Account</a>
