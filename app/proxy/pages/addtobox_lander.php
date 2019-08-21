@@ -26,10 +26,10 @@ header('Content-Type: application/liquid');
 	</div>
 </div>
 <style>
-	.promo_banner, .header {
-		position: fixed;
+	.promo_banner {
+		display: none;
 	}
-	.promo_banner ~ .header {
-		top: 60px !important;
+	.header {
+		position: fixed;
 	}
 </style>
