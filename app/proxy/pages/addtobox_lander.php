@@ -2,9 +2,15 @@
 global $db, $sc, $rc;
 
 // Actually add to box
-$res = $rc->get('/customers', [
-	'shopify_customer_id' => $_REQUEST['c'],
-]);
+if(strpos($_REQUEST['c'], '@') !== false){
+	$res = $rc->get('/customers', [
+		'email' => $_REQUEST['c'],
+	]);
+} else {
+	$res = $rc->get('/customers', [
+		'shopify_customer_id' => $_REQUEST['c'],
+	]);
+}
 $customer = $res['customers'][0];
 $res = $rc->get('/charges', [
 	'customer_id' => $customer['id'],
