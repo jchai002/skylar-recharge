@@ -5,6 +5,7 @@ global $db, $sc, $rc;
 $variant = get_variant($db, $_REQUEST['v']);
 $product = get_product($db, $variant['shopify_product_id']);
 $subscription_price = round($variant['price']*.9);
+$month = "September";
 
 header('Content-Type: application/liquid');
 ?>
@@ -18,7 +19,7 @@ header('Content-Type: application/liquid');
 		<img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '280x' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '560x' }} 2x" />
 	</div>
 	<div class="sc-lander-note">
-		This item will ship with your September box. <br />Need to make more changes to your box? Log into your account now.
+		This item will ship with your <?=$month?> box. <br />Need to make more changes to your box? Log into your account now.
 	</div>
 	<div class="sc-lander-button">
 		<a href="/account" class="action_button">Login to My Account</a>
