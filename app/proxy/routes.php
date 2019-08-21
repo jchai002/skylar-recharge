@@ -46,9 +46,7 @@ $router->route('/staging$/i', function() {
 	return true;
 });
 $router->route('/quick-add$/i', function() {
-	require_customer_id(function(){
-		require('pages/addtobox_lander.php');
-	});
+	require('pages/addtobox_lander.php');
 	return true;
 });
 
