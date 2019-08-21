@@ -40,10 +40,9 @@ if(!empty($add_to_charge)){
 		'product_title' => $product['title'],
 		'variant_title' => $variant['title'],
 	]);
-
+	var_dump($res);
 }
 header('Content-Type: application/liquid');
-var_dump($res);
 ?>
 
 {% assign portal_page = 'lander-addtobox' %}
