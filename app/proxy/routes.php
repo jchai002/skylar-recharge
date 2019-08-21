@@ -49,6 +49,10 @@ $router->route('/quick-add$/i', function() {
 	require('pages/addtobox_lander.php');
 	return true;
 });
+$router->route('/add$/i', function() {
+	require('pages/addtobox_lander.php');
+	return true;
+});
 
 $router->route('/check-invalid-email$/i', function() use(&$json_output) {
 	$json_output = true;
