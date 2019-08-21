@@ -43,7 +43,7 @@ if(!empty($add_to_charge)){
 
 }
 header('Content-Type: application/liquid');
-print_r($res);
+var_dump($res);
 ?>
 
 {% assign portal_page = 'lander-addtobox' %}
