@@ -4,7 +4,7 @@ global $db, $sc, $rc;
 // Actually add to box
 $variant = get_variant($db, $_REQUEST['v']);
 $product = get_product($db, $variant['product_id']);
-$subscription_price = round($variant*.9);
+$subscription_price = round($variant['price']*.9);
 
 ?>
 
