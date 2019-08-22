@@ -80,8 +80,8 @@ function log_event(PDO $db, $category='', $value='', $action='', $value2='', $no
 	$stmt->execute([
 		'category' => $category,
 		'action' => $action,
-		'value' => $value,
-		'value2' => $value2,
+		'value' => is_array($value) ? json_encode($value) : $value,
+		'value2' => is_array($value2) ? json_encode($value2) : $value2,
 		'note' => $note,
 		'actor' => $actor,
 		'date_created' => date('Y-m-d H:i:s'),
