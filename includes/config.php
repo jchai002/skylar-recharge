@@ -757,6 +757,18 @@ function get_month_by_offset($offset, $now = null){
 	}
 	return strtotime(date('Y-m', $now).'-01');
 }
+function get_subscription_price($product, $variant){
+	if(is_scent_club_any($product)){
+		return $variant['price'];
+	}
+	if($product['type'] == 'Body Bundle'){
+		return $variant['price'];
+	}
+	if($product['type'] == 'Body Wash' || $product['type'] == 'Body Lotion'){
+		return round($variant['price']*.9);
+	}
+	return round($variant['price']*.9, 2);
+}
 // Start Scent Club
 function sc_is_address_in_blackout(PDO $db, RechargeClient $rc, $address_id){
 	$next_month_scent = sc_get_monthly_scent($db, get_next_month());
