@@ -37,17 +37,23 @@ if(!empty($res['customers'])){
 if(!empty($add_to_charge)){
 	$variant = get_variant($db, $_REQUEST['v']);
 	$product = get_product($db, $variant['shopify_product_id']);
+	$price = get_subscription_price($product, $variant);
 	$subscription_price = round($variant['price']*.9);
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
 
-	$res = $rc->post('/addresses/'.$add_to_charge['address_id'].'/onetimes', [
-		'next_charge_scheduled_at' => $charge['scheduled_at'],
-		'price' => $subscription_price,
+	$res = $rc->post('/subscriptions', [
+		'address_id' => $add_to_charge['address_id'],
+		'next_charge_scheduled_at' => $add_to_charge['scheduled_at'],
+		'price' => $price,
 		'quantity' => 1,
 		'shopify_variant_id' => $variant['shopify_id'],
 		'product_title' => $product['title'],
 		'variant_title' => $variant['title'],
+		'order_interval_unit' => 'month',
+		'order_interval_frequency' => '1',
+		'charge_interval_frequency' => '1',
 	]);
+	log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, '', 'customer');
 }
 header('Content-Type: application/liquid');
 echo "<!-- ".print_r($res, true)." -->";
@@ -58,20 +64,22 @@ echo "<!-- ".print_r($res, true)." -->";
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container sc-portal-lander">
 	<?php if(!empty($add_to_charge) && !empty($res['onetime'])){ ?>
 	<div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
-	<div class="sc-lander-price"><span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($subscription_price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span></div>
+	<div class="sc-lander-price"><span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span></div>
 	<div class="sc-lander-image">
 		<img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center', scale: 2 }} 2x" />
 	</div>
 	<div class="sc-lander-note">
-		This item will ship with your <?=$month?> box. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+		This item will ship each month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
 	</div>
-	<?php } else { ?>
+	<?php } else {
+		log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, 'Failed and saw error', 'customer');
+		?>
 		<div class="sc-lander-note">
 			Sorry, we were unable to locate your account! Please log in to add your item:
 		</div>
 	<?php } ?>
 	<div class="sc-lander-button">
-		<a href="/account" class="action_button">Login to My Account</a>
+		<a href="/tools/skylar/schedule" class="action_button">Login to My Account</a>
 	</div>
 </div>
 <style>
