@@ -49,10 +49,6 @@ if(!empty($res['charge'])){
 			}
 		}
 //		$res_all[] = sc_calculate_next_charge_date($db, $rc, $charge['address_id']); // Was resetting back to 1st because order_day_of_month isn't in rc
-		$res_all[] = sc_get_main_subscription($db, $rc, [
-			'address_id' => $charge['address_id'],
-			'status' => 'ACTIVE',
-		]);
 	} else {
 		foreach($charge['line_items'] as $line_item){
 			$res_all[] = $res = $rc->get('/subscriptions/'.$line_item['subscription_id']);
