@@ -1290,8 +1290,8 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 		// If we've made it this far, there is no SC-related stuff scheduled for this offset
 		break;
 	}
-	$res_all[] = sc_get_main_subscription($db, $rc, [
-		'address_id' => $charge['address_id'],
+	$main_sub = sc_get_main_subscription($db, $rc, [
+		'address_id' => $address_id,
 		'status' => 'ACTIVE',
 	]);
 
