@@ -11,7 +11,11 @@ if(strpos($_REQUEST['c'], '@') !== false){
 		'shopify_customer_id' => $_REQUEST['c'],
 	]);
 }
+
+
+
 if(!empty($res['customers'])){
+	$customer = $res['customers'][0];
 	$customer = $res['customers'][0];
 	$res = $rc->get('/charges', [
 		'customer_id' => $customer['id'],
@@ -41,19 +45,38 @@ if(!empty($add_to_charge)){
 	$subscription_price = round($variant['price']*.9);
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
 
-	$res = $rc->post('/subscriptions', [
-		'address_id' => $add_to_charge['address_id'],
-		'next_charge_scheduled_at' => $add_to_charge['scheduled_at'],
-		'price' => $price,
-		'quantity' => 1,
-		'shopify_variant_id' => $variant['shopify_id'],
-		'product_title' => $product['title'],
-		'variant_title' => $variant['title'],
-		'order_interval_unit' => 'month',
-		'order_interval_frequency' => '1',
-		'charge_interval_frequency' => '1',
+    // Check if they already have this product in a sub
+        $stmt = $db->prepare("SELECT * FROM rc_subscriptions rcs
+    LEFT JOIN rc_addresses rca ON rcs.address_id=rca.id
+    LEFT JOIN rc_customers rcc ON rca.rc_customer_id=rcc.id
+    LEFT JOIN customers c ON rcc.customer_id=c.id
+    WHERE (rcs.status = 'ONETIME' OR rcs.status = 'ACTIVE')
+    AND rcs.deleted_at IS NULL
+    AND rcs.cancelled_at IS NULL
+    AND c.shopify_id=:shopify_customer_id
+    AND rcs.variant_id=:variant_id");
+
+	$stmt->execute([
+		'shopify_customer_id' => $customer['id'],
+		'variant_id' => $variant['id'],
 	]);
-	log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, '', 'customer');
+	if($stmt->rowCount() < 1){
+	    $res = [['subscription'=>$stmt->fetch()]];
+    } else {
+		$res = $rc->post('/subscriptions', [
+			'address_id' => $add_to_charge['address_id'],
+			'next_charge_scheduled_at' => $add_to_charge['scheduled_at'],
+			'price' => $price,
+			'quantity' => 1,
+			'shopify_variant_id' => $variant['shopify_id'],
+			'product_title' => $product['title'],
+			'variant_title' => $variant['title'],
+			'order_interval_unit' => 'month',
+			'order_interval_frequency' => '1',
+			'charge_interval_frequency' => '1',
+		]);
+		log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, '', 'customer');
+    }
 }
 header('Content-Type: application/liquid');
 echo "<!-- ".print_r($res, true)." -->";
