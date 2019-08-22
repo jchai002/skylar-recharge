@@ -62,7 +62,7 @@ echo "<!-- ".print_r($res, true)." -->";
 {% assign portal_page = 'lander-addtobox' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container sc-portal-lander">
-	<?php if(!empty($add_to_charge) && !empty($res['onetime'])){ ?>
+	<?php if(!empty($add_to_charge) && !empty($res['subscription'])){ ?>
 	<div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
 	<div class="sc-lander-price"><span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span></div>
 	<div class="sc-lander-image">
