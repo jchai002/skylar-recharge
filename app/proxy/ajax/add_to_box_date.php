@@ -9,29 +9,12 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 	'shopify_customer_id' => $_REQUEST['c'],
 ]);
 
-$stmt = $db->prepare("SELECT p.shopify_id FROM skylar.products p
-LEFT JOIN variants v ON p.id=v.product_id
-WHERE v.shopify_id=?");
-$stmt->execute([$_REQUEST['variant_id']]);
-
-$product_id = $stmt->fetchColumn();
-
-$product = $sc->get("/admin/products/$product_id.json");
-$product['type'] = $product['product_type'];
-foreach($product['variants'] as $variant){
-	if($variant['id'] == $_REQUEST['variant_id']){
-		break;
-	}
-}
+$variant = get_variant($db, $_REQUEST['variant_id']);
+$product = get_product($db, $variant['product_id']);
 
 $frequency = empty($_REQUEST['frequency']) ? 'onetime' : $_REQUEST['frequency'];
 
-if(is_scent_club_month(get_product($db, $product_id))){
-	$price = $variant['price'];
-	$product['title'] = 'Skylar Scent Club';
-} else {
-	$price = round($variant['price']*.9, 2);
-}
+$price = get_subscription_price($product, $variant);
 $res_id = false;
 if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/onetimes', [
@@ -40,7 +23,7 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'product_title' => $product['title'],
 		'price' => $price,
 		'quantity' => 1,
-		'shopify_variant_id' => $variant['id'],
+		'shopify_variant_id' => $variant['shopify_id'],
 	]);
 	$res_id = $res['onetime']['id'];
 } else {
@@ -50,7 +33,7 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'product_title' => $product['title'],
 		'price' => $price,
 		'quantity' => 1,
-		'shopify_variant_id' => $variant['id'],
+		'shopify_variant_id' => $variant['shopify_id'],
 		'order_interval_unit' => 'month',
 		'order_interval_frequency' => $frequency,
 		'charge_interval_frequency' => $frequency,
