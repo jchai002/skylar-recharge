@@ -1291,7 +1291,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id)
 		break;
 	}
 	$main_sub = sc_get_main_subscription($db, $rc, [
-		'address_id' => $address_id,
+		'address_id' => $charge['address_id'],
 		'status' => 'ACTIVE',
 	]);
 
