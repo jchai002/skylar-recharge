@@ -49,6 +49,11 @@ if(!empty($res['charge'])){
 			}
 		}
 //		$res_all[] = sc_calculate_next_charge_date($db, $rc, $charge['address_id']); // Was resetting back to 1st
+
+		$res_all[] = ['main_sub' => sc_get_main_subscription($db, $rc, [
+			'address_id' => $address_id,
+			'status' => 'ACTIVE',
+		])];
 	} else {
 		foreach($charge['line_items'] as $line_item){
 			$res_all[] = $res = $rc->get('/subscriptions/'.$line_item['subscription_id']);
