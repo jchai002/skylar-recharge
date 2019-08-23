@@ -73,7 +73,7 @@ if(!empty($add_to_charge)){
 			'order_interval_frequency' => '1',
 			'charge_interval_frequency' => '1',
 		]);
-		if(!empty($res['subescription'])){
+		if(!empty($res['subscription'])){
 		    insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
         }
 		log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, '', 'customer');
