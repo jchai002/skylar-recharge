@@ -60,7 +60,7 @@ if(!empty($add_to_charge)){
 		'shopify_customer_id' => $customer['id'],
 		'variant_id' => $variant['id'],
 	]);
-	if($stmt->rowCount() < 1){
+	if($stmt->rowCount() > 1){
 	    $res = ['subscription'=>$stmt->fetch()];
     } else {
 		$res = $rc->post('/subscriptions', [
