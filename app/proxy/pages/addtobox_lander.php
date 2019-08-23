@@ -47,19 +47,15 @@ if(!empty($add_to_charge)){
     // Check if they already have this product in a sub
         $stmt = $db->prepare("SELECT * FROM rc_subscriptions rcs
     LEFT JOIN rc_addresses rca ON rcs.address_id=rca.id
+    LEFT JOIN rc_customers rcc ON rca.rc_customer_id=rcc.id
     WHERE (rcs.status = 'ONETIME' OR rcs.status = 'ACTIVE')
     AND rcs.deleted_at IS NULL
     AND rcs.cancelled_at IS NULL
-    AND rca.rc_customer_id=:rc_customer_id
+    AND rcc.recharge_id=:rc_customer_id
     AND rcs.variant_id=:variant_id");
 
 	$stmt->execute([
 		'rc_customer_id' => $customer['id'],
-		'variant_id' => $variant['id'],
-	]);
-	$stmt->debugDumpParams();
-	print_r([
-		'shopify_customer_id' => $customer['id'],
 		'variant_id' => $variant['id'],
 	]);
 	if($stmt->rowCount() > 0){
