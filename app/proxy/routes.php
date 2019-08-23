@@ -324,7 +324,7 @@ function require_customer_id($callback_if_true){
 {% layout 'scredirect' %}
 {% if customer == nil %}
 <script>
-    location.href = '/account/login?next='+location.pathname;
+    location.href = '/account/login?next='+location.pathname+location.search;
 </script>
 {% else %}
 <script>
@@ -374,7 +374,7 @@ function require_customer_id($callback_if_true){
 {% if customer == nil %}
 	{% layout 'scredirect' %}
 	<script>
-		location.href = '/account/login?next='+location.pathname;
+		location.href = '/account/login?next='+location.pathname+location.search;
 	</script>
 {% elsif customer.id == $customer_id or admin_customers contains customer.id %}
 	{% assign is_alias = customer.id != $customer_id %}
