@@ -61,6 +61,10 @@ if(!empty($add_to_charge)){
 		'variant_id' => $variant['id'],
 	]);
 	$stmt->debugDumpParams();
+	print_r([
+		'shopify_customer_id' => $customer['id'],
+		'variant_id' => $variant['id'],
+	]);
 	if($stmt->rowCount() > 0){
 	    $res = ['subscription'=>$stmt->fetch()];
     } else {
