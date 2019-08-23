@@ -16,7 +16,6 @@ if(strpos($_REQUEST['c'], '@') !== false){
 
 if(!empty($res['customers'])){
 	$customer = $res['customers'][0];
-	$customer = $res['customers'][0];
 	$res = $rc->get('/charges', [
 		'customer_id' => $customer['id'],
 		'status' => 'QUEUED',
@@ -48,16 +47,14 @@ if(!empty($add_to_charge)){
     // Check if they already have this product in a sub
         $stmt = $db->prepare("SELECT * FROM rc_subscriptions rcs
     LEFT JOIN rc_addresses rca ON rcs.address_id=rca.id
-    LEFT JOIN rc_customers rcc ON rca.rc_customer_id=rcc.id
-    LEFT JOIN customers c ON rcc.customer_id=c.id
     WHERE (rcs.status = 'ONETIME' OR rcs.status = 'ACTIVE')
     AND rcs.deleted_at IS NULL
     AND rcs.cancelled_at IS NULL
-    AND c.shopify_id=:shopify_customer_id
+    AND rca.rc_customer_id=:rc_customer_id
     AND rcs.variant_id=:variant_id");
 
 	$stmt->execute([
-		'shopify_customer_id' => $customer['id'],
+		'rc_customer_id' => $customer['id'],
 		'variant_id' => $variant['id'],
 	]);
 	$stmt->debugDumpParams();
