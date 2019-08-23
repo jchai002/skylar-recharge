@@ -61,7 +61,7 @@ if(!empty($add_to_charge)){
 		'variant_id' => $variant['id'],
 	]);
 	if($stmt->rowCount() < 1){
-	    $res = [['subscription'=>$stmt->fetch()]];
+	    $res = ['subscription'=>$stmt->fetch()];
     } else {
 		$res = $rc->post('/subscriptions', [
 			'address_id' => $add_to_charge['address_id'],
