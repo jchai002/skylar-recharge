@@ -93,7 +93,7 @@ echo "<!-- ".print_r($res, true)." -->";
                 <span>Total:</span> <span class="was_price">$56</span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save over 22%!</span>
             </div>
             <div class="sc-lander-image">
-                <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', scale: 2 }} 2x" />
+                <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
             </div>
     <?php } else { ?>
             <div class="sc-lander-price">
