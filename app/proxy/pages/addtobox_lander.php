@@ -88,7 +88,15 @@ echo "<!-- ".print_r($res, true)." -->";
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container sc-portal-lander">
 	<?php if(!empty($add_to_charge) && !empty($res['subscription'])){ ?>
 	<div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
-	<div class="sc-lander-price"><span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span></div>
+    <?php if($product['type'] == 'Body Bundle'){ ?>
+	<div class="sc-lander-price">
+        <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span>
+    </div>
+    <?php } else { ?>
+            <div class="sc-lander-price">
+                <span>Total:</span> <span class="was_price">$56</span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save over 22%!</span>
+            </div>
+    <?php } ?>
 	<div class="sc-lander-image">
 		<img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center', scale: 2 }} 2x" />
 	</div>
