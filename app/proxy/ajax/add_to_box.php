@@ -24,7 +24,7 @@ if(empty($_REQUEST['charge_id'])){
 //var_dump($charge);
 $sc = new ShopifyClient();
 $variant = get_variant($db, $_REQUEST['variant_id']);
-$product = get_product($db, $variant['product_id']);
+$product = get_product($db, $variant['shopify_product_id']);
 
 $frequency = empty($_REQUEST['frequency']) ? 'onetime' : $_REQUEST['frequency'];
 $res_id = false;

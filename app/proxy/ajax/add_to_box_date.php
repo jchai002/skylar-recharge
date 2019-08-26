@@ -10,7 +10,7 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 ]);
 
 $variant = get_variant($db, $_REQUEST['variant_id']);
-$product = get_product($db, $variant['product_id']);
+$product = get_product($db, $variant['shopify_product_id']);
 
 $frequency = empty($_REQUEST['frequency']) ? 'onetime' : $_REQUEST['frequency'];
 
