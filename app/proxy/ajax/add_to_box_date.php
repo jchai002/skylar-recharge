@@ -54,6 +54,6 @@ if(!empty($res['error'])){
 		'id' => $res_id,
 		'res' => $res,
 		'product' => $product,
-		'sc_month' => is_scent_club_month(get_product($db, $product_id)),
+		'sc_month' => is_scent_club_month($product),
 	]);
 }
