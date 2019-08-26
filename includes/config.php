@@ -757,14 +757,14 @@ function get_month_by_offset($offset, $now = null){
 	}
 	return strtotime(date('Y-m', $now).'-01');
 }
-function get_subscription_price($product, $variant){
+function get_subscription_price($product, $variant, $is_sc_member=false){
 	if(is_scent_club_any($product)){
 		return $variant['price'];
 	}
 	if($product['type'] == 'Body Bundle'){
 		return $variant['price'];
 	}
-	if($product['type'] == 'Body Wash' || $product['type'] == 'Body Lotion'){
+	if(strpos($product['type'], 'Body') !== false){
 		return round($variant['price']*.9);
 	}
 	return round($variant['price']*.9, 2);
