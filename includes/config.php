@@ -665,6 +665,10 @@ function insert_update_rc_subscription(PDO $db, $recharge_subscription, Recharge
 	$stmt = $db->prepare("INSERT INTO rc_subscriptions (recharge_id, address_id, product_title, variant_title, price, quantity, status, product_id, variant_id, order_interval_unit, order_interval_frequency, charge_interval_frequency, order_day_of_month, order_day_of_week, properties, expire_after_charges, cancellation_reason, max_retries_reached, next_charge_scheduled_at, created_at, updated_at, cancelled_at) VALUES (:recharge_id, :address_id, :product_title, :variant_title, :price, :quantity, :status, :product_id, :variant_id, :order_interval_unit, :order_interval_frequency, :charge_interval_frequency, :order_day_of_month, :order_day_of_week, :properties, :expire_after_charges, :cancellation_reason, :max_retries_reached, :next_charge_scheduled_at, :created_at, :updated_at, :cancelled_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), address_id=:address_id, product_title=:product_title, variant_title=:variant_title, price=:price, quantity=:quantity, status=:status, product_id=:product_id, variant_id=:variant_id, order_interval_unit=:order_interval_unit, order_interval_frequency=:order_interval_frequency, charge_interval_frequency=:charge_interval_frequency, order_day_of_month=:order_day_of_month, order_day_of_week=:order_day_of_week, properties=:properties, expire_after_charges=:expire_after_charges, cancellation_reason=:cancellation_reason, max_retries_reached=:max_retries_reached, next_charge_scheduled_at=:next_charge_scheduled_at, created_at=:created_at, updated_at=:updated_at, cancelled_at=:cancelled_at");
 	$rc_address = get_rc_address($db, $recharge_subscription['address_id'], $rc, $sc);
 	$variant = get_variant($db, $recharge_subscription['shopify_variant_id']);
+	$cancelled_at = $recharge_subscription['cancelled_at'] ?? null;
+	if($cancelled_at == null && $recharge_subscription['status'] == 'CANCELLED'){
+		$cancelled_at = $recharge_subscription['updated_at'];
+	}
 	$stmt->execute([
 		'recharge_id' => $recharge_subscription['id'],
 		'address_id' => $rc_address['id'],
@@ -687,7 +691,7 @@ function insert_update_rc_subscription(PDO $db, $recharge_subscription, Recharge
 		'next_charge_scheduled_at' => date('Y-m-d', strtotime($recharge_subscription['next_charge_scheduled_at'])),
 		'created_at' => $recharge_subscription['created_at'],
 		'updated_at' => $recharge_subscription['updated_at'],
-		'cancelled_at' => $recharge_subscription['cancelled_at'] ?? null,
+		'cancelled_at' => $cancelled_at,
 	]);
 	return $db->lastInsertId();
 }
