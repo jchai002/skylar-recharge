@@ -46,6 +46,14 @@ function insert_update_tracker(PDO $db, $tracker){
 			'source' => $detail['source'],
 			'created_at' => $detail['datetime'],
 		]);
+		if($detail['status'] == 'delivered'){
+			$stmt_update_fulfillment = $db->prepare("UPDATE fulfillments SET delivered_at = :delivered_at WHERE tracking_number = :tracking_number AND delivered_at IS NULL");
+			$stmt_update_fulfillment->execute([
+				'delivered_at' => $detail['datetime'],
+				'tracking_number' => $tracker['tracking_code'],
+			]);
+		}
 	}
+
 	return $tracker_id;
 }
