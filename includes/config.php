@@ -80,8 +80,8 @@ function log_event(PDO $db, $category='', $value='', $action='', $value2='', $no
 	$stmt->execute([
 		'category' => $category,
 		'action' => $action,
-		'value' => $value,
-		'value2' => $value2,
+		'value' => is_array($value) ? json_encode($value) : $value,
+		'value2' => is_array($value2) ? json_encode($value2) : $value2,
 		'note' => $note,
 		'actor' => $actor,
 		'date_created' => date('Y-m-d H:i:s'),
@@ -756,6 +756,18 @@ function get_month_by_offset($offset, $now = null){
 		return $now;
 	}
 	return strtotime(date('Y-m', $now).'-01');
+}
+function get_subscription_price($product, $variant, $is_sc_member=false){
+	if(is_scent_club_any($product)){
+		return $variant['price'];
+	}
+	if($product['type'] == 'Body Bundle'){
+		return $variant['price'];
+	}
+	if(strpos($product['type'], 'Body') !== false){
+		return round($variant['price']*.9);
+	}
+	return round($variant['price']*.9, 2);
 }
 // Start Scent Club
 function sc_is_address_in_blackout(PDO $db, RechargeClient $rc, $address_id){

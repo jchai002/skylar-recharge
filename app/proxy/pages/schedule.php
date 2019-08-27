@@ -64,6 +64,7 @@ print_r($schedule->get());
             <div class="sc-upcoming-container">
                 <?php
                     $shipment_index = -1;
+                    $sc_shipment_index = -1;
                     foreach($schedule->get() as $shipment_list){
                         $shipment_index++;
                         foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
@@ -72,6 +73,7 @@ print_r($schedule->get());
 							$ac_delivered = false;
 							$ac_allow_pushback = true;
 							$ac_pushed_up = false;
+							$has_sc = false;
                             foreach($upcoming_shipment['items'] as $item){
                                 if(is_ac_followup_lineitem($item)){
                                     $has_ac_followup = true;
@@ -86,6 +88,10 @@ print_r($schedule->get());
                                         $ac_delivered = true;
                                     }
                                 }
+                                if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
+                                    $sc_shipment_index++;
+									$has_sc = true;
+                                }
                             }
                             ?>
                             <div class="sc-upcoming-shipment">
@@ -97,7 +103,7 @@ print_r($schedule->get());
                                         <span class="sc-box-date ac-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
                                     <?php } else if($has_ac_followup){ ?>
                                         <span class="sc-box-date"><?=date('F j', $shipment_list['ship_date_time']) ?></span>
-                                    <?php } else if($shipment_index == 0){ ?>
+                                    <?php } else if($shipment_index == 0 || ($has_sc && $sc_shipment_index == 0)){ ?>
                                         <span class="sc-box-date sc-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
                                     <?php } else { ?>
                                         <span class="sc-box-date"><?=date('F j', $shipment_list['ship_date_time']) ?></span>
