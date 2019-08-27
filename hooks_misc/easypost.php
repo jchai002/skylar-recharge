@@ -18,6 +18,7 @@ if(!empty($_REQUEST['code'])){
 	$tracker = $event['result'];
 }
 
+print_r($tracker);
 echo insert_update_tracker($db, $tracker);
 
 
