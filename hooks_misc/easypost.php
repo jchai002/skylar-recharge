@@ -5,7 +5,6 @@ require_once(__DIR__.'/../includes/config.php');
 if(!empty($_REQUEST['code'])){
 	$tracker = \EasyPost\Tracker::create([
 		'tracking_code' => $_REQUEST['code'],
-		'carrier' => $_REQUEST['code'],
 	]);
 } else {
 	$data = file_get_contents('php://input');
