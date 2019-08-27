@@ -41,7 +41,7 @@ $router->route('/schedule/i', function() {
 });
 $router->route('/staging$/i', function() {
 	require_customer_id(function(){
-		require('pages/staging.php');
+		require('pages/subscriptions.php');
 	});
 	return true;
 });
