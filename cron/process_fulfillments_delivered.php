@@ -2,10 +2,11 @@
 require_once(__DIR__.'/../includes/config.php');
 
 $rc = new RechargeClient();
+$sc = new ShopifyClient();
 
 $stmt = $db->prepare("SELECT * FROM fulfillments WHERE delivered_at >= ? AND delivery_processed_at IS NULL");
-//$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
-$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*14))]);
+$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
+//$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*30))]);
 $fulfillments = $stmt->fetchAll();
 
 
@@ -35,14 +36,32 @@ foreach($fulfillments as $fulfillment){
 		echo "Has AC Order... ";
 		// Has AC order, update ship date
 		$subscription_id = $stmt_get_subscription_id->fetchColumn();
+		$subscription = get_rc_subscription($db, $subscription_id, $rc, $sc);
+		if(!empty($subscription['cancelled_at']) || !empty($subscription['deleted_at'])){
+			echo "Subscription Deleted/Cancelled, skipping".PHP_EOL;
+			continue;
+		}
+		if(strtotime($subscription['next_charge_scheduled_at']) < time()){
+			echo "Subscription already dropped, skipping".PHP_EOL;
+			continue;
+		}
+		$move_to_time = strtotime('+14 days', strtotime($fulfillment['delivered_at']));
+		if($move_to_time < time()){
+			$move_to_time = strtotime('tomorrow');
+		}
 		$res = $rc->put('/onetimes/'.$subscription_id, [
-			'next_charge_scheduled_at' => date('Y-m-d', offset_date_skip_weekend(strtotime('+14 days', strtotime($fulfillment['delivered_at'])))),
+			'next_charge_scheduled_at' => date('Y-m-d', offset_date_skip_weekend($move_to_time)),
 			'properties' => [
 				'_ac_product' => $line_item['product_id'],
 				'_ac_delivered' => 1,
 			]
 		]);
-		echo "Moved onetime id ".$subscription_id." to ".$res['onetime']['next_charge_scheduled_at'].PHP_EOL;
+		if(empty($res['onetime'])){
+			echo "Error! ".print_r($res, true).PHP_EOL;
+			sleep(10);
+		} else {
+			echo "Moved onetime id ".$subscription_id." to ".$res['onetime']['next_charge_scheduled_at'].PHP_EOL;
+		}
 	}
 
 
