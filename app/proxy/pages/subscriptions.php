@@ -680,6 +680,9 @@ $shipment_list = $schedule->get()[0];
         }
     });
     function bind_events(){
+        $('.portal-item-edit').unbind().click(function(e){
+            $(this).closest('.portal-item').find('.portal-item-edit-container').slideToggle();
+        });
         $('.sc-edit-date').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
             AccountController.show_date_change();
