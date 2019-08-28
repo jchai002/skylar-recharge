@@ -229,19 +229,19 @@ $shipment_list = $schedule->get()[0];
                         </div>
                         <div>
                             <?php if(is_ac_followup_lineitem($item)){ ?>
-                                <div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
-                                {% if box_variant.title != 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
+                                <div class="portal-item-detail-label"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
+                                {% if box_variant.title != 'Default Title' %}<div class="portal-item-detail-value">{{ box_variant.title }}</div>{% endif %}
                             <?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
-                                <div class="sc-item-title">Skylar Scent Club</div>
-                                <div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
+                                <div class="portal-item-detail-label">Skylar Scent Club</div>
+                                <div class="portal-item-detail-value">{{ box_product.variants.first.title }}</div>
                             <?php } else if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
-                                <div class="sc-item-title">Skylar Scent Club</div>
-                                <div class="sc-item-subtitle"></div>
+                                <div class="portal-item-detail-label">Skylar Scent Club</div>
+                                <div class="portal-item-detail-value"></div>
                             <?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
-                                <div class="sc-item-title"><?=$item['product_title']?></div>
-                                <div class="sc-item-subtitle"><?=$item['variant_title']?></div>
+                                <div class="portal-item-detail-label"><?=$item['product_title']?></div>
+                                <div class="portal-item-detail-value"><?=$item['variant_title']?></div>
                             <?php } else { ?>
-                                <div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
+                                <div class="portal-item-detail-label"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
                             <?php } ?>
                         </div>
                         <div>
