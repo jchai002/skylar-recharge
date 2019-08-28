@@ -267,6 +267,9 @@ $shipment_list = $schedule->get()[0];
                             <div class="portal-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
                         </div>
                     </div>
+                    <div class="portal-item-actions">
+                        <div class="action_button add-and-save">Add to this box and save!</div>
+                    </div>
                 </div>
             <?php } ?>
         </div>
