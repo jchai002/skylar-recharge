@@ -208,9 +208,9 @@ $shipment_list = $schedule->get()[0];
                 {% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
                 {% assign box_variant = box_product.variants.first %}
                 {% for svariant in box_product.variants %}
-                {% if svariant.id == picked_variant_id %}
-                {% assign box_variant = svariant %}
-                {% endif %}
+                    {% if svariant.id == picked_variant_id %}
+                        {% assign box_variant = svariant %}
+                    {% endif %}
                 {% endfor %}
                 <div class="portal-item">
                     <div class="portal-item-edit">Edit</div>
@@ -285,7 +285,7 @@ $shipment_list = $schedule->get()[0];
                                 <div class="portal-edit-control">
                                     <select id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
                                         <option value="1">Monthly</option>
-                                        <option value="2">Every Other Monthly</option>
+                                        <option value="2">Every Other Month</option>
                                     </select>
                                 </div>
                             </div>
@@ -682,6 +682,10 @@ $shipment_list = $schedule->get()[0];
     function bind_events(){
         $('.portal-item-edit').unbind().click(function(e){
             $(this).closest('.portal-item').find('.portal-item-edit-container').slideToggle();
+        });
+        $('.portal-item .add-and-save').unbind().click(function(e){
+            AccountController.selected_box_item = $(this).closest('.portal-item');
+            AccountController.show_add_and_save();
         });
         $('.sc-edit-date').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
