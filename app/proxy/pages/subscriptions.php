@@ -212,7 +212,7 @@ $shipment_list = $schedule->get()[0];
                 {% assign box_variant = svariant %}
                 {% endif %}
                 {% endfor %}
-                <div class="portal-subscription-item">
+                <div class="portal-item">
                     <div class="portal-item-edit">Edit</div>
                     <div class="portal-item-subscribed">Subscribed</div>
                     <div class="portal-item-details">
