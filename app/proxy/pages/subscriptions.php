@@ -270,6 +270,42 @@ $shipment_list = $schedule->get()[0];
                     <div class="portal-item-actions">
                         <div class="action_button add-and-save">Add to this box and save!</div>
                     </div>
+                    <div class="portal-item-edit-container">
+                        <div class="portal-edit-row">
+                            <div class="portal-edit-select portal-edit-date">
+                                <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
+                                <div class="portal-edit-control">
+                                    <select id="edit-date-<?=$item['subscription_id']?>" name="date">
+                                        <option value=""><?=$item['scheduled_at']?></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="portal-edit-select portal-edit-frequency">
+                                <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
+                                <div class="portal-edit-control">
+                                    <select id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
+                                        <option value="1">Monthly</option>
+                                        <option value="2">Every Other Monthly</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="portal-edit-links">
+                                <a class="portal-edit-skip">Skip</a>
+                                <a class="portal-edit-cancel">Cancel</a>
+                            </div>
+                        </div>
+                        <div class="portal-edit-row">
+                            <div class="portal-edit-select portal-edit-date">
+                                <div class="portal-edit-label">Change Your Scent</div>
+                                <div class="portal-edit-control">
+                                    <input type="radio" id="edit-frequency-<?=$item['subscription_id']?>" name="scent[isle]">
+                                    <label for="edit-scent-<?=$item['subscription_id']?>">
+                                        <img class="lazyload lazypreload" data-src="{{ 'scent-icon_isle_small.png' | file_img_url }}" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             <?php } ?>
         </div>
