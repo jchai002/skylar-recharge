@@ -138,6 +138,21 @@ $shipment_list = $schedule->get()[0];
 							<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
 							<?= is_ac_delivered($item) ? 'data-ac-delivered' : '' ?>
 						>
+							<?php if(!empty($item['skipped']) && !empty($item['charge_id'])){ ?>
+                                <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge_id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+							<?php } else if(!empty($item['skipped'])){ ?>
+                                <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+							<?php } else if(is_ac_followup_lineitem($item)){ ?>
+                                <a class="ac-item-corner-link ac-cancel-link" href="#"><span>Cancel My Trial</span></a>
+							<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
+                                <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
+							<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
+                                <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
+							<?php } else if($item['type'] == 'onetime'){ ?>
+                                <a class="sc-remove-link" href="#"><span>Remove Item</span></a>
+							<?php } else if(!empty($item['charge_id'])){ ?>
+                                <a class="sc-skip-link<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '-club' : '' ?>" href="#"><span>Skip Box</span></a>
+							<?php } ?>
 							<div class="sc-item-info">
 								<div class="sc-item-summary">
 									<div class="sc-item-image">
