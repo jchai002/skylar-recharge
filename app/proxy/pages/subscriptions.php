@@ -305,7 +305,7 @@ $shipment_list = $schedule->get()[0];
                             <div class="portal-edit-select portal-edit-date">
                                 <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
                                 <div class="portal-edit-control">
-                                    <div id="edit-date-<?=$item['subscription_id']?>" class="fake-select">
+                                    <div id="edit-date-<?=$item['subscription_id']?>" class="fake-select show-calendar">
                                         <?=date('M j', $item['scheduled_at_time'])?>
                                     </div>
                                 </div>
@@ -753,6 +753,9 @@ $shipment_list = $schedule->get()[0];
         });
         $('.portal-item .edit-frequency').change(function(e){
             AccountController.update_frequency($(this).closest('.portal-item').data('subscription-id'), e.target.value);
+        });
+        $('.portal-item .show-calendar').click(function(e){
+            $(this).closest('.portal-edit-date').find('.calendar').slideToggle();
         });
 
 
