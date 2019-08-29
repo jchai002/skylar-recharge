@@ -55,6 +55,7 @@ class RechargeClient {
 		$body = substr($response, $header_size);
 
         $response = json_decode($body, true);
+        $response['path'] = $url;
         $response['headers'] = [];
         $response['data'] = $data;
         foreach(explode(PHP_EOL,trim($headers)) as $header){
