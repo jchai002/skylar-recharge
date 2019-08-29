@@ -44,7 +44,7 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'price' => $price,
 		'quantity' => 1,
 		'shopify_variant_id' => $variant['shopify_id'],
-		'properties' => $properties,
+//		'properties' => $properties,
 	]);
 	if(!empty($res['onetime'])){
 		$res_id = $res['onetime']['id'];
@@ -61,7 +61,7 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'order_interval_frequency' => $frequency,
 		'charge_interval_frequency' => $frequency,
 		'order_day_of_month' => $main_sub['order_day_of_month'],
-		'properties' => $properties,
+//		'properties' => $properties,
 	]);
 	if(!empty($res['subscription'])){
 		$res_id = $res['subscription']['id'];
