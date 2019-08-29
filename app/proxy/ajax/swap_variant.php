@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-global $db, $rc;
+global $db, $sc, $rc;
 
 if(empty($_REQUEST['subscription_id']) || empty($_REQUEST['variant_id'])){
 	die(json_encode([
