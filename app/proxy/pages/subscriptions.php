@@ -313,6 +313,7 @@ $shipment_list = $schedule->get()[0];
                             <div class="portal-edit-select portal-edit-frequency">
                                 <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
                                 <div class="portal-edit-control">
+                                    <!-- <?=$item['order_interval_frequency']?> -->
                                     <select class="edit-frequency" id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
                                         <?php
                                             $frequencies = [];
