@@ -332,8 +332,8 @@ $shipment_list = $schedule->get()[0];
 											} else {
 												$frequencies = [
 													'onetime' => 'Once',
-													'1' => 'Monthly',
-													'2' => 'Every other month',
+													'6' => 'Every 6 months',
+													'9' => 'Every 9 months',
 												];
 											}
                                             foreach($frequencies as $value => $label){
