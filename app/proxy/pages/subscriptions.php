@@ -312,19 +312,29 @@ $shipment_list = $schedule->get()[0];
                                 <div class="portal-edit-control">
                                     <select class="edit-frequency" id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
                                         <?php
+                                            $frequencies = [];
                                             $product = get_product($db, $item['shopify_product_id']);
                                             if($product['type'] == 'Body Bundle'){
+                                                $frequencies = [
+                                                    'onetime' => 'Once',
+													'1' => 'Monthly',
+													'2' => 'Every other month',
+                                                ];
+											} else if(strpos($product['type'], 'Body') !== false){
+												$frequencies = [
+													'1' => 'Monthly',
+													'2' => 'Every other month',
+												];
+											} else {
+												$frequencies = [
+													'onetime' => 'Once',
+													'1' => 'Monthly',
+													'2' => 'Every other month',
+												];
+											}
+                                            foreach($frequencies as $value => $label){
                                         ?>
-                                            <option value="1">Monthly</option>
-                                            <option value="2">Every other month</option>
-                                        <?php } else if(strpos($product['type'], 'Body') !== false){ ?>
-                                                <option value="onetime">Once</option>
-                                                <option value="1">Monthly</option>
-                                                <option value="2">Every other month</option>
-                                        <?php } else { ?>
-                                                <option value="onetime">Once</option>
-                                                <option value="6">Every 6 months</option>
-                                                <option value="9">Every 9 months</option>
+                                            <option value="<?=$value?>"<?=$value == $item['frequency'] ? ' selected' : '' ?>><?=$label?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
