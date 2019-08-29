@@ -187,6 +187,18 @@ $router->route('/subscriptions\/cancel$/i', function() use(&$json_output) {
 	require('ajax/cancel.php');
 	return true;
 });
+$router->route('/subscriptions\/full-cancel$/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/full_cancel.php');
+	return true;
+});
 $router->route('/subscriptions\/update-discount/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
