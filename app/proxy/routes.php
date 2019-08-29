@@ -115,6 +115,18 @@ $router->route('/subscriptions\/swap-variant$/i', function() use(&$json_output) 
 	require('ajax/swap_variant.php');
 	return true;
 });
+$router->route('/subscriptions\/update-frequency$/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/swap_variant.php');
+	return true;
+});
 $router->route('/subscriptions\/ac-cancel/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
