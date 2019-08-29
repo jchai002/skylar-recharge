@@ -294,6 +294,7 @@ $shipment_list = $schedule->get()[0];
                                 <a class="portal-edit-cancel">Cancel</a>
                             </div>
                         </div>
+                        <div class="portal-edit-divider"></div>
                         <div class="portal-edit-row">
                             <div class="portal-edit-select portal-edit-date">
                                 <div class="portal-edit-label">Change Your Scent</div>
