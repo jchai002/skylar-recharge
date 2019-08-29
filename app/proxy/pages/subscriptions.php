@@ -310,7 +310,7 @@ $shipment_list = $schedule->get()[0];
                             <div class="portal-edit-select portal-edit-frequency">
                                 <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
                                 <div class="portal-edit-control">
-                                    <select id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
+                                    <select class="edit-frequency" id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
                                         <option value="1">Monthly</option>
                                         <option value="2">Every Other Month</option>
                                     </select>
