@@ -1176,7 +1176,11 @@ function get_variant(PDO $db, $shopify_variant_id){
 	if(!array_key_exists($shopify_variant_id, $variant_cache)){
 		$stmt = $db->prepare("SELECT v.*, p.shopify_id AS shopify_product_id, p.title AS product_title FROM variants v LEFT JOIN products p ON p.id=v.product_id WHERE v.shopify_id=?");
 		$stmt->execute([$shopify_variant_id]);
-		$variant_cache[$shopify_variant_id] = $stmt->fetch();
+		$variant = $stmt->fetch();
+		$stmt = $db->prepare("SELECT scent_id, format_id, product_type_id FROM variant_attributes WHERE variant_id=?");
+		$stmt->execute([$variant['id']]);
+		$variant['attributes'] = $stmt->fetchAll();
+		$variant_cache[$shopify_variant_id] = $variant;
 	}
 	return $variant_cache[$shopify_variant_id];
 }
