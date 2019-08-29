@@ -18,7 +18,7 @@ if($subscription['status'] == 'ONETIME'){
 		$rc->delete('/onetimes/'.$subscription['recharge_id']);
 		$res = $rc->post('/subscriptions', [
 			'address_id' => $subscription['recharge_address_id'],
-			'next_charge_scheduled_at' => $subscription['scheduled_at'],
+			'next_charge_scheduled_at' => $subscription['next_charge_scheduled_at'],
 			'price' => $subscription['price'],
 			'quantity' => $subscription['quantity'],
 			'shopify_variant_id' => $subscription['shopify_variant_id'],
@@ -46,7 +46,7 @@ if($subscription['status'] == 'ONETIME'){
 		$rc->delete('/subscriptions/'.$subscription['recharge_id']);
 		$res = $rc->post('/onetimes', [
 			'address_id' => $subscription['recharge_address_id'],
-			'next_charge_scheduled_at' => $subscription['scheduled_at'],
+			'next_charge_scheduled_at' => $subscription['next_charge_scheduled_at'],
 			'price' => $subscription['price'],
 			'quantity' => $subscription['quantity'],
 			'shopify_variant_id' => $subscription['shopify_variant_id'],
@@ -59,8 +59,8 @@ if($subscription['status'] == 'ONETIME'){
 	}
 }
 
-
 echo json_encode([
-	'success' => true,
+	'success' => !empty($res['error']),
 	'res' => $res,
+	'old_sub' => $subscription,
 ]);
