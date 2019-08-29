@@ -246,7 +246,7 @@ $shipment_list = $schedule->get()[0];
                         </div>
                         <div>
                             <div class="portal-item-detail-label">Next Ship Date</div>
-                            <div class="portal-item-detail-value"><?=date('M j')?></div>
+                            <div class="portal-item-detail-value"><?=date('M j', $item['scheduled_at_time'])?></div>
                         </div>
                         <div>
                             <div class="portal-item-detail-label">Frequency</div>
@@ -276,7 +276,7 @@ $shipment_list = $schedule->get()[0];
                                 <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
                                 <div class="portal-edit-control">
                                     <select id="edit-date-<?=$item['subscription_id']?>" name="date">
-                                        <option value=""><?=$item['scheduled_at']?></option>
+                                        <option value=""><?=date('M j', $item['scheduled_at_time'])?></option>
                                     </select>
                                 </div>
                             </div>
