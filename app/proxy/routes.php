@@ -45,6 +45,12 @@ $router->route('/staging$/i', function() {
 	});
 	return true;
 });
+$router->route('/subscriptions/i', function() {
+	require_customer_id(function(){
+		require('pages/subscriptions.php');
+	});
+	return true;
+});
 $router->route('/quick-add$/i', function() {
 	require('pages/addtobox_lander.php');
 	return true;
