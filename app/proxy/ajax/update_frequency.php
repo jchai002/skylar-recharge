@@ -44,7 +44,7 @@ if($subscription['status'] == 'ONETIME'){
 		}
 	} else {
 		$rc->delete('/subscriptions/'.$subscription['recharge_id']);
-		$res = $rc->post('/onetimes', [
+		$res = $rc->post('/onetimes/address/'.$subscription['recharge_address_id'], [
 			'address_id' => $subscription['recharge_address_id'],
 			'next_charge_scheduled_at' => $subscription['next_charge_scheduled_at'],
 			'price' => $subscription['price'],
