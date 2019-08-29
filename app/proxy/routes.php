@@ -124,7 +124,7 @@ $router->route('/subscriptions\/update-frequency$/i', function() use(&$json_outp
 		]);
 		return true;
 	}
-	require('ajax/swap_variant.php');
+	require('ajax/update_frequency.php');
 	return true;
 });
 $router->route('/subscriptions\/ac-cancel/i', function() use(&$json_output) {
