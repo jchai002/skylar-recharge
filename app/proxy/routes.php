@@ -103,6 +103,18 @@ $router->route('/subscriptions\/ac-swap/i', function() use(&$json_output) {
 	require('ajax/ac_swap.php');
 	return true;
 });
+$router->route('/subscriptions\/swap-variant$/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/swap_variant.php');
+	return true;
+});
 $router->route('/subscriptions\/ac-cancel/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
