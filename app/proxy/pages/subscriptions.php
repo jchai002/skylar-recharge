@@ -305,11 +305,11 @@ $shipment_list = $schedule->get()[0];
                             <div class="portal-edit-select portal-edit-date">
                                 <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
                                 <div class="portal-edit-control">
-                                    <select id="edit-date-<?=$item['subscription_id']?>" name="date">
+                                    <div id="edit-date-<?=$item['subscription_id']?>" class="fake-select">
                                         <option value=""><?=date('M j', $item['scheduled_at_time'])?></option>
-                                    </select>
+                                    </div>
                                 </div>
-                                <div class="calendar hidden"></div>
+                                <div class="calendar floating-calendar hidden"></div>
                             </div>
                             <div class="portal-edit-select portal-edit-frequency">
                                 <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
