@@ -302,7 +302,6 @@ $shipment_list = $schedule->get()[0];
                                 </div>
                             </div>
                             <div class="portal-edit-links">
-                                <a class="portal-edit-skip">Skip</a>
                                 <a class="portal-edit-cancel">Cancel</a>
                             </div>
                         </div>
