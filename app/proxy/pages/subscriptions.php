@@ -314,10 +314,12 @@ $shipment_list = $schedule->get()[0];
                                     <div class="portal-edit-label">Change Your Scent</div>
                                     <div class="portal-edit-control">
                                         <?php foreach($scent_change_options as $scent_change_option){ ?>
-                                            <input type="radio" id="edit-frequency-<?=$item['subscription_id']?>" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?>>
-                                            <label for="edit-frequency-<?=$item['subscription_id']?>">
-                                                <img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
-                                            </label>
+                                            <div class="portal-swap-option">
+                                                <input type="radio" id="edit-frequency-<?=$item['subscription_id']?>" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?>>
+                                                <label for="edit-frequency-<?=$item['subscription_id']?>">
+                                                    <img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
+                                                </label>
+                                            </div>
                                         <?php } ?>
                                     </div>
                                 </div>
