@@ -283,7 +283,7 @@ $shipment_list = $schedule->get()[0];
                     <div class="portal-item-actions">
                         <div class="action_button add-and-save">Add to this box and save!</div>
                     </div>
-                    <div class="portal-item-edit-container">
+                    <form class="portal-item-edit-container">
                         <div class="portal-edit-row">
                             <div class="portal-edit-select portal-edit-date">
                                 <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
@@ -326,7 +326,7 @@ $shipment_list = $schedule->get()[0];
                                 </div>
                             </div>
                         <?php } ?>
-                    </div>
+                    </form>
                 </div>
             <?php } ?>
         </div>
