@@ -1,6 +1,6 @@
 <?php
 
-global $db, $sc, $rc, $ids_by_scent;
+global $db, $sc, $rc;
 
 $customer = get_customer($db, $_REQUEST['c'], $sc);
 $stmt = $db->prepare("SELECT recharge_id FROM rc_customers WHERE id=?");
@@ -201,8 +201,18 @@ $shipment_list = $schedule->get()[0];
             <div class="sc-portal-title">Your Subscriptions</div>
             <div class="sc-portal-subtitle">Manage your subscriptions here</div>
             <?php
+            $stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
+                LEFT JOIN scents s ON va.scent_id=s.id
+                LEFT JOIN variants v ON va.variant_id=v.id
+                WHERE va.format_id=:format_id AND va.product_type_id=:product_type_id;");
             foreach($schedule->subscriptions() as $item){
                 // TODO SC will sometimes be a onetime
+                $variant = get_variant($db, $item['shopify_variant_id']);
+                $stmt_scent_change_options->execute([
+					'format_id' => $variant['attributes']['format_id'],
+					'product_type_id' => $variant['attributes']['product_type_id'],
+                ]);
+                $scent_change_options = $stmt_scent_change_options->fetchAll();
                 ?>
                 {% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
                 {% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
@@ -299,10 +309,12 @@ $shipment_list = $schedule->get()[0];
                             <div class="portal-edit-select portal-edit-date">
                                 <div class="portal-edit-label">Change Your Scent</div>
                                 <div class="portal-edit-control">
-                                    <input type="radio" id="edit-frequency-<?=$item['subscription_id']?>" name="scent[isle]">
-                                    <label for="edit-scent-<?=$item['subscription_id']?>">
-                                        <img class="lazyload lazypreload" data-src="{{ 'scent-icon_isle_small.png' | file_img_url }}" />
-                                    </label>
+                                    <?php foreach($scent_change_options as $scent_change_option){ ?>
+                                        <input type="radio" id="edit-frequency-<?=$item['subscription_id']?>" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?>>
+                                        <label for="edit-frequency-<?=$item['subscription_id']?>">
+                                            <img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>_small.png' | file_img_url }}" />
+                                        </label>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
