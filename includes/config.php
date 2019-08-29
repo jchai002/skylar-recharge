@@ -1144,8 +1144,9 @@ $rc_subscription_cache = [];
 function get_rc_subscription(PDO $db, $recharge_subscription_id, RechargeClient $rc, ShopifyClient $sc){
 	global $rc_subscription_cache;
 	if(!array_key_exists($recharge_subscription_id, $rc_subscription_cache)){
-		$stmt = $db->prepare("SELECT rcs.*, rca.recharge_id AS recharge_address_id FROM rc_subscriptions rcs
+		$stmt = $db->prepare("SELECT rcs.*, rca.recharge_id AS recharge_address_id, v.shopify_id AS shopify_variant_id FROM rc_subscriptions rcs
 			LEFT JOIN rc_addresses rca ON rca.id=rcs.address_id
+			LEFT JOIN variants v ON v.id=rcs.variant_id
 			WHERE rcs.recharge_id=?");
 		$stmt->execute([$recharge_subscription_id]);
 		if($stmt->rowCount() < 1){
