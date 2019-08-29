@@ -334,7 +334,7 @@ $shipment_list = $schedule->get()[0];
 											}
                                             foreach($frequencies as $value => $label){
                                         ?>
-                                            <option value="<?=$value?>"<?=$value == $item['subscription']['order_interval_frequency'] ? ' selected' : '' ?>><?=$label?></option>
+                                            <option value="<?=$value?>"<?=$value == ($item['subscription']['order_interval_frequency'] ?? 'onetime') ? ' selected' : '' ?>><?=$label?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
