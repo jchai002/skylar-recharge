@@ -311,8 +311,21 @@ $shipment_list = $schedule->get()[0];
                                 <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
                                 <div class="portal-edit-control">
                                     <select class="edit-frequency" id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
-                                        <option value="1">Monthly</option>
-                                        <option value="2">Every Other Month</option>
+                                        <?php
+                                            $product = get_product($db, $item['shopify_product_id']);
+                                            if($product['type'] == 'Body Bundle'){
+                                        ?>
+                                            <option value="1">Monthly</option>
+                                            <option value="2">Every other month</option>
+                                        <?php } else if(strpos($product['type'], 'Body') !== false){ ?>
+                                                <option value="onetime">Once</option>
+                                                <option value="1">Monthly</option>
+                                                <option value="2">Every other month</option>
+                                        <?php } else { ?>
+                                                <option value="onetime">Once</option>
+                                                <option value="6">Every 6 months</option>
+                                                <option value="9">Every 9 months</option>
+                                        <?php } ?>
                                     </select>
                                 </div>
                             </div>
