@@ -306,7 +306,7 @@ $shipment_list = $schedule->get()[0];
                                 <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
                                 <div class="portal-edit-control">
                                     <div id="edit-date-<?=$item['subscription_id']?>" class="fake-select">
-                                        <option value=""><?=date('M j', $item['scheduled_at_time'])?></option>
+                                        <?=date('M j', $item['scheduled_at_time'])?>
                                     </div>
                                 </div>
                                 <div class="calendar floating-calendar hidden"></div>
