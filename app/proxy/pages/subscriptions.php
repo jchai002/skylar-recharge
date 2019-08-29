@@ -709,7 +709,7 @@ $shipment_list = $schedule->get()[0];
             AccountController.show_add_and_save();
         });
         $('.portal-item .swap-variant').change(function(e){
-            console.log(e);
+            AccountController.swap_variant($(this).closest('.portal-item').data('subscription-id'), e.target.value);
         });
         $('.sc-edit-date').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
