@@ -309,6 +309,7 @@ $shipment_list = $schedule->get()[0];
                                         <option value=""><?=date('M j', $item['scheduled_at_time'])?></option>
                                     </select>
                                 </div>
+                                <div class="calendar hidden"></div>
                             </div>
                             <div class="portal-edit-select portal-edit-frequency">
                                 <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
