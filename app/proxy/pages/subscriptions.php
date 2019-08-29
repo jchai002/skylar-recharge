@@ -214,6 +214,7 @@ $shipment_list = $schedule->get()[0];
         <div class="sc-portal-innercontainer">
             <div class="sc-portal-title">Your Subscriptions</div>
             <div class="sc-portal-subtitle">Manage your subscriptions here</div>
+            <!--
             <?php
             $stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
                 LEFT JOIN scents s ON va.scent_id=s.id
@@ -230,7 +231,9 @@ $shipment_list = $schedule->get()[0];
 					]);
 					$scent_change_options = $stmt_scent_change_options->fetchAll();
                 }
+                print_r($item);
                 ?>
+                -->
                 {% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
                 {% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
                 {% assign box_variant = box_product.variants.first %}
