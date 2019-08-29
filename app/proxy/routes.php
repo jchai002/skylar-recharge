@@ -45,7 +45,7 @@ $router->route('/staging$/i', function() {
 	});
 	return true;
 });
-$router->route('/subscriptions/i', function() {
+$router->route('/subscriptions$/i', function() {
 	require_customer_id(function(){
 		require('pages/subscriptions.php');
 	});
