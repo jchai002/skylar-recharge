@@ -26,7 +26,7 @@ if($subscription['status'] == 'ONETIME'){
 			'variant_title' => $subscription['variant_title'],
 			'order_interval_unit' => $subscription['order_interval_unit'],
 			'order_interval_frequency' => $frequency,
-			'charge_interval_frequency' => $subscription['charge_interval_frequency'],
+			'charge_interval_frequency' => $frequency,
 		]);
 		if(!empty($res['subscription'])){
 			insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
@@ -37,7 +37,7 @@ if($subscription['status'] == 'ONETIME'){
 		$res = $rc->put('/subscriptions/'.$subscription['recharge_id'], [
 			'order_interval_frequency' => $frequency,
 			'order_interval_unit' => 'month',
-			'charge_interval_frequency' => $subscription['charge_interval_frequency'],
+			'charge_interval_frequency' => $frequency,
 		]);
 		if(!empty($res['subscription'])){
 			insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
