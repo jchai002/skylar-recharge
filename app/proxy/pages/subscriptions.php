@@ -208,6 +208,7 @@ $shipment_list = $schedule->get()[0];
             foreach($schedule->subscriptions() as $item){
                 // TODO SC will sometimes be a onetime
                 $variant = get_variant($db, $item['shopify_variant_id']);
+                print_r($variant);
                 $stmt_scent_change_options->execute([
 					'format_id' => $variant['attributes']['format_id'],
 					'product_type_id' => $variant['attributes']['product_type_id'],
