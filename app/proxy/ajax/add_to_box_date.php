@@ -16,6 +16,10 @@ $frequency = empty($_REQUEST['frequency']) ? 'onetime' : $_REQUEST['frequency'];
 
 $price = get_subscription_price($product, $variant);
 $res_id = false;
+$properties = [];
+if(!empty($_REQUEST['parent_id'])){
+	$properties['parent_id'] = $_REQUEST['parent_id'];
+}
 if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/onetimes', [
 		'address_id' => $main_sub['address_id'],
@@ -24,6 +28,7 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'price' => $price,
 		'quantity' => 1,
 		'shopify_variant_id' => $variant['shopify_id'],
+		'properties' => $properties,
 	]);
 	$res_id = $res['onetime']['id'];
 } else {
@@ -38,6 +43,7 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'order_interval_frequency' => $frequency,
 		'charge_interval_frequency' => $frequency,
 		'order_day_of_month' => $main_sub['order_day_of_month'],
+		'properties' => $properties,
 	]);
 	$res_id = $res['subscription']['id'];
 }
