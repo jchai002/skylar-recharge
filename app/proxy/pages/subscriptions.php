@@ -84,7 +84,6 @@ $shipment_list = $schedule->get()[0];
 						}
 					}
 					if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
-						$sc_shipment_index++;
 						$has_sc = true;
 					}
 					?>
