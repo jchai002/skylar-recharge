@@ -36,6 +36,8 @@ if($subscription['status'] == 'ONETIME'){
 	if($frequency != 'onetime'){
 		$res = $rc->put('/subscriptions/'.$subscription['recharge_id'], [
 			'order_interval_frequency' => $frequency,
+			'order_interval_unit' => 'month',
+			'charge_interval_frequency' => $subscription['charge_interval_frequency'],
 		]);
 		if(!empty($res['subscription'])){
 			insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
