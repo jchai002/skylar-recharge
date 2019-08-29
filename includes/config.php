@@ -1179,7 +1179,7 @@ function get_variant(PDO $db, $shopify_variant_id){
 		$variant = $stmt->fetch();
 		$stmt = $db->prepare("SELECT scent_id, format_id, product_type_id FROM variant_attributes WHERE variant_id=?");
 		$stmt->execute([$variant['id']]);
-		$variant['attributes'] = $stmt->fetchAll();
+		$variant['attributes'] = $stmt->fetch();
 		$variant_cache[$shopify_variant_id] = $variant;
 	}
 	return $variant_cache[$shopify_variant_id];
