@@ -219,15 +219,15 @@ $shipment_list = $schedule->get()[0];
 									<?php } ?>
                                 </div>
 							<?php } ?>
+    						<?php if(!empty($upcoming_shipment['charge_id'])){ ?>
                             <div class="sc-discount-link" onclick="$('.sc-add-discount').show();$(this).hide();">Got a promo code?</div>
                             <form class="sc-add-discount" style="display: none;">
                                 <div><input type="text" name="discount_code" /></div>
                                 <div><input type="submit" value="Apply" class="action_button inverted" /></div>
-								<?php if(!empty($upcoming_shipment['charge_id'])){ ?>
-                                    <input type="hidden" name="address_id" value="<?=$schedule->charges()[$upcoming_shipment['charge_id']]['address_id']?>" />
-                                    <input type="hidden" name="charge_id" value="<?=$upcoming_shipment['charge_id']?>" />
-								<?php } ?>
+                                <input type="hidden" name="address_id" value="<?=$schedule->charges()[$upcoming_shipment['charge_id']]['address_id']?>" />
+                                <input type="hidden" name="charge_id" value="<?=$upcoming_shipment['charge_id']?>" />
                             </form>
+							<?php } ?>
                         </div>
 						<?php if(!empty($upcoming_shipment['charge_id'])){ ?>
 							<?php if(!empty($schedule->charges()[$upcoming_shipment['charge_id']]['shipping_lines'])){
@@ -616,7 +616,7 @@ $shipment_list = $schedule->get()[0];
             e.preventDefault();
             $('.loader').fadeIn();
             var data = $('.sc-add-discount').serializeJSON();
-            data.c = Shopify.queryParams.c;
+            $.extend(data, AccountController.get_query_data());
             $.ajax({
                 url: '/tools/skylar/subscriptions/update-discount',
                 data: data,
@@ -638,7 +638,7 @@ $shipment_list = $schedule->get()[0];
             btn.attr('disabled', 'disabled').addClass('disabled');
             btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
             var data = $(this).serializeJSON();
-            data.c = Shopify.queryParams.c;
+            $.extend(data, AccountController.get_query_data());
             $('.loader').fadeIn();
             $.ajax({
                 url: '/tools/skylar/subscriptions/update-discount',
@@ -670,7 +670,7 @@ $shipment_list = $schedule->get()[0];
             btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
             var data = $(this).serializeJSON();
             data.product_id = $(this).find('.sc-size-select option:selected').data('product-id');
-            data.c = Shopify.queryParams.c;
+            $.extend(data, AccountController.get_query_data());
             $('.loader').fadeIn();
             $.ajax({
                 url: '/tools/skylar/subscriptions/add-to-box',
