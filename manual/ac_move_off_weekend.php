@@ -3,6 +3,27 @@ require_once(__DIR__.'/../includes/config.php');
 
 $rc = new RechargeClient();
 $sc = new ShopifyClient();
+/*
+$charges = [];
+$page = 0;
+do {
+	$page++;
+	$res = $rc->get('/charges', ['date'=>'2019-09-03', 'limit'=>250, 'page'=>$page]);
+	echo "Adding ".count($res['charges'])." charges: ";
+	foreach($res['charges'] as $charge){
+		foreach($charge['line_items'] as $line_item){
+			if(is_ac_followup_lineitem($line_item)){
+				$charges[] = $charge;
+				break;
+			}
+		}
+	}
+	echo count($charges).PHP_EOL;
+} while(count($res['charges']) >= 250);
+
+echo count($charges);
+die();
+*/
 
 $stmt = $db->query("SELECT rcs.recharge_id AS rc_subscription_id, rcs.next_charge_scheduled_at, rca.recharge_id AS rc_address_id FROM ac_orders aco
 LEFT JOIN rc_subscriptions rcs ON rcs.id=aco.followup_subscription_id
@@ -13,6 +34,7 @@ AND rcs.next_charge_scheduled_at IN ('2019-09-03');");
 
 foreach($stmt->fetchAll() as $row){
 	$move_to_time = strtotime($row['next_charge_scheduled_at']);
+//	$move_to_time = strtotime('2019-09-04');
 	if($move_to_time < time()){
 		$move_to_time = strtotime('tomorrow');
 	}
