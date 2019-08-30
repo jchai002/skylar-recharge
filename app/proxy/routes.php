@@ -127,6 +127,18 @@ $router->route('/subscriptions\/update-frequency$/i', function() use(&$json_outp
 	require('ajax/update_frequency.php');
 	return true;
 });
+$router->route('/subscriptions\/update-date/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/update_subscription_date.php');
+	return true;
+});
 $router->route('/subscriptions\/ac-cancel/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
