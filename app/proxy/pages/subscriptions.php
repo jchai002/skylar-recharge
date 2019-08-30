@@ -368,7 +368,7 @@ $shipment_list = $schedule->get()[0];
 							$this_sub_onetimes[] = $onetime;
 						}
 					}
-					/*
+
 					if(!empty($this_sub_onetimes)){
 						?>
                         <div class="portal-item-onetimes">
@@ -402,7 +402,7 @@ $shipment_list = $schedule->get()[0];
                                 </div>
 							<?php } ?>
                         </div>
-					<? } */ ?>
+					<? } ?>
                     <div class="portal-item-actions">
                         <div class="action_button add-and-save">Add to this box and save!</div>
                     </div>
