@@ -46,6 +46,8 @@ $page = 0;
 echo "$start_date to $end_date".PHP_EOL;
 $stmt = $db->prepare("SELECT 1 FROM event_log WHERE category='email' AND (action='SUB_3DAY_WARNING' OR action='SUB_3DAY_WARNING_SC') AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?");
 //echo "SELECT 1 FROM event_log WHERE category='email' AND action='SUB_3DAY_WARNING' AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?";
+//$stmt = $db->prepare("SELECT 1 FROM emails_sent WHERE (email='SUB_3DAY_WARNING' OR email='SUB_3DAY_WARNING_SC') AND DATE(date_created) = '".date('Y-m-d', $now)."' AND recipient=?");
+$stmt_insert = $db->prepare("INSERT INTO emails_sent (email, recipient, date_created) VALUES (:email, :recipient, :date_created)");
 do {
 	$page++;
 	$res = $rc->get('/charges', [
@@ -92,6 +94,11 @@ do {
 			CURLOPT_RETURNTRANSFER => true,
 		]);
 		$res = json_decode(curl_exec($ch));
+		$stmt_insert->execute([
+			'email' => $is_scent_club ? 'SUB_3DAY_WARNING_SC' : 'SUB_3DAY_WARNING',
+			'recipient' => $charge['email'],
+			'date_created' => date('Y-m-d H:i:s', $now),
+		]);
 		log_event($db, 'EMAIL', $charge['email'], 'SUB_3DAY_WARNING'.($is_scent_club ? '_SC' : ''), json_encode($res), json_encode($charge), 'CRON');
 		echo "Sent email to: ".$charge['email']." address id: ".$charge['address_id'].PHP_EOL;
 	}
