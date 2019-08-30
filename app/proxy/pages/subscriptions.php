@@ -960,15 +960,6 @@ $shipment_list = $schedule->get()[0];
             });
         });
         optional_scripts.onload('pignose', function(){
-            // Old style
-            $('.mm-menu .calendar').pignoseCalendar({
-                minDate: moment(),
-                disabledWeekdays: [0, 6],
-                select: function(date){
-                    AccountController.selected_date = date[0].format('YYYY-MM-DD');
-                    console.log(AccountController.selected_date);
-                },
-            });
             $('.portal-item-edit-container .calendar').each(function(){
                 var box = $(this).closest('.portal-item');
                 $(this).pignoseCalendar({
