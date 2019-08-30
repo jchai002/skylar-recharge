@@ -480,12 +480,12 @@ $shipment_list = $schedule->get()[0];
         <div class="sc-portal-innercontainer">
             <div class="sc-portal-title">Your One-times</div>
             <div class="sc-portal-subtitle">Manage your onetimes here</div>
-			<?php /*
+			<?php
 			$stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
                 LEFT JOIN scents s ON va.scent_id=s.id
                 LEFT JOIN variants v ON va.variant_id=v.id
                 WHERE va.format_id=:format_id AND va.product_type_id=:product_type_id;");
-			foreach($schedule->onetime() as $item){
+			foreach($schedule->onetimes() as $item){
 				echo "<!--";
 				// TODO SC will sometimes be a onetime
 				$variant = get_variant($db, $item['shopify_variant_id']);
@@ -631,7 +631,7 @@ $shipment_list = $schedule->get()[0];
 						<?php } ?>
                     </form>
                 </div>
-			<?php } */?>
+			<?php } ?>
         </div>
     </div>
 </div>
