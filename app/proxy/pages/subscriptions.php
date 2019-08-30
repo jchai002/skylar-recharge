@@ -375,31 +375,6 @@ $shipment_list = $schedule->get()[0];
                             <div class="sc-portal-title">One-time only</div>
                             <div class="sc-portal-subtitle">These products ship in your next shipment only.</div>
 							<?php foreach($this_sub_onetimes as $onetime){ ?>
-                                <div class="portal-item-details">
-                                    <div class="portal-item-img">
-										<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
-                                            <img class="lazyload" data-src="{{ 'sc-logo.svg' | file_url }}" height="100" width="100" />
-										<?php } else { ?>
-                                            {% if box_variant.image %}
-                                            <img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
-                                            {% else %}
-                                            <img class="lazyload" data-srcset="{{ box_product | img_url: '100x100' }} 1x, {{ box_product | img_url: '200x200' }} 2x" />
-                                            {% endif %}
-										<?php } ?>
-                                    </div>
-                                    <div>
-                                        <div class="portal-item-detail-label"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
-                                        <div class="portal-item-quantity">
-                                            <span class="portal-quantity-miuns">-</span>
-                                            <span class="portal-quantity-amount"><?=$item['quantity']?></span>
-                                            <span class="portal-quantity-plus">+</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="portal-item-detail-label">Price</div>
-                                        <div class="portal-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
-                                    </div>
-                                </div>
 							<?php } ?>
                         </div>
 					<? } ?>
