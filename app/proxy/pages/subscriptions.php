@@ -242,7 +242,16 @@ $shipment_list = $schedule->get()[0];
                         {% assign box_variant = svariant %}
                     {% endif %}
                 {% endfor %}
-                <div class="portal-item" data-subscription-id="<?=$item['subscription_id']?>" data-ship-time="<?=$item['scheduled_at_time']?>">
+                <div class="portal-item"
+                     data-subscription-id="<?=$item['subscription_id']?>"
+                     data-ship-time="<?=$item['scheduled_at_time']?>"
+					<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+                        data-master-image="{{ 'sc-logo.svg' | file_url }}"
+					<?php } else { ?>
+                        data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
+					<?php } ?>
+                     data-month-text="<?=date('F', $item['ship_date_time'])?>"
+                >
                     <div class="portal-item-edit">Edit</div>
                     <div class="portal-item-subscribed">Subscribed</div>
                     <div class="portal-item-details">
@@ -760,7 +769,15 @@ $shipment_list = $schedule->get()[0];
         $('.portal-item .portal-edit-cancel').click(function(e){
             e.preventDefault();
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
-            AccountController.show_cancel_save();
+            $('.sc-skip-image img').attr('src', AccountController.selected_box_item.data('master-image'));
+            $('#sc-remove-confirm-modal .sc-modal-subtitle').html(
+                AccountController.selected_box_item.data('month-text')+' '+AccountController.selected_box_item.find('.sc-item-title').text().trim().replace('Monthly ', '')
+            );
+            $.featherlight.close();
+            $.featherlight($('#sc-remove-confirm-modal'), {
+                variant: 'scent-club',
+                afterOpen: $.noop, // Fix dumb app bug
+            });
         });
 
         $('.sc-edit-date').unbind().click(function(e){
