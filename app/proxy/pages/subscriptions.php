@@ -59,7 +59,7 @@ $shipment_list = $schedule->get()[0];
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
     {% include 'sc-member-nav' %}
     <div class="sc-portal-content">
-        <div class="sc-portal-innercontainer">
+        <div class="portal-innercontainer">
 			<div class="sc-portal-title">Your Next Skylar Box</div>
 			<div class="sc-portal-subtitle">The next box that you'll be charged for</div>
 			<?php
@@ -266,7 +266,7 @@ $shipment_list = $schedule->get()[0];
 				<?php } ?>
 			<?php } ?>
         </div>
-        <div class="sc-portal-innercontainer">
+        <div class="portal-innercontainer">
             <div class="sc-portal-title">Your Subscriptions</div>
             <div class="sc-portal-subtitle">Manage your subscriptions here</div>
 			<?php
@@ -477,7 +477,7 @@ $shipment_list = $schedule->get()[0];
                 </div>
 			<?php } ?>
         </div>
-        <div class="sc-portal-innercontainer">
+        <div class="portal-innercontainer">
             <div class="sc-portal-title">Your One-times</div>
             <div class="sc-portal-subtitle">Manage your onetimes here</div>
 			<?php
