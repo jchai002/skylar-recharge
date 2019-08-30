@@ -959,6 +959,29 @@ $shipment_list = $schedule->get()[0];
                 afterOpen: $.noop, // Fix dumb app bug
             });
         });
+        optional_scripts.onload('pignose', function(){
+            // Old style
+            $('.mm-menu .calendar').pignoseCalendar({
+                minDate: moment(),
+                disabledWeekdays: [0, 6],
+                select: function(date){
+                    AccountController.selected_date = date[0].format('YYYY-MM-DD');
+                    console.log(AccountController.selected_date);
+                },
+            });
+            $('.portal-item-edit-container .calendar').each(function(){
+                var box = $(this).closest('.portal-item');
+                $(this).pignoseCalendar({
+                    date: moment(parseInt(box.data('ship-time'))*1000),
+                    minDate: moment(),
+                    disabledWeekdays: [0, 6],
+                    select: function(date){
+                        AccountController.update_subscription_date(box.data('subscription-id'), date[0].format('YYYY-MM-DD'));
+                        box.find('.calendar').slideUp();
+                    },
+                });
+            });
+        });
 
         $('.remove-discount-link').unbind().click(function(e){
             e.preventDefault();
