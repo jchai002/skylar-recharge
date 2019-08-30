@@ -7,7 +7,11 @@ if(empty($_REQUEST['discount_code'])){
 	if(!empty($res['error'])){
 		$res = $rc->post('/charges/'.intval($_REQUEST['charge_id']).'/remove_discount');
 	}
-} else if(in_array($_REQUEST['discount_code'], ['LDAY15'])){
+} else if(in_array($_REQUEST['discount_code'], [
+	'LDAY15',
+	'TRYSCENTCLUB',
+	'SCENTCLUBNYC',
+])){
 	$res = ['error' => 'Invalid discount code.'];
 } else {
 	$res = $rc->post('/addresses/'.intval($_REQUEST['address_id']).'/remove_discount');
