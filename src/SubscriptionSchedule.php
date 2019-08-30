@@ -11,6 +11,7 @@ class SubscriptionSchedule {
 	private $metadata = [];
 	private $orders = [];
 	private $subscriptions = [];
+	private $onetimes = [];
 	private $charges = [];
 
 	public function __construct(PDO $db, RechargeClient $rc, $rc_customer_id, $max_time = null, $min_time = null){
@@ -53,6 +54,16 @@ class SubscriptionSchedule {
 			$this->subscriptions = [];
 			foreach($subs_to_set as $sub){
 				$this->subscriptions[$sub['id']] = $this->normalize_subscription($sub);
+			}
+		}
+		return $this->subscriptions;
+	}
+
+	public function onetimes($onetimes_to_set = null){
+		if(!is_null($onetimes_to_set)){
+			$this->onetimes = [];
+			foreach($onetimes_to_set as $onetime){
+				$this->onetimes[$onetime['id']] = $this->normalize_onetime($onetime);
 			}
 		}
 		return $this->subscriptions;
@@ -386,6 +397,15 @@ class SubscriptionSchedule {
 		}
 
 		return $this->normalize_item($subscription);
+	}
+
+	private function normalize_onetime($onetime){
+		$onetime['subscription_id'] = $onetime['id'];
+		$onetime['type'] = 'onetime';
+		$onetime['scheduled_at'] = $onetime['next_charge_scheduled_at'];
+		$onetime['scheduled_at_time'] = strtotime($onetime['scheduled_at']);
+
+		return $this->normalize_item($onetime);
 	}
 
 	public static function get_subscription_time_by_index($index, $start_time, $order_interval_frequency, $order_interval_unit, $order_interval_index = false){
