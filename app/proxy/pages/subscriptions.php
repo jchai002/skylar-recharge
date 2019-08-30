@@ -480,7 +480,7 @@ $shipment_list = $schedule->get()[0];
         <div class="sc-portal-innercontainer">
             <div class="sc-portal-title">Your One-times</div>
             <div class="sc-portal-subtitle">Manage your onetimes here</div>
-			<?php
+			<?php /*
 			$stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
                 LEFT JOIN scents s ON va.scent_id=s.id
                 LEFT JOIN variants v ON va.variant_id=v.id
@@ -616,7 +616,7 @@ $shipment_list = $schedule->get()[0];
                                 <div class="portal-edit-select portal-edit-date">
                                     <div class="portal-edit-label">Change Your Scent</div>
                                     <div class="portal-edit-control">
-										<?php foreach($scent_change_options as $scent_change_option){ ?>
+                                        <?php foreach($scent_change_options as $scent_change_option){ ?>
                                             <div class="portal-swap-option">
                                                 <input type="radio" id="edit-scent-<?=$scent_change_option['shopify_variant_id']?>" class="swap-variant" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?>>
                                                 <label for="edit-scent-<?=$scent_change_option['shopify_variant_id']?>">
@@ -624,14 +624,14 @@ $shipment_list = $schedule->get()[0];
                                                     <div><?=$scent_change_option['title']?></div>
                                                 </label>
                                             </div>
-										<?php } ?>
+                                        <?php } ?>
                                     </div>
                                 </div>
                             </div>
 						<?php } ?>
                     </form>
                 </div>
-			<?php } ?>
+			<?php } */?>
         </div>
     </div>
 </div>
