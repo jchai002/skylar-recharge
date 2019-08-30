@@ -757,7 +757,7 @@ $shipment_list = $schedule->get()[0];
         $('.portal-item .show-calendar').click(function(){
             $(this).closest('.portal-edit-date').find('.calendar').slideToggle();
         });
-        $('.portal-item .portal-edit-cancel').click(.click(function(e){
+        $('.portal-item .portal-edit-cancel').click(function(e){
             e.preventDefault();
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
             AccountController.show_cancel_save();
