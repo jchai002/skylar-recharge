@@ -367,7 +367,12 @@ $shipment_list = $schedule->get()[0];
 						if(get_oli_attribute($onetime, '_parent_id')){
 							$this_sub_onetimes[] = $onetime;
 						}
-					}/*
+					}
+					if(!empty($this_sub_onetimes)){
+					    ?>
+                    test
+                    <?php } ?>
+					<?php /*
 					if(!empty($this_sub_onetimes)){
 						?>
                         <div class="portal-item-onetimes">
