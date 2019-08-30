@@ -370,6 +370,7 @@ $shipment_list = $schedule->get()[0];
                                 </div>
                                 <div class="calendar<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? ' one-month' : '' ?> floating-calendar hidden"></div>
                             </div>
+                            <?php if(!is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
                             <div class="portal-edit-select portal-edit-frequency">
                                 <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
                                 <div class="portal-edit-control">
@@ -402,6 +403,7 @@ $shipment_list = $schedule->get()[0];
                                     </select>
                                 </div>
                             </div>
+                            <?php } ?>
                             <div class="portal-edit-links">
                                 <a class="portal-edit-cancel" href="#">Cancel</a>
                             </div>
