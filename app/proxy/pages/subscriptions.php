@@ -250,7 +250,7 @@ $shipment_list = $schedule->get()[0];
 					<?php } else { ?>
                         data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
 					<?php } ?>
-                     data-month-text="<?=date('F', $item['ship_date_time'])?>"
+                    data-product-name="<?=$item['product_title']?>"
                 >
                     <div class="portal-item-edit">Edit</div>
                     <div class="portal-item-subscribed">Subscribed</div>
@@ -770,9 +770,7 @@ $shipment_list = $schedule->get()[0];
             e.preventDefault();
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
             $('.sc-skip-image img').attr('src', AccountController.selected_box_item.data('master-image'));
-            $('#sc-remove-confirm-modal .sc-modal-subtitle').html(
-                AccountController.selected_box_item.data('month-text')+' '+AccountController.selected_box_item.find('.sc-item-title').text().trim().replace('Monthly ', '')
-            );
+            $('#sc-remove-confirm-modal .sc-modal-subtitle').html(AccountController.selected_box_item.data('product-name'));
             $.featherlight.close();
             $.featherlight($('#sc-remove-confirm-modal'), {
                 variant: 'scent-club',
