@@ -353,7 +353,7 @@ $shipment_list = $schedule->get()[0];
                                 </div>
                             </div>
                             <div class="portal-edit-links">
-                                <a class="portal-edit-cancel">Cancel</a>
+                                <a class="portal-edit-cancel" href="#">Cancel</a>
                             </div>
                         </div>
                         <?php if(!empty($scent_change_options)){ ?>
