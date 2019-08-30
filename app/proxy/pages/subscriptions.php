@@ -269,33 +269,33 @@ $shipment_list = $schedule->get()[0];
         <div class="sc-portal-innercontainer">
             <div class="sc-portal-title">Your Subscriptions</div>
             <div class="sc-portal-subtitle">Manage your subscriptions here</div>
-            <?php
-            $stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
+			<?php
+			$stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
                 LEFT JOIN scents s ON va.scent_id=s.id
                 LEFT JOIN variants v ON va.variant_id=v.id
                 WHERE va.format_id=:format_id AND va.product_type_id=:product_type_id;");
-            foreach($schedule->subscriptions() as $item){
-                echo "<!--";
-                // TODO SC will sometimes be a onetime
-                $variant = get_variant($db, $item['shopify_variant_id']);
+			foreach($schedule->subscriptions() as $item){
+				echo "<!--";
+				// TODO SC will sometimes be a onetime
+				$variant = get_variant($db, $item['shopify_variant_id']);
 				$scent_change_options = [];
-                if(!empty($variant['attributes'])){
+				if(!empty($variant['attributes'])){
 					$stmt_scent_change_options->execute([
 						'format_id' => $variant['attributes']['format_id'],
 						'product_type_id' => $variant['attributes']['product_type_id'],
 					]);
 					$scent_change_options = $stmt_scent_change_options->fetchAll();
-                }
-                print_r($item);
-                ?>
+				}
+				print_r($item);
+				?>
                 -->
                 {% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
                 {% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
                 {% assign box_variant = box_product.variants.first %}
                 {% for svariant in box_product.variants %}
-                    {% if svariant.id == picked_variant_id %}
-                        {% assign box_variant = svariant %}
-                    {% endif %}
+                {% if svariant.id == picked_variant_id %}
+                {% assign box_variant = svariant %}
+                {% endif %}
                 {% endfor %}
                 <div class="portal-item"
                      data-subscription-id="<?=$item['subscription_id']?>"
@@ -305,38 +305,38 @@ $shipment_list = $schedule->get()[0];
 					<?php } else { ?>
                         data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
 					<?php } ?>
-                    data-product-name="<?=$item['product_title']?>"
+                     data-product-name="<?=$item['product_title']?>"
                 >
                     <div class="portal-item-edit">Edit</div>
                     <div class="portal-item-subscribed">Subscribed</div>
                     <div class="portal-item-details">
                         <div class="portal-item-img">
-                            <?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+							<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
                                 <img class="lazyload" data-src="{{ 'sc-logo.svg' | file_url }}" height="100" width="100" />
-                            <?php } else { ?>
+							<?php } else { ?>
                                 {% if box_variant.image %}
                                 <img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
                                 {% else %}
                                 <img class="lazyload" data-srcset="{{ box_product | img_url: '100x100' }} 1x, {{ box_product | img_url: '200x200' }} 2x" />
                                 {% endif %}
-                            <?php } ?>
+							<?php } ?>
                         </div>
                         <div>
-                            <?php if(is_ac_followup_lineitem($item)){ ?>
+							<?php if(is_ac_followup_lineitem($item)){ ?>
                                 <div class="portal-item-detail-label"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
                                 {% if box_variant.title != 'Default Title' %}<div class="portal-item-detail-value">{{ box_variant.title }}</div>{% endif %}
-                            <?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
+							<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
                                 <div class="portal-item-detail-label">Skylar Scent Club</div>
                                 <div class="portal-item-detail-value">{{ box_product.variants.first.title }}</div>
-                            <?php } else if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+							<?php } else if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
                                 <div class="portal-item-detail-label">Skylar Scent Club</div>
                                 <div class="portal-item-detail-value"></div>
-                            <?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
+							<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
                                 <div class="portal-item-detail-label"><?=$item['product_title']?></div>
                                 <div class="portal-item-detail-value"><?=$item['variant_title']?></div>
-                            <?php } else { ?>
+							<?php } else { ?>
                                 <div class="portal-item-detail-label"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
-                            <?php } ?>
+							<?php } ?>
                         </div>
                         <div>
                             <div class="portal-item-detail-label">Next Ship Date</div>
@@ -345,15 +345,15 @@ $shipment_list = $schedule->get()[0];
                         <div>
                             <div class="portal-item-detail-label">Frequency</div>
                             <div class="portal-item-detail-value">
-                                <?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+								<?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
                                     Every Month
-                                <?php } else if(empty($item['order_interval_frequency'])){ ?>
+								<?php } else if(empty($item['order_interval_frequency'])){ ?>
                                     Once
-                                <?php } else if($item['order_interval_frequency'] == '1'){ ?>
+								<?php } else if($item['order_interval_frequency'] == '1'){ ?>
                                     Every <?=$item['order_interval_unit']?>
-                                <?php } else { ?>
+								<?php } else { ?>
                                     Every <?=$item['order_interval_frequency']?> <?=$item['order_interval_unit']?>s
-                                <?php } ?>
+								<?php } ?>
                             </div>
                         </div>
                         <div>
@@ -361,47 +361,47 @@ $shipment_list = $schedule->get()[0];
                             <div class="portal-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
                         </div>
                     </div>
-                    <?php
-                    $this_sub_onetimes = [];
-                    foreach($schedule->onetimes() as $onetime){
-                        if(get_oli_attribute($onetime, '_parent_id')){
-                            $this_sub_onetimes[] = $onetime;
-                        }
-                    }
-                    if(!empty($this_sub_onetimes)){
-                    ?>
-                    <div class="portal-item-onetimes">
-                        <div class="sc-portal-title">One-time only</div>
-                        <div class="sc-portal-subtitle">These products ship in your next shipment only.</div>
-                        <?php foreach($this_sub_onetimes as $onetime){ ?>
-                        <div class="portal-item-details">
-                            <div class="portal-item-img">
-                                <?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
-                                    <img class="lazyload" data-src="{{ 'sc-logo.svg' | file_url }}" height="100" width="100" />
-                                <?php } else { ?>
-                                    {% if box_variant.image %}
-                                    <img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
-                                    {% else %}
-                                    <img class="lazyload" data-srcset="{{ box_product | img_url: '100x100' }} 1x, {{ box_product | img_url: '200x200' }} 2x" />
-                                    {% endif %}
-                                <?php } ?>
-                            </div>
-                            <div>
-                                <div class="portal-item-detail-label"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
-                                <div class="portal-item-quantity">
-                                    <span class="portal-quantity-miuns">-</span>
-                                    <span class="portal-quantity-amount"><?=$item['quantity']?></span>
-                                    <span class="portal-quantity-plus">+</span>
+					<?php
+					$this_sub_onetimes = [];
+					foreach($schedule->onetimes() as $onetime){
+						if(get_oli_attribute($onetime, '_parent_id')){
+							$this_sub_onetimes[] = $onetime;
+						}
+					}
+					if(!empty($this_sub_onetimes)){
+						?>
+                        <div class="portal-item-onetimes">
+                            <div class="sc-portal-title">One-time only</div>
+                            <div class="sc-portal-subtitle">These products ship in your next shipment only.</div>
+							<?php foreach($this_sub_onetimes as $onetime){ ?>
+                                <div class="portal-item-details">
+                                    <div class="portal-item-img">
+										<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+                                            <img class="lazyload" data-src="{{ 'sc-logo.svg' | file_url }}" height="100" width="100" />
+										<?php } else { ?>
+                                            {% if box_variant.image %}
+                                            <img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
+                                            {% else %}
+                                            <img class="lazyload" data-srcset="{{ box_product | img_url: '100x100' }} 1x, {{ box_product | img_url: '200x200' }} 2x" />
+                                            {% endif %}
+										<?php } ?>
+                                    </div>
+                                    <div>
+                                        <div class="portal-item-detail-label"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
+                                        <div class="portal-item-quantity">
+                                            <span class="portal-quantity-miuns">-</span>
+                                            <span class="portal-quantity-amount"><?=$item['quantity']?></span>
+                                            <span class="portal-quantity-plus">+</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="portal-item-detail-label">Price</div>
+                                        <div class="portal-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <div class="portal-item-detail-label">Price</div>
-                                <div class="portal-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
-                            </div>
+							<?php } ?>
                         </div>
-                        <?php } ?>
-                    </div>
-                    <? } ?>
+					<? } ?>
                     <div class="portal-item-actions">
                         <div class="action_button add-and-save">Add to this box and save!</div>
                     </div>
@@ -411,25 +411,25 @@ $shipment_list = $schedule->get()[0];
                                 <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
                                 <div class="portal-edit-control">
                                     <div id="edit-date-<?=$item['subscription_id']?>" class="fake-select show-calendar">
-                                        <?=date('M j', $item['scheduled_at_time'])?>
+										<?=date('M j', $item['scheduled_at_time'])?>
                                     </div>
                                 </div>
                                 <div class="calendar<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? ' one-month' : '' ?> floating-calendar hidden"></div>
                             </div>
-                            <?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
-                            <div class="portal-edit-select portal-edit-frequency">
-                                <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
-                                <div class="portal-edit-control">
-                                    <select class="edit-frequency" id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
-                                        <?php
-                                            $frequencies = [];
-                                            $product = get_product($db, $item['shopify_product_id']);
-                                            if($product['type'] == 'Body Bundle'){
-                                                $frequencies = [
-                                                    'onetime' => 'Once',
+							<?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+                                <div class="portal-edit-select portal-edit-frequency">
+                                    <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
+                                    <div class="portal-edit-control">
+                                        <select class="edit-frequency" id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
+											<?php
+											$frequencies = [];
+											$product = get_product($db, $item['shopify_product_id']);
+											if($product['type'] == 'Body Bundle'){
+												$frequencies = [
+													'onetime' => 'Once',
 													'1' => 'Monthly',
 													'2' => 'Every other month',
-                                                ];
+												];
 											} else if(strpos($product['type'], 'Body') !== false){
 												$frequencies = [
 													'1' => 'Monthly',
@@ -442,25 +442,25 @@ $shipment_list = $schedule->get()[0];
 													'9' => 'Every 9 months',
 												];
 											}
-                                            foreach($frequencies as $value => $label){
-                                        ?>
-                                            <option value="<?=$value?>"<?=$value == ($item['order_interval_frequency'] ?? 'onetime') ? ' selected' : '' ?>><?=$label?></option>
-                                        <?php } ?>
-                                    </select>
+											foreach($frequencies as $value => $label){
+												?>
+                                                <option value="<?=$value?>"<?=$value == ($item['order_interval_frequency'] ?? 'onetime') ? ' selected' : '' ?>><?=$label?></option>
+											<?php } ?>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <?php } ?>
+							<?php } ?>
                             <div class="portal-edit-links">
                                 <a class="portal-edit-cancel" href="#">Cancel</a>
                             </div>
                         </div>
-                        <?php if(!empty($scent_change_options)){ ?>
+						<?php if(!empty($scent_change_options)){ ?>
                             <div class="portal-edit-divider"></div>
                             <div class="portal-edit-row">
                                 <div class="portal-edit-select portal-edit-date">
                                     <div class="portal-edit-label">Change Your Scent</div>
                                     <div class="portal-edit-control">
-                                        <?php foreach($scent_change_options as $scent_change_option){ ?>
+										<?php foreach($scent_change_options as $scent_change_option){ ?>
                                             <div class="portal-swap-option">
                                                 <input type="radio" id="edit-scent-<?=$scent_change_option['shopify_variant_id']?>" class="swap-variant" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?>>
                                                 <label for="edit-scent-<?=$scent_change_option['shopify_variant_id']?>">
@@ -468,14 +468,170 @@ $shipment_list = $schedule->get()[0];
                                                     <div><?=$scent_change_option['title']?></div>
                                                 </label>
                                             </div>
-                                        <?php } ?>
+										<?php } ?>
                                     </div>
                                 </div>
                             </div>
-                        <?php } ?>
+						<?php } ?>
                     </form>
                 </div>
-            <?php } ?>
+			<?php } ?>
+        </div>
+        <div class="sc-portal-innercontainer">
+            <div class="sc-portal-title">Your One-times</div>
+            <div class="sc-portal-subtitle">Manage your onetimes here</div>
+			<?php
+			$stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
+                LEFT JOIN scents s ON va.scent_id=s.id
+                LEFT JOIN variants v ON va.variant_id=v.id
+                WHERE va.format_id=:format_id AND va.product_type_id=:product_type_id;");
+			foreach($schedule->onetime() as $item){
+				echo "<!--";
+				// TODO SC will sometimes be a onetime
+				$variant = get_variant($db, $item['shopify_variant_id']);
+				$scent_change_options = [];
+				if(!empty($variant['attributes'])){
+					$stmt_scent_change_options->execute([
+						'format_id' => $variant['attributes']['format_id'],
+						'product_type_id' => $variant['attributes']['product_type_id'],
+					]);
+					$scent_change_options = $stmt_scent_change_options->fetchAll();
+				}
+				print_r($item);
+				?>
+                -->
+                {% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
+                {% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
+                {% assign box_variant = box_product.variants.first %}
+                {% for svariant in box_product.variants %}
+                {% if svariant.id == picked_variant_id %}
+                {% assign box_variant = svariant %}
+                {% endif %}
+                {% endfor %}
+                <div class="portal-item"
+                     data-subscription-id="<?=$item['subscription_id']?>"
+                     data-ship-time="<?=$item['scheduled_at_time']?>"
+					<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+                        data-master-image="{{ 'sc-logo.svg' | file_url }}"
+					<?php } else { ?>
+                        data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
+					<?php } ?>
+                     data-product-name="<?=$item['product_title']?>"
+                >
+                    <div class="portal-item-edit">Edit</div>
+                    <div class="portal-item-details">
+                        <div class="portal-item-img">
+							<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+                                <img class="lazyload" data-src="{{ 'sc-logo.svg' | file_url }}" height="100" width="100" />
+							<?php } else { ?>
+                                {% if box_variant.image %}
+                                <img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
+                                {% else %}
+                                <img class="lazyload" data-srcset="{{ box_product | img_url: '100x100' }} 1x, {{ box_product | img_url: '200x200' }} 2x" />
+                                {% endif %}
+							<?php } ?>
+                        </div>
+                        <div>
+							<?php if(is_ac_followup_lineitem($item)){ ?>
+                                <div class="portal-item-detail-label"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
+                                {% if box_variant.title != 'Default Title' %}<div class="portal-item-detail-value">{{ box_variant.title }}</div>{% endif %}
+							<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
+                                <div class="portal-item-detail-label">Skylar Scent Club</div>
+                                <div class="portal-item-detail-value">{{ box_product.variants.first.title }}</div>
+							<?php } else if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+                                <div class="portal-item-detail-label">Skylar Scent Club</div>
+                                <div class="portal-item-detail-value"></div>
+							<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
+                                <div class="portal-item-detail-label"><?=$item['product_title']?></div>
+                                <div class="portal-item-detail-value"><?=$item['variant_title']?></div>
+							<?php } else { ?>
+                                <div class="portal-item-detail-label"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
+							<?php } ?>
+                        </div>
+                        <div>
+                            <div class="portal-item-detail-label">Ship Date</div>
+                            <div class="portal-item-detail-value"><?=date('M j', $item['scheduled_at_time'])?></div>
+                        </div>
+                        <div>
+                            <div class="portal-item-detail-label">Frequency</div>
+                            <div class="portal-item-detail-value">Once</div>
+                        </div>
+                        <div>
+                            <div class="portal-item-detail-label">Price</div>
+                            <div class="portal-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
+                        </div>
+                    </div>
+                    <form class="portal-item-edit-container">
+                        <div class="portal-edit-row">
+                            <div class="portal-edit-select portal-edit-date">
+                                <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
+                                <div class="portal-edit-control">
+                                    <div id="edit-date-<?=$item['subscription_id']?>" class="fake-select show-calendar">
+										<?=date('M j', $item['scheduled_at_time'])?>
+                                    </div>
+                                </div>
+                                <div class="calendar<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? ' one-month' : '' ?> floating-calendar hidden"></div>
+                            </div>
+							<?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+                                <div class="portal-edit-select portal-edit-frequency">
+                                    <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
+                                    <div class="portal-edit-control">
+                                        <select class="edit-frequency" id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
+											<?php
+											$frequencies = [];
+											$product = get_product($db, $item['shopify_product_id']);
+											if($product['type'] == 'Body Bundle'){
+												$frequencies = [
+													'onetime' => 'Once',
+													'1' => 'Monthly',
+													'2' => 'Every other month',
+												];
+											} else if(strpos($product['type'], 'Body') !== false){
+												$frequencies = [
+													'1' => 'Monthly',
+													'2' => 'Every other month',
+												];
+											} else {
+												$frequencies = [
+													'onetime' => 'Once',
+													'6' => 'Every 6 months',
+													'9' => 'Every 9 months',
+												];
+											}
+											foreach($frequencies as $value => $label){
+												?>
+                                                <option value="<?=$value?>"<?=$value == ($item['order_interval_frequency'] ?? 'onetime') ? ' selected' : '' ?>><?=$label?></option>
+											<?php } ?>
+                                        </select>
+                                    </div>
+                                </div>
+							<?php } ?>
+                            <div class="portal-edit-links">
+                                <a class="portal-edit-cancel" href="#">Cancel</a>
+                            </div>
+                        </div>
+						<?php if(!empty($scent_change_options)){ ?>
+                            <div class="portal-edit-divider"></div>
+                            <div class="portal-edit-row">
+                                <div class="portal-edit-select portal-edit-date">
+                                    <div class="portal-edit-label">Change Your Scent</div>
+                                    <div class="portal-edit-control">
+										<?php foreach($scent_change_options as $scent_change_option){ ?>
+                                            <div class="portal-swap-option">
+                                                <input type="radio" id="edit-scent-<?=$scent_change_option['shopify_variant_id']?>" class="swap-variant" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?>>
+                                                <label for="edit-scent-<?=$scent_change_option['shopify_variant_id']?>">
+                                                    <img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
+                                                    <div><?=$scent_change_option['title']?></div>
+                                                </label>
+                                            </div>
+										<?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+						<?php } ?>
+                    </form>
+                </div>
+			<?php } ?>
         </div>
     </div>
 </div>
