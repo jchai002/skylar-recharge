@@ -561,7 +561,7 @@ print_r($schedule->get());
                 <img src="" />
             </div>
             <div class="sc-skip-options">
-                <a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id')); return false;">Yes, Remove</a>
+                <a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id')).then(function(){AccountController.load_schedule();}); return false;">Yes, Remove</a>
                 <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
             </div>
         </div>
