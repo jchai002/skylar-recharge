@@ -18,7 +18,7 @@ $price = get_subscription_price($product, $variant);
 $res_id = false;
 $properties = [];
 if(!empty($_REQUEST['parent_id'])){
-	$properties['parent_id'] = $_REQUEST['parent_id'];
+	$properties['_parent_id'] = $_REQUEST['parent_id'];
 }
 if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/onetimes', [

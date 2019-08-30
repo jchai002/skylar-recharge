@@ -1592,7 +1592,7 @@ function get_oli_attribute($line_item, $attribute_name){
 		return null;
 	}
 	if(array_key_exists($attribute_name, $line_item['properties'])){
-		return $line_item['properties']['_ac_product'];
+		return $line_item['properties'][$attribute_name];
 	}
 	// Check if it's an indexed array (with name and value properties)
 	if(array_keys($line_item['properties'])[0] === 0){

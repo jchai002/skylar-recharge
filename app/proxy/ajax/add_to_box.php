@@ -34,7 +34,7 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 $price = get_subscription_price($product, $variant, !empty($main_sub));
 $properties = [];
 if(!empty($_REQUEST['parent_id'])){
-	$properties['parent_id'] = $_REQUEST['parent_id'];
+	$properties['_parent_id'] = $_REQUEST['parent_id'];
 }
 if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 	$res = $rc->post('/addresses/'.$charge['address_id'].'/onetimes', [
