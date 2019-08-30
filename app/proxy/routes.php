@@ -127,7 +127,7 @@ $router->route('/subscriptions\/update-frequency$/i', function() use(&$json_outp
 	require('ajax/update_frequency.php');
 	return true;
 });
-$router->route('/subscriptions\/update-date/i', function() use(&$json_output) {
+$router->route('/subscriptions\/update-date$/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
 		echo json_encode([

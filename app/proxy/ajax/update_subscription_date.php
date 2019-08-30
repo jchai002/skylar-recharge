@@ -25,7 +25,7 @@ if($subscription['status'] == 'ONETIME'){
 		'date' => $_REQUEST['date']
 	]);
 	if(!empty($res['subscription'])){
-		insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
+		insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
 	}
 }
 
