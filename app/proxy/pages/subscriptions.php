@@ -754,10 +754,14 @@ $shipment_list = $schedule->get()[0];
         $('.portal-item .edit-frequency').change(function(e){
             AccountController.update_frequency($(this).closest('.portal-item').data('subscription-id'), e.target.value);
         });
-        $('.portal-item .show-calendar').click(function(e){
+        $('.portal-item .show-calendar').click(function(){
             $(this).closest('.portal-edit-date').find('.calendar').slideToggle();
         });
-
+        $('.portal-item .portal-edit-cancel').click(.click(function(e){
+            e.preventDefault();
+            AccountController.selected_box_item = $(this).closest('.sc-box-item');
+            AccountController.show_cancel_save();
+        });)
 
         $('.sc-edit-date').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
