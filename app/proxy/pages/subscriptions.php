@@ -768,7 +768,7 @@ $shipment_list = $schedule->get()[0];
         });
         $('.portal-item .portal-edit-cancel').click(function(e){
             e.preventDefault();
-            AccountController.selected_box_item = $(this).closest('.sc-box-item');
+            AccountController.selected_box_item = $(this).closest('.portal-item');
             $('.sc-skip-image img').attr('src', AccountController.selected_box_item.data('master-image'));
             $('#sc-remove-confirm-modal .sc-modal-subtitle').html(AccountController.selected_box_item.data('product-name'));
             $.featherlight.close();
