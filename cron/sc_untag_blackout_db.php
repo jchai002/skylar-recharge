@@ -3,7 +3,7 @@ require_once(__DIR__.'/../includes/config.php');
 
 $sc = new ShopifyClient();
 
-$stmt = $db->query("SELECT shopify_id as id, tags FROM orders WHERE tags LIKE '%HOLD: Scent%'");
+$stmt = $db->query("SELECT shopify_id as id, tags FROM orders WHERE tags LIKE '%HOLD: Scent Club Blackout%'");
 
 foreach($stmt->fetchAll() as $order){
 
@@ -20,5 +20,4 @@ foreach($stmt->fetchAll() as $order){
 		'tags' => implode(', ', $tags),
 	]]);
 	echo " ".$res['tags'].PHP_EOL;
-//	die();
 }
