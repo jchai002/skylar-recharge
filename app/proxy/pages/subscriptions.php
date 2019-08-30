@@ -761,7 +761,7 @@ $shipment_list = $schedule->get()[0];
             e.preventDefault();
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
             AccountController.show_cancel_save();
-        });)
+        });
 
         $('.sc-edit-date').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
