@@ -52,7 +52,9 @@ foreach($charges as $index=>$charge){
     }
 	echo sc_calculate_next_charge_date($db, $rc, $charge['address_id']).PHP_EOL;
 	if($index % 20 == 0){
-		echo "Updated: ".$index."/".count($charges)." Rate: ".($index / (microtime(true) - $start_time))." charges/s".PHP_EOL;
+		$charges_per_sec = ($index / (microtime(true) - $start_time));
+		$time = time() + (count($charges)-$index)*($index / (microtime(true) - $start_time));
+		echo "Updated: ".$index."/".count($charges)." Rate: ".$charges_per_sec." charges/s, Estimated finish: ".date('H:i:s',$time).PHP_EOL;
 	}
 }
 
