@@ -612,79 +612,6 @@ $shipment_list = $schedule->get()[0];
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
     $(document).ready(function(){
-        $('.remove-discount-link').click(function(e){
-            e.preventDefault();
-            $('.loader').fadeIn();
-            var data = $('.sc-add-discount').serializeJSON();
-            $.extend(data, AccountController.get_query_data());
-            $.ajax({
-                url: '/tools/skylar/subscriptions/update-discount',
-                data: data,
-                success: function(data){
-                    console.log(data);
-                    if(!data.success){
-                        $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
-                        $('.loader').fadeOut();
-                    } else {
-                        AccountController.load_subscriptions();
-                    }
-                }
-            });
-        });
-        $('.sc-add-discount').submit(function(e){
-            e.preventDefault();
-            $('.sc-discount-error').remove();
-            var btn = $(this).find('.action_button');
-            btn.attr('disabled', 'disabled').addClass('disabled');
-            btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
-            var data = $(this).serializeJSON();
-            $.extend(data, AccountController.get_query_data());
-            $('.loader').fadeIn();
-            $.ajax({
-                url: '/tools/skylar/subscriptions/update-discount',
-                data: data,
-                success: function(data){
-                    console.log(data);
-                    if(!data.success){
-                        $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
-                        btn.prop('disabled', false).removeClass('disabled');
-                        $('.loader').fadeOut();
-                    } else {
-                        AccountController.load_subscriptions();
-                    }
-                }
-            });
-        });
-        $('.sc-addtobox-form').submit(function(e){
-            e.preventDefault();
-            if($(this).find('.sc-frequency-options').is(':animated')){
-                return;
-            }
-            if(!$(this).find('.sc-frequency-options').is(':visible')){
-                $(this).find('.sc-frequency-options').slideDown('fast');
-                return;
-            }
-            var btn = $(this).find('.action_button');
-            btn.attr('disabled', 'disabled').addClass('disabled');
-            btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
-            var data = $(this).serializeJSON();
-            data.product_id = $(this).find('.sc-size-select option:selected').data('product-id');
-            $.extend(data, AccountController.get_query_data());
-            $('.loader').fadeIn();
-            $.ajax({
-                url: '/tools/skylar/subscriptions/add-to-box',
-                data: data,
-                success: function(data){
-                    console.log(data);
-                    if(data.error){
-                        alert(data.error);
-                        btn.prop('disabled', false).removeClass('disabled');
-                    } else {
-                        AccountController.load_subscriptions();
-                    }
-                }
-            });
-        });
         $('.skip-reason-form input, .skip-reason-form textarea').change(function(){
             if(!AccountController.get_skip_reason()){
                 $('.skip-confirm-button').addClass('disabled');
@@ -805,16 +732,16 @@ $shipment_list = $schedule->get()[0];
             AccountController.selected_box_item = $(this).closest('.portal-item');
             AccountController.show_add_and_save();
         });
-        $('.portal-item .swap-variant').change(function(e){
+        $('.portal-item .swap-variant').unbind().change(function(e){
             AccountController.swap_variant($(this).closest('.portal-item').data('subscription-id'), e.target.value);
         });
-        $('.portal-item .edit-frequency').change(function(e){
+        $('.portal-item .edit-frequency').unbind().change(function(e){
             AccountController.update_frequency($(this).closest('.portal-item').data('subscription-id'), e.target.value);
         });
-        $('.portal-item .show-calendar').click(function(){
+        $('.portal-item .show-calendar').unbind().click(function(){
             $(this).closest('.portal-edit-date').find('.calendar').slideToggle();
         });
-        $('.portal-item .portal-edit-cancel').click(function(e){
+        $('.portal-item .portal-edit-cancel').unbind().click(function(e){
             e.preventDefault();
             AccountController.selected_box_item = $(this).closest('.portal-item');
             $('.sc-skip-image img').attr('src', AccountController.selected_box_item.data('master-image'));
@@ -823,6 +750,80 @@ $shipment_list = $schedule->get()[0];
             $.featherlight($('#sc-remove-confirm-modal'), {
                 variant: 'scent-club',
                 afterOpen: $.noop, // Fix dumb app bug
+            });
+        });
+
+        $('.remove-discount-link').unbind().click(function(e){
+            e.preventDefault();
+            $('.loader').fadeIn();
+            var data = $('.sc-add-discount').serializeJSON();
+            $.extend(data, AccountController.get_query_data());
+            $.ajax({
+                url: '/tools/skylar/subscriptions/update-discount',
+                data: data,
+                success: function(data){
+                    console.log(data);
+                    if(!data.success){
+                        $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
+                        $('.loader').fadeOut();
+                    } else {
+                        AccountController.load_subscriptions();
+                    }
+                }
+            });
+        });
+        $('.sc-add-discount').unbind().submit(function(e){
+            e.preventDefault();
+            $('.sc-discount-error').remove();
+            var btn = $(this).find('.action_button');
+            btn.attr('disabled', 'disabled').addClass('disabled');
+            btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
+            var data = $(this).serializeJSON();
+            $.extend(data, AccountController.get_query_data());
+            $('.loader').fadeIn();
+            $.ajax({
+                url: '/tools/skylar/subscriptions/update-discount',
+                data: data,
+                success: function(data){
+                    console.log(data);
+                    if(!data.success){
+                        $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
+                        btn.prop('disabled', false).removeClass('disabled');
+                        $('.loader').fadeOut();
+                    } else {
+                        AccountController.load_subscriptions();
+                    }
+                }
+            });
+        });
+        $('.sc-addtobox-form').unbind().submit(function(e){
+            e.preventDefault();
+            if($(this).find('.sc-frequency-options').is(':animated')){
+                return;
+            }
+            if(!$(this).find('.sc-frequency-options').is(':visible')){
+                $(this).find('.sc-frequency-options').slideDown('fast');
+                return;
+            }
+            var btn = $(this).find('.action_button');
+            btn.attr('disabled', 'disabled').addClass('disabled');
+            btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
+            var data = $(this).serializeJSON();
+            data.product_id = $(this).find('.sc-size-select option:selected').data('product-id');
+            $.extend(data, AccountController.get_query_data());
+            $('.loader').fadeIn();
+            $.ajax({
+                url: '/tools/skylar/subscriptions/add-to-box',
+                data: data,
+                success: function(data){
+                    console.log(data);
+                    if(data.error){
+                        alert(data.error);
+                        btn.prop('disabled', false).removeClass('disabled');
+                    } else {
+                        AccountController.load_subscriptions();
+                    }
+                }
             });
         });
 
