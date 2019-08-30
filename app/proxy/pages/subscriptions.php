@@ -368,13 +368,13 @@ $shipment_list = $schedule->get()[0];
 							$this_sub_onetimes[] = $onetime;
 						}
 					}
-
+/*
 					if(!empty($this_sub_onetimes)){
 						?>
                         <div class="portal-item-onetimes">
                             <div class="sc-portal-title">One-time only</div>
                             <div class="sc-portal-subtitle">These products ship in your next shipment only.</div>
-							<?php /* foreach($this_sub_onetimes as $onetime){ ?>
+							<?php foreach($this_sub_onetimes as $onetime){ ?>
                                 <div class="portal-item-details">
                                     <div class="portal-item-img">
 										<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
@@ -400,9 +400,9 @@ $shipment_list = $schedule->get()[0];
                                         <div class="portal-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
                                     </div>
                                 </div>
-							<?php } */ ?>
+							<?php } ?>
                         </div>
-					<? } ?>
+					<? } */?>
                     <div class="portal-item-actions">
                         <div class="action_button add-and-save">Add to this box and save!</div>
                     </div>
