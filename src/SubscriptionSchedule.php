@@ -90,6 +90,15 @@ class SubscriptionSchedule {
 				$this->subscriptions($res['subscriptions']);
 			}
 		}
+		if(empty($this->onetimes)){
+			$res = $this->rc->get('/subscriptions', [
+				'customer_id' => $this->rc_customer_id,
+				'status' => 'ONETIME',
+			]);
+			if(!empty($res['onetimes'])){
+				$this->onetimes($res['subscriptions']);
+			}
+		}
 		if(empty($this->orders)){
 			$res = $this->rc->get('/orders', [
 				'customer_id' => $this->rc_customer_id,
