@@ -688,7 +688,7 @@ function insert_update_rc_subscription(PDO $db, $recharge_subscription, Recharge
 		'expire_after_charges' => $recharge_subscription['expire_after_specific_number_of_charges'] ?? null,
 		'cancellation_reason' => $recharge_subscription['cancellation_reason'] ?? null,
 		'max_retries_reached' => $recharge_subscription['max_retries_reached'] ?? null,
-		'next_charge_scheduled_at' => date('Y-m-d', strtotime($recharge_subscription['next_charge_scheduled_at'])),
+		'next_charge_scheduled_at' => empty($recharge_subscription['next_charge_scheduled_at']) ? null : date('Y-m-d', strtotime($recharge_subscription['next_charge_scheduled_at'])),
 		'created_at' => $recharge_subscription['created_at'],
 		'updated_at' => $recharge_subscription['updated_at'],
 		'cancelled_at' => $cancelled_at,
