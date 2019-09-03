@@ -63,6 +63,9 @@ class SubscriptionSchedule {
 		if(!is_null($onetimes_to_set)){
 			$this->onetimes = [];
 			foreach($onetimes_to_set as $onetime){
+				if($onetime['status'] != 'ONETIME'){
+					continue;
+				}
 				$this->onetimes[$onetime['id']] = $this->normalize_onetime($onetime);
 			}
 		}
