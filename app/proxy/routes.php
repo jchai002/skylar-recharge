@@ -3,10 +3,6 @@
 $router = new Router();
 $router->route('',function() use($db, $rc){
 	require_customer_id(function() use($db, $rc){
-		if(!empty($_REQUEST['theme_id']) && $_REQUEST['theme_id'] == '73087418455'){
-			require('pages/subscriptions.php');
-			return true;
-		}
 		if(!empty(sc_get_main_subscription($db, $rc, [
 			'shopify_customer_id' => intval($_REQUEST['c']),
 			'status' => 'ACTIVE'
@@ -24,6 +20,10 @@ $router->route('',function() use($db, $rc){
 								LIMIT 1");
 		$stmt->execute([$_REQUEST['c']]);
 		if($stmt->rowCount() > 0){
+			if(!empty($_REQUEST['theme_id']) && $_REQUEST['theme_id'] == '73087418455'){
+				require('pages/subscriptions.php');
+				return true;
+			}
 			require('pages/schedule.php');
 			return true;
 		}
@@ -39,6 +39,12 @@ $router->route('/members$/i', function() {
 	return true;
 });
 $router->route('/schedule/i', function() {
+	if(!empty($_REQUEST['theme_id']) && $_REQUEST['theme_id'] == '73087418455'){
+		require_customer_id(function(){
+			require('pages/subscriptions.php');
+		});
+		return true;
+	}
 	require_customer_id(function(){
 		require('pages/schedule.php');
 	});
