@@ -267,7 +267,7 @@ $shipment_list = $schedule->get()[0];
 			<?php } ?>
         </div>
         <div class="portal-innercontainer">
-            <div class="sc-portal-title">Your Subscriptions</div>
+            <div class="sc-portal-title">Your Subscriptions <img class="lazyload lazypreload" height="21" data-src="{{ 'subscription-icon.svg' | file_url' }}" /></div>
             <div class="sc-portal-subtitle">Manage your subscriptions here</div>
 			<?php
 			$stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
@@ -332,7 +332,7 @@ $shipment_list = $schedule->get()[0];
                      data-product-name="<?=$item['product_title']?>"
                 >
                     <div class="portal-item-edit">Edit</div>
-                    <div class="portal-item-subscribed">Subscribed</div>
+                    <div class="portal-item-subscribed">Subscribed <img class="lazyload lazypreload" height="15" data-src="{{ 'subscription-icon.svg' | file_url' }}" /></div>
                     <div class="portal-item-details">
                         <div class="portal-item-img">
 							<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
