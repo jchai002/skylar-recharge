@@ -488,7 +488,11 @@ $shipment_list = $schedule->get()[0];
                                             <div class="portal-swap-option">
                                                 <input type="radio" id="edit-scent-<?=$scent_change_option['shopify_variant_id']?>" class="swap-variant" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?>>
                                                 <label for="edit-scent-<?=$scent_change_option['shopify_variant_id']?>">
-                                                    <img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
+													<?php if(!empty($scent_change_option['icon'])){ ?>
+														<img class="lazyload lazypreload" data-src="<?=$scent_change_option['icon']?>" />
+													<?php } else { ?>
+														<img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
+													<?php } ?>
                                                     <div><?=$scent_change_option['title']?></div>
                                                 </label>
                                             </div>
