@@ -510,6 +510,9 @@ $shipment_list = $schedule->get()[0];
                 LEFT JOIN variants v ON va.variant_id=v.id
                 WHERE va.format_id=:format_id AND va.product_type_id=:product_type_id;");
 			foreach($schedule->onetimes() as $item){
+				if($item['status'] != 'ONETIME'){
+					continue;
+				}
 			    if(!empty(get_oli_attribute($item, '_parent_id')) && !in_array(get_oli_attribute($item, '_parent_id'), $schedule->subscriptions())){
 			        continue;
                 }
