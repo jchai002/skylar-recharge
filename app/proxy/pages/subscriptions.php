@@ -503,7 +503,7 @@ $shipment_list = $schedule->get()[0];
         </div>
 		<?php
 		$other_onetimes = [];
-		foreach($schedule->onetimes() as $onetime){
+		foreach($schedule->onetimes() as $item){
 			if($item['status'] != 'ONETIME'){
 				continue;
 			}
@@ -514,7 +514,7 @@ $shipment_list = $schedule->get()[0];
 				// TODO: Should be only this month
 				continue;
 			}
-			$other_onetimes[] = $onetime;
+			$other_onetimes[] = $item;
 		}
 		if(!empty($other_onetimes)){
 		?>
