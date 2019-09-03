@@ -86,7 +86,8 @@ $shipment_list = $schedule->get()[0];
 					if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
 						$has_sc = true;
 					}
-					?>
+				}
+				?>
 				<div class="sc-upcoming-shipment">
 					<div class="sc-box-info">
 						<span class="sc-box-shiplabel">Shipping Date</span>
@@ -263,7 +264,6 @@ $shipment_list = $schedule->get()[0];
 						<?php } ?>
 					<?php } ?>
 				</div>
-				<?php } ?>
 			<?php } ?>
         </div>
         <div class="portal-innercontainer">
@@ -278,8 +278,32 @@ $shipment_list = $schedule->get()[0];
 				echo "<!--";
 				// TODO SC will sometimes be a onetime
 				$variant = get_variant($db, $item['shopify_variant_id']);
-				$scent_change_options = [];
-				if(!empty($variant['attributes'])){
+				$scent_change_options = [];if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
+					$scent_change_options = [
+						['code' => 'arrow', 'title' => 'Arrow', 'shopify_variant_id' => '19706737229911'],
+						['code' => 'capri', 'title' => 'Capri', 'shopify_variant_id' => '19706737262679'],
+						['code' => 'coral', 'title' => 'Coral', 'shopify_variant_id' => '19706737295447'],
+						['code' => 'isle', 'title' => 'Isle', 'shopify_variant_id' => '19706737328215'],
+						['code' => 'meadow', 'title' => 'Meadow', 'shopify_variant_id' => '19706737360983'],
+						['code' => 'willow', 'title' => 'Willow', 'shopify_variant_id' => '19706737393751'],
+					];
+					$monthly_scent = sc_get_monthly_scent($db, $shipment_list['ship_date_time'], is_admin_address($item['address_id']));
+					if(!empty($monthly_scent)){
+						$scent_change_options[] = [
+							'code' => $monthly_scent['handle'],
+							'title' => $monthly_scent['variant_title'],
+							'shopify_variant_id' => $monthly_scent['shopify_variant_id'],
+							'icon' => '{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}'
+						];
+					} else {
+						$scent_change_options[] = [
+							'code' => 'scent-club',
+							'title' => 'Monthly Scent',
+							'shopify_variant_id' => 19787922014295,
+							'icon' => '{{ \'sc-logo.svg\' | file_url }}'
+						];
+					}
+				} else if(!empty($variant['attributes'])){
 					$stmt_scent_change_options->execute([
 						'format_id' => $variant['attributes']['format_id'],
 						'product_type_id' => $variant['attributes']['product_type_id'],
@@ -457,14 +481,18 @@ $shipment_list = $schedule->get()[0];
 						<?php if(!empty($scent_change_options)){ ?>
                             <div class="portal-edit-divider"></div>
                             <div class="portal-edit-row">
-                                <div class="portal-edit-select portal-edit-date">
+                                <div class="portal-edit-select portal-edit-scent">
                                     <div class="portal-edit-label">Change Your Scent</div>
                                     <div class="portal-edit-control">
 										<?php foreach($scent_change_options as $scent_change_option){ ?>
                                             <div class="portal-swap-option">
-                                                <input type="radio" id="edit-scent-<?=$scent_change_option['shopify_variant_id']?>" class="swap-variant" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?>>
+                                                <input type="radio" id="edit-scent-<?=$scent_change_option['shopify_variant_id']?>" class="swap-variant" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?><?= is_scent_club_month($item['shopify_product_id']) && is_scent_club_month($scent_change_option['shopify_variant_id']) ? ' checked' : '' ?><?= is_scent_club($item['shopify_product_id']) && is_scent_club($scent_change_option['shopify_variant_id']) ? ' checked' : '' ?>>
                                                 <label for="edit-scent-<?=$scent_change_option['shopify_variant_id']?>">
-                                                    <img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
+													<?php if(!empty($scent_change_option['icon'])){ ?>
+														<img class="lazyload lazypreload" data-src="<?=$scent_change_option['icon']?>" />
+													<?php } else { ?>
+														<img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
+													<?php } ?>
                                                     <div><?=$scent_change_option['title']?></div>
                                                 </label>
                                             </div>
@@ -477,6 +505,23 @@ $shipment_list = $schedule->get()[0];
                 </div>
 			<?php } ?>
         </div>
+		<?php
+		$other_onetimes = [];
+		foreach($schedule->onetimes() as $item){
+			if($item['status'] != 'ONETIME'){
+				continue;
+			}
+			if(!empty(get_oli_attribute($item, '_parent_id')) && !in_array(get_oli_attribute($item, '_parent_id'), $schedule->subscriptions())){
+				continue;
+			}
+			if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){
+				// TODO: Should be only this month
+				continue;
+			}
+			$other_onetimes[] = $item;
+		}
+		if(!empty($other_onetimes)){
+		?>
         <div class="portal-innercontainer">
             <div class="sc-portal-title">Your One-times</div>
             <div class="sc-portal-subtitle">Manage your onetimes here</div>
@@ -485,12 +530,8 @@ $shipment_list = $schedule->get()[0];
                 LEFT JOIN scents s ON va.scent_id=s.id
                 LEFT JOIN variants v ON va.variant_id=v.id
                 WHERE va.format_id=:format_id AND va.product_type_id=:product_type_id;");
-			foreach($schedule->onetimes() as $item){
-			    if(!empty(get_oli_attribute($item, '_parent_id')) && !in_array(get_oli_attribute($item, '_parent_id'), $schedule->subscriptions())){
-			        continue;
-                }
+			foreach($other_onetimes as $item){
 				echo "<!--";
-				// TODO SC will sometimes be a onetime
 				$variant = get_variant($db, $item['shopify_variant_id']);
 				$scent_change_options = [];
 				if(!empty($variant['attributes'])){
@@ -616,7 +657,7 @@ $shipment_list = $schedule->get()[0];
 						<?php if(!empty($scent_change_options)){ ?>
                             <div class="portal-edit-divider"></div>
                             <div class="portal-edit-row">
-                                <div class="portal-edit-select portal-edit-date">
+                                <div class="portal-edit-select portal-edit-scent">
                                     <div class="portal-edit-label">Change Your Scent</div>
                                     <div class="portal-edit-control">
                                         <?php foreach($scent_change_options as $scent_change_option){ ?>
@@ -636,6 +677,7 @@ $shipment_list = $schedule->get()[0];
                 </div>
 			<?php } ?>
         </div>
+		<?php } ?>
     </div>
 </div>
 <div class="hidden">

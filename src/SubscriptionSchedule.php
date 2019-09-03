@@ -63,6 +63,9 @@ class SubscriptionSchedule {
 		if(!is_null($onetimes_to_set)){
 			$this->onetimes = [];
 			foreach($onetimes_to_set as $onetime){
+				if($onetime['status'] != 'ONETIME'){
+					continue;
+				}
 				$this->onetimes[$onetime['id']] = $this->normalize_onetime($onetime);
 			}
 		}
@@ -85,6 +88,15 @@ class SubscriptionSchedule {
 			]);
 			if(!empty($res['subscriptions'])){
 				$this->subscriptions($res['subscriptions']);
+			}
+		}
+		if(empty($this->onetimes)){
+			$res = $this->rc->get('/subscriptions', [
+				'customer_id' => $this->rc_customer_id,
+				'status' => 'ONETIME',
+			]);
+			if(!empty($res['onetimes'])){
+				$this->onetimes($res['subscriptions']);
 			}
 		}
 		if(empty($this->orders)){
