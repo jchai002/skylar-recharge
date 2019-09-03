@@ -86,7 +86,8 @@ $shipment_list = $schedule->get()[0];
 					if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
 						$has_sc = true;
 					}
-					?>
+				}
+				?>
 				<div class="sc-upcoming-shipment">
 					<div class="sc-box-info">
 						<span class="sc-box-shiplabel">Shipping Date</span>
@@ -263,7 +264,6 @@ $shipment_list = $schedule->get()[0];
 						<?php } ?>
 					<?php } ?>
 				</div>
-				<?php } ?>
 			<?php } ?>
         </div>
         <div class="portal-innercontainer">
