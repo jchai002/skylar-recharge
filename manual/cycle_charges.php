@@ -17,7 +17,7 @@ $f = fopen(__DIR__.'/charges.csv', 'r');
 $headers = fgetcsv($f);
 
 $cookie_token = '29422|7cbe63b01b7aec3588970e96fec94d101db71f8b0f72623bd7d3d2b87095ca3fcc767803605372a39b2ec76d62438ca4fa918f7b2ee735e6af4efb3505169b49';
-$cookie_session = '.eJxdUMGOgjAQ_ZXNnE2QCu5KshejSzi0jUmRtBeCUGjBIgGNUuO_b3f3tod5k_cy72VmnpDXo5wURHVxnuQCcl1B9IS3E0RAs6Mh2d5SVhluiBG7xuc2sdgqJVhnue0CbLcaZ4cVbtMHz9IViZM7jr_OnKUzZcTgtupwJozz3UkmNGYdcjMh2ZWBy0MEHRVlyUxYGlLHaUwMZeqM2_IuGFEixjNBGJF2b8Vua3h7sIIJxVH6wDaZcevKpJ_wcrsPcjRFL_srRNfx5q4ZZamKsZF5Lx9OBK_SRdNfpqsuJ69UsuzySV0GXc-u62HQfeP9OTx_7a8272u0hH8x-UlOP1BfRgmRH6790A-Wy48F3CY5_v4P0CZACF7f1NV2dg.EAT70g.dxvsIrvEb8-kt-ekrAbFlCEQ5OI';
+$cookie_session = '.eJxdkEtrwzAQhP9K2XMgtlzXiaEHg2LTgCQoso10MU6s-O0WOcGPkP9etZBLL8uyzCzzzR2yi1ZjBf5V39QGsroA_w4vJ_BBoHhmuOopD1wZ0Zpi4hBeLiyilVg_FtKELUvFQnDYEZT0Rr_QNXZEGjsMC0visBbrwexhK5uioWnSEfzZyp52FHcV4cSi0bEh_FgxfF7N_4li2csoqRkPZoqIxSKBZHqYKG9thsvJeFzSJ41sglmsocmU1ITH7_Aw2b-V7vNBDdcnjVbnKtelygY1myNs86IwtKMat2jvIsfbIfinyk5q_B2XL63At903D1ke2tkbuI1K_9UDaP-KEDx-AFExZyw.EEtAbQ.kBuDMnIfSd8v3Sx6YdoOFrjLC8E';
 $last_charge_id = 0;
 $rownum = 0;
 $starttime = microtime(true);
@@ -27,8 +27,8 @@ while($row = fgetcsv($f)){
 
 	// Check if the charge is scent club
     if(!in_array($row['item sku'],[
-        '10450501-102',
-        '10450502-104',
+        '10450501-105',
+        '10450501-106',
     ])){
         continue;
     }
