@@ -105,7 +105,7 @@ foreach($order['line_items'] as $line_item){
 			continue;
 		}
 		$sc_product = $stmt->fetch();
-		if(time() < strtotime($sc_product['sc_date']) + 6.5*60*60){ // Hold until 6:30 am
+		if(time() < offset_date_skip_weekend(strtotime($sc_product['sc_date'])) + 6*60*60){ // Hold until 6 am
 			$scent_club_hold = true;
 		}
 	}
