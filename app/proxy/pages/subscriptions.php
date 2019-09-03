@@ -501,6 +501,23 @@ $shipment_list = $schedule->get()[0];
                 </div>
 			<?php } ?>
         </div>
+		<?php
+		$other_onetimes = [];
+		foreach($schedule->onetimes() as $onetime){
+			if($item['status'] != 'ONETIME'){
+				continue;
+			}
+			if(!empty(get_oli_attribute($item, '_parent_id')) && !in_array(get_oli_attribute($item, '_parent_id'), $schedule->subscriptions())){
+				continue;
+			}
+			if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){
+				// TODO: Should be only this month
+				continue;
+			}
+			$other_onetimes[] = $onetime;
+		}
+		if(!empty($other_onetimes)){
+		?>
         <div class="portal-innercontainer">
             <div class="sc-portal-title">Your One-times</div>
             <div class="sc-portal-subtitle">Manage your onetimes here</div>
@@ -509,17 +526,7 @@ $shipment_list = $schedule->get()[0];
                 LEFT JOIN scents s ON va.scent_id=s.id
                 LEFT JOIN variants v ON va.variant_id=v.id
                 WHERE va.format_id=:format_id AND va.product_type_id=:product_type_id;");
-			foreach($schedule->onetimes() as $item){
-				if($item['status'] != 'ONETIME'){
-					continue;
-				}
-			    if(!empty(get_oli_attribute($item, '_parent_id')) && !in_array(get_oli_attribute($item, '_parent_id'), $schedule->subscriptions())){
-			        continue;
-                }
-                if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){
-                	// TODO: Should be only this month
-                	continue;
-				}
+			foreach($other_onetimes as $item){
 				echo "<!--";
 				$variant = get_variant($db, $item['shopify_variant_id']);
 				$scent_change_options = [];
@@ -666,6 +673,7 @@ $shipment_list = $schedule->get()[0];
                 </div>
 			<?php } ?>
         </div>
+		<?php } ?>
     </div>
 </div>
 <div class="hidden">
