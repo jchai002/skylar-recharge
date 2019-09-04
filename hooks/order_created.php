@@ -177,7 +177,7 @@ foreach($order['line_items'] as $line_item){
 	print_r($product);
 	if($product['type'] == 'Body Bundle'){
 		$variant = get_variant($db, $line_item['variant_id']);
-		echo "Adding body bundle ";
+		echo "Adding body bundle ".PHP_EOL;
 		$charge_day = 01;
 		if(!empty($sc_main_sub)){
 			$charge_day = date('d', strtotime($sc_main_sub['next_charge_date']));
@@ -188,7 +188,8 @@ foreach($order['line_items'] as $line_item){
 			$next_charge_date = date('Y-m-'.$charge_day, get_month_by_offset(2));
 		}
 		$next_charge_date = date('Y-m-d', offset_date_skip_weekend(strtotime($next_charge_date)));
-		echo $next_charge_date;
+		echo $charge_day.PHP_EOL;
+		echo $next_charge_date.PHP_EOL;
 		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
 			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
