@@ -66,6 +66,9 @@ class SubscriptionSchedule {
 				if($onetime['status'] != 'ONETIME'){
 					continue;
 				}
+				if(empty($onetime['next_charge_scheduled_at'])){
+					continue;
+				}
 				$this->onetimes[$onetime['id']] = $this->normalize_onetime($onetime);
 			}
 		}
