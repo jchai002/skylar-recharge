@@ -766,27 +766,6 @@ $shipment_list = $schedule->get()[0];
 </script>
 <script>
     var AccountController = AccountController || {};
-    $(document).ready(function(){
-        AccountController.selected_box_item = $('.sc-box-item[data-sc]').eq(0);
-        if(AccountController.selected_box_item.length < 1){
-            return;
-        }
-        switch(Shopify.queryParams.intent){
-            default:
-                return;
-            case 'swapscent':
-                optional_scripts.onload('mmenu', function(){
-                    AccountController.show_swap();
-                });
-                break;
-            case 'changedate':
-                optional_scripts.onload(['pignose','mmenu'], function(){
-                    AccountController.show_date_change();
-                });
-                break;
-
-        }
-    });
     function bind_events(){
         $('.portal-item-edit').unbind().click(function(e){
             $(this).closest('.portal-item').find('.portal-item-edit-container').slideToggle();
@@ -928,6 +907,7 @@ $shipment_list = $schedule->get()[0];
             });
         });
 
+        // Old?
         $('.sc-edit-date').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
             AccountController.show_date_change();
