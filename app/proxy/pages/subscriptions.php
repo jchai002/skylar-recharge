@@ -326,7 +326,7 @@ $shipment_list = $schedule->get()[0];
 		if(!empty($other_onetimes)){
 		?>
         <div class="portal-innercontainer">
-            <div class="sc-portal-title">Your One-times</div>
+            <div class="sc-portal-title">Your One-times <img class="lazyload lazypreload" height="21" data-src="{{ 'one-time-arrow.svg' | file_url }}" /></div>
             <div class="sc-portal-subtitle">Manage your onetimes here</div>
 			<?php
 			$stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
