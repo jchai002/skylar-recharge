@@ -175,6 +175,7 @@ foreach($order['line_items'] as $line_item){
 	echo "Checking body bundle... ";
 	print_r(get_product($db, $line_item['product_id']));
 	if(get_product($db, $line_item['product_id'])['type'] == 'Body Bundle'){
+		echo "Adding body bundle ";
 		$charge_day = 01;
 		if(!empty($sc_main_sub)){
 			$charge_day = date('d', strtotime($sc_main_sub['next_charge_date']));
@@ -197,6 +198,10 @@ foreach($order['line_items'] as $line_item){
 			'charge_interval_frequency' => 1,
 			'order_day_of_month' => $sc_main_sub['order_day_of_month'] ?? 1,
 		]);
+		print_r($res);
+		if(!empty($res['subscriptions'])){
+			echo insert_update_rc_subscription($db, $res['subscriptions'], $rc, $sc);
+		}
 		continue;
 	}
 
