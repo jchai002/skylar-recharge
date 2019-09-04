@@ -770,6 +770,10 @@ print_r($schedule->get());
         }
     });
     function bind_events(){
+        $('.sc-upcoming-shipment .add-and-save').unbind().click(function(e){
+            AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
+            AccountController.show_add_and_save();
+        });
         $('.sc-edit-date').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
             AccountController.show_date_change();
