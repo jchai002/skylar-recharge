@@ -146,6 +146,7 @@ print_r($schedule->get());
                                         <?= is_ac_followup_lineitem($item) ? 'data-ac' : '' ?>
 										<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
 										<?= is_ac_delivered($item) ? 'data-ac-delivered' : '' ?>
+                                        data-ship-time="<?=$upcoming_shipment['ship_date_time']?>"
                                     >
                                         <?php if(!empty($item['skipped']) && !empty($item['charge_id'])){ ?>
                                             <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge_id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
