@@ -54,7 +54,7 @@ print_r($schedule->get());
 $shipment_list = $schedule->get()[0];
 ?>
 -->
-{% assign portal_page = 'schedule' %}
+{% assign portal_page = 'subscriptions' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
     {% include 'sc-member-nav' %}
