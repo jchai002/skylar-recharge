@@ -175,6 +175,7 @@ foreach($order['line_items'] as $line_item){
 	echo "Checking body bundle... ";
 	print_r(get_product($db, $line_item['product_id']));
 	if(get_product($db, $line_item['product_id'])['type'] == 'Body Bundle'){
+		$variant = get_variant($db, $line_item['variant_id']);
 		echo "Adding body bundle ";
 		$charge_day = 01;
 		if(!empty($sc_main_sub)){
@@ -190,7 +191,7 @@ foreach($order['line_items'] as $line_item){
 			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
 			'product_title' => $product['title'],
-			'price' => $product['price'],
+			'price' => $variant['price'],
 			'quantity' => 1,
 			'shopify_variant_id' => $line_item['variant_id'],
 			'order_interval_unit' => 'month',
