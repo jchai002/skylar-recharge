@@ -243,12 +243,12 @@ $shipment_list = $schedule->get()[0];
 											$product = get_product($db, $item['shopify_product_id']);
 											if($product['type'] == 'Body Bundle'){
 												$frequencies = [
-													'onetime' => 'Once',
 													'1' => 'Monthly',
 													'2' => 'Every other month',
 												];
 											} else if(strpos($product['type'], 'Body') !== false){
 												$frequencies = [
+													'onetime' => 'Once',
 													'1' => 'Monthly',
 													'2' => 'Every other month',
 												];
