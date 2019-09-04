@@ -52,3 +52,31 @@ do {
 		echo insert_update_rc_subscription($db, $subscription, $rc, $sc).PHP_EOL;
 	}
 } while(count($res) >= $page_size);
+
+print_r($argv);
+if(
+	(date('G') == 12 && date('i') < 5)
+	|| (!empty($argv) && !empty($argv[1]) && $argv[1] == 'all')
+){
+	echo "Updating subscriptions with old charge dates".PHP_EOL;
+	$stmt = $db->query("
+SELECT * FROM rc_subscriptions
+WHERE next_charge_scheduled_at <= '".date('Y-m-d')."'
+AND next_charge_scheduled_at IS NOT NULL
+AND cancelled_at IS NULL
+AND deleted_at IS NULL
+");
+	$stmt_mark_deleted = $db->prepare("UPDATE rc_subscriptions SET deleted_at=:deleted_at WHERE recharge_id=:recharge_id");
+	foreach($stmt->fetchAll() as $subscription){
+		$res = $rc->get('/subscriptions/'.$subscription['recharge_id']);
+		if(!empty($res['subscription'])){
+			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc).PHP_EOL;
+		} else if($res['errors'] == 'Not Found') {
+			echo "Marking ".$subscription['recharge_id'].' deleted'.PHP_EOL;
+			$stmt_mark_deleted->execute([
+				'deleted_at' => date('Y-m-d H:i:s'),
+				'recharge_id' => $subscription['recharge_id'],
+			]);
+		}
+	}
+}
