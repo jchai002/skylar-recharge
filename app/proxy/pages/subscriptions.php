@@ -523,6 +523,10 @@ $shipment_list = $schedule->get()[0];
 			$other_onetimes[] = $item;
 		}
 		print_r($other_onetimes);
+		$res = $rc->get('/onetimes', [
+			'customer_id' => $rc_customer_id,
+		]);
+		print_r($res);
 		echo " -->";
 		if(!empty($other_onetimes)){
 		?>
