@@ -69,7 +69,7 @@ class SubscriptionSchedule {
 				$this->onetimes[$onetime['id']] = $this->normalize_onetime($onetime);
 			}
 		}
-		return $this->subscriptions;
+		return $this->onetimes;
 	}
 
 	public function max_time($new_max_time = null){
