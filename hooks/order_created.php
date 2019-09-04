@@ -153,6 +153,7 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 	}
 }
 
+$update_order = false;
 $order_tags = explode(',',$order['tags']);
 
 // Get recharge version of order
@@ -171,6 +172,8 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
 echo "Checking line items".PHP_EOL;
 foreach($order['line_items'] as $line_item){
 	// Create body bundle subs
+	echo "Checking body bundle... ";
+	print_r(get_product($db, $line_item['product_id']));
 	if(get_product($db, $line_item['product_id'])['type'] == 'Body Bundle'){
 		$charge_day = 01;
 		if(!empty($sc_main_sub)){
