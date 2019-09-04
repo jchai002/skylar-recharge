@@ -220,7 +220,7 @@ $shipment_list = $schedule->get()[0];
                     </div>
                     <?php } ?>
                     <div class="portal-item-actions">
-                        <div class="action_button add-and-save">Add to this box and save!</div>
+                        <div class="action_button add-and-save">Add and save!</div>
                     </div>
                     <form class="portal-item-edit-container">
                         <div class="portal-edit-row">
