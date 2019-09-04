@@ -269,7 +269,7 @@ $shipment_list = $schedule->get()[0];
                                 </div>
 							<?php } ?>
                             <div class="portal-edit-links">
-                                <a class="portal-edit-cancel" href="#">Cancel</a>
+                                <a class="portal-edit-cancel<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : '-other' ?>" href="#">Cancel</a>
                             </div>
                         </div>
 						<?php if(!empty($scent_change_options)){ ?>
@@ -454,7 +454,7 @@ $shipment_list = $schedule->get()[0];
                                 </div>
 							<?php } ?>
                             <div class="portal-edit-links">
-                                <a class="portal-edit-cancel" href="#">Cancel</a>
+                                <a class="portal-edit-cancel<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : '-other' ?>" href="#">Cancel</a>
                             </div>
                         </div>
 						<?php if(!empty($scent_change_options)){ ?>
@@ -803,6 +803,15 @@ $shipment_list = $schedule->get()[0];
         });
         $('.portal-item .show-calendar').unbind().click(function(){
             $(this).closest('.portal-edit-date').find('.calendar').slideToggle();
+        });
+        $('.portal-item .portal-edit-cancel-other').unbind().click(function(e){
+            e.preventDefault();
+            AccountController.selected_box_item = $(this).closest('.portal-item');
+            $.featherlight.close();
+            $.featherlight($('#portal-remove-other-confirm-modal'), {
+                variant: 'scent-club',
+                afterOpen: $.noop, // Fix dumb app bug
+            });
         });
         $('.portal-item .portal-edit-cancel').unbind().click(function(e){
             e.preventDefault();
