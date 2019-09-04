@@ -163,7 +163,6 @@ if(empty($rc_order['orders'])){
 }
 $rc_order = $rc_order['orders'][0];
 
-// Create and insert any autocharge items
 $stmt_get_order_line = $db->prepare("SELECT id FROM order_line_items WHERE shopify_id=?");
 $sc_main_sub = sc_get_main_subscription($db, $rc, [
 	'customer_id' => $rc_order['customer_id'],
@@ -171,6 +170,34 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
 ]);
 echo "Checking line items".PHP_EOL;
 foreach($order['line_items'] as $line_item){
+	// Create body bundle subs
+	if(get_product($db, $line_item['product_id'])['type'] == 'Body Bundle'){
+		$charge_day = 01;
+		if(!empty($sc_main_sub)){
+			$charge_day = date('d', strtotime($sc_main_sub['next_charge_date']));
+		}
+		$next_charge_date = date('Y-m-'.$charge_day, get_next_month());
+		if(strtotime($next_charge_date)-time() < 14*24*60*60){
+			$charge_day = $sc_main_sub['order_day_of_month'] ?? 1;
+			$next_charge_date = date('Y-m-'.$charge_day, get_month_by_offset(2));
+		}
+		$next_charge_date = date('Y-m-d', offset_date_skip_weekend(strtotime($next_charge_date)));
+		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
+			'address_id' => $rc_order['address_id'],
+			'next_charge_scheduled_at' => $next_charge_date,
+			'product_title' => $product['title'],
+			'price' => $product['price'],
+			'quantity' => 1,
+			'shopify_variant_id' => $line_item['variant_id'],
+			'order_interval_unit' => 'month',
+			'order_interval_frequency' => 1,
+			'charge_interval_frequency' => 1,
+			'order_day_of_month' => $sc_main_sub['order_day_of_month'] ?? 1,
+		]);
+		continue;
+	}
+
+	// Create and insert any autocharge items
 	if(is_ac_followup_lineitem($line_item)){
 		echo "Add AC Followup Hold Tag".PHP_EOL;
 		$order_tags[] = 'HOLD: AC Followup';
@@ -214,6 +241,7 @@ foreach($order['line_items'] as $line_item){
 		}
     }
 }
+
 
 // Tag orders that aren't samples as either onetime or subscription, with subscription
 $res = $rc->get('/subscriptions/', ['address_id' => $rc_order['address_id']]);
