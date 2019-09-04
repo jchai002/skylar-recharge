@@ -180,7 +180,7 @@ foreach($order['line_items'] as $line_item){
 		echo "Adding body bundle ".PHP_EOL;
 		$charge_day = 01;
 		if(!empty($sc_main_sub)){
-			$charge_day = date('d', strtotime($sc_main_sub['next_charge_date']));
+			$charge_day = date('d', strtotime($sc_main_sub['next_charge_scheduled_at']));
 		}
 		$next_charge_date = date('Y-m-'.$charge_day, get_next_month());
 		if(strtotime($next_charge_date)-time() < 14*24*60*60){
