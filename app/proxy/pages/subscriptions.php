@@ -326,7 +326,7 @@ $shipment_list = $schedule->get()[0];
 		if(!empty($other_onetimes)){
 		?>
         <div class="portal-innercontainer">
-            <div class="sc-portal-title alt-title">ONE-TIME ONLY <img class="lazyload lazypreload" height="14" data-src="{{ 'one-time-arrow.svg' | asset_url }}" /></div>
+            <div class="sc-portal-title">One-time only <img class="lazyload lazypreload" height="14" data-src="{{ 'one-time-arrow.svg' | asset_url }}" /></div>
             <div class="sc-portal-subtitle">Manage your one-time products here</div>
 			<?php
 			$stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
@@ -656,6 +656,17 @@ $shipment_list = $schedule->get()[0];
                 <a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id')).then(function(){AccountController.load_subscriptions();}); return false;">Yes, Remove</a>
                 <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
             </div>
+        </div>
+    </div>
+    <div id="portal-remove-other-confirm-modal">
+        <div class="portal-modal-title">Are you sure you want to remove this item?</div>
+        <div class="portal-modal-subtitle">
+            Subscribers get to add exclusive deals to their box. <br />
+            If you remove, you won’t be able to get this at an awesome deal.
+        </div>
+        <div class="portal-skip-options">
+            <a class="action_button" onclick="$.featherlight.close(); return false;">Keep This Item</a>
+            <a class="portal-skip-other-link" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id')).then(function(){AccountController.load_subscriptions();}); return false;">Remove This ITem</a>
         </div>
     </div>
 </div>

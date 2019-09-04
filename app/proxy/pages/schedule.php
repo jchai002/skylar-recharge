@@ -577,6 +577,22 @@ print_r($schedule->get());
             </div>
         </div>
     </div>
+    <div id="portal-remove-other-confirm-modal">
+        <div class="sc-skip-image sc-desktop">
+            <img src="" />
+        </div>
+        <div>
+            <div class="sc-modal-title">Are you sure you want to remove:</div>
+            <div class="sc-modal-subtitle"></div>
+            <div class="sc-skip-image sc-mobile sc-tablet">
+                <img src="" />
+            </div>
+            <div class="sc-skip-options">
+                <a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id')).then(function(){AccountController.load_subscriptions();}); return false;">Yes, Remove</a>
+                <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
+            </div>
+        </div>
+    </div>
 </div>
 {{ 'featherlight.js' | asset_url | script_tag }}
 {{ 'featherlight.css' | asset_url | stylesheet_tag }}
