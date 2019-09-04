@@ -59,7 +59,8 @@ $shipment_list = $schedule->get()[0];
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
     {% include 'sc-member-nav' %}
     <div class="sc-portal-content">
-        <div class="portal-innercontainer">
+        <?php if(!empty($schedule->subscriptions())){ ?>
+            <div class="portal-innercontainer">
             <div class="sc-portal-title">Your Subscriptions <img class="lazyload lazypreload" height="21" data-src="{{ 'subscription-icon.svg' | file_url }}" /></div>
             <div class="sc-portal-subtitle">Manage your subscriptions here</div>
 			<?php
@@ -298,6 +299,7 @@ $shipment_list = $schedule->get()[0];
                 </div>
 			<?php } ?>
         </div>
+        <?php } ?>
 		<?php
         echo "<!-- ";
         print_r($schedule->onetimes());
