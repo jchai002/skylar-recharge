@@ -95,7 +95,7 @@ class SubscriptionSchedule {
 				'customer_id' => $this->rc_customer_id,
 			]);
 			if(!empty($res['onetimes'])){
-				$this->onetimes($res['subscriptions']);
+				$this->onetimes($res['onetimes']);
 			}
 		}
 		if(empty($this->orders)){
