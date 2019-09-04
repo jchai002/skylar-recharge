@@ -506,6 +506,8 @@ $shipment_list = $schedule->get()[0];
 			<?php } ?>
         </div>
 		<?php
+        echo "<!-- ";
+        print_r($schedule->onetimes());
 		$other_onetimes = [];
 		foreach($schedule->onetimes() as $item){
 			if($item['status'] != 'ONETIME'){
@@ -520,6 +522,7 @@ $shipment_list = $schedule->get()[0];
 			}
 			$other_onetimes[] = $item;
 		}
+		echo " -->";
 		if(!empty($other_onetimes)){
 		?>
         <div class="portal-innercontainer">

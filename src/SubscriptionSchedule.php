@@ -91,7 +91,7 @@ class SubscriptionSchedule {
 			}
 		}
 		if(empty($this->onetimes)){
-			$res = $this->rc->get('/subscriptions', [
+			$res = $this->rc->get('/onetimes', [
 				'customer_id' => $this->rc_customer_id,
 				'status' => 'ONETIME',
 			]);
