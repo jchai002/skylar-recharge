@@ -522,6 +522,7 @@ $shipment_list = $schedule->get()[0];
 			}
 			$other_onetimes[] = $item;
 		}
+		print_r($other_onetimes);
 		echo " -->";
 		if(!empty($other_onetimes)){
 		?>
