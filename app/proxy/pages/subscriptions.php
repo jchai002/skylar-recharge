@@ -392,7 +392,7 @@ $shipment_list = $schedule->get()[0];
 							$this_sub_onetimes[] = $onetime;
 						}
 					}
-					if(!empty($this_sub_onetimes)){
+					if(false && !empty($this_sub_onetimes)){
 					    ?>
                     <div class="portal-item-onetimes">
                         <div class="sc-portal-title">One-time only</div>
@@ -511,9 +511,9 @@ $shipment_list = $schedule->get()[0];
 			if($item['status'] != 'ONETIME'){
 				continue;
 			}
-			if(!empty(get_oli_attribute($item, '_parent_id')) && !in_array(get_oli_attribute($item, '_parent_id'), $schedule->subscriptions())){
-				continue;
-			}
+//			if(!empty(get_oli_attribute($item, '_parent_id')) && !in_array(get_oli_attribute($item, '_parent_id'), $schedule->subscriptions())){
+//				continue;
+//			}
 			if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){
 				// TODO: Should be only this month
 				continue;
