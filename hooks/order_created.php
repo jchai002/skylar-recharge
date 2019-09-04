@@ -188,6 +188,7 @@ foreach($order['line_items'] as $line_item){
 			$next_charge_date = date('Y-m-'.$charge_day, get_month_by_offset(2));
 		}
 		$next_charge_date = date('Y-m-d', offset_date_skip_weekend(strtotime($next_charge_date)));
+		print_r($sc_main_sub);
 		echo $charge_day.PHP_EOL;
 		echo $next_charge_date.PHP_EOL;
 		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
