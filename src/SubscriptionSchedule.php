@@ -97,9 +97,6 @@ class SubscriptionSchedule {
 			if(!empty($res['onetimes'])){
 				$this->onetimes($res['onetimes']);
 			}
-			if(!empty($_REQUEST['theme_id'])){
-				print_r($res);
-			}
 		}
 		if(empty($this->orders)){
 			$res = $this->rc->get('/orders', [
