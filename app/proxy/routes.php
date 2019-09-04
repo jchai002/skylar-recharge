@@ -39,12 +39,6 @@ $router->route('/members$/i', function() {
 	return true;
 });
 $router->route('/schedule/i', function() {
-	if(!empty($_REQUEST['theme_id']) && $_REQUEST['theme_id'] != '73040330839'){
-		require_customer_id(function(){
-			require('pages/subscriptions.php');
-		});
-		return true;
-	}
 	require_customer_id(function(){
 		require('pages/schedule.php');
 	});
