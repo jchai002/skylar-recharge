@@ -1,8 +1,8 @@
 <?php
 
 $router = new Router();
-$router->route('',function() use($db, $rc){
-	require_customer_id(function() use($db, $rc){
+$router->route('',function() use($db, $rc, $sc){
+	require_customer_id(function() use($db, $rc, $sc){
 		if(!empty(sc_get_main_subscription($db, $rc, [
 			'shopify_customer_id' => intval($_REQUEST['c']),
 			'status' => 'ACTIVE'
@@ -10,7 +10,7 @@ $router->route('',function() use($db, $rc){
 			require('pages/members.php');
 			return true;
 		}
-		$stmt = $db->prepare("SELECT 1 FROM rc_subscriptions s
+		$stmt = $db->prepare("SELECT s.recharge_id FROM rc_subscriptions s
 								LEFT JOIN rc_addresses a ON s.address_id=a.id
 								LEFT JOIN rc_customers rcc ON a.rc_customer_id=rcc.id
 								LEFT JOIN customers c ON c.id=rcc.customer_id
@@ -19,7 +19,19 @@ $router->route('',function() use($db, $rc){
 									AND s.deleted_at IS NULL
 								LIMIT 1");
 		$stmt->execute([$_REQUEST['c']]);
-		if($stmt->rowCount() > 0){
+		if($stmt->rowCount() < 1){
+			// No subs
+			require('pages/orderhistory.php');
+			return true;
+		}
+		$has_non_ac = false;
+		foreach($stmt->fetchAll(PDO::FETCH_COLUMN) as $sub_id){
+			$sub = get_rc_subscription($db, $sub_id, $rc, $sc);
+			if(!is_ac_followup_lineitem($sub)){
+				$has_non_ac = true;
+			}
+		}
+		if($has_non_ac){
 			if(!empty($_REQUEST['theme_id']) && $_REQUEST['theme_id'] != '73040330839'){
 				require('pages/subscriptions.php');
 				return true;
@@ -27,7 +39,7 @@ $router->route('',function() use($db, $rc){
 			require('pages/schedule.php');
 			return true;
 		}
-		require('pages/orderhistory.php');
+		require('pages/schedule.php');
 		return true;
 	});
 	return true;
