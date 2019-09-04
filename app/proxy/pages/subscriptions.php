@@ -803,6 +803,7 @@ $shipment_list = $schedule->get()[0];
                 afterOpen: $.noop, // Fix dumb app bug
             });
         });
+        debugger;
         optional_scripts.onload('pignose', function(){
             $('.portal-item-edit-container .calendar').each(function(){
                 var box = $(this).closest('.portal-item');
