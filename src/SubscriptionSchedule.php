@@ -53,6 +53,9 @@ class SubscriptionSchedule {
 		if(!is_null($subs_to_set)){
 			$this->subscriptions = [];
 			foreach($subs_to_set as $sub){
+				if(empty($sub['next_charge_scheduled_at'])){
+					continue;
+				}
 				$this->subscriptions[$sub['id']] = $this->normalize_subscription($sub);
 			}
 		}
