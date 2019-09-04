@@ -192,8 +192,6 @@ foreach($order['line_items'] as $line_item){
 			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
 			'product_title' => $product['title'],
-			'title' => $product['title'],
-			'variant_title' => '',
 			'price' => $variant['price'],
 			'quantity' => 1,
 			'shopify_variant_id' => $line_item['variant_id'],
