@@ -257,9 +257,6 @@ print_r($schedule->get());
                                         </div>
                                     <?php } ?>
 								<?php } ?>
-                                <div class="portal-item-actions">
-                                    <div class="action_button add-and-save">Add and save!</div>
-                                </div>
                                 <?php if($shipment_index == 0 && !$has_ac_followup){ ?>
                                     <div class="sc-box-discounts<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                         <?php foreach($upcoming_shipment['discounts'] as $discount){ ?>

@@ -666,7 +666,7 @@ $shipment_list = $schedule->get()[0];
         </div>
         <div class="portal-skip-options">
             <a class="action_button" onclick="$.featherlight.close(); return false;">Keep This Item</a>
-            <a class="portal-skip-other-link" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id')).then(function(){AccountController.load_subscriptions();}); return false;">Remove This ITem</a>
+            <a class="portal-skip-other-link" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id')).then(function(){AccountController.load_subscriptions();}); return false;">Remove This Item</a>
         </div>
     </div>
 </div>
