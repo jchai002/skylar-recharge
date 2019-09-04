@@ -803,22 +803,7 @@ $shipment_list = $schedule->get()[0];
                 afterOpen: $.noop, // Fix dumb app bug
             });
         });
-        if(!optional_scripts.resources.pignose.loaded){
-            optional_scripts.onload('pignose', function(){
-                $('.portal-item-edit-container .calendar').each(function(){
-                    var box = $(this).closest('.portal-item');
-                    $(this).pignoseCalendar({
-                        date: moment(parseInt(box.data('ship-time'))*1000),
-                        minDate: moment(),
-                        disabledWeekdays: [0, 6],
-                        select: function(date){
-                            AccountController.update_subscription_date(box.data('subscription-id'), date[0].format('YYYY-MM-DD'));
-                            box.find('.calendar').slideUp();
-                        },
-                    });
-                });
-            });
-        } else {
+        optional_scripts.onload('pignose', function(){
             $('.portal-item-edit-container .calendar').each(function(){
                 var box = $(this).closest('.portal-item');
                 $(this).pignoseCalendar({
@@ -831,7 +816,7 @@ $shipment_list = $schedule->get()[0];
                     },
                 });
             });
-        }
+        });
 
         $('.remove-discount-link').unbind().click(function(e){
             e.preventDefault();
