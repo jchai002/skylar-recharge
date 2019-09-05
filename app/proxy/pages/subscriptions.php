@@ -300,7 +300,7 @@ uasort($other_onetimes, function($a, $b){
                                 </div>
 							<?php } ?>
                             <div class="portal-edit-links">
-                                <a class="portal-edit-cancel<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : '-other' ?>" href="#">Cancel</a>
+                                <a class="portal-edit-cancel<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : '-other' ?>" href="#">Cancel Shipment</a>
                             </div>
                         </div>
 						<?php if(!empty($scent_change_options)){ ?>
@@ -465,7 +465,7 @@ uasort($other_onetimes, function($a, $b){
                                 </div>
 							<?php } ?>
                             <div class="portal-edit-links">
-                                <a class="portal-edit-cancel<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : '-other' ?>" href="#">Cancel</a>
+                                <a class="portal-edit-cancel<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : '-other' ?>" href="#">Cancel Shipment</a>
                             </div>
                         </div>
 						<?php if(!empty($scent_change_options)){ ?>
