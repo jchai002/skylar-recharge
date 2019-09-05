@@ -781,7 +781,7 @@ uasort($other_onetimes, function($a, $b){
         $('.portal-item-edit').unbind().click(function(e){
             var container = $(this).closest('.portal-item').find('.portal-item-edit-container');
             var edit_top = container.is(':hidden') ? $(this).closest('.portal-item').innerHeight() : container.offset().top; // Can't get offset of hidden elems
-            console.log(container, container.is(':hidden'), container.is(':visible'), container.offset().top, window.scrollY + window.innerHeight);
+            console.log(container.is(':hidden'), edit_top, window.scrollY + window.innerHeight, container.is(':hidden') && edit_top + 60 > window.scrollY + window.innerHeight);
             if(container.is(':hidden') && edit_top + 60 > window.scrollY + window.innerHeight){
                 console.log('here', container.closest('.portal-item').offset().top - $('.header:visible').height() - 10);
                 $([document.documentElement, document.body]).animate({
