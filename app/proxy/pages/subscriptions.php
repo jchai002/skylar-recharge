@@ -306,7 +306,7 @@ uasort($other_onetimes, function($a, $b){
 						<?php if(!empty($scent_change_options)){ ?>
                             <div class="portal-edit-divider"></div>
                             <div class="portal-edit-row">
-                                <div class="portal-edit-select portal-edit-scent">
+                                <div class="portal-edit-radio portal-edit-scent">
                                     <div class="portal-edit-label">Change Your Scent</div>
                                     <div class="portal-edit-control">
 										<?php foreach($scent_change_options as $scent_change_option){ ?>
@@ -471,7 +471,7 @@ uasort($other_onetimes, function($a, $b){
 						<?php if(!empty($scent_change_options)){ ?>
                             <div class="portal-edit-divider"></div>
                             <div class="portal-edit-row">
-                                <div class="portal-edit-scent">
+                                <div class="portal-edit-radio portal-edit-scent">
                                     <div class="portal-edit-label">Change Your Scent</div>
                                     <div class="portal-edit-control">
                                         <?php foreach($scent_change_options as $scent_change_option){ ?>
