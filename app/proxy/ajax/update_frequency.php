@@ -24,7 +24,7 @@ if($subscription['status'] == 'ONETIME'){
 			'shopify_variant_id' => $subscription['shopify_variant_id'],
 			'product_title' => $subscription['product_title'],
 			'variant_title' => $subscription['variant_title'],
-			'order_interval_unit' => $subscription['order_interval_unit'],
+			'order_interval_unit' => 'month',
 			'order_interval_frequency' => $frequency,
 			'charge_interval_frequency' => $frequency,
 		]);
