@@ -779,7 +779,13 @@ uasort($other_onetimes, function($a, $b){
     var AccountController = AccountController || {};
     function bind_events(){
         $('.portal-item-edit').unbind().click(function(e){
-            $(this).closest('.portal-item').find('.portal-item-edit-container').slideToggle();
+            var container = $(this).closest('.portal-item').find('.portal-item-edit-container');
+            container.slideToggle();
+            if(container.offset().top + 40 > window.scrollY + window.innerHeight){
+                $([document.documentElement, document.body]).animate({
+                    scrollTop: container.offset().top - $('.header:visible').height(),
+                });
+            }
         });
         $('.portal-item .add-and-save').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.portal-item');
