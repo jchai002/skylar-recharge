@@ -250,7 +250,7 @@ print_r($schedule->get());
                                          <?php } ?>
                                     </div>
                                 <?php } ?>
-                                <?php if(!empty($_REQUEST['theme'])){ ?>
+                                <?php if(!empty($_REQUEST['theme_id'])){ ?>
                                     <?php if(!$has_ac_followup || $has_sc){ ?>
                                         <div class="portal-item-actions">
                                             <div class="action_button add-and-save">Add and save!</div>
