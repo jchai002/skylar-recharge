@@ -693,6 +693,7 @@ uasort($other_onetimes, function($a, $b){
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script class="portal-data">AccountController.portal_data=<?=json_encode(['subscriptions'=>array_merge($schedule->subscriptions(), $schedule->onetimes())])?></script>
 <script>
+    AccountController.sync_add_and_save_pane(AccountController.portal_data);
     $(document).ready(function(){
         $('.skip-reason-form input, .skip-reason-form textarea').change(function(){
             if(!AccountController.get_skip_reason()){
