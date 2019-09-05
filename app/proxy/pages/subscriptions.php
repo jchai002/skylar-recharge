@@ -691,6 +691,7 @@ uasort($other_onetimes, function($a, $b){
 {{ 'featherlight.js' | asset_url | script_tag }}
 {{ 'featherlight.css' | asset_url | stylesheet_tag }}
 {{ 'sc-portal.js' | asset_url | script_tag }}
+<script class="portal-data">AccountController.portal_data=<?=json_encode(['subscriptions'=>array_merge($schedule->subscriptions(), $schedule->onetimes())])?></script>
 <script>
     $(document).ready(function(){
         $('.skip-reason-form input, .skip-reason-form textarea').change(function(){
