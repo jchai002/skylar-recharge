@@ -57,7 +57,7 @@ uasort($subscriptions_by_date, function($a, $b){
     if($a['scheduled_at_time'] == $b['scheduled_at_time']){
         return 0;
     }
-    return $a['scheduled_at_time'] < $b['scheduled_at_time'] ? 1 : -1;
+    return $a['scheduled_at_time'] > $b['scheduled_at_time'] ? 1 : -1;
 });
 
 
@@ -79,7 +79,7 @@ uasort($other_onetimes, function($a, $b){
 	if($a['scheduled_at_time'] == $b['scheduled_at_time']){
 		return 0;
 	}
-	return $a['scheduled_at_time'] < $b['scheduled_at_time'] ? 1 : -1;
+	return $a['scheduled_at_time'] > $b['scheduled_at_time'] ? 1 : -1;
 });
 ?>
 -->
