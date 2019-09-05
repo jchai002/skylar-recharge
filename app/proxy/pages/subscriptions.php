@@ -328,7 +328,7 @@ uasort($other_onetimes, function($a, $b){
                                 </div>
                             </div>
 						<?php } ?>
-						<?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+						<?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
                             <div class="portal-edit-float">
                                 <a class="portal-edit-cancel" href="#">Cancel Shipment</a>
                             </div>
