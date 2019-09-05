@@ -19,6 +19,7 @@ $rc = new RechargeClient();
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
 } else {
+	respondOK();
 	$data = file_get_contents('php://input');
 	$fulfillment = json_decode($data, true);
 	insert_update_fulfillment($db, $fulfillment);

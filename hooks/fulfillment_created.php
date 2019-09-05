@@ -9,6 +9,7 @@ if(!empty($_REQUEST['id'])){
 	var_dump($sc->last_error);
 	var_dump($fulfillments);
 } else {
+	respondOK();
 	$data = file_get_contents('php://input');
 	$fulfillments = [json_decode($data, true)];
 	log_event($db, 'webhook', $fulfillments[0]['id'], 'fulfillment_created', $data);

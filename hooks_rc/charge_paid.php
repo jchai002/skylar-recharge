@@ -1,5 +1,4 @@
 <?php
-http_response_code(200);
 require_once('../includes/config.php');
 require_once('../includes/class.RechargeClient.php');
 
@@ -10,6 +9,7 @@ $rc = new RechargeClient();
 if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/charges/'.$_REQUEST['id']);
 } else {
+	respondOK();
 	$data = file_get_contents('php://input');
 	if(!empty($data)){
 		$res = json_decode($data, true);

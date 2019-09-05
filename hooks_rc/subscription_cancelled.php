@@ -6,6 +6,7 @@ $rc = new RechargeClient();
 if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/subscriptions/'.$_REQUEST['id']);
 } else {
+	respondOK();
 	$data = file_get_contents('php://input');
 	if(!empty($data)){
 		$res = json_decode($data, true);

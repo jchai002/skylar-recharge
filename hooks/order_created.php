@@ -1,5 +1,4 @@
 <?php
-http_response_code(200);
 require_once('../includes/config.php');
 require_once('../includes/class.ShopifyClient.php');
 require_once('../includes/class.RechargeClient.php');
@@ -18,6 +17,7 @@ $rc = new RechargeClient();
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
 } else {
+	respondOK();
 	$data = file_get_contents('php://input');
 	log_event($db, 'log', $data);
 	$order = json_decode($data, true);

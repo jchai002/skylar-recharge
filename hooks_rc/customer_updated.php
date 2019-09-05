@@ -1,5 +1,4 @@
 <?php
-http_response_code(200);
 require_once(__DIR__.'/../includes/config.php');
 
 $sc = new ShopifyClient();
@@ -8,6 +7,7 @@ $rc = new RechargeClient();
 if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/customers/'.$_REQUEST['id']);
 } else {
+	respondOK();
 	$data = file_get_contents('php://input');
 	if(!empty($data)){
 		$res = json_decode($data, true);

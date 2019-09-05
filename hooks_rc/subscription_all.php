@@ -8,6 +8,7 @@ if(!empty($_REQUEST['id'])){
 	// cheaty since we're just using it to look up the charge
 	$subscription = ['id' => $_REQUEST['id']];
 } else {
+	respondOK();
 	$data = file_get_contents('php://input');
 	log_event($db, 'webhook', $data, 'subscription_all');
 	if(!empty($data)){

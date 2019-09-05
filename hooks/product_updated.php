@@ -7,6 +7,7 @@ $sc = new ShopifyClient();
 if(!empty($_REQUEST['id'])){
 	$product = $sc->call('GET', '/admin/products/'.intval($_REQUEST['id']).'.json');
 } else {
+	respondOK();
 	$data = file_get_contents('php://input');
 	$product = json_decode($data, true);
 }
