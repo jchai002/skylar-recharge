@@ -52,6 +52,35 @@ $schedule
 echo count($schedule->get()).PHP_EOL;
 print_r($schedule->get());
 $shipment_list = $schedule->get()[0];
+$subscriptions_by_date = array_values($schedule->subscriptions());
+uasort($subscriptions_by_date, function($a, $b){
+    if($a['scheduled_at_time'] == $b['scheduled_at_time']){
+        return 0;
+    }
+    return $a['scheduled_at_time'] < $b['scheduled_at_time'] ? 1 : -1;
+});
+
+
+$other_onetimes = [];
+foreach($schedule->onetimes() as $item){
+	if($item['status'] != 'ONETIME'){
+		continue;
+	}
+//			if(!empty(get_oli_attribute($item, '_parent_id')) && !in_array(get_oli_attribute($item, '_parent_id'), $schedule->subscriptions())){
+//				continue;
+//			}
+	if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){
+		// TODO: Should be only this month
+		continue;
+	}
+	$other_onetimes[] = $item;
+}
+uasort($other_onetimes, function($a, $b){
+	if($a['scheduled_at_time'] == $b['scheduled_at_time']){
+		return 0;
+	}
+	return $a['scheduled_at_time'] < $b['scheduled_at_time'] ? 1 : -1;
+});
 ?>
 -->
 {% assign portal_page = 'subscriptions' %}
@@ -59,7 +88,7 @@ $shipment_list = $schedule->get()[0];
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
     {% include 'sc-member-nav' %}
     <div class="sc-portal-content">
-        <?php if(!empty($schedule->subscriptions())){ ?>
+        <?php if(!empty($subscriptions_by_date)){ ?>
             <div class="portal-innercontainer">
             <div class="sc-portal-title">Your Subscriptions <img class="lazyload lazypreload" height="21" data-src="{{ 'subscription-icon.svg' | file_url }}" /></div>
             <div class="sc-portal-subtitle">Manage your subscriptions here</div>
@@ -68,7 +97,7 @@ $shipment_list = $schedule->get()[0];
                 LEFT JOIN scents s ON va.scent_id=s.id
                 LEFT JOIN variants v ON va.variant_id=v.id
                 WHERE va.format_id=:format_id AND va.product_type_id=:product_type_id;");
-			foreach($schedule->subscriptions() as $item){
+			foreach($subscriptions_by_date as $item){
 				echo "<!--";
 				// TODO SC will sometimes be a onetime
 				$variant = get_variant($db, $item['shopify_variant_id']);
@@ -301,28 +330,6 @@ $shipment_list = $schedule->get()[0];
         </div>
         <?php } ?>
 		<?php
-        echo "<!-- ";
-        print_r($schedule->onetimes());
-		$other_onetimes = [];
-		foreach($schedule->onetimes() as $item){
-			if($item['status'] != 'ONETIME'){
-				continue;
-			}
-//			if(!empty(get_oli_attribute($item, '_parent_id')) && !in_array(get_oli_attribute($item, '_parent_id'), $schedule->subscriptions())){
-//				continue;
-//			}
-			if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){
-				// TODO: Should be only this month
-				continue;
-			}
-			$other_onetimes[] = $item;
-		}
-		print_r($other_onetimes);
-		$res = $rc->get('/onetimes', [
-			'customer_id' => $rc_customer_id,
-		]);
-		print_r($res);
-		echo " -->";
 		if(!empty($other_onetimes)){
 		?>
         <div class="portal-innercontainer">
