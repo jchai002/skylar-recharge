@@ -782,6 +782,7 @@ uasort($other_onetimes, function($a, $b){
             var container = $(this).closest('.portal-item').find('.portal-item-edit-container');
             console.log(container, container.is(':hidden'), container.is(':visible'), container.offset().top, window.scrollY + window.innerHeight);
             if(container.is(':hidden') && container.offset().top + 40 > window.scrollY + window.innerHeight){
+                console.log('here', container.closest('.portal-item').offset().top - $('.header:visible').height() - 10);
                 $([document.documentElement, document.body]).animate({
                     scrollTop: container.closest('.portal-item').offset().top - $('.header:visible').height() - 10,
                 });
