@@ -254,6 +254,7 @@ uasort($other_onetimes, function($a, $b){
                     </div>
                     <form class="portal-item-edit-container">
                         <div class="portal-edit-row">
+                            <?php /*
                             <div class="portal-edit-select portal-edit-date">
                                 <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
                                 <div class="portal-edit-control">
@@ -263,6 +264,7 @@ uasort($other_onetimes, function($a, $b){
                                 </div>
                                 <div class="calendar<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? ' one-month' : '' ?> floating-calendar hidden"></div>
                             </div>
+                            */ ?>
 							<?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
                                 <div class="portal-edit-select portal-edit-frequency">
                                     <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
@@ -417,6 +419,7 @@ uasort($other_onetimes, function($a, $b){
                     </div>
                     <form class="portal-item-edit-container">
                         <div class="portal-edit-row">
+                            <?php /*
                             <div class="portal-edit-select portal-edit-date">
                                 <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
                                 <div class="portal-edit-control">
@@ -426,6 +429,7 @@ uasort($other_onetimes, function($a, $b){
                                 </div>
                                 <div class="calendar<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? ' one-month' : '' ?> floating-calendar hidden"></div>
                             </div>
+                            */ ?>
 							<?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
                                 <div class="portal-edit-select portal-edit-frequency">
                                     <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
