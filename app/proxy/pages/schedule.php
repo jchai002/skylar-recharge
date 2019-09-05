@@ -202,10 +202,6 @@ print_r($schedule->get());
                                             </div>
                                             <div class="sc-item-details">
                                                 <div>
-                                                    <div class="sc-item-detail-label">Total</div>
-                                                    <div class="sc-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
-                                                </div>
-                                                <div>
                                                     <div class="sc-item-detail-label">Delivery</div>
                                                     <div class="sc-item-detail-value">
                                                         <?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
@@ -218,6 +214,10 @@ print_r($schedule->get());
                                                             Every <?=$item['order_interval_frequency']?> <?=$item['order_interval_unit']?>s
                                                         <?php } ?>
                                                     </div>
+                                                </div>
+                                                <div>
+                                                    <div class="sc-item-detail-label">Total</div>
+                                                    <div class="sc-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
                                                 </div>
                                             </div>
                                         </div>
