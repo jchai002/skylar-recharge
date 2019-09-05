@@ -185,12 +185,10 @@ uasort($other_onetimes, function($a, $b){
                                 <div class="portal-item-detail-label"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
 							<?php } ?>
                         </div>
-                        <?php /*
                         <div>
                             <div class="portal-item-detail-label">Next Ship Date</div>
                             <div class="portal-item-detail-value"><?=date('M j', $item['scheduled_at_time'])?></div>
                         </div>
-                        */ ?>
                         <div>
                             <div class="portal-item-detail-label">Frequency</div>
                             <div class="portal-item-detail-value">
