@@ -253,19 +253,19 @@ uasort($other_onetimes, function($a, $b){
                         <div class="action_button add-and-save">Add and save!</div>
                     </div>
                     <form class="portal-item-edit-container">
-                        <div class="portal-edit-row">
-                            <?php /*
-                            <div class="portal-edit-select portal-edit-date">
-                                <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
-                                <div class="portal-edit-control">
-                                    <div id="edit-date-<?=$item['subscription_id']?>" class="fake-select show-calendar">
-										<?=date('M j', $item['scheduled_at_time'])?>
+                        <?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+                            <div class="portal-edit-row">
+                                <?php /*
+                                <div class="portal-edit-select portal-edit-date">
+                                    <label class="portal-edit-label" for="edit-date-<?=$item['subscription_id']?>">Shipping Date</label>
+                                    <div class="portal-edit-control">
+                                        <div id="edit-date-<?=$item['subscription_id']?>" class="fake-select show-calendar">
+                                            <?=date('M j', $item['scheduled_at_time'])?>
+                                        </div>
                                     </div>
+                                    <div class="calendar<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? ' one-month' : '' ?> floating-calendar hidden"></div>
                                 </div>
-                                <div class="calendar<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? ' one-month' : '' ?> floating-calendar hidden"></div>
-                            </div>
-                            */ ?>
-							<?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+                                */ ?>
                                 <div class="portal-edit-select portal-edit-frequency">
                                     <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
                                     <div class="portal-edit-control">
@@ -301,10 +301,12 @@ uasort($other_onetimes, function($a, $b){
                                 <div class="portal-edit-links">
                                     <a class="portal-edit-cancel<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : '-other' ?>" href="#">Cancel Shipment</a>
                                 </div>
-							<?php } ?>
-                        </div>
+                            </div>
+                            <?php if(empty($scent_change_options)){ ?>
+                                <div class="portal-edit-divider"></div>
+                            <?php } ?>
+						<?php } ?>
 						<?php if(!empty($scent_change_options)){ ?>
-                            <div class="portal-edit-divider"></div>
                             <div class="portal-edit-row">
                                 <div class="portal-edit-radio portal-edit-scent">
                                     <div class="portal-edit-label">Change Your Scent</div>
