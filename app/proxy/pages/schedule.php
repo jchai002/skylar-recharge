@@ -538,50 +538,7 @@ print_r($schedule->get());
 {{ 'sc-portal.js' | asset_url | script_tag }}
 <script>
     $(document).ready(function(){
-        $('.remove-discount-link').click(function(e){
-            e.preventDefault();
-            $('.loader').fadeIn();
-            var data = $('.sc-add-discount').serializeJSON();
-            data.c = Shopify.queryParams.c;
-            $.ajax({
-                url: '/tools/skylar/subscriptions/update-discount',
-                data: data,
-                success: function(data){
-                    console.log(data);
-                    if(!data.success){
-                        $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
-                        $('.loader').fadeOut();
-                    } else {
-                        location.reload();
-                    }
-                }
-            });
-        });
-        $('.sc-add-discount').submit(function(e){
-            e.preventDefault();
-            $('.sc-discount-error').remove();
-            var btn = $(this).find('.action_button');
-            btn.attr('disabled', 'disabled').addClass('disabled');
-            btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
-            var data = $(this).serializeJSON();
-            data.c = Shopify.queryParams.c;
-            $('.loader').fadeIn();
-            $.ajax({
-                url: '/tools/skylar/subscriptions/update-discount',
-                data: data,
-                success: function(data){
-                    console.log(data);
-                    if(!data.success){
-                        $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
-                        btn.prop('disabled', false).removeClass('disabled');
-                        $('.loader').fadeOut();
-                    } else {
-                        btn.find('span').text({{ 'products.product.add_to_cart_success' | t | json }}).removeClass('zoomOut').addClass('fadeIn');
-                        location.reload();
-                    }
-                }
-            });
-        });
+        /*
         $('.sc-addtobox-form').submit(function(e){
             e.preventDefault();
             if($(this).find('.sc-frequency-options').is(':animated')){
@@ -613,6 +570,7 @@ print_r($schedule->get());
                 }
             });
         });
+         */
         $('.skip-reason-form input, .skip-reason-form textarea').change(function(){
             if(!AccountController.get_skip_reason()){
                 $('.skip-confirm-button').addClass('disabled');
@@ -726,6 +684,53 @@ print_r($schedule->get());
         }
     });
     function bind_events(){
+
+        $('.remove-discount-link').unbind().click(function(e){
+            e.preventDefault();
+            $('.loader').fadeIn();
+            var data = $('.sc-add-discount').serializeJSON();
+            data.c = Shopify.queryParams.c;
+            $.ajax({
+                url: '/tools/skylar/subscriptions/update-discount',
+                data: data,
+                success: function(data){
+                    console.log(data);
+                    if(!data.success){
+                        $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
+                        $('.loader').fadeOut();
+                    } else {
+                        location.reload();
+                    }
+                }
+            });
+        });
+        $('.sc-add-discount').unbind().submit(function(e){
+            e.preventDefault();
+            $('.sc-discount-error').remove();
+            var btn = $(this).find('.action_button');
+            btn.attr('disabled', 'disabled').addClass('disabled');
+            btn.find('span').removeClass("zoomIn").addClass('animated zoomOut');
+            var data = $(this).serializeJSON();
+            data.c = Shopify.queryParams.c;
+            $('.loader').fadeIn();
+            $.ajax({
+                url: '/tools/skylar/subscriptions/update-discount',
+                data: data,
+                success: function(data){
+                    console.log(data);
+                    if(!data.success){
+                        $('.sc-box-discounts').append('<div class="sc-discount-error">'+data.error+'</div>');
+                        btn.prop('disabled', false).removeClass('disabled');
+                        $('.loader').fadeOut();
+                    } else {
+                        btn.find('span').text({{ 'products.product.add_to_cart_success' | t | json }}).removeClass('zoomOut').addClass('fadeIn');
+                        location.reload();
+                    }
+                }
+            });
+        });
+
+
         $('.sc-upcoming-shipment .add-and-save').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
             AccountController.show_add_and_save();
