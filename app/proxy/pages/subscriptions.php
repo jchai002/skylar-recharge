@@ -788,7 +788,7 @@ uasort($other_onetimes, function($a, $b){
         $('.portal-item-edit').unbind().click(function(e){
             var container = $(this).closest('.portal-item').find('.portal-item-edit-container');
             if(container.is(':hidden')){
-                $(this).html('✖');
+                $(this).html('x');
 			} else {
                 $(this).html('Edit');
 			}
