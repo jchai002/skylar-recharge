@@ -787,6 +787,11 @@ uasort($other_onetimes, function($a, $b){
     function bind_events(){
         $('.portal-item-edit').unbind().click(function(e){
             var container = $(this).closest('.portal-item').find('.portal-item-edit-container');
+            if(container.is(':hidden')){
+                $(this).html('✖');
+			} else {
+                $(this).html('Edit');
+			}
             var edit_top = container.is(':hidden') ? $(this).closest('.portal-item').innerHeight() + $(this).closest('.portal-item').offset().top : container.offset().top; // Can't get offset of hidden elems
             if(container.is(':hidden')/* && edit_top + 60 > window.scrollY + window.innerHeight*/){
                 $([document.documentElement, document.body]).animate({
