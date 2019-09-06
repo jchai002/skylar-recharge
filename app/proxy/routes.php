@@ -32,10 +32,6 @@ $router->route('',function() use($db, $rc, $sc){
 			}
 		}
 		if($has_non_ac){
-			if(!empty($_REQUEST['theme_id']) && $_REQUEST['theme_id'] != '73040330839'){
-				require('pages/subscriptions.php');
-				return true;
-			}
 			require('pages/schedule.php');
 			return true;
 		}
