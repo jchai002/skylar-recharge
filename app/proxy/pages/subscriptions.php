@@ -304,29 +304,27 @@ uasort($other_onetimes, function($a, $b){
                             </div>
                             <?php if(empty($scent_change_options)){ ?>
                                 <div class="portal-edit-divider"></div>
-                            <?php } ?>
-						<?php } ?>
-						<?php if(!empty($scent_change_options)){ ?>
-                            <div class="portal-edit-row">
-                                <div class="portal-edit-radio portal-edit-scent">
-                                    <div class="portal-edit-label">Change Your Scent</div>
-                                    <div class="portal-edit-control">
-										<?php foreach($scent_change_options as $scent_change_option){ ?>
-                                            <div class="portal-swap-option">
-                                                <input type="radio" id="edit-scent-<?=$scent_change_option['shopify_variant_id']?>" class="swap-variant" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?><?= is_scent_club_month($item['shopify_product_id']) && is_scent_club_month($scent_change_option['shopify_variant_id']) ? ' checked' : '' ?><?= is_scent_club($item['shopify_product_id']) && is_scent_club($scent_change_option['shopify_variant_id']) ? ' checked' : '' ?>>
-                                                <label for="edit-scent-<?=$scent_change_option['shopify_variant_id']?>">
-													<?php if(!empty($scent_change_option['icon'])){ ?>
-														<img class="lazyload lazypreload" data-src="<?=$scent_change_option['icon']?>" />
-													<?php } else { ?>
-														<img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
-													<?php } ?>
-                                                    <div><?=$scent_change_option['title']?></div>
-                                                </label>
-                                            </div>
-										<?php } ?>
-                                    </div>
-                                </div>
-                            </div>
+								<div class="portal-edit-row">
+									<div class="portal-edit-radio portal-edit-scent">
+										<div class="portal-edit-label">Change Your Scent</div>
+										<div class="portal-edit-control">
+											<?php foreach($scent_change_options as $scent_change_option){ ?>
+												<div class="portal-swap-option">
+													<input type="radio" id="edit-scent-<?=$scent_change_option['shopify_variant_id']?>" class="swap-variant" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?><?= is_scent_club_month($item['shopify_product_id']) && is_scent_club_month($scent_change_option['shopify_variant_id']) ? ' checked' : '' ?><?= is_scent_club($item['shopify_product_id']) && is_scent_club($scent_change_option['shopify_variant_id']) ? ' checked' : '' ?>>
+													<label for="edit-scent-<?=$scent_change_option['shopify_variant_id']?>">
+														<?php if(!empty($scent_change_option['icon'])){ ?>
+															<img class="lazyload lazypreload" data-src="<?=$scent_change_option['icon']?>" />
+														<?php } else { ?>
+															<img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
+														<?php } ?>
+														<div><?=$scent_change_option['title']?></div>
+													</label>
+												</div>
+											<?php } ?>
+										</div>
+									</div>
+								</div>
+							<?php } ?>
 						<?php } ?>
 						<?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
                             <div class="portal-edit-float">
