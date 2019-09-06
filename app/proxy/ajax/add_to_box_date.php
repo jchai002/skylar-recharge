@@ -4,10 +4,16 @@ global $db;
 $rc = new RechargeClient();
 $sc = new ShopifyClient();
 
-$main_sub = sc_get_main_subscription($db, $rc, [
-	'status' => 'ACTIVE',
-	'shopify_customer_id' => $_REQUEST['c'],
-]);
+if(!empty($_REQUEST['parent_id'])){
+	$main_sub = get_rc_subscription($db, $_REQUEST['parent_id'], $rc, $sc);
+	$address_id = $main_sub['recharge_address_id'];
+} else {
+	$main_sub = sc_get_main_subscription($db, $rc, [
+		'status' => 'ACTIVE',
+		'shopify_customer_id' => $_REQUEST['c'],
+	]);
+	$address_id = $main_sub['address_id'];
+}
 
 $variant = get_variant($db, $_REQUEST['variant_id']);
 $product = get_product($db, $variant['shopify_product_id']);
@@ -21,8 +27,8 @@ if(!empty($_REQUEST['parent_id'])){
 	$properties['_parent_id'] = $_REQUEST['parent_id'];
 }
 if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
-	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/onetimes', [
-		'address_id' => $main_sub['address_id'],
+	$res = $rc->post('/addresses/'.$address_id.'/onetimes', [
+		'address_id' => $address_id,
 		'next_charge_scheduled_at' => date('Y-m-d', $_REQUEST['ship_time']),
 		'product_title' => $product['title'],
 		'price' => $price,
@@ -32,8 +38,8 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 	]);
 	$res_id = $res['onetime']['id'];
 } else {
-	$res = $rc->post('/addresses/'.$main_sub['address_id'].'/subscriptions', [
-		'address_id' => $main_sub['address_id'],
+	$res = $rc->post('/addresses/'.$address_id.'/subscriptions', [
+		'address_id' => $address_id,
 		'next_charge_scheduled_at' => date('Y-m-d', $_REQUEST['ship_time']),
 		'product_title' => $product['title'],
 		'price' => $price,
