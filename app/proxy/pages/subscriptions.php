@@ -424,12 +424,12 @@ uasort($other_onetimes, function($a, $b){
 												$frequencies = [
 													'onetime' => 'Once',
 													'1' => 'Monthly',
-													'2' => 'Every other month',
+													'2' => 'Every 2 months',
 												];
 											} else if(strpos($product['type'], 'Body') !== false){
 												$frequencies = [
 													'1' => 'Monthly',
-													'2' => 'Every other month',
+													'2' => 'Every 2 months',
 												];
 											} else {
 												$frequencies = [
