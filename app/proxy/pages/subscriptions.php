@@ -109,6 +109,7 @@ uasort($other_onetimes, function($a, $b){
 					]);
 					$scent_change_options = $stmt_scent_change_options->fetchAll();
 				}
+				print_r($scent_change_options);
 				print_r($item);
 				?>
                 -->
