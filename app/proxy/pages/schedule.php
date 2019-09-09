@@ -17,7 +17,7 @@ if($stmt->rowCount() > 1){
 }
 
 if(!empty($rc_customer_id)){
-	$months = empty($more) ? 4 : $more;
+	$months = $_REQUEST['months'] ?? 4;
 	$schedule = new SubscriptionSchedule($db, $rc, $rc_customer_id, strtotime(date('Y-m-t',strtotime("+$months months"))));
 }
 
@@ -250,12 +250,10 @@ print_r($schedule->get());
                                          <?php } ?>
                                     </div>
                                 <?php } ?>
-                                <?php if(!empty($_REQUEST['theme_id'])){ ?>
-                                    <?php if(!$has_ac_followup || $has_sc){ ?>
-                                        <div class="portal-item-actions">
-                                            <div class="action_button add-and-save">Add and save!</div>
-                                        </div>
-                                    <?php } ?>
+								<?php if(!$has_ac_followup || $has_sc){ ?>
+									<div class="portal-item-actions">
+										<div class="action_button add-and-save">Add and save!</div>
+									</div>
 								<?php } ?>
                                 <?php if($shipment_index == 0 && !$has_ac_followup){ ?>
                                     <div class="sc-box-discounts<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">

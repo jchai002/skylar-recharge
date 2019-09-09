@@ -34,11 +34,6 @@ sc_conditional_billing($rc, $_REQUEST['c']);
 			<div class="sc-tile-actions">
 				<a href="#" class="sc-edit-password" onclick="$('#sc-edit-password').data('mmenu').open(); return false;">Change Password</a>
 			</div>
-			<?php if(!empty($main_sub) && empty($_REQUEST['theme_id'])){ ?>
-			<div class="sc-portal-minisection sc-tile-actions">
-				<a href="#cancel_sub" class="sc-cancel-link">Cancel Subscription</a>
-			</div>
-			<?php } ?>
 		</div>
 	</div>
 </div>

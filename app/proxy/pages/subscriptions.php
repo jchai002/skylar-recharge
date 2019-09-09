@@ -17,7 +17,7 @@ if($stmt->rowCount() > 1){
 }
 
 if(!empty($rc_customer_id)){
-	$months = empty($more) ? 4 : $more;
+	$months = $_REQUEST['months'] ?? 12;
 	$schedule = new SubscriptionSchedule($db, $rc, $rc_customer_id, strtotime(date('Y-m-t',strtotime("+$months months"))));
 }
 
@@ -280,29 +280,27 @@ uasort($other_onetimes, function($a, $b){
                             </div>
                             <?php if(empty($scent_change_options)){ ?>
                                 <div class="portal-edit-divider"></div>
-                            <?php } ?>
-						<?php } ?>
-						<?php if(!empty($scent_change_options)){ ?>
-                            <div class="portal-edit-row">
-                                <div class="portal-edit-radio portal-edit-scent">
-                                    <div class="portal-edit-label">Change Your Scent</div>
-                                    <div class="portal-edit-control">
-										<?php foreach($scent_change_options as $scent_change_option){ ?>
-                                            <div class="portal-swap-option">
-                                                <input type="radio" id="edit-scent-<?=$scent_change_option['shopify_variant_id']?>" class="swap-variant" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?><?= is_scent_club_month($item['shopify_product_id']) && is_scent_club_month($scent_change_option['shopify_variant_id']) ? ' checked' : '' ?><?= is_scent_club($item['shopify_product_id']) && is_scent_club($scent_change_option['shopify_variant_id']) ? ' checked' : '' ?>>
-                                                <label for="edit-scent-<?=$scent_change_option['shopify_variant_id']?>">
-													<?php if(!empty($scent_change_option['icon'])){ ?>
-														<img class="lazyload lazypreload" data-src="<?=$scent_change_option['icon']?>" />
-													<?php } else { ?>
-														<img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
-													<?php } ?>
-                                                    <div><?=$scent_change_option['title']?></div>
-                                                </label>
-                                            </div>
-										<?php } ?>
-                                    </div>
-                                </div>
-                            </div>
+								<div class="portal-edit-row">
+									<div class="portal-edit-radio portal-edit-scent">
+										<div class="portal-edit-label">Change Your Scent</div>
+										<div class="portal-edit-control">
+											<?php foreach($scent_change_options as $scent_change_option){ ?>
+												<div class="portal-swap-option">
+													<input type="radio" id="edit-scent-<?=$scent_change_option['shopify_variant_id']?>" class="swap-variant" name="variant" value="<?=$scent_change_option['shopify_variant_id']?>"<?= $scent_change_option['shopify_variant_id'] == $item['shopify_variant_id'] ? ' checked' : '' ?><?= is_scent_club_month($item['shopify_product_id']) && is_scent_club_month($scent_change_option['shopify_variant_id']) ? ' checked' : '' ?><?= is_scent_club($item['shopify_product_id']) && is_scent_club($scent_change_option['shopify_variant_id']) ? ' checked' : '' ?>>
+													<label for="edit-scent-<?=$scent_change_option['shopify_variant_id']?>">
+														<?php if(!empty($scent_change_option['icon'])){ ?>
+															<img class="lazyload lazypreload" data-src="<?=$scent_change_option['icon']?>" />
+														<?php } else { ?>
+															<img class="lazyload lazypreload" data-src="{{ 'scent-icon_<?=$scent_change_option['code']?>.png' | file_img_url }}" />
+														<?php } ?>
+														<div><?=$scent_change_option['title']?></div>
+													</label>
+												</div>
+											<?php } ?>
+										</div>
+									</div>
+								</div>
+							<?php } ?>
 						<?php } ?>
 						<?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
                             <div class="portal-edit-float">
@@ -765,6 +763,11 @@ uasort($other_onetimes, function($a, $b){
     function bind_events(){
         $('.portal-item-edit').unbind().click(function(e){
             var container = $(this).closest('.portal-item').find('.portal-item-edit-container');
+            if(container.is(':hidden')){
+                $(this).html('Close');
+			} else {
+                $(this).html('Edit');
+			}
             var edit_top = container.is(':hidden') ? $(this).closest('.portal-item').innerHeight() + $(this).closest('.portal-item').offset().top : container.offset().top; // Can't get offset of hidden elems
             if(container.is(':hidden')/* && edit_top + 60 > window.scrollY + window.innerHeight*/){
                 $([document.documentElement, document.body]).animate({
