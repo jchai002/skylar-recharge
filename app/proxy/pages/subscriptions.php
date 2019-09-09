@@ -279,7 +279,7 @@ uasort($other_onetimes, function($a, $b){
                                     <a class="portal-edit-cancel<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : '-other' ?>" href="#">Cancel Shipment</a>
                                 </div>
                             </div>
-                            <?php if(empty($scent_change_options)){ ?>
+                            <?php if(!empty($scent_change_options)){ ?>
                                 <div class="portal-edit-divider"></div>
 								<div class="portal-edit-row">
 									<div class="portal-edit-radio portal-edit-scent">
