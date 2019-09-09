@@ -113,6 +113,7 @@ class SubscriptionSchedule {
 			}
 		}
 		if(empty($this->charges)){
+			$charges = [];
 			$res = $this->rc->get('/charges', [
 				'customer_id' => $this->rc_customer_id,
 				'date_min' => date('Y-m-d', strtotime('-1 day')),
@@ -120,8 +121,18 @@ class SubscriptionSchedule {
 				'status' => 'QUEUED',
 			]);
 			if(!empty($res['charges'])){
-				$this->charges($res['charges']);
+				$charges = $res['charges'];
 			}
+			$res = $this->rc->get('/charges', [
+				'customer_id' => $this->rc_customer_id,
+				'date_min' => date('Y-m-d', strtotime('-1 day')),
+//				'date_min' => date('Y-m-d'),
+				'status' => 'SKIPPED',
+			]);
+			if(!empty($res['charges'])){
+				$charges = array_merge($charges, $res['charges']);
+			}
+			$this->charges($charges);
 		}
 	}
 
