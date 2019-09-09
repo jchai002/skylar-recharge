@@ -101,32 +101,8 @@ uasort($other_onetimes, function($a, $b){
 				echo "<!--";
 				// TODO SC will sometimes be a onetime
 				$variant = get_variant($db, $item['shopify_variant_id']);
-				$scent_change_options = [];if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
-					$scent_change_options = [
-						['code' => 'arrow', 'title' => 'Arrow', 'shopify_variant_id' => '19706737229911'],
-						['code' => 'capri', 'title' => 'Capri', 'shopify_variant_id' => '19706737262679'],
-						['code' => 'coral', 'title' => 'Coral', 'shopify_variant_id' => '19706737295447'],
-						['code' => 'isle', 'title' => 'Isle', 'shopify_variant_id' => '19706737328215'],
-						['code' => 'meadow', 'title' => 'Meadow', 'shopify_variant_id' => '19706737360983'],
-						['code' => 'willow', 'title' => 'Willow', 'shopify_variant_id' => '19706737393751'],
-					];
-					$monthly_scent = sc_get_monthly_scent($db, $shipment_list['ship_date_time'], is_admin_address($item['address_id']));
-					if(!empty($monthly_scent)){
-						$scent_change_options[] = [
-							'code' => $monthly_scent['handle'],
-							'title' => $monthly_scent['variant_title'],
-							'shopify_variant_id' => $monthly_scent['shopify_variant_id'],
-							'icon' => '{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}'
-						];
-					} else {
-						$scent_change_options[] = [
-							'code' => 'scent-club',
-							'title' => 'Monthly Scent',
-							'shopify_variant_id' => 19787922014295,
-							'icon' => '{{ \'sc-logo.svg\' | file_url }}'
-						];
-					}
-				} else if(!empty($variant['attributes'])){
+				$scent_change_options = [];
+				if(!empty($variant['attributes'])){
 					$stmt_scent_change_options->execute([
 						'format_id' => $variant['attributes']['format_id'],
 						'product_type_id' => $variant['attributes']['product_type_id'],
