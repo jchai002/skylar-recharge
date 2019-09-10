@@ -27,19 +27,3 @@ try {
 } catch(\Throwable $e){
 	log_event($db, 'EXCEPTION', json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'subscription_all_insert', json_encode($subscription), '', 'webhook');
 }
-
-
-try {
-	// Get next charge for this subscription
-	$res = $rc->get('/charges', [
-		'subscription_id' => $subscription['id'],
-		'status' => 'QUEUED',
-	]);
-	if(empty($res['charges'])){
-		exit;
-	}
-	$charges = $res['charges'];
-	update_charge_discounts($db, $rc, $charges);
-} catch(\Throwable $e){
-	log_event($db, 'EXCEPTION', json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'subscription_all_rest', json_encode($subscription), '', 'webhook');
-}

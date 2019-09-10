@@ -214,6 +214,9 @@ function add_subscription(RechargeClient $rc, $shopify_product, $shopify_variant
 $standard_discount_codes = [];
 
 function apply_discount_code(RechargeClient $rc, $charge, $code){
+	if(empty($code)){
+		return false;
+	}
 	if(!empty($charge['discount_codes'])){
 		if($charge['discount_codes'][0]['code'] == $code){
 			return true;
@@ -235,6 +238,7 @@ function apply_discount_code(RechargeClient $rc, $charge, $code){
 }
 
 function get_charge_discount_code(PDO $db, RechargeClient $rc, $discount_amount){
+	return '';
 	global $standard_discount_codes;
 	// See if we've got one saved locally
 	if(array_key_exists(strval($discount_amount), $standard_discount_codes)){
@@ -420,30 +424,6 @@ function calculate_multi_bottle_discount($fullsize_count){
 		}
 	}
 	return $discount;
-}
-
-function update_charge_discounts(PDO $db, RechargeClient $rc, $charges){
-
-	foreach($charges as $charge){
-		if($charge['status'] != 'QUEUED'){
-			continue;
-		}
-		foreach($charge['line_items'] as $line_item){
-			// don't do it for old sample products
-			if(in_array($line_item['shopify_product_id'], [738567323735, 738567520343, 738394865751])){
-				continue 2;
-			}
-		}
-
-		$discount_factors = calculate_discount_factors($db, $rc, $charge);
-//		var_dump($discount_factors);
-		$discount_amount = calculate_discount_amount($charge, $discount_factors);
-//		var_dump($discount_amount);
-
-		$code = get_charge_discount_code($db, $rc, $discount_amount);
-//		var_dump($code);
-		apply_discount_code($rc, $charge, $code);
-	}
 }
 
 function offset_date_skip_weekend($time){

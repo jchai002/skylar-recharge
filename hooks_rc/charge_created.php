@@ -20,6 +20,7 @@ if(empty($res['charge'])){
 }
 $charge = $res['charge'];
 
+// Scent club creation logic
 // Check if customer already has a subscription
 $main_sub = sc_get_main_subscription($db, $rc, [
 	'status' => 'ACTIVE',
@@ -101,5 +102,3 @@ if(empty($main_sub)){
 		}
 	}
 }
-
-update_charge_discounts($db, $rc, [$charge]);

@@ -22,15 +22,3 @@ try {
 } catch(\Throwable $e){
 	log_event($db, 'EXCEPTION', json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'address_updated_insert', json_encode($address), '', 'webhook');
 }
-
-// Get next charge for this subscription
-$res = $rc->get('/charges', [
-	'customer_id' => $address['customer_id'],
-	'status' => 'QUEUED',
-]);
-if(empty($res['charges'])){
-	exit;
-}
-$charges = $res['charges'];
-
-update_charge_discounts($db, $rc, $charges);
