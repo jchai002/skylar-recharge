@@ -13,6 +13,7 @@ foreach($res['subscriptions'] as $subscription){
 	}
 	$cancel_res[] = $this_res = $rc->post('/subscriptions/'.$subscription['id'].'/cancel',[
 		'cancellation_reason' => $_REQUEST['reason'],
+		'send_email' => 'false',
 	]);
 	log_event($db, 'SUBSCRIPTION', $subscription['id'], 'CANCEL', $_REQUEST['reason'], 'Cancelled via user account: '.json_encode([$subscription,$this_res]), 'Customer');
 }
