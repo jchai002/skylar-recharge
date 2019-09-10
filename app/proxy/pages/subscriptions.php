@@ -42,7 +42,6 @@ foreach($schedule->get() as $shipment_list){
 }
 $next_section_shown = false;
 
-$recommended_products = sc_get_profile_products(sc_get_profile_data($db, $rc, $_REQUEST['c']));
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <!--

@@ -81,8 +81,6 @@ if($subscription['status'] == 'ONETIME'){
 	}
 }
 
-//sc_skip_future_charge($rc, $subscription_id, $time);
-
 echo json_encode([
 	'success' => true,
 	'res' => $res,
