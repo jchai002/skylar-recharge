@@ -1,122 +1,58 @@
 <?php
-
-require_once('../includes/config.php');
-require_once('../includes/class.ShopifyClient.php');
-require_once('../includes/class.RechargeClient.php');
-
+require_once(__DIR__.'/../includes/config.php');
+$sc = new ShopifyClient();
 $rc = new RechargeClient();
-$sc = new ShopifyPrivateClient();
 
-if(empty($_REQUEST['id'])){
-} else {
-	$res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'address_id' => $_REQUEST['id']]);
-}
+$old_subs = $db->query("SELECT rcs.recharge_id AS recharge_id FROM skylar.rc_subscriptions rcs
+LEFT JOIN variants v ON rcs.variant_id=v.id
+LEFT JOIN products p ON v.product_id=p.id
+WHERE status='ACTIVE'
+AND created_at BETWEEN '2018-01-01' AND '2019-02-17'
+AND next_charge_scheduled_at IS NOT NULL
+AND deleted_at IS NULL")->fetchAll();
 
-$page = 1;
-do {
-	echo "Starting page $page".PHP_EOL;
-	$sub_res = $rc->get('/subscriptions', ['limit' => 250, 'page' => $page, 'status' => 'ACTIVE']);
-	$product_cache = [];
-	foreach($sub_res['subscriptions'] as $subscription){
-		$old_product_id = $subscription['shopify_product_id'];
-		if(!in_array($old_product_id, [738567323735, 738567520343, 738394865751]) || date('Y-m-d', strtotime($subscription['next_charge_scheduled_at'])) == '2018-09-05'){
-			continue;
-		}
-		if(empty(strtotime($subscription['next_charge_scheduled_at']))){
-			var_dump($subscription);
-			die();
-			continue;
-		}
-		var_dump($subscription);
-
-		$old_properties = [];
-		foreach($subscription['properties'] as $property){
-			$old_properties[$property['name']] = $property['value'];
-		}
-
-		if(empty($old_properties['total_items'])){
-			echo "Couldn't find total_items for sub ".$subscription['id'].PHP_EOL;
-			continue;
-		}
-
-		$frequency = $subscription['order_interval_frequency'] == '1' ? 'onetime' : $subscription['order_interval_frequency'];
-
-		echo "address id: ".$subscription['address_id'].PHP_EOL;
-
-		for($i = 1; $i <= $old_properties['total_items']; $i++){
-			if(empty($old_properties['handle_'.$i])){
-				continue;
-			}
-			$handle = strtok($old_properties['handle_'.$i], '-');
-			$ids = $ids_by_scent[$handle];
-			if(empty($ids)){
-				echo "Couldn't find ids for handle ".$handle.PHP_EOL;
-				continue;
-			}
-
-			if(empty($product_cache[$ids['product']])){
-				$product = $sc->call('GET', '/admin/products/'.$ids['product'].'.json');
-			} else {
-				$product = $product_cache[$ids['product']];
-			}
-			foreach($product['variants'] as $product_variant){
-				if($product_variant['id'] == $ids['variant']){
-					$variant = $product_variant;
-					break;
-				}
-			}
-			if(empty($product) || empty($variant)){
-				echo "Missing product / variant".PHP_EOL;
-				var_dump($handle);
-				var_dump($ids);
-				var_dump($product);
-				continue;
-			}
-
-			$quantity = $old_properties['qty_'.$i];
-			if(empty($quantity)){
-				$quantity = 1;
-			}
-
-			echo "add_subscription(\$rc, ".$product['id'].", ".$variant['id'].", {$subscription['address_id']}, ".strtotime($subscription['next_charge_scheduled_at']).", $quantity, $frequency);".PHP_EOL;
-			$res = add_subscription($rc, $product, $variant, $subscription['address_id'], strtotime($subscription['next_charge_scheduled_at']), $quantity, $frequency);
-			log_event($db, 'SUBSCRIPTION', json_encode($res), 'CREATED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
-		}
-
-		// Check if we need to add sample discount
-		$add_sample_discount =
-			$old_properties['total_items'] == 1 && $frequency == 'onetime' && $subscription['price'] < 78
-			|| $old_properties['total_items'] == 1 && $frequency != 'onetime' && $subscription['price'] < 66.3
-			|| $old_properties['total_items'] == 2 && $frequency == 'onetime' && $subscription['price'] < 120
-			|| $old_properties['total_items'] == 2 && $frequency != 'onetime' && $subscription['price'] < 102
-			|| $old_properties['total_items'] == 3 && $frequency == 'onetime' && $subscription['price'] < 178
-			|| $old_properties['total_items'] == 3 && $frequency != 'onetime' && $subscription['price'] < 151.3
-			|| $old_properties['total_items'] == 4 && $frequency == 'onetime' && $subscription['price'] < 200
-			|| $old_properties['total_items'] == 4 && $frequency != 'onetime' && $subscription['price'] < 170;
-
-		if($add_sample_discount){
-			echo "Add sample discount".PHP_EOL;
-		}
-		if($add_sample_discount){
-			$res = $rc->get('/addresses/'.$subscription['address_id']);
-			$address = $res['address'];
-			if(!in_array('_sample_credit',array_column($address['cart_attributes'], 'name'))){
-				$address['cart_attributes'][] = ['name' => '_sample_credit', 'value' => 20];
-				$res = $rc->put('/addresses/'.$subscription['address_id'], [
-					'cart_attributes' => $address['cart_attributes'],
-				]);
-			log_event($db, 'DISCOUNT', json_encode($res), 'ADDED', json_encode($subscription), 'Discount added from old subscription', 'api');
-			}
-		}
-		// Remove old sub
-
-//		var_dump($rc->post('/subscriptions/'.$subscription['id'].'/set_next_charge_date', ['date'=>'2019-09-05']));
-//		echo '$rc->post(\'/subscriptions/'.$subscription['id'].'/cancel\', [\'cancellation_reason\'=>\'subscription auto upgraded\']);'.PHP_EOL;
-//		var_dump($rc->post('/subscriptions/'.$subscription['id'].'/cancel', ['cancellation_reason'=>'subscription auto upgraded']));
-		echo '$rc->delete(\'/subscriptions/'.$subscription['id'].');'.PHP_EOL;
-		$res = $rc->delete('/subscriptions/'.$subscription['id']);
-		log_event($db, 'SUBSCRIPTION', json_encode($res), 'DELETED', json_encode($subscription), 'Subscription upgraded from old style', 'api');
-		sleep(5);
+$stmt_delete_sub = $db->query('UPDATE rc_subscriptions SET deleted_at = :now WHERE recharge_id=:rc_sub_id');
+foreach($old_subs as $old_sub){
+	echo "Subscription ".$old_sub['recharge_id'].PHP_EOL;
+	$res = $rc->get('/subscriptions/'.$old_sub['recharge_id']);
+	if(empty($res['subscription'])){
+		echo "Marking deleted".PHP_EOL;
+		$stmt_delete_sub->execute([
+			'now' => date('Y-m-d H:i:s'),
+			'rc_sub_id' => $old_sub['recharge_id'],
+		]);
+		continue;
 	}
-	$page++;
-} while(count($sub_res['subscriptions']) >= 250);
+	$subscription = $res['subscription'];
+	insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
+	echo "Checking charge for discount... ";
+	$res = $rc->get('/charges', ['subscription_id' => $old_sub['recharge_id']]);
+	if(!empty($res['charges'])){
+		$charges = $res['charges'];
+	}
+	foreach($charges as $charge){
+		if(!empty($charge['discount_codes']) && strpos(strtoupper($charge['discount_codes'][0]['code']), 'AUTOGEN') !== false){
+			echo "Removing charge discount... ";
+			$res = $rc->post('/charges/'.$charge['id'].'/remove_discount');
+			if(!empty($res['error'])){
+				echo "Error, removing address discount... ";
+				$res = $rc->post('/addresses/'.$charge['address_id'].'/remove_discount');
+			}
+		}
+	}
+	echo PHP_EOL;
+	if($subscription['price'] == 78){
+		echo "Updating price... ";
+		$res = $rc->put('/subscriptions/'.$subscription['id'], [
+			'price' => 66.30,
+		]);
+		if(!empty($res['error'])){
+			echo "Error! ";
+			print_r($res);
+			sleep(10);
+			continue;
+		}
+		insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
+		echo $res['subscription']['price'].PHP_EOL;
+	}
+}
