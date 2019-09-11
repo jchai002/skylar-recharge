@@ -89,7 +89,7 @@ switch($rate['destination']['country']){
 		}
 		$_RATES[] = [
 			'service_name' => '2-Day Shipping (2 business days)',
-			'service_code' => 'FedEx 2-day',
+			'service_code' => 'US 2 Day',
 			'total_price' => 1500,
 			'description' => 'Order must be placed before noon PST Monday-Friday',
 			'currency' => 'USD',
@@ -97,7 +97,7 @@ switch($rate['destination']['country']){
 		if(!in_array($rate['destination']['province'], ['HI', 'AK', 'AS', 'FM', 'GU', 'MH', 'MP', 'PW', 'PR', 'VI', 'AE', 'AA', 'AP'])){ // Exclude outside lower 48
 			$_RATES[] = [
 				'service_name' => 'Next Day Shipping (1 business day)',
-				'service_code' => 'FedEx next day',
+				'service_code' => 'US Next Day',
 				'total_price' => 2500,
 				'description' => 'Order must be placed before noon PST Monday-Friday. Excludes AK and HI',
 				'currency' => 'USD',
@@ -166,22 +166,6 @@ switch($rate['destination']['country']){
 		break;
 }
 
-if($is_test){
-	$_RATES[] = [
-		'service_name' => '[TEST] 2-Day Shipping (2 business days)',
-		'service_code' => 'US 2 Day',
-		'total_price' => 0,
-		'description' => 'Order must be placed before noon PST Monday-Friday',
-		'currency' => 'USD',
-	];
-	$_RATES[] = [
-		'service_name' => '[TEST] Next Day Shipping (1 business day)',
-		'service_code' => 'US Next Day',
-		'total_price' => 0,
-		'description' => 'Order must be placed before noon PST Monday-Friday. Excludes AK and HI',
-		'currency' => 'USD',
-	];
-}
 if($free_override){
 	foreach($_RATES as $index=>$v){
 		$_RATES[$index]['total_price'] = 0;
