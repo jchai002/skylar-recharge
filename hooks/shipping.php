@@ -170,14 +170,14 @@ if($is_test){
 	$_RATES[] = [
 		'service_name' => '[TEST] 2-Day Shipping (2 business days)',
 		'service_code' => 'US 2 Day',
-		'total_price' => 1500,
+		'total_price' => 0,
 		'description' => 'Order must be placed before noon PST Monday-Friday',
 		'currency' => 'USD',
 	];
 	$_RATES[] = [
 		'service_name' => '[TEST] Next Day Shipping (1 business day)',
 		'service_code' => 'US Next Day',
-		'total_price' => 2500,
+		'total_price' => 0,
 		'description' => 'Order must be placed before noon PST Monday-Friday. Excludes AK and HI',
 		'currency' => 'USD',
 	];
