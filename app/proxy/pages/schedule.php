@@ -112,10 +112,13 @@ print_r($schedule->get());
                                     if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){
                                         $monthly_scent = sc_get_monthly_scent($db, $shipment_list['ship_date_time'], is_admin_address($item['address_id']));
                                         $box_swap_image = 'data-swap-image="{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+                                        $box_swap_text = 'data-swap-text="'.$monthly_scent['variant_title'].'"';
 									} else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))) {
 										$box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+										$box_swap_text = 'data-swap-text="'.get_variant($db, $item['shopify_variant_id']['title']).'"';
 									} else {
                                         $box_swap_image = 'data-swap-image="{{ \'sc-logo.svg\' | file_url }}"';
+										$box_swap_text = 'data-swap-text="Monthly Scent"';
                                     }
                                     ?>
                                     {% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
@@ -135,7 +138,8 @@ print_r($schedule->get());
                                         <?php } else { ?>
                                             data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
                                         <?php } ?>
-                                        <?=$box_swap_image?>
+										<?=$box_swap_image?>
+										<?=$box_swap_text?>
                                          data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
                                          data-subscription-id="<?=$item['subscription_id']?>"
                                         <?= !empty($item['charge_id']) ? 'data-charge-id="'.$item['charge_id'].'"' : '' ?>
@@ -146,7 +150,6 @@ print_r($schedule->get());
 										<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
 										<?= is_ac_delivered($item) ? 'data-ac-delivered' : '' ?>
                                         data-ship-time="<?=$upcoming_shipment['ship_date_time']?>"
-                                        data-swap-text="<?= !empty($monthly_scent) ? $monthly_scent['variant_title'] : 'Monthly Scent' ?>"
                                     >
                                         <?php if(!empty($item['skipped']) && !empty($item['charge_id'])){ ?>
                                             <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge_id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
