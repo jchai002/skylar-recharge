@@ -115,7 +115,7 @@ print_r($schedule->get());
                                         $box_swap_text = 'data-swap-text="'.$monthly_scent['variant_title'].'"';
 									} else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))) {
 										$box_swap_image = 'data-swap-image="{{ box_product.metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
-										$box_swap_text = 'data-swap-text="'.get_variant($db, $item['shopify_variant_id']['title']).'"';
+										$box_swap_text = 'data-swap-text="'.get_variant($db, $item['shopify_variant_id'])['title'].'"';
 									} else {
                                         $box_swap_image = 'data-swap-image="{{ \'sc-logo.svg\' | file_url }}"';
 										$box_swap_text = 'data-swap-text="Monthly Scent"';
