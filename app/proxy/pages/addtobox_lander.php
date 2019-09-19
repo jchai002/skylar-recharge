@@ -41,7 +41,7 @@ if(!empty($add_to_charge)){
 	$variant = get_variant($db, $_REQUEST['v']);
 	$product = get_product($db, $variant['shopify_product_id']);
 	$price = get_subscription_price($product, $variant);
-	$subscription_price = round($variant['price']*.9);
+	$subscription_price = get_subscription_price($product, $variant);
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
 
     // Check if they already have this product in a sub
@@ -61,20 +61,34 @@ if(!empty($add_to_charge)){
 	if($stmt->rowCount() > 0){
 	    $res = ['subscription'=>$stmt->fetch()];
     } else {
-		$res = $rc->post('/subscriptions', [
-			'address_id' => $add_to_charge['address_id'],
-			'next_charge_scheduled_at' => $add_to_charge['scheduled_at'],
-			'price' => $price,
-			'quantity' => 1,
-			'shopify_variant_id' => $variant['shopify_id'],
-			'product_title' => $product['title'],
-			'variant_title' => $variant['title'],
-			'order_interval_unit' => 'month',
-			'order_interval_frequency' => '1',
-			'charge_interval_frequency' => '1',
-		]);
-		if(!empty($res['subscription'])){
-		    insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
+	    if($product['type'] == 'Body Bundle'){
+			$res = $rc->post('/subscriptions', [
+				'address_id' => $add_to_charge['address_id'],
+				'next_charge_scheduled_at' => $add_to_charge['scheduled_at'],
+				'price' => $price,
+				'quantity' => 1,
+				'shopify_variant_id' => $variant['shopify_id'],
+				'product_title' => $product['title'],
+				'variant_title' => $variant['title'],
+				'order_interval_unit' => 'month',
+				'order_interval_frequency' => '1',
+				'charge_interval_frequency' => '1',
+			]);
+			if(!empty($res['subscription'])){
+				insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
+			}
+        } else {
+			$res = $rc->post('/addresses/'.$add_to_charge['address_id'].'/onetimes', [
+				'next_charge_scheduled_at' => $add_to_charge['scheduled_at'],
+				'price' => $price,
+				'quantity' => 1,
+				'shopify_variant_id' => $variant['shopify_id'],
+				'product_title' => $product['title'],
+				'variant_title' => $variant['title'],
+			]);
+			if(!empty($res['onetime'])){
+				insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
+			}
         }
 		log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, '', 'customer');
     }
@@ -86,7 +100,7 @@ echo "<!-- ".print_r($res, true)." -->";
 {% assign portal_page = 'lander-addtobox' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container sc-portal-lander">
-	<?php if(!empty($add_to_charge) && !empty($res['subscription'])){ ?>
+	<?php if(!empty($add_to_charge) && empty($res['error'])){ ?>
 	<div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
     <?php if($product['type'] == 'Body Bundle'){ ?>
             <div class="sc-lander-price">
