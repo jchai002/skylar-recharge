@@ -273,7 +273,7 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
     $stmt = $db->prepare("UPDATE order_line_items SET fulfillment_id = ? WHERE shopify_id=?");
     foreach($shopify_fulfillment['line_items'] as $line_item){
         $stmt->execute([$id, $line_item['id']]);
-        print_r($stmt->errorInfo());
+        var_dump($stmt->errorInfo());
     }
 
     return $id;
