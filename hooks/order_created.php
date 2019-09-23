@@ -231,7 +231,7 @@ foreach($order['line_items'] as $line_item){
 		}
 //		print_r($stmt->fetchAll());
     	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
-    		'next_charge_scheduled_at' => date('Y-m-d', strtotime('+28 days')),
+    		'next_charge_scheduled_at' => date('Y-m-d', offset_date_skip_weekend(strtotime('+21 days'))),
 			'price' => '58',
 			'quantity' => 1,
 			'shopify_variant_id' => 31022109635, // Isle full size

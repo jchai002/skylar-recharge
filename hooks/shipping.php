@@ -132,7 +132,7 @@ switch($rate['destination']['country']){
 				'currency' => 'USD',
 			];
 		}
-		
+
 		break;
 	default: // Other international
 		/*
