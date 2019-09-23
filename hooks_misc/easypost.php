@@ -10,7 +10,7 @@ if(!empty($_REQUEST['code'])){
 	$data = file_get_contents('php://input');
 	$event = json_decode($data, true);
 
-	log_event($db, 'webhook', $event['id'], 'easypost_'.$event['result']['object'], $data);
+	log_event($db, 'webhook', $event['id'], 'easypost_'.$event['result']['object'], $data, $event['result']['tracking_code']);
 
 	if($event['result']['object'] != 'Tracker'){
 		die('Not a tracker');
