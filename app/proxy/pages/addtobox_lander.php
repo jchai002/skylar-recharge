@@ -101,25 +101,28 @@ echo "<!-- ".print_r($res, true)." -->";
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container sc-portal-lander">
 	<?php if(!empty($add_to_charge) && empty($res['error'])){ ?>
-	<div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
-    <?php if($product['type'] == 'Body Bundle'){ ?>
-            <div class="sc-lander-price">
-                <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save over 22%!</span>
-            </div>
-            <div class="sc-lander-image">
-                <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
-            </div>
-    <?php } else { ?>
-            <div class="sc-lander-price">
-                <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span>
-            </div>
-            <div class="sc-lander-image">
-                <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center', scale: 2 }} 2x" />
-            </div>
-    <?php } ?>
-	<div class="sc-lander-note">
-		This item will ship each month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
-	</div>
+        <div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
+        <?php if($product['type'] == 'Body Bundle'){ ?>
+                <div class="sc-lander-price">
+                    <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save over 22%!</span>
+                </div>
+                <div class="sc-lander-image">
+                    <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
+                </div>
+                <div class="sc-lander-note">
+                    This item will ship each month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+                </div>
+        <?php } else { ?>
+                <div class="sc-lander-price">
+                    <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span>
+                </div>
+                <div class="sc-lander-image">
+                    <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center', scale: 2 }} 2x" />
+                </div>
+                <div class="sc-lander-note">
+                    This item will ship in your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+                </div>
+        <?php } ?>
 	<?php } else {
 		log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, 'Failed and saw error', 'customer');
 		?>
