@@ -105,6 +105,7 @@ switch($rate['destination']['country']){
 		}
 		break;
 	case 'CA':
+		/*
 		if($has_fullsize){
 			$_RATES[] = [
 				'service_name' => 'Expedited (3-5 business days)',
@@ -114,7 +115,6 @@ switch($rate['destination']['country']){
 				'currency' => 'USD',
 			];
 		} else {
-			/*
 			if($total_weight <= 8){
 				$_RATES[] = [
 					'service_name' => 'Standard (7-14 days)',
@@ -124,7 +124,6 @@ switch($rate['destination']['country']){
 					'currency' => 'USD',
 				];
 			}
-			*/
 			$_RATES[] = [
 				'service_name' => 'Expedited (3-5 business days)',
 				'service_code' => 'DHL WW Express',
@@ -133,8 +132,10 @@ switch($rate['destination']['country']){
 				'currency' => 'USD',
 			];
 		}
+		*/
 		break;
 	default: // Other international
+		/*
 		if($has_fullsize){
 			$_RATES[] = [
 				'service_name' => 'Expedited (3-5 business days) - Includes $23 Intl Airmail Surcharge',
@@ -144,7 +145,6 @@ switch($rate['destination']['country']){
 				'currency' => 'USD',
 			];
 		} else {
-			/*
 			if($total_weight <= 8){
 				$_RATES[] = [
 					'service_name' => 'Standard (7-14 days)',
@@ -154,7 +154,6 @@ switch($rate['destination']['country']){
 					'currency' => 'USD',
 				];
 			}
-			*/
 			$_RATES[] = [
 				'service_name' => 'Expedited (3-5 business days)',
 				'service_code' => 'DHL WW Express',
@@ -163,6 +162,7 @@ switch($rate['destination']['country']){
 				'currency' => 'USD',
 			];
 		}
+		*/
 		break;
 }
 
