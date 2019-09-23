@@ -105,7 +105,7 @@ switch($rate['destination']['country']){
 		}
 		break;
 	case 'CA':
-		/*
+
 		if($has_fullsize){
 			$_RATES[] = [
 				'service_name' => 'Expedited (3-5 business days)',
@@ -132,7 +132,7 @@ switch($rate['destination']['country']){
 				'currency' => 'USD',
 			];
 		}
-		*/
+		
 		break;
 	default: // Other international
 		/*
