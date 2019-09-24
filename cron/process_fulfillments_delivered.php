@@ -5,8 +5,8 @@ $rc = new RechargeClient();
 $sc = new ShopifyClient();
 
 $stmt = $db->prepare("SELECT * FROM fulfillments WHERE delivered_at >= ? AND delivery_processed_at IS NULL");
-//$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
-$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*30))]);
+$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
+//$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*30))]);
 $fulfillments = $stmt->fetchAll();
 
 
@@ -63,6 +63,7 @@ foreach($fulfillments as $fulfillment){
 			echo "Error! ".print_r($res, true).PHP_EOL;
 			sleep(10);
 		} else {
+			insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
 			echo "Moved onetime id ".$subscription_id." to ".$res['onetime']['next_charge_scheduled_at'].PHP_EOL;
 		}
 	}
