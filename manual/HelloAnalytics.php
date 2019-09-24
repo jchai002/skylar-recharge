@@ -8,7 +8,6 @@ $order = $sc->get('/admin/orders/'.($_REQUEST['id'] ?? 1695376343127).'.json');
 
 $views = [
 	'all_web_data' => '146856754',
-	'littledata' => '178268161',
 	'test' => '199478891',
 ];
 
