@@ -46,6 +46,9 @@ foreach($fulfillments as $fulfillment){
 			continue;
 		}
 		$move_to_time = strtotime('+14 days', strtotime($fulfillment['delivered_at']));
+		if(!is_null(get_oli_attribute($subscription, '_ac_pushed_back'))){
+			$move_to_time += 7*24*60*60;
+		}
 		if($move_to_time < time()){
 			$move_to_time = strtotime('tomorrow');
 		}
