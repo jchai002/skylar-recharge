@@ -42,6 +42,11 @@ foreach($order['discount_applications'] as $discount){
 
 echo insert_update_order($db, $order, $sc).PHP_EOL;
 
+// Check if order is in GA, add if not
+
+
+
+
 echo "Checking alert".PHP_EOL;
 $alert_id = 2;
 $smother_message = false;
@@ -53,9 +58,7 @@ if(
 	&& !in_array('28003712663639', array_column($order['line_items'], 'variant_id'))
 ){
 	$to = implode(', ',[
-		'tim@timnolansolutions.com',
-//		'sarah@skylar.com',
-//		'cat@skylar.com',
+		'tim@skylar',
 	]);
 	$msg = "Received Order with $0 total_line_items_price price: ".PHP_EOL.print_r($order, true);
 	$headers = [
