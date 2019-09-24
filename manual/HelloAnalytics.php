@@ -24,7 +24,7 @@ $analytics = new Google_Service_AnalyticsReporting($client);
 $request = new Google_Service_AnalyticsReporting_SearchUserActivityRequest([
 	'user' => [
 		'type' => 'USER_ID',
-		'userId' => "".$order['customer']['id'],
+		'userId' => strval($order['customer']['id']),
 	],
 	'viewId' => $views['all_web_data'],
 	'dateRange' => [
