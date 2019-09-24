@@ -5,8 +5,8 @@ $rc = new RechargeClient();
 $sc = new ShopifyClient();
 
 $stmt = $db->prepare("SELECT * FROM fulfillments WHERE delivered_at >= ? AND delivery_processed_at IS NULL");
-$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
-//$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*30))]);
+//$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
+$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*30))]);
 $fulfillments = $stmt->fetchAll();
 
 
@@ -46,10 +46,10 @@ foreach($fulfillments as $fulfillment){
 			continue;
 		}
 		$move_to_time = strtotime('+14 days', strtotime($fulfillment['delivered_at']));
-		if(!is_null(get_oli_attribute($subscription, '_ac_pushed_back'))){
+		if(is_ac_pushed_back($subscription)){
 			$move_to_time += 7*24*60*60;
 		}
-		if($move_to_time < time()){
+		if($move_to_time < time() || is_ac_pushed_up($subscription)){
 			$move_to_time = strtotime('tomorrow');
 		}
 		$res = $rc->put('/onetimes/'.$subscription_id, [
