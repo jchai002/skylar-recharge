@@ -28,8 +28,8 @@ $request = new Google_Service_AnalyticsReporting_SearchUserActivityRequest([
 	],
 	'viewId' => $views['all_web_data'],
 	'dateRange' => [
-		'startDate' => date('Y-m-d', strtotime($order['date_created'])),
-		'endDate' => date('Y-m-d', strtotime($order['date_created'])),
+		'startDate' => date('Y-m-d', strtotime($order['created_at'])),
+		'endDate' => date('Y-m-d', strtotime($order['created_at'])),
 	]
 ]);
 $response = $analytics->userActivity->search($request);
