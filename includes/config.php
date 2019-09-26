@@ -167,6 +167,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=
 		'note' => $shopify_order['note'],
 		'attributes' => json_encode($shopify_order['note_attributes']),
 		'source_name' => $shopify_order['source_name'],
+		'synced_at' => date('Y-m-d H:i:s'),
 	]);
 	$error = $stmt->errorInfo();
 	if($error[0] != 0){
