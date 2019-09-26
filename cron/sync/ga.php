@@ -14,6 +14,8 @@ $analytics = new Google_Service_AnalyticsReporting($client);
 
 $date = date('Y-m-d');
 
+
+
 // Create the DateRange object.
 $dateRange = new Google_Service_AnalyticsReporting_DateRange();
 $dateRange->setStartDate($date);
@@ -43,36 +45,18 @@ $request->setViewId("146856754");
 $request->setDateRanges($dateRange);
 $request->setDimensions($dimensions);
 $request->setMetrics([$sessions]);
+$request->setSamplingLevel("LARGE");
 
 $body = new Google_Service_AnalyticsReporting_GetReportsRequest();
 $body->setReportRequests([$request]);
 $response = $analytics->reports->batchGet($body);
-var_dump($response);
-die();
 
-$request = new Google_Service_AnalyticsReporting_ReportRequest([
-	'viewId' => '146856754',
-	'dateRanges' => [
-		'startDate' => $date,
-		'endDate' => $date,
-	],
-	'metrics' => [['expression' => 'ga:users']],
-//	'metrics' => [['expression' => 'ga:users']],
-	'dimensions' => [
-		['name' => 'ga:transactionId'],
-		['name' => 'ga:source'],
-		['name' => 'ga:medium'],
-		['name' => 'ga:campaign'],
-		['name' => 'ga:pagePath'],
-	],
-	'orderBys' => [
-		['fieldName' => 'ga:transactionId', "sortOrder" => "DESCENDING"]
-	]
-]);
-
-$requests = new Google_Service_AnalyticsReporting_GetReportsRequest();
-$requests->setReportRequests([$request]);
-
-$response = $analytics->reports->batchGet($requests);
-
-var_dump($response);
+$dimension_headers = $response->getReports()->getColumnHeader()->getDimensions();
+$rows = $response->getReports()->getData()->getRows();
+$is_sampled = !empty($response->getReports()->getData()->getSamplesReadCounts());
+echo $is_sampled ? "Sampled!" : "Not sampled".PHP_EOL;
+//print_r($headers);
+foreach($rows as $row){
+	/* @var $row Google_Service_AnalyticsReporting_ReportRow */
+	print_r(array_combine($dimension_headers,$row->getDimensions()));
+}
