@@ -16,28 +16,37 @@ $date = date('Y-m-d');
 
 // Create the DateRange object.
 $dateRange = new Google_Service_AnalyticsReporting_DateRange();
-$dateRange->setStartDate("2015-06-15");
-$dateRange->setEndDate("2015-06-30");
+$dateRange->setStartDate($date);
+$dateRange->setEndDate($date);
 
 // Create the Metrics object.
 $sessions = new Google_Service_AnalyticsReporting_Metric();
-$sessions->setExpression("ga:sessions");
-$sessions->setAlias("sessions");
+$sessions->setExpression("ga:users");
 
 //Create the Dimensions object.
-$browser = new Google_Service_AnalyticsReporting_Dimension();
-$browser->setName("ga:browser");
+$dimensions = [
+	new Google_Service_AnalyticsReporting_Dimension(),
+	new Google_Service_AnalyticsReporting_Dimension(),
+	new Google_Service_AnalyticsReporting_Dimension(),
+	new Google_Service_AnalyticsReporting_Dimension(),
+	new Google_Service_AnalyticsReporting_Dimension(),
+];
+$dimensions[0]->setName("ga:transactionId");
+$dimensions[1]->setName("ga:source");
+$dimensions[2]->setName("ga:medium");
+$dimensions[3]->setName("ga:campaign");
+$dimensions[4]->setName("ga:pagePath");
 
 // Create the ReportRequest object.
 $request = new Google_Service_AnalyticsReporting_ReportRequest();
 $request->setViewId("146856754");
 $request->setDateRanges($dateRange);
-$request->setDimensions(array($browser));
-$request->setMetrics(array($sessions));
+$request->setDimensions($dimensions);
+$request->setMetrics([$sessions]);
 
 $body = new Google_Service_AnalyticsReporting_GetReportsRequest();
-$body->setReportRequests( array( $request) );
-$response = $analytics->reports->batchGet( $body );
+$body->setReportRequests([$request]);
+$response = $analytics->reports->batchGet($body);
 var_dump($response);
 die();
 
