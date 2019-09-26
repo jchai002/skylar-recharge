@@ -51,9 +51,10 @@ $body = new Google_Service_AnalyticsReporting_GetReportsRequest();
 $body->setReportRequests([$request]);
 $response = $analytics->reports->batchGet($body);
 
-$dimension_headers = $response->getReports()[0]->getColumnHeader()->getDimensions();
-$rows = $response->getReports()->getData()->getRows();
-$is_sampled = !empty($response->getReports()->getData()->getSamplesReadCounts());
+$report = $response->getReports()[0];
+$dimension_headers = $report ->getColumnHeader()->getDimensions();
+$rows = $report ->getData()->getRows();
+$is_sampled = !empty($report ->getData()->getSamplesReadCounts());
 echo $is_sampled ? "Sampled!" : "Not sampled".PHP_EOL;
 //print_r($headers);
 foreach($rows as $row){
