@@ -154,7 +154,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=
 		'customer_id' => $customer_id,
 		'app_id' => $shopify_order['app_id'],
 		'cart_token' => $shopify_order['cart_token'],
-		'number' => $shopify_order['number'],
+		'number' => $shopify_order['order_number'],
 		'total_line_items_price' => $shopify_order['total_line_items_price'],
 		'total_discounts' => $shopify_order['total_discounts'],
 		'total_price' => $shopify_order['total_price'],

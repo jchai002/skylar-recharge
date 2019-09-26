@@ -13,7 +13,7 @@ $analytics
 	->setUserId($order['customer']['id'])
 	->setDataSource('test');
 
-$analytics->setTransactionId($order['number'])
+$analytics->setTransactionId($order['order_number'])
 	->setAffiliation('Skylar Offline')
 	->setRevenue($order['total_price_set']['shop_money']['amount'])
 	->setTax($order['total_tax_set']['shop_money']['amount'])
@@ -36,7 +36,7 @@ $analytics->setProductActionToPurchase();
 
 $response = $analytics->setEventCategory('ecommerce')
 	->setEventAction('offline purchase')
-	->setEventLabel($order['number'])
+	->setEventLabel($order['order_number'])
 	->setNonInteractionHit(1)
 	->sendEvent();
 

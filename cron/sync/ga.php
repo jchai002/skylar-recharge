@@ -13,7 +13,8 @@ $client->setScopes(['https://www.googleapis.com/auth/analytics.readonly']);
 $analytics = new Google_Service_AnalyticsReporting($client);
 
 $date = date('Y-m-d');
-$stmt_get_order_id = $db->prepare("SELECT id FROM orders WHERE order_number = ?");
+$stmt_get_order_id = $db->prepare("SELECT id FROM orders WHERE number = ?");
+$stmt_insert_update_source = $db->prepare("INSERT INTO order_transaction_sources (order_id, source, medium, campaign, page, ga_date) VALUES (:order_id, :source, :medium, :campaign, :page, :ga_date) ON DUPLICATE KEY UPDATE order_id=order_id");
 
 
 // Create the DateRange object.
@@ -56,7 +57,6 @@ $dimension_headers = $report->getColumnHeader()->getDimensions();
 $rows = $report->getData()->getRows();
 $is_sampled = !empty($report->getData()->getSamplesReadCounts());
 echo $is_sampled ? "Sampled!" : "Not sampled".PHP_EOL;
-//print_r($headers);
 foreach($rows as $row){
 	/* @var $row Google_Service_AnalyticsReporting_ReportRow */
 	$row_data = array_combine($dimension_headers,$row->getDimensions());
@@ -66,6 +66,14 @@ foreach($rows as $row){
 		continue;
 	}
 	$order_id = $stmt_get_order_id->fetch(PDO::FETCH_COLUMN);
-	print_r($order_id);
-	die();
+	$stmt_insert_update_source->execute([
+		'order_id' => $order_id,
+		'source' => $row_data['ga:source'],
+		'medium' => $row_data['ga:medium'],
+		'campaign' => $row_data['ga:campaign'],
+		'page' => $row_data['ga:page'],
+		'ga_date' => $date,
+	]);
+	echo "Stored $order_id".PHP_EOL;
+
 }
