@@ -14,25 +14,56 @@ $analytics = new Google_Service_AnalyticsReporting($client);
 
 $date = date('Y-m-d');
 
-$request = new Google_Service_AnalyticsReporting_GetReportsRequest([
+// Create the DateRange object.
+$dateRange = new Google_Service_AnalyticsReporting_DateRange();
+$dateRange->setStartDate("2015-06-15");
+$dateRange->setEndDate("2015-06-30");
+
+// Create the Metrics object.
+$sessions = new Google_Service_AnalyticsReporting_Metric();
+$sessions->setExpression("ga:sessions");
+$sessions->setAlias("sessions");
+
+//Create the Dimensions object.
+$browser = new Google_Service_AnalyticsReporting_Dimension();
+$browser->setName("ga:browser");
+
+// Create the ReportRequest object.
+$request = new Google_Service_AnalyticsReporting_ReportRequest();
+$request->setViewId("146856754");
+$request->setDateRanges($dateRange);
+$request->setDimensions(array($browser));
+$request->setMetrics(array($sessions));
+
+$body = new Google_Service_AnalyticsReporting_GetReportsRequest();
+$body->setReportRequests( array( $request) );
+$response = $analytics->reports->batchGet( $body );
+var_dump($response);
+die();
+
+$request = new Google_Service_AnalyticsReporting_ReportRequest([
 	'viewId' => '146856754',
-	'dateRange' => [
+	'dateRanges' => [
 		'startDate' => $date,
 		'endDate' => $date,
 	],
 	'metrics' => [['expression' => 'ga:users']],
+//	'metrics' => [['expression' => 'ga:users']],
 	'dimensions' => [
-		['expression' => 'ga:transactionId'],
-		['expression' => 'ga:source'],
-		['expression' => 'ga:medium'],
-		['expression' => 'ga:campaign'],
-		['expression' => 'ga:pagePath'],
+		['name' => 'ga:transactionId'],
+		['name' => 'ga:source'],
+		['name' => 'ga:medium'],
+		['name' => 'ga:campaign'],
+		['name' => 'ga:pagePath'],
 	],
 	'orderBys' => [
 		['fieldName' => 'ga:transactionId', "sortOrder" => "DESCENDING"]
 	]
 ]);
 
-$response = $analytics->reports->batchGet($request);
+$requests = new Google_Service_AnalyticsReporting_GetReportsRequest();
+$requests->setReportRequests([$request]);
+
+$response = $analytics->reports->batchGet($requests);
 
 var_dump($response);
