@@ -13,7 +13,7 @@ $client->setScopes(['https://www.googleapis.com/auth/analytics.readonly']);
 $analytics = new Google_Service_AnalyticsReporting($client);
 
 $date = date('Y-m-d');
-
+$stmt_get_order_id = $db->prepare("SELECT id FROM orders WHERE order_number = ?");
 
 
 // Create the DateRange object.
@@ -52,12 +52,20 @@ $body->setReportRequests([$request]);
 $response = $analytics->reports->batchGet($body);
 
 $report = $response->getReports()[0];
-$dimension_headers = $report ->getColumnHeader()->getDimensions();
-$rows = $report ->getData()->getRows();
-$is_sampled = !empty($report ->getData()->getSamplesReadCounts());
+$dimension_headers = $report->getColumnHeader()->getDimensions();
+$rows = $report->getData()->getRows();
+$is_sampled = !empty($report->getData()->getSamplesReadCounts());
 echo $is_sampled ? "Sampled!" : "Not sampled".PHP_EOL;
 //print_r($headers);
 foreach($rows as $row){
 	/* @var $row Google_Service_AnalyticsReporting_ReportRow */
-	print_r(array_combine($dimension_headers,$row->getDimensions()));
+	$row_data = array_combine($dimension_headers,$row->getDimensions());
+	$stmt_get_order_id->execute([$row_data['ga:transactionId']]);
+	if($stmt_get_order_id->rowCount() < 1){
+		echo "Couldn't map order number ".$row_data['ga:transactionId']."! Skipping".PHP_EOL;
+		continue;
+	}
+	$order_id = $stmt_get_order_id->fetch(PDO::FETCH_COLUMN);
+	print_r($order_id);
+	die();
 }
