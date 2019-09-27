@@ -3,6 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 require_once(__DIR__.'/../../includes/config.php');
 
+/*
 echo "Loading order nums from csv... ";
 $fh = fopen(__DIR__."/../../manual/order_id_numbers.csv", 'r');
 fgetcsv($fh); // Headers
@@ -12,6 +13,7 @@ while($row = fgetcsv($fh)){
 	$order_ids_by_number[$row[1]] = $row[0];
 }
 echo "loaded!".PHP_EOL;
+*/
 
 $KEY_FILE_LOCATION = __DIR__ . '/../../'. $_ENV['GOOGLE_API_FILE'];
 
@@ -23,13 +25,12 @@ $client->setScopes(['https://www.googleapis.com/auth/analytics.readonly']);
 $analytics = new Google_Service_AnalyticsReporting($client);
 
 $datetime = time();
-$datetime = strtotime('2018-12-14'); // TODO: Remove
 $stmt_get_order_id = $db->prepare("SELECT id FROM orders WHERE number = ?");
 $stmt_insert_update_source = $db->prepare("INSERT INTO order_transaction_sources (order_id, ga_transaction_id, source, medium, campaign, page, ga_date) VALUES (:order_id, :ga_transaction_id, :source, :medium, :campaign, :page, :ga_date) ON DUPLICATE KEY UPDATE order_id=order_id");
 
 // Loop here
+$index = 0;
 do {
-	$datetime = strtotime('yesterday', $datetime);
 	$date = date('Y-m-d', $datetime);
 
 	echo "Building GA query for $date... ";
@@ -78,13 +79,10 @@ do {
 	foreach($rows as $row){
 		/* @var $row Google_Service_AnalyticsReporting_ReportRow */
 		$row_data = array_combine($dimension_headers,$row->getDimensions());
-		/*
-		*/
-		$order_id = $order_ids_by_number[$row_data['ga:transactionId']] ?? null;
-		if(empty($order_id)){
-			$stmt_get_order_id->execute([$row_data['ga:transactionId']]);
-			$order_id = $stmt_get_order_id->rowCount() > 0 ? $stmt_get_order_id->fetch(PDO::FETCH_COLUMN) : null;
-		}
+
+		$stmt_get_order_id->execute([$row_data['ga:transactionId']]);
+		$order_id = $stmt_get_order_id->rowCount() > 0 ? $stmt_get_order_id->fetch(PDO::FETCH_COLUMN) : null;
+
 		$stmt_insert_update_source->execute([
 			'order_id' => $order_id,
 			'ga_transaction_id' => $row_data['ga:transactionId'],
@@ -96,4 +94,6 @@ do {
 		]);
 		echo "Stored ".$row_data['ga:transactionId']." as $order_id [".$row_data['ga:source']."/".$row_data['ga:medium']."]".PHP_EOL;
 	}
-} while(date('Y', $datetime) >= 2018);
+	$datetime = strtotime('yesterday', $datetime);
+	$index++;
+} while($index < 2); // Sync yesterday and today
