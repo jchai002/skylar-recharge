@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-use TheIconic\Tracking\GoogleAnalytics\Analytics;
-
 $start_time = date('Y-m-d H:i:s', strtotime('-30 minutes'));
 $end_time = date('Y-m-d H:i:s', strtotime('-3 hours'));
 $stmt = $db->query("SELECT o.id, o.shopify_id FROM orders o
@@ -19,7 +17,6 @@ ORDER BY o.created_at DESC;");
 
 $stmt_update_hit = $db->prepare("UPDATE orders SET ga_hit_sent_at = :now WHERE id = :id");
 
-$analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics();
 foreach($stmt->fetchAll() as $row){
 	// TODO: Draft orders?
 	$shopify_order = $sc->get('/admin/orders/'.$row['shopify_id'].'.json');
@@ -36,13 +33,13 @@ foreach($stmt->fetchAll() as $row){
 			}
 		}
 	}
-	$response = send_ga_transaction_hit($analytics, $shopify_order, $sources, [], true);
+	$response = send_ga_transaction_hit($shopify_order, $sources, [], true);
 	if(empty($response->getDebugResponse()['hitParsingResult'][0]['valid'])){
 		echo "ERROR IN HIT!"; // TODO: Log and alert
 		continue;
 	}
 	print_r($response->getDebugResponse());
-	send_ga_transaction_hit($analytics, $shopify_order, $sources);
+	send_ga_transaction_hit($shopify_order, $sources);
 	$stmt_update_hit->execute([
 		'now' => date('Y-m-d H:i:s'),
 		'id' => $row['id'],
@@ -50,7 +47,8 @@ foreach($stmt->fetchAll() as $row){
 }
 
 
-function send_ga_transaction_hit(Analytics $analytics, $shopify_order, $sources = [], $original_order = [], $debug=false) {
+function send_ga_transaction_hit($shopify_order, $sources = [], $original_order = [], $debug=false) {
+	$analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics();
 
 	$ga_client_id = get_order_attribute($shopify_order, '_ga_client_id');
 	if(empty($ga_client_id) && !empty($original_order)){
