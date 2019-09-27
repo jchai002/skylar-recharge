@@ -40,17 +40,3 @@ do {
 		echo insert_update_order($db, $order, $sc)." ".$order['created_at'].PHP_EOL;
 	}
 } while(!empty($orders));
-
-/*
-$stmt = $db->query("SELECT o.shopify_id FROM orders o LEFT JOIN order_line_items oli ON o.id=oli.order_id
-WHERE o.created_at > '2019-03-01'
-AND oli.id IS NULL
-ORDER BY o.created_at DESC");
-
-foreach($stmt->fetchAll(PDO::FETCH_COLUMN) as $order_id){
-	$order = $sc->get('/admin/orders/'.$order_id.'.json');
-	if(!empty($order)){
-		echo insert_update_order($db, $order, $sc).PHP_EOL;
-	}
-}
-*/
