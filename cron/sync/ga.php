@@ -14,7 +14,7 @@ $analytics = new Google_Service_AnalyticsReporting($client);
 
 $datetime = time();
 $stmt_get_order_id = $db->prepare("SELECT id FROM orders WHERE number = ?");
-$stmt_insert_update_source = $db->prepare("INSERT INTO order_transaction_sources (order_id, ga_transaction_id, source, medium, campaign, page, ga_date) VALUES (:order_id, :ga_transaction_id, :source, :medium, :campaign, :page, :ga_date) ON DUPLICATE KEY UPDATE order_id=order_id");
+$stmt_insert_update_source = $db->prepare("INSERT INTO order_transaction_sources (order_id, ga_transaction_id, source, medium, campaign, page, ga_date) VALUES (:order_id, :ga_transaction_id, :source, :medium, :campaign, :page, :ga_date) ON DUPLICATE KEY UPDATE order_id=:order_id");
 
 // Loop here
 $index = 0;
