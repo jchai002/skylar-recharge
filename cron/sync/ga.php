@@ -16,6 +16,12 @@ $datetime = !empty($argv) && !empty($argv[1]) ? strtotime($argv[1]) : time();
 $stmt_get_order_id = $db->prepare("SELECT id FROM orders WHERE number = ?");
 $stmt_insert_update_source = $db->prepare("INSERT INTO order_transaction_sources (order_id, ga_transaction_id, source, medium, campaign, page, ga_date) VALUES (:order_id, :ga_transaction_id, :source, :medium, :campaign, :page, :ga_date) ON DUPLICATE KEY UPDATE order_id=:order_id");
 
+// Get orders are known ok
+$stmt = $db->query("SELECT ga_transaction_id FROM order_transaction_sources
+WHERE order_id IS NOT NULL
+AND ga_date >= '".date('Y-m-d', strtotime('yesterday'))."'");
+$skippable_transaction_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
 // Loop here
 $index = 0;
 do {
@@ -70,6 +76,11 @@ do {
 	foreach($rows as $row){
 		/* @var $row Google_Service_AnalyticsReporting_ReportRow */
 		$row_data = array_combine($dimension_headers,$row->getDimensions());
+
+		if(in_array($row_data['ga:transactionId'], $skippable_transaction_ids)){
+//			echo $row_data['ga:transactionId']. " Already mapped, skipping".PHP_EOL;
+			continue;
+		}
 
 		$transaction_id = trim($row_data['ga:transactionId'], '#');
 		if(strpos($transaction_id, 'SB') !== false){
