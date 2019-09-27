@@ -40,7 +40,8 @@ foreach($stmt->fetchAll() as $row){
 	}
 	print_r($response->getDebugResponse());
 	send_ga_transaction_hit($shopify_order, $sources);
-	// TODO: Log hits
+	log_event($db, 'ANALYTICS', $shopify_order['order_number'], 'HIT_SENT', $response->getDebugResponse(), '', 'CRON');
+	// TODO: Log hits better
 	$stmt_update_hit->execute([
 		'now' => date('Y-m-d H:i:s'),
 		'id' => $row['id'],
