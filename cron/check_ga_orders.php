@@ -51,6 +51,16 @@ function send_ga_transaction_hit($shopify_order, $sources = [], $original_order 
 	$analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics();
 
 	$ga_client_id = get_order_attribute($shopify_order, '_ga_client_id');
+	if(empty($ga_client_id) && strpos($shopify_order['note'], 'GAClientId:') !== false){
+		$note_parts = explode(' ', $shopify_order['note']);
+		foreach($note_parts as $note_part){
+			if(strpos($note_part, 'GAClientId:') === false){
+				continue;
+			}
+			$ga_client_id = str_replace('GAClientId:', '', $note_part);
+			break;
+		}
+	}
 	if(empty($ga_client_id) && !empty($original_order)){
 		$ga_client_id = get_order_attribute($original_order, '_ga_client_id');
 	}
