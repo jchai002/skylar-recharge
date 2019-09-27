@@ -47,7 +47,6 @@ foreach($stmt->fetchAll() as $row){
 		'now' => date('Y-m-d H:i:s'),
 		'id' => $row['id'],
 	]);
-	die();
 }
 
 
