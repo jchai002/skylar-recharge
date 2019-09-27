@@ -3,18 +3,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 require_once(__DIR__.'/../../includes/config.php');
 
-/*
-echo "Loading order nums from csv... ";
-$fh = fopen(__DIR__."/../../manual/order_id_numbers.csv", 'r');
-fgetcsv($fh); // Headers
-
-$order_ids_by_number = [];
-while($row = fgetcsv($fh)){
-	$order_ids_by_number[$row[1]] = $row[0];
-}
-echo "loaded!".PHP_EOL;
-*/
-
 $KEY_FILE_LOCATION = __DIR__ . '/../../'. $_ENV['GOOGLE_API_FILE'];
 
 // Create and configure a new client object.
