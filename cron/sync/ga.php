@@ -12,7 +12,7 @@ $client->setAuthConfig($KEY_FILE_LOCATION);
 $client->setScopes(['https://www.googleapis.com/auth/analytics.readonly']);
 $analytics = new Google_Service_AnalyticsReporting($client);
 
-$datetime = time();
+$datetime = !empty($argv) && !empty($argv[1]) ? strtotime($argv[1]) : time();
 $stmt_get_order_id = $db->prepare("SELECT id FROM orders WHERE number = ?");
 $stmt_insert_update_source = $db->prepare("INSERT INTO order_transaction_sources (order_id, ga_transaction_id, source, medium, campaign, page, ga_date) VALUES (:order_id, :ga_transaction_id, :source, :medium, :campaign, :page, :ga_date) ON DUPLICATE KEY UPDATE order_id=:order_id");
 
@@ -62,13 +62,21 @@ do {
 	$report = $response->getReports()[0];
 	$dimension_headers = $report->getColumnHeader()->getDimensions();
 	$rows = $report->getData()->getRows();
+	if(empty($rows)){
+		break;
+	}
 	$is_sampled = !empty($report->getData()->getSamplesReadCounts());
 	echo $is_sampled ? "Sampled!" : "Not sampled".PHP_EOL;
 	foreach($rows as $row){
 		/* @var $row Google_Service_AnalyticsReporting_ReportRow */
 		$row_data = array_combine($dimension_headers,$row->getDimensions());
 
-		$stmt_get_order_id->execute([$row_data['ga:transactionId']]);
+		$transaction_id = trim($row_data['ga:transactionId'], '#');
+		if(strpos($transaction_id, 'SB') !== false){
+			$transaction_id = str_replace('SB', '', $transaction_id);
+		}
+
+		$stmt_get_order_id->execute([$transaction_id]);
 		$order_id = $stmt_get_order_id->rowCount() > 0 ? $stmt_get_order_id->fetch(PDO::FETCH_COLUMN) : null;
 
 		$stmt_insert_update_source->execute([
@@ -83,5 +91,11 @@ do {
 		echo "Stored ".$row_data['ga:transactionId']." as $order_id [".$row_data['ga:source']."/".$row_data['ga:medium']."]".PHP_EOL;
 	}
 	$datetime = strtotime('yesterday', $datetime);
+	if($datetime < strtotime('2017-07-28')){
+		break;
+	}
+	if(!empty($argv[1])){
+		continue;
+	}
 	$index++;
 } while($index < 2); // Sync yesterday and today
