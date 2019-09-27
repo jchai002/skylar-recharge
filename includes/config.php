@@ -948,6 +948,29 @@ function price_without_trailing_zeroes($price = 0){
 	return number_format($price, 2);
 }
 // Autocharge
+function get_order_attribute($order, $attribute_name){
+	$attributes = [];
+	if(!empty($order['attributes'])){
+		$attributes = $order['attributes'];
+	} else if(!empty($order['note_attributes'])){
+		$attributes = $order['note_attributes'];
+	}
+	if(empty($attributes)){
+		return null;
+	}
+	if(array_key_exists($attribute_name, $attributes)){
+		return $attributes[$attribute_name];
+	}
+	// Check if it's an indexed array (with name and value properties)
+	if(array_keys($attributes)[0] === 0){
+		foreach($attributes as $property){
+			if($property['name'] == $attribute_name){
+				return $property['value'];
+			}
+		}
+	}
+	return null;
+}
 function get_oli_attribute($line_item, $attribute_name){
 	if(empty($line_item['properties'])){
 		return null;
@@ -1067,4 +1090,13 @@ function respondOK(){
 	ob_end_flush();
 	ob_flush();
 	flush();
+}
+
+// https://stackoverflow.com/questions/2040240/php-function-to-generate-v4-uuid
+function uuidv4($data = null){
+	$data = $data ?? random_bytes(16);
+	$data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+	$data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+
+	return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
