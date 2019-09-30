@@ -623,95 +623,93 @@ function sc_get_main_subscription(PDO $db, RechargeClient $rc, $filters = []){
 	}
 	return false;
 }
-function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id){
-	$res = $rc->get('/onetimes', [
-		'address_id' => $address_id,
-	]);
-	if(!array_key_exists('onetimes', $res)){
-//		print_r($res);
-	}
-	// Fix for api returning non-onetimes
-	$onetimes = [];
-	foreach(($res['onetimes'] ?? []) as $onetime){
-		if($onetime['status'] == 'ONETIME'){
-			$onetimes[] = $onetime;
+function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id, $main_sub = [], $force_offset = null){
+	if(!is_null($force_offset)){
+		$next_charge_month = date('Y-m', get_month_by_offset($force_offset));
+	} else {
+		$res = $rc->get('/onetimes', [
+			'address_id' => $address_id,
+		]);
+		// Fix for api returning non-onetimes
+		$onetimes = [];
+		foreach(($res['onetimes'] ?? []) as $onetime){
+			if($onetime['status'] == 'ONETIME'){
+				$onetimes[] = $onetime;
+			}
 		}
-	}
-	//print_r($onetimes);
-	$res = $rc->get('/orders', [
-		'address_id' => $address_id,
-		'scheduled_at_min' => date('Y-m-t'),
-		'status' => 'QUEUED',
-	]);
-	if(!array_key_exists('orders', $res)){
-//		print_r($res);
-	}
-	$orders = $res['orders'] ?? [];
-	$res = $rc->get('/charges', [
-		'address_id' => $address_id,
-		'date_min' => date('Y-m-t'),
-		'status' => 'SKIPPED'
-	]);
-	if(!array_key_exists('charges', $res)){
-//		print_r($res);
-	}
-	$charges = $res['charges'] ?? [];
+		//print_r($onetimes);
+		$res = $rc->get('/orders', [
+			'address_id' => $address_id,
+			'scheduled_at_min' => date('Y-m-t'),
+			'status' => 'QUEUED',
+		]);
+		$orders = $res['orders'] ?? [];
+		$res = $rc->get('/charges', [
+			'address_id' => $address_id,
+			'date_min' => date('Y-m-t'),
+			'status' => 'SKIPPED'
+		]);
+		$charges = $res['charges'] ?? [];
 
-	$products_by_id = [];
-	$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
-	$offset = sc_is_address_in_blackout($db, $rc, $address_id) ? 1 : 0;
-	while(true) {
-		$offset++;
+		$products_by_id = [];
+		$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
+		$offset = sc_is_address_in_blackout($db, $rc, $address_id) ? 1 : 0;
 		$next_charge_month = date('Y-m', get_month_by_offset($offset));
-		foreach($onetimes as $item){
-			$charge_date = date('Y-m', strtotime($item['next_charge_scheduled_at']));
-			if($charge_date != $next_charge_month){
-				continue;
-			}
-			if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
-				$stmt->execute([$item['shopify_product_id']]);
-				$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
-			}
-			if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
-				continue 2;
-			}
-		}
-		foreach($charges as $charge){
-			$charge_date = date('Y-m', strtotime($charge['scheduled_at']));
-			if($charge_date != $next_charge_month){
-				continue;
-			}
-			foreach($charge['line_items'] as $item){
+		while(true){
+			$offset++;
+			$next_charge_month = date('Y-m', get_month_by_offset($offset));
+			foreach($onetimes as $item){
+				$charge_date = date('Y-m', strtotime($item['next_charge_scheduled_at']));
+				if($charge_date != $next_charge_month){
+					continue;
+				}
 				if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
 					$stmt->execute([$item['shopify_product_id']]);
 					$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
 				}
 				if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
-					continue 3;
+					continue 2;
 				}
 			}
+			foreach($charges as $charge){
+				$charge_date = date('Y-m', strtotime($charge['scheduled_at']));
+				if($charge_date != $next_charge_month){
+					continue;
+				}
+				foreach($charge['line_items'] as $item){
+					if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
+						$stmt->execute([$item['shopify_product_id']]);
+						$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
+					}
+					if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
+						continue 3;
+					}
+				}
+			}
+			foreach($orders as $order){
+				if(date('Y-m', strtotime($order['scheduled_at'])) != $next_charge_month){
+					continue;
+				}
+				foreach($order['line_items'] as $item){
+					if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
+						$stmt->execute([$item['shopify_product_id']]);
+						$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
+					}
+					if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
+						continue 3;
+					}
+				}
+			}
+			// If we've made it this far, there is no SC-related stuff scheduled for this offset
+			break;
 		}
-		foreach($orders as $order){
-			if(date('Y-m', strtotime($order['scheduled_at'])) != $next_charge_month){
-				continue;
-			}
-			foreach($order['line_items'] as $item){
-				if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
-					$stmt->execute([$item['shopify_product_id']]);
-					$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
-				}
-				if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
-					continue 3;
-				}
-			}
-		}
-		// If we've made it this far, there is no SC-related stuff scheduled for this offset
-		break;
 	}
-	$main_sub = sc_get_main_subscription($db, $rc, [
-		'address_id' => $address_id,
-		'status' => 'ACTIVE',
-	]);
+	if(empty($main_sub)){
+		$main_sub = sc_get_main_subscription($db, $rc, [
+			'address_id' => $address_id,
+			'status' => 'ACTIVE',
+		]);
+	}
 
 	$day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
 	if($day_of_month == '1'){
