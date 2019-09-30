@@ -41,6 +41,10 @@ do {
 } while(count($res['charges']) == 250);
 echo "Total: ".count($charges).PHP_EOL;
 
+if(!empty($argv) && !empty($argv[1]) && $argv[1] == '2'){
+	$charges = array_reverse($charges);
+}
+
 $start_time = microtime(true);
 echo "Starting updates".PHP_EOL;
 foreach($charges as $index=>$charge){
@@ -51,10 +55,12 @@ foreach($charges as $index=>$charge){
 	    continue;
     }
 	echo sc_calculate_next_charge_date($db, $rc, $charge['address_id']).PHP_EOL;
-	if($index % 20 == 0){
-		$charges_per_sec = ($index / (microtime(true) - $start_time));
-		$time = time() + divide((count($charges)-$index),$charges_per_sec);
-		echo "Updated: ".$index."/".count($charges)." Rate: ".$charges_per_sec." charges/s, Estimated finish: ".date('H:i:s',$time).PHP_EOL; // TODO: Doesn't work
+	if($index > 0 && $index % 20 == 0){
+		$elapsed_time = microtime(true) - $start_time;
+		$charges_per_sec = $index / $elapsed_time;
+		$charges_remaining = count($charges) - $index;
+		$time = microtime(true) + ($charges_remaining * $charges_per_sec);
+		echo "Updated: ".$index."/".count($charges)." Rate: ".$charges_per_sec." charges/s, Estimated finish: ".date('Y-m-d H:i:s',$time).PHP_EOL;
 	}
 }
 
