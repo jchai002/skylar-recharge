@@ -53,7 +53,6 @@ do {
 	}
 } while(count($res) >= $page_size);
 
-print_r($argv);
 if(
 	(date('G') == 12 && date('i') < 5)
 	|| (!empty($argv) && !empty($argv[1]) && $argv[1] == 'all')
@@ -61,11 +60,12 @@ if(
 	echo "Updating subscriptions with old charge dates".PHP_EOL;
 	$stmt = $db->query("
 SELECT * FROM rc_subscriptions
-WHERE next_charge_scheduled_at <= '".date('Y-m-d')."'
+WHERE (synced_at <= '".date('Y-m-d')."' OR synced_at IS NULL)
 AND next_charge_scheduled_at IS NOT NULL
 AND cancelled_at IS NULL
 AND deleted_at IS NULL
 ");
+	echo "Updating ".$stmt->rowCount()." unsynced subs".PHP_EOL;
 	$stmt_mark_deleted = $db->prepare("UPDATE rc_subscriptions SET deleted_at=:deleted_at WHERE recharge_id=:recharge_id");
 	foreach($stmt->fetchAll() as $subscription){
 		$res = $rc->get('/subscriptions/'.$subscription['recharge_id']);

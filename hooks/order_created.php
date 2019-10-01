@@ -167,30 +167,47 @@ if(empty($rc_order['orders'])){
 }
 $rc_order = $rc_order['orders'][0];
 
+$has_bb_sub = false;
+$res = $rc->get('/subscriptions/', ['address_id' => $rc_order['address_id']]);
+$subscriptions = [];
+foreach($res['subscriptions'] as $subscription){
+	$subscriptions[$subscription['id']] = $subscription;
+	if(is_scent_club(get_product($db, $subscription['shopify_product_id']))){
+		$sc_main_sub = $subscription;
+	}
+	if(get_product($db, $subscription['shopify_product_id'])['type'] == 'Body Bundle'){
+		$has_bb_sub = true;
+	}
+}
+
 $stmt_get_order_line = $db->prepare("SELECT id FROM order_line_items WHERE shopify_id=?");
-$sc_main_sub = sc_get_main_subscription($db, $rc, [
-	'customer_id' => $rc_order['customer_id'],
-	'status' => 'ACTIVE',
-]);
+if(empty($sc_main_sub)){
+	$sc_main_sub = sc_get_main_subscription($db, $rc, [
+		'customer_id' => $rc_order['customer_id'],
+		'status' => 'ACTIVE',
+	]);
+}
 echo "Checking line items".PHP_EOL;
 foreach($order['line_items'] as $line_item){
 	// Create body bundle subs
 	echo "Checking body bundle... ";
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
-	if($product['type'] == 'Body Bundle'){
+	if($product['type'] == 'Body Bundle' && !$has_bb_sub){
 		$variant = get_variant($db, $line_item['variant_id']);
 		echo "Adding body bundle ".PHP_EOL;
-		$charge_day = 01;
+
+		// Set to order day
+		$charge_day = date('d', strtotime($order['created_at']));
+		if(date('t', get_next_month()) < $charge_day){
+			$charge_day = date('t', get_next_month());
+		}
+/*
 		if(!empty($sc_main_sub)){
 			$charge_day = date('d', strtotime($sc_main_sub['next_charge_scheduled_at']));
 		}
+*/
 		$next_charge_date = date('Y-m-'.$charge_day, get_next_month());
-		if(strtotime($next_charge_date)-time() < 14*24*60*60){
-			$charge_day = $sc_main_sub['order_day_of_month'] ?? 1;
-			$next_charge_date = date('Y-m-'.$charge_day, get_month_by_offset(2));
-		}
-		$next_charge_date = date('Y-m-d', offset_date_skip_weekend(strtotime($next_charge_date)));
 		print_r($sc_main_sub);
 		echo $charge_day.PHP_EOL;
 		echo $next_charge_date.PHP_EOL;
@@ -204,7 +221,7 @@ foreach($order['line_items'] as $line_item){
 			'order_interval_unit' => 'month',
 			'order_interval_frequency' => 1,
 			'charge_interval_frequency' => 1,
-			'order_day_of_month' => $sc_main_sub['order_day_of_month'] ?? 1,
+			'order_day_of_month' => $charge_day,
 		]);
 		print_r($res);
 		if(!empty($res['subscriptions'])){
@@ -260,11 +277,6 @@ foreach($order['line_items'] as $line_item){
 
 
 // Tag orders that aren't samples as either onetime or subscription, with subscription
-$res = $rc->get('/subscriptions/', ['address_id' => $rc_order['address_id']]);
-$subscriptions = [];
-foreach($res['subscriptions'] as $subscription){
-	$subscriptions[$subscription['id']] = $subscription;
-}
 if($rc_order['type'] == "RECURRING"){
 	foreach($rc_order['line_items'] as $line_item){
 		if(in_array($line_item['shopify_variant_id'], [738567520343,738394865751,738567323735])){
