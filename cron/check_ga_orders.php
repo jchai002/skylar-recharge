@@ -97,7 +97,7 @@ function send_ga_transaction_hit($shopify_order, $sources = [], $original_order 
 	$analytics->setTransactionId($shopify_order['order_number'])
 		->setQueueTime($time_diff*1000)
 		->setAffiliation('Skylar Offline')
-		->setRevenue($shopify_order['total_price_set']['shop_money']['amount'])
+		->setRevenue($shopify_order['subtotal_price_set']['shop_money']['amount'])
 		->setTax($shopify_order['total_tax_set']['shop_money']['amount'])
 		->setShipping($shopify_order['total_shipping_price_set']['shop_money']['amount']);
 	if(!empty($shopify_order['discount_codes'])){
