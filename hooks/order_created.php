@@ -167,16 +167,12 @@ if(empty($rc_order['orders'])){
 }
 $rc_order = $rc_order['orders'][0];
 
-$has_bb_sub = false;
 $res = $rc->get('/subscriptions/', ['address_id' => $rc_order['address_id']]);
 $subscriptions = [];
 foreach($res['subscriptions'] as $subscription){
 	$subscriptions[$subscription['id']] = $subscription;
 	if(is_scent_club(get_product($db, $subscription['shopify_product_id']))){
 		$sc_main_sub = $subscription;
-	}
-	if(get_product($db, $subscription['shopify_product_id'])['type'] == 'Body Bundle'){
-		$has_bb_sub = true;
 	}
 }
 
@@ -193,6 +189,13 @@ foreach($order['line_items'] as $line_item){
 	echo "Checking body bundle... ";
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
+	$has_bb_sub = false;
+	foreach($subscriptions as $subscription){
+		if($subscription['shopify_variant_id'] == $line_item['variant_id']){
+			$has_bb_sub = true;
+			break;
+		}
+	}
 	if($product['type'] == 'Body Bundle' && !$has_bb_sub){
 		$variant = get_variant($db, $line_item['variant_id']);
 		echo "Adding body bundle ".PHP_EOL;
