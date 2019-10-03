@@ -310,10 +310,13 @@ if($scent_club_hold){
 
 if($update_order){
 	$order_tags = array_unique($order_tags);
-	$res = $sc->call("PUT", "/admin/orders/".$order['id'].'.json', ['order' => [
+	$res = $sc->put("/admin/orders/".$order['id'].'.json', ['order' => [
 		'id' => $order['id'],
 		'tags' => implode(',', $order_tags),
 	]]);
+	if(!empty($res)){
+		echo insert_update_order($db, $res, $sc).PHP_EOL;
+	}
 //	var_dump($res);
 }
 
