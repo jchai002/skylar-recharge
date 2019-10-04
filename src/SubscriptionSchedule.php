@@ -2,6 +2,8 @@
 
 class SubscriptionSchedule {
 
+	public $hidden_subscription_ids = [];
+
 	private $db;
 	private $rc;
 	private $rc_customer_id;
@@ -288,6 +290,9 @@ class SubscriptionSchedule {
 			return false;
 		}
 		if($item['scheduled_at_time'] < $this->min_time){
+			return false;
+		}
+		if(in_array($item['subscription_id'], $this->hidden_subscription_ids)){
 			return false;
 		}
 
