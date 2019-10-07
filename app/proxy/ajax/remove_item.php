@@ -12,6 +12,7 @@ if(empty($res['subscription']) || $res['subscription']['status'] == 'ONETIME'){
 		'commit_update' => true,
 	]);
 }
+log_event($db, 'SUBSCRIPTION', $_REQUEST['id'], 'CANCEL', 'Item removed from customer account', 'Cancelled via user account: '.json_encode($res), 'Customer');
 
 if(!empty($res['error'])){
 	echo json_encode([

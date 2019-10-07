@@ -9,6 +9,7 @@ if(empty($_REQUEST['charge_id']) && !empty($_REQUEST['unskip']) && !empty($_REQU
 	$res['line'] = 9;
 	$subscription = $res['subscription'];
 	$next_charge_date = sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
+	log_event($db, 'SUBSCRIPTION', $subscription['id'], 'SKIP', $reason, 'Skipped via user account: '.json_encode([$subscription,$res]), 'Customer');
 	die(json_encode([
 		'success' => true,
 		'res' => $res,
