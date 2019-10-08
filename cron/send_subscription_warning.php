@@ -44,9 +44,7 @@ if($day_of_week == 3){ // Wednesday
 
 $page = 0;
 echo "$start_date to $end_date".PHP_EOL;
-$stmt = $db->prepare("SELECT 1 FROM event_log WHERE category='email' AND (action='SUB_3DAY_WARNING' OR action='SUB_3DAY_WARNING_SC') AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?");
-//echo "SELECT 1 FROM event_log WHERE category='email' AND action='SUB_3DAY_WARNING' AND DATE(date_created) = '".date('Y-m-d', $now)."' AND value=?";
-//$stmt = $db->prepare("SELECT 1 FROM emails_sent WHERE (email='SUB_3DAY_WARNING' OR email='SUB_3DAY_WARNING_SC') AND DATE(date_created) = '".date('Y-m-d', $now)."' AND recipient=?");
+$stmt = $db->prepare("SELECT 1 FROM emails_sent WHERE (email='SUB_3DAY_WARNING' OR email='SUB_3DAY_WARNING_SC') AND DATE(date_created) = '".date('Y-m-d', $now)."' AND recipient=?");
 $stmt_insert = $db->prepare("INSERT INTO emails_sent (email, recipient, date_created) VALUES (:email, :recipient, :date_created)");
 do {
 	$page++;
