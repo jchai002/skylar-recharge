@@ -103,13 +103,17 @@ function offset_date_skip_weekend($time){
 	return $time;
 }
 
+$_stmt_cache = [];
 function insert_update_product(PDO $db, $shopify_product){
-	$now = date('Y-m-d H:i:s');
-	$stmt = $db->prepare("INSERT INTO products
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_product'])){
+		$_stmt_cache['iu_product'] = $db->prepare("INSERT INTO products
 (shopify_id, handle, title, type, tags, updated_at, published_at)
 VALUES (:shopify_id, :handle, :title, :type, :tags, :updated_at, :published_at)
 ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, type=:type, tags=:tags, updated_at=:updated_at, published_at=:published_at");
-	$stmt->execute([
+	}
+	$now = date('Y-m-d H:i:s');
+	$_stmt_cache['iu_product']->execute([
 		'shopify_id' => $shopify_product['id'],
 		'handle' => $shopify_product['handle'],
 		'title' => $shopify_product['title'],
@@ -120,12 +124,14 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, typ
 	]);
 //	print_r($shopify_product);
 	$product_id = $db->lastInsertId();
-	$stmt = $db->prepare("INSERT INTO variants
+	if(empty($_stmt_cache['iu_variant'])){
+		$_stmt_cache['iu_variant'] = $db->prepare("INSERT INTO variants
 (product_id, shopify_id, title, price, sku, updated_at)
 VALUES (:product_id, :shopify_id, :title, :price, :sku, :updated_at)
 ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:sku, updated_at=:updated_at");
+	}
 	foreach($shopify_product['variants'] as $shopify_variant){
-		$stmt->execute([
+		$_stmt_cache['iu_variant']->execute([
 			'product_id' => $product_id,
 			'shopify_id' => $shopify_variant['id'],
 			'title' => $shopify_variant['title'],
@@ -137,6 +143,13 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 	return $product_id;
 }
 function insert_update_order(PDO $db, $shopify_order, ShopifyClient $sc){
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_order'])){
+		$_stmt_cache['iu_order'] = $db->prepare("INSERT INTO orders
+(shopify_id, customer_id, app_id, cart_token, `number`, total_line_items_price, total_discounts, total_price, tags, created_at, updated_at, cancelled_at, closed_at, email, note, attributes, source_name, synced_at)
+VALUES (:shopify_id, :customer_id, :app_id, :cart_token, :number, :total_line_items_price, :total_discounts, :total_price, :tags, :created_at, :updated_at, :cancelled_at, :closed_at, :email, :note, :attributes, :source_name, :synced_at)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=:app_id, cart_token=:cart_token, `number`=:number, updated_at=:updated_at, total_line_items_price=:total_line_items_price, total_discounts=:total_discounts, total_price=:total_price, tags=:tags, cancelled_at=:cancelled_at, closed_at=:closed_at, email=:email, note=:note, attributes=:attributes, source_name=:source_name, synced_at=:synced_at");
+	}
 	$now = date('Y-m-d H:i:s');
 	if(!empty($shopify_order['customer'])){
 		$customer_id = get_customer($db, $shopify_order['customer']['id'], $sc)['id'];
@@ -145,11 +158,7 @@ function insert_update_order(PDO $db, $shopify_order, ShopifyClient $sc){
 	}else {
 		$customer_id = null;
 	}
-	$stmt = $db->prepare("INSERT INTO orders
-(shopify_id, customer_id, app_id, cart_token, `number`, total_line_items_price, total_discounts, total_price, tags, created_at, updated_at, cancelled_at, closed_at, email, note, attributes, source_name, synced_at)
-VALUES (:shopify_id, :customer_id, :app_id, :cart_token, :number, :total_line_items_price, :total_discounts, :total_price, :tags, :created_at, :updated_at, :cancelled_at, :closed_at, :email, :note, :attributes, :source_name, :synced_at)
-ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=:app_id, cart_token=:cart_token, `number`=:number, updated_at=:updated_at, total_line_items_price=:total_line_items_price, total_discounts=:total_discounts, total_price=:total_price, tags=:tags, cancelled_at=:cancelled_at, closed_at=:closed_at, email=:email, note=:note, attributes=:attributes, source_name=:source_name, synced_at=:synced_at");
-	$stmt->execute([
+	$_stmt_cache['iu_order']->execute([
 		'shopify_id' => $shopify_order['id'],
 		'customer_id' => $customer_id,
 		'app_id' => $shopify_order['app_id'],
@@ -169,7 +178,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=
 		'source_name' => $shopify_order['source_name'],
 		'synced_at' => date('Y-m-d H:i:s'),
 	]);
-	$error = $stmt->errorInfo();
+	$error = $_stmt_cache['iu_order']->errorInfo();
 	if($error[0] != 0){
 		$stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2) VALUES (:category, :action, :value, :value2)");
 		$stmt->execute([
@@ -180,10 +189,12 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=
 		]);
 	}
 	$order_id = $db->lastInsertId();
-	$stmt = $db->prepare("INSERT INTO order_line_items (shopify_id, order_id, variant_id, total_discount, price, sku, product_title, variant_title, properties) VALUES (:shopify_id, :order_id, :variant_id, :total_discount, :price, :sku, :product_title, :variant_title, :properties) ON DUPLICATE KEY UPDATE order_id=:order_id, variant_id=:variant_id, total_discount=:total_discount, price=:price, sku=:sku, product_title=:product_title, variant_title=:variant_title, properties=:properties");
+	if(empty($_stmt_cache['iu_order_line_item'])){
+		$_stmt_cache['iu_order_line_item'] = $db->prepare("INSERT INTO order_line_items (shopify_id, order_id, variant_id, total_discount, price, sku, product_title, variant_title, properties) VALUES (:shopify_id, :order_id, :variant_id, :total_discount, :price, :sku, :product_title, :variant_title, :properties) ON DUPLICATE KEY UPDATE order_id=:order_id, variant_id=:variant_id, total_discount=:total_discount, price=:price, sku=:sku, product_title=:product_title, variant_title=:variant_title, properties=:properties");
+	}
 	foreach($shopify_order['line_items'] as $line_item){
 		$variant = get_variant($db, $line_item['variant_id']);
-		$stmt->execute([
+		$_stmt_cache['iu_order_line_item']->execute([
 			'shopify_id' => $line_item['id'],
 			'order_id' => $order_id,
 			'variant_id' => $variant['id'],
@@ -198,8 +209,11 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=
 	return $order_id;
 }
 function insert_update_customer(PDO $db, $shopify_customer){
-	$stmt = $db->prepare("INSERT INTO customers (shopify_id, email, first_name, last_name, state, tags, updated_at) VALUES (:shopify_id, :email, :first_name, :last_name, :state, :tags, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), email=:email, first_name=:first_name, last_name=:last_name, state=:state, tags=:tags, updated_at=:updated_at");
-	$stmt->execute([
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_customer'])){
+		$_stmt_cache['iu_customer'] = $db->prepare("INSERT INTO customers (shopify_id, email, first_name, last_name, state, tags, updated_at) VALUES (:shopify_id, :email, :first_name, :last_name, :state, :tags, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), email=:email, first_name=:first_name, last_name=:last_name, state=:state, tags=:tags, updated_at=:updated_at");
+	}
+	$_stmt_cache['iu_customer']->execute([
 		'shopify_id' => $shopify_customer['id'],
 		'email' => $shopify_customer['email'],
 		'first_name' => $shopify_customer['first_name'],
@@ -212,6 +226,7 @@ function insert_update_customer(PDO $db, $shopify_customer){
 	return $customer_id;
 }
 function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
+	global $_stmt_cache;
 
 	if(!empty($shopify_fulfillment['tracking_number'])){
 		$stmt = $db->prepare("SELECT 1 FROM ep_trackers WHERE tracking_code=?");
@@ -251,8 +266,10 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
 		}
 	}
 
-    $stmt = $db->prepare("INSERT INTO fulfillments (shopify_id, name, service, tracking_company, tracking_number, tracking_url, shipment_status, status) VALUES (:shopify_id, :name, :service, :tracking_company, :tracking_number, :tracking_url, :shipment_status, :status) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), name=:name, service=:service, tracking_company=:tracking_company, tracking_number=:tracking_number, tracking_url=:tracking_url, shipment_status=:shipment_status, status=:status");
-    $stmt->execute([
+	if(empty($_stmt_cache['iu_fulfillment'])){
+		$_stmt_cache['iu_fulfillment'] = $db->prepare("INSERT INTO fulfillments (shopify_id, name, service, tracking_company, tracking_number, tracking_url, shipment_status, status) VALUES (:shopify_id, :name, :service, :tracking_company, :tracking_number, :tracking_url, :shipment_status, :status) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), name=:name, service=:service, tracking_company=:tracking_company, tracking_number=:tracking_number, tracking_url=:tracking_url, shipment_status=:shipment_status, status=:status");
+	}
+	$_stmt_cache['iu_fulfillment']->execute([
         'shopify_id' => $shopify_fulfillment['id'],
         'name' => $shopify_fulfillment['name'],
 		'service' => $shopify_fulfillment['service'],
@@ -263,23 +280,27 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
         'status' => $shopify_fulfillment['status'],
     ]);
     $id = $db->lastInsertId();
-    $stmt = $db->prepare("UPDATE order_line_items SET fulfillment_id = ? WHERE shopify_id=?");
+	if(empty($_stmt_cache['iu_line_item_fulfillment_id'])){
+		$_stmt_cache['iu_line_item_fulfillment_id'] = $db->prepare("UPDATE order_line_items SET fulfillment_id = ? WHERE shopify_id=?");
+	}
     foreach($shopify_fulfillment['line_items'] as $line_item){
     	echo $id." ".$line_item['id'];
-        $stmt->execute([$id, $line_item['id']]);
-        var_dump($stmt->errorInfo());
+		$_stmt_cache['iu_line_item_fulfillment_id']->execute([$id, $line_item['id']]);
     }
 
     return $id;
 }
 function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $sc){
-	$stmt = $db->prepare("INSERT INTO rc_customers (recharge_id, customer_id, email, first_name, last_name, processor_type, status, has_valid_payment_method, reason_payment_method_invalid, updated_at) VALUES (:recharge_id, :customer_id, :email, :first_name, :last_name, :processor_type, :status, :has_valid_payment_method, :reason_payment_method_invalid, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), recharge_id=:recharge_id, customer_id=:customer_id, email=:email, first_name=:first_name, last_name=:last_name, processor_type=:processor_type, status=:status, has_valid_payment_method=:has_valid_payment_method, reason_payment_method_invalid=:reason_payment_method_invalid, updated_at=:updated_at");
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_rc_customer'])){
+		$_stmt_cache['iu_rc_customer'] = $db->prepare("INSERT INTO rc_customers (recharge_id, customer_id, email, first_name, last_name, processor_type, status, has_valid_payment_method, reason_payment_method_invalid, updated_at) VALUES (:recharge_id, :customer_id, :email, :first_name, :last_name, :processor_type, :status, :has_valid_payment_method, :reason_payment_method_invalid, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), recharge_id=:recharge_id, customer_id=:customer_id, email=:email, first_name=:first_name, last_name=:last_name, processor_type=:processor_type, status=:status, has_valid_payment_method=:has_valid_payment_method, reason_payment_method_invalid=:reason_payment_method_invalid, updated_at=:updated_at");
+	}
 	if(empty($recharge_customer['shopify_customer_id'])){
 		$customer = ['id'=>null];
 	} else {
 		$customer = get_customer($db, $recharge_customer['shopify_customer_id'], $sc);
 	}
-	$stmt->execute([
+	$_stmt_cache['iu_rc_customer']->execute([
 		'recharge_id' => $recharge_customer['id'],
 		'customer_id' => $customer['id'],
 		'email' => $recharge_customer['email'],
@@ -293,10 +314,14 @@ function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $s
 	]);
 	return $db->lastInsertId();
 }
+global $_stmt_cache;
 function insert_update_rc_address(PDO $db, $recharge_address, RechargeClient $rc, ShopifyClient $sc){
-	$stmt = $db->prepare("INSERT INTO rc_addresses (recharge_id, rc_customer_id, line1, line2, city, province, country, zip, company, phone, note, attributes, shipping_lines, updated_at) VALUES (:recharge_id, :rc_customer_id, :line1, :line2, :city, :province, :country, :zip, :company, :phone, :note, :attributes, :shipping_lines, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), rc_customer_id=:rc_customer_id, line1=:line1, line2=:line2, city=:city, province=:province, country=:country, zip=:zip, company=:company, phone=:phone, note=:note, attributes=:attributes, shipping_lines=:shipping_lines, updated_at=:updated_at");
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_rc_address'])){
+		$_stmt_cache['iu_rc_address'] = $db->prepare("INSERT INTO rc_addresses (recharge_id, rc_customer_id, line1, line2, city, province, country, zip, company, phone, note, attributes, shipping_lines, updated_at) VALUES (:recharge_id, :rc_customer_id, :line1, :line2, :city, :province, :country, :zip, :company, :phone, :note, :attributes, :shipping_lines, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), rc_customer_id=:rc_customer_id, line1=:line1, line2=:line2, city=:city, province=:province, country=:country, zip=:zip, company=:company, phone=:phone, note=:note, attributes=:attributes, shipping_lines=:shipping_lines, updated_at=:updated_at");
+	}
 	$recharge_customer = get_rc_customer($db, $recharge_address['customer_id'], $rc, $sc);
-	$stmt->execute([
+	$_stmt_cache['iu_rc_address']->execute([
 		'recharge_id' => $recharge_address['id'],
 		'rc_customer_id' => $recharge_customer['id'],
 		'line1' => $recharge_address['address1'],
@@ -315,14 +340,17 @@ function insert_update_rc_address(PDO $db, $recharge_address, RechargeClient $rc
 	return $db->lastInsertId();
 }
 function insert_update_rc_subscription(PDO $db, $recharge_subscription, RechargeClient $rc, ShopifyClient $sc){
-	$stmt = $db->prepare("INSERT INTO rc_subscriptions (recharge_id, address_id, product_title, variant_title, price, quantity, status, product_id, variant_id, order_interval_unit, order_interval_frequency, charge_interval_frequency, order_day_of_month, order_day_of_week, properties, expire_after_charges, cancellation_reason, max_retries_reached, next_charge_scheduled_at, created_at, updated_at, cancelled_at, synced_at) VALUES (:recharge_id, :address_id, :product_title, :variant_title, :price, :quantity, :status, :product_id, :variant_id, :order_interval_unit, :order_interval_frequency, :charge_interval_frequency, :order_day_of_month, :order_day_of_week, :properties, :expire_after_charges, :cancellation_reason, :max_retries_reached, :next_charge_scheduled_at, :created_at, :updated_at, :cancelled_at, :synced_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), address_id=:address_id, product_title=:product_title, variant_title=:variant_title, price=:price, quantity=:quantity, status=:status, product_id=:product_id, variant_id=:variant_id, order_interval_unit=:order_interval_unit, order_interval_frequency=:order_interval_frequency, charge_interval_frequency=:charge_interval_frequency, order_day_of_month=:order_day_of_month, order_day_of_week=:order_day_of_week, properties=:properties, expire_after_charges=:expire_after_charges, cancellation_reason=:cancellation_reason, max_retries_reached=:max_retries_reached, next_charge_scheduled_at=:next_charge_scheduled_at, created_at=:created_at, updated_at=:updated_at, cancelled_at=:cancelled_at, synced_at=:synced_at");
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_rc_subscription'])){
+		$_stmt_cache['iu_rc_subscription'] = $db->prepare("INSERT INTO rc_subscriptions (recharge_id, address_id, product_title, variant_title, price, quantity, status, product_id, variant_id, order_interval_unit, order_interval_frequency, charge_interval_frequency, order_day_of_month, order_day_of_week, properties, expire_after_charges, cancellation_reason, max_retries_reached, next_charge_scheduled_at, created_at, updated_at, cancelled_at, synced_at) VALUES (:recharge_id, :address_id, :product_title, :variant_title, :price, :quantity, :status, :product_id, :variant_id, :order_interval_unit, :order_interval_frequency, :charge_interval_frequency, :order_day_of_month, :order_day_of_week, :properties, :expire_after_charges, :cancellation_reason, :max_retries_reached, :next_charge_scheduled_at, :created_at, :updated_at, :cancelled_at, :synced_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), address_id=:address_id, product_title=:product_title, variant_title=:variant_title, price=:price, quantity=:quantity, status=:status, product_id=:product_id, variant_id=:variant_id, order_interval_unit=:order_interval_unit, order_interval_frequency=:order_interval_frequency, charge_interval_frequency=:charge_interval_frequency, order_day_of_month=:order_day_of_month, order_day_of_week=:order_day_of_week, properties=:properties, expire_after_charges=:expire_after_charges, cancellation_reason=:cancellation_reason, max_retries_reached=:max_retries_reached, next_charge_scheduled_at=:next_charge_scheduled_at, created_at=:created_at, updated_at=:updated_at, cancelled_at=:cancelled_at, synced_at=:synced_at");
+	}
 	$rc_address = get_rc_address($db, $recharge_subscription['address_id'], $rc, $sc);
 	$variant = get_variant($db, $recharge_subscription['shopify_variant_id']);
 	$cancelled_at = $recharge_subscription['cancelled_at'] ?? null;
 	if($cancelled_at == null && $recharge_subscription['status'] == 'CANCELLED'){
 		$cancelled_at = $recharge_subscription['updated_at'];
 	}
-	$stmt->execute([
+	$_stmt_cache['iu_rc_subscription']->execute([
 		'recharge_id' => $recharge_subscription['id'],
 		'address_id' => $rc_address['id'],
 		'product_id' => $variant['product_id'],
@@ -350,8 +378,11 @@ function insert_update_rc_subscription(PDO $db, $recharge_subscription, Recharge
 	return $db->lastInsertId();
 }
 function insert_update_tracker(PDO $db, $tracker){
-	$stmt = $db->prepare("INSERT INTO ep_trackers (easypost_id, carrier, tracking_code, status, weight, est_delivery_date, public_url, created_at, updated_at) VALUES (:easypost_id, :carrier, :tracking_code, :status, :weight, :est_delivery_date, :public_url, :created_at, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), carrier=:carrier, tracking_code=:tracking_code, status=:status, weight=:weight, est_delivery_date=:est_delivery_date, public_url=:public_url, created_at=:created_at, updated_at=:updated_at");
-	$stmt->execute([
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_ep_tracker'])){
+		$_stmt_cache['iu_ep_tracker'] = $db->prepare("INSERT INTO ep_trackers (easypost_id, carrier, tracking_code, status, weight, est_delivery_date, public_url, created_at, updated_at) VALUES (:easypost_id, :carrier, :tracking_code, :status, :weight, :est_delivery_date, :public_url, :created_at, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), carrier=:carrier, tracking_code=:tracking_code, status=:status, weight=:weight, est_delivery_date=:est_delivery_date, public_url=:public_url, created_at=:created_at, updated_at=:updated_at");
+	}
+	$_stmt_cache['iu_ep_tracker']->execute([
 		'easypost_id' => $tracker['id'],
 		'carrier' => $tracker['carrier'],
 		'tracking_code' => $tracker['tracking_code'],
@@ -363,9 +394,14 @@ function insert_update_tracker(PDO $db, $tracker){
 		'updated_at' => $tracker['updated_at'],
 	]);
 	$tracker_id = $db->lastInsertId();
-	$stmt = $db->prepare("INSERT INTO ep_tracker_details (tracker_id, message, status, source, created_at) VALUES (:tracker_id, :message, :status, :source, :created_at) ON DUPLICATE KEY UPDATE message=:message");
+	if(empty($_stmt_cache['iu_ep_tracker_detail'])){
+		$_stmt_cache['iu_ep_tracker_detail'] = $db->prepare("INSERT INTO ep_tracker_details (tracker_id, message, status, source, created_at) VALUES (:tracker_id, :message, :status, :source, :created_at) ON DUPLICATE KEY UPDATE message=:message");
+	}
+	if(empty($_stmt_cache['iu_fulfillment_delivered_at'])){
+		$_stmt_cache['iu_fulfillment_delivered_at'] = $db->prepare("UPDATE fulfillments SET delivered_at = :delivered_at, status='delivered' WHERE tracking_number = :tracking_number AND delivered_at IS NULL");
+	}
 	foreach($tracker['tracking_details'] as $detail){
-		$stmt->execute([
+		$_stmt_cache['iu_ep_tracker_detail']->execute([
 			'tracker_id' => $tracker_id,
 			'message' => $detail['message'],
 			'status' => $detail['status'],
@@ -373,8 +409,7 @@ function insert_update_tracker(PDO $db, $tracker){
 			'created_at' => $detail['datetime'],
 		]);
 		if($detail['status'] == 'delivered'){
-			$stmt_update_fulfillment = $db->prepare("UPDATE fulfillments SET delivered_at = :delivered_at, status='delivered' WHERE tracking_number = :tracking_number AND delivered_at IS NULL");
-			$stmt_update_fulfillment->execute([
+			$_stmt_cache['iu_fulfillment_delivered_at']->execute([
 				'delivered_at' => $detail['datetime'],
 				'tracking_number' => $tracker['tracking_code'],
 			]);
@@ -475,7 +510,7 @@ function sc_is_address_in_blackout(PDO $db, RechargeClient $rc, $address_id){
 }
 $customer_cache = [];
 function get_customer(PDO $db, $shopify_customer_id, ShopifyClient $sc){
-	global $customer_cache;
+	global $customer_cache, $_stmt_cache;
 	if(!array_key_exists($shopify_customer_id, $customer_cache)){
 		$stmt = $db->prepare("SELECT * FROM customers WHERE shopify_id=?");
 		$stmt->execute([$shopify_customer_id]);
