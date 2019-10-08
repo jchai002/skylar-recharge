@@ -57,6 +57,35 @@ if(
 	(date('G') == 12 && date('i') < 5)
 	|| (!empty($argv) && !empty($argv[1]) && $argv[1] == 'all')
 ){
+
+	echo "Pulling all subscriptions".PHP_EOL;
+	$page = 0;
+	do {
+		$page++;
+		$res = $rc->get('/subscriptions', [
+			'limit' => $page_size,
+			'page' => $page,
+		]);
+		echo count($res['subscriptions'])." subscriptions on this page".PHP_EOL;
+		foreach($res['subscriptions'] as $subscription){
+			echo insert_update_rc_subscription($db, $subscription, $rc, $sc).PHP_EOL;
+		}
+	} while(count($res['subscriptions']) >= $page_size);
+
+	echo "Pulling all onetimes".PHP_EOL;
+	$page = 0;
+	do {
+		$page++;
+		$res = $rc->get('/onetimes', [
+			'limit' => $page_size,
+			'page' => $page,
+		]);
+		echo count($res['onetimes'])." subscriptions on this page".PHP_EOL;
+		foreach($res['onetimes'] as $onetime){
+			echo insert_update_rc_subscription($db, $onetime, $rc, $sc).PHP_EOL;
+		}
+	} while(count($res['onetimes']) >= $page_size);
+
 	echo "Updating subscriptions with old charge dates".PHP_EOL;
 	$stmt = $db->query("
 SELECT * FROM rc_subscriptions
