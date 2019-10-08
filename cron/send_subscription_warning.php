@@ -44,7 +44,7 @@ if($day_of_week == 3){ // Wednesday
 
 $page = 0;
 echo "$start_date to $end_date".PHP_EOL;
-$stmt = $db->prepare("SELECT 1 FROM emails_sent WHERE (email='SUB_3DAY_WARNING' OR email='SUB_3DAY_WARNING_SC') AND DATE(date_created) = '".date('Y-m-d', $now)."' AND recipient=?");
+$stmt = $db->prepare("SELECT 1 FROM emails_sent WHERE (email='SUB_3DAY_WARNING' OR email='SUB_3DAY_WARNING_SC' OR email='SUB_3DAY_WARNING_AC') AND DATE(date_created) = '".date('Y-m-d', $now)."' AND recipient=?");
 $stmt_insert = $db->prepare("INSERT INTO emails_sent (email, recipient, date_created) VALUES (:email, :recipient, :date_created)");
 do {
 	$page++;
@@ -63,11 +63,10 @@ do {
 			continue;
 		}
 		$is_scent_club = false;
+		$is_autocharge = false;
 		foreach($charge['line_items'] as $item){
 			$is_scent_club = is_scent_club_any(get_product($db, $item['shopify_product_id']));
-			if($is_scent_club){
-				break;
-			}
+			$is_autocharge = is_ac_followup_lineitem($item);
 		}
 		$stmt->execute([
 			$charge['email'],
@@ -76,6 +75,13 @@ do {
 			echo "Already sent, skipping: ".$charge['email']." address id: ".$charge['address_id'].PHP_EOL;
 			continue;
 		}
+		if($is_autocharge){
+			$email_type = 'sub_3day_warning_ac';
+		} else if($is_scent_club){
+			$email_type = 'sub_3day_warning_sc';
+		} else {
+			$email_type = 'sub_3day_warning';
+		}
 		$data = base64_encode(json_encode([
 			'token' => "KvQM7Q",
 			'event' => 'Sent Transactional Email',
@@ -83,7 +89,7 @@ do {
 				'$email' => $charge['email'],
 			],
 			'properties' => [
-				'email_type' => $is_scent_club ? 'sub_3day_warning_sc' : 'sub_3day_warning',
+				'email_type' => $email_type,
 				'first_name' => $charge['first_name'],
 			]
 		]));
@@ -93,7 +99,7 @@ do {
 		]);
 		$res = json_decode(curl_exec($ch));
 		$stmt_insert->execute([
-			'email' => $is_scent_club ? 'SUB_3DAY_WARNING_SC' : 'SUB_3DAY_WARNING',
+			'email' => strtoupper($email_type),
 			'recipient' => $charge['email'],
 			'date_created' => date('Y-m-d H:i:s', $now),
 		]);
