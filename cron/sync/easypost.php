@@ -3,7 +3,9 @@ require_once(__DIR__.'/../../includes/config.php');
 
 // Check in_transit shipments from before today
 
-$stmt = $db->query("SELECT * FROM skylar.ep_trackers WHERE status = 'in_transit' AND created_at < '".date('Y-m-d')."' AND updated_at < '".date('Y-m-d')."';");
+$date = date('Y-m-d');
+
+$stmt = $db->query("SELECT * FROM skylar.ep_trackers WHERE status = 'in_transit' AND created_at < '$date' AND updated_at < '$date';");
 
 foreach($stmt->fetchAll() as $row){
 	$tracker = \EasyPost\Tracker::create([
