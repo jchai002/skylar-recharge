@@ -290,6 +290,7 @@ foreach($order['line_items'] as $line_item){
 
 if($has_orly_gwp && !$has_hand_cream){
 	$order_tags[] = 'HOLD: Invalid GWP';
+	$update_order = true;
 }
 
 // Tag orders that aren't samples as either onetime or subscription, with subscription
