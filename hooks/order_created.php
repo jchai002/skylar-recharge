@@ -322,6 +322,8 @@ if($scent_club_hold){
 	$update_order = true;
 }
 
+var_dump($order_tags);
+var_dump($update_order);
 if($update_order){
 	$order_tags = array_unique($order_tags);
 	$res = $sc->put("/admin/orders/".$order['id'].'.json', ['order' => [
