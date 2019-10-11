@@ -36,7 +36,9 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'shopify_variant_id' => $variant['shopify_id'],
 		'properties' => $properties,
 	]);
-	$res_id = $res['onetime']['id'];
+	if(!empty($res['onetime'])){
+		$res_id = $res['onetime']['id'];
+	}
 } else {
 	$res = $rc->post('/addresses/'.$address_id.'/subscriptions', [
 		'address_id' => $address_id,
@@ -51,7 +53,9 @@ if(!is_numeric($frequency) || $frequency < 1 || $frequency > 12){
 		'order_day_of_month' => $main_sub['order_day_of_month'],
 		'properties' => $properties,
 	]);
-	$res_id = $res['subscription']['id'];
+	if(!empty($res['subscription'])){
+		$res_id = $res['subscription']['id'];
+	}
 }
 
 if(!empty($res['error'])){
