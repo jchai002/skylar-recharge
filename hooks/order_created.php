@@ -157,7 +157,7 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 }
 
 $update_order = false;
-$order_tags = explode(',',$order['tags']);
+$order_tags = explode(', ',$order['tags']);
 
 // Get recharge version of order
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
