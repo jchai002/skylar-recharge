@@ -184,11 +184,21 @@ if(empty($sc_main_sub)){
 	]);
 }
 echo "Checking line items".PHP_EOL;
+$has_hand_cream = false;
+$has_orly_gwp = false;
 foreach($order['line_items'] as $line_item){
 	// Create body bundle subs
 	echo "Checking body bundle... ";
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
+
+	if(in_array('Hand Cream', explode(', ', $product['tags']))){
+		$has_hand_cream = true;
+	}
+	if($product['shopify_id'] == 4042122756183){
+		$has_orly_gwp = true;
+	}
+
 	$has_bb_sub = false;
 	foreach($subscriptions as $subscription){
 		if($subscription['shopify_variant_id'] == $line_item['variant_id']){
@@ -278,6 +288,9 @@ foreach($order['line_items'] as $line_item){
     }
 }
 
+if($has_orly_gwp && !$has_hand_cream){
+	$order_tags[] = 'HOLD: Invalid GWP';
+}
 
 // Tag orders that aren't samples as either onetime or subscription, with subscription
 if($rc_order['type'] == "RECURRING"){
