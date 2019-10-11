@@ -159,10 +159,34 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 $update_order = false;
 $order_tags = explode(', ',$order['tags']);
 
+foreach($order['line_items'] as $line_item){
+	$product = get_product($db, $line_item['product_id']);
+	if(in_array('Hand Cream', explode(', ', $product['tags']))){
+		$has_hand_cream = true;
+	}
+	if($product['shopify_id'] == 4042122756183){
+		$has_orly_gwp = true;
+	}
+}
+if($has_orly_gwp && !$has_hand_cream){
+	$order_tags[] = 'HOLD: Invalid GWP';
+	$update_order = true;
+}
+
 // Get recharge version of order
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
 //print_r($rc_order);
 if(empty($rc_order['orders'])){
+	if($update_order){
+		$order_tags = array_unique($order_tags);
+		$res = $sc->put("/admin/orders/".$order['id'].'.json', ['order' => [
+			'id' => $order['id'],
+			'tags' => implode(',', $order_tags),
+		]]);
+		if(!empty($res)){
+			echo insert_update_order($db, $res, $sc).PHP_EOL;
+		}
+	}
 	die('no rc order');
 }
 $rc_order = $rc_order['orders'][0];
@@ -192,13 +216,6 @@ foreach($order['line_items'] as $line_item){
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
 
-	if(in_array('Hand Cream', explode(', ', $product['tags']))){
-		$has_hand_cream = true;
-	}
-	if($product['shopify_id'] == 4042122756183){
-		$has_orly_gwp = true;
-	}
-
 	$has_bb_sub = false;
 	foreach($subscriptions as $subscription){
 		if($subscription['shopify_variant_id'] == $line_item['variant_id']){
@@ -215,13 +232,8 @@ foreach($order['line_items'] as $line_item){
 		if(date('t', get_next_month()) < $charge_day){
 			$charge_day = date('t', get_next_month());
 		}
-/*
-		if(!empty($sc_main_sub)){
-			$charge_day = date('d', strtotime($sc_main_sub['next_charge_scheduled_at']));
-		}
-*/
+
 		$next_charge_date = date('Y-m-'.$charge_day, get_next_month());
-		print_r($sc_main_sub);
 		echo $charge_day.PHP_EOL;
 		echo $next_charge_date.PHP_EOL;
 		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
@@ -288,11 +300,6 @@ foreach($order['line_items'] as $line_item){
     }
 }
 
-if($has_orly_gwp && !$has_hand_cream){
-	$order_tags[] = 'HOLD: Invalid GWP';
-	$update_order = true;
-}
-
 // Tag orders that aren't samples as either onetime or subscription, with subscription
 if($rc_order['type'] == "RECURRING"){
 	foreach($rc_order['line_items'] as $line_item){
@@ -322,8 +329,6 @@ if($scent_club_hold){
 	$update_order = true;
 }
 
-var_dump($order_tags);
-var_dump($update_order);
 if($update_order){
 	$order_tags = array_unique($order_tags);
 	$res = $sc->put("/admin/orders/".$order['id'].'.json', ['order' => [
