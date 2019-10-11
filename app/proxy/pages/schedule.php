@@ -254,6 +254,7 @@ print_r($schedule->get());
                                                 </div>
                                             </form>
                                          <?php } ?>
+                                        <div class="clearfix"></div>
                                     </div>
                                 <?php } ?>
 								<?php if(!$has_ac_followup || $has_sc){ ?>
