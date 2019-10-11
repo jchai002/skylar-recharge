@@ -1,6 +1,5 @@
 <?php
-
-$rc = new RechargeClient();
+global $db, $rc;
 
 $res = $rc->get('/subscriptions/'.intval($_REQUEST['id']));
 if(empty($res['subscription']) || $res['subscription']['status'] == 'ONETIME'){
