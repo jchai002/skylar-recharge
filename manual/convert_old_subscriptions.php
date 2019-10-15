@@ -13,6 +13,7 @@ $convert_variant_ids = [
 foreach($convert_variant_ids as $old_variant_id => $new_variant_id){
 	// Load all active subscriptions
 	$subscriptions = [];
+	$onetimes = [];
 	$page_size = 250;
 	$page = 0;
 	do {
@@ -30,7 +31,7 @@ foreach($convert_variant_ids as $old_variant_id => $new_variant_id){
 	} while(count($res) >= $page_size);
 
 	foreach($subscriptions as $subscription){
-		echo "Updating ".$subscription['id'].PHP_EOL;
+		echo "Updating ".$subscription['id']." from ".$subscription['shopify_variant_id']." to ".$new_variant_id.PHP_EOL;
 		$res = $rc->put('/subscriptions/'.$subscription['id'], [
 			'shopify_variant_id' => $new_variant_id,
 		]);
@@ -39,5 +40,32 @@ foreach($convert_variant_ids as $old_variant_id => $new_variant_id){
 			die();
 		}
 		insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
+	}
+
+	$onetimes = [];
+	$page = 0;
+	do {
+		$page++;
+		$res = $rc->get('/onetimes', [
+			'limit' => $page_size,
+			'page' => $page,
+			'shopify_variant_id' => $old_variant_id,
+		]);
+		foreach($res['onetimes'] as $onetime){
+			// Sort them by address id
+			$onetimes[] = $onetime;
+		}
+	} while(count($res) >= $page_size);
+
+	foreach($onetimes as $onetime){
+		echo "Updating ".$onetime['id']." from ".$onetime['shopify_variant_id']." to ".$new_variant_id.PHP_EOL;
+		$res = $rc->put('/onetimes/'.$onetime['id'], [
+			'shopify_variant_id' => $new_variant_id,
+		]);
+		if(empty($res['onetime'])){
+			echo "Error ".print_r($res);
+			die();
+		}
+		insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
 	}
 }
