@@ -11,4 +11,5 @@ foreach($themes as $theme){
 	// git pull
 	// Check if branch exists, create if not
 	// Overwrite settings file
+	// Commit and push
 }
