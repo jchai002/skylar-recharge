@@ -290,6 +290,20 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
 
     return $id;
 }
+function insert_update_theme(PDO $db, $theme){
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_theme'])){
+		$_stmt_cache['iu_theme'] = $db->prepare("INSERT INTO themes (shopify_id, name, created_at, updated_at) VALUES (:shopify_id, :name, :created_at, :updated_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), name=:name, updated_at=:updated_at");
+	}
+	$_stmt_cache['iu_theme']->execute([
+		'shopify_id' => $theme['id'],
+		'name' => $theme['name'],
+		'created_at' => $theme['created_at'],
+		'updated_at' => $theme['updated_at'],
+	]);
+
+	return $db->lastInsertId();
+}
 function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $sc){
 	global $_stmt_cache;
 	if(empty($_stmt_cache['iu_rc_customer'])){
@@ -314,7 +328,6 @@ function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $s
 	]);
 	return $db->lastInsertId();
 }
-global $_stmt_cache;
 function insert_update_rc_address(PDO $db, $recharge_address, RechargeClient $rc, ShopifyClient $sc){
 	global $_stmt_cache;
 	if(empty($_stmt_cache['iu_rc_address'])){
