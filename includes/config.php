@@ -93,6 +93,7 @@ function log_event(PDO $db, $category='', $value='', $action='', $value2='', $no
 	]);
 }
 function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $to_emails = ['tim@skylar.com'], $smother_message = false){
+	$to = implode(', ', $to_emails);
 	$msg = is_array($msg) ? print_r($msg, true) : $msg;
 	$headers = [
 		'From' => 'Skylar Alerts <alerts@skylar.com>',
@@ -103,11 +104,9 @@ function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $t
 	if($smother_message){
 		$alert_sent = false;
 	} else {
-		foreach($to_emails as $to){
-			mail($to, $subject, $msg
-//				,implode("\r\n",$headers)
-			);
-		}
+		mail($to, $subject, $msg
+//			,implode("\r\n",$headers)
+		);
 		$alert_sent = true;
 	}
 	$stmt = $db->prepare("INSERT INTO alert_logs (alert_id, message, message_sent, message_smothered, date_created) VALUES ($alert_id, :message, :message_sent, :message_smothered, :date_created)");
