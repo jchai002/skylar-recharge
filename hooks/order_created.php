@@ -171,7 +171,7 @@ foreach($order['line_items'] as $line_item){
 if($has_orly_gwp && (!$has_hand_cream || $order['shipping_address']['country_code'] != 'US')){
 	$order_tags[] = 'HOLD: Invalid GWP';
 	$update_order = true;
-	send_alert($db, 2, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP', 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
+	send_alert($db, 3, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP', 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
 }
 
 // Get recharge version of order
