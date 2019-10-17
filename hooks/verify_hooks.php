@@ -43,6 +43,16 @@ $webhooks_required = [
 		'type'=>'fulfillments/update',
 		'address' => 'https://ec2production.skylar.com/hooks/order_delivered.php',
 	],
+	// Theme sync
+	[
+		'type'=>'themes/create',
+		'address' => 'https://ec2production.skylar.com/hooks/theme_updated.php',
+	],
+	// Theme sync
+	[
+		'type'=>'themes/update',
+		'address' => 'https://ec2production.skylar.com/hooks/theme_updated.php',
+	],
 ];
 
 $sc = new ShopifyClient();
@@ -64,6 +74,7 @@ foreach($webhooks_required as $req_hook){
 	}
 	if(!$hook_exists){
 		echo "Creating webhook ".$req_hook['type'].PHP_EOL;
+		continue;
 		$response = $sc->call("POST", "/admin/webhooks.json", ["webhook" => ["topic"=>$req_hook['type'], "address"=>$req_hook['address'], "format"=>"json"]]);
 		var_dump($response);
 	}
