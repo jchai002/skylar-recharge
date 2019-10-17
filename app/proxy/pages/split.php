@@ -17,12 +17,13 @@ $split_tests = [
 ];
 
 $get_vars = $_GET;
-unset($get_vars['id']);
+
 
 if(empty($test_id) || empty($split_tests[$test_id])){
 	header("Location: /");
 	die();
 }
+$test_id--;
 
 $test = $split_tests[$test_id];
 $total_weight = array_sum(array_column($test['variants'], 'weight'));
