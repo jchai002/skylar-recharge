@@ -16,6 +16,9 @@ $split_tests = [
 	]
 ];
 
+$get_vars = $_GET;
+unset($get_vars['id']);
+
 if(empty($split_tests[$_REQUEST['id']])){
 	header("Location: /");
 	die();
@@ -30,6 +33,11 @@ foreach($test['variants'] as $variant){
 	if($weight > 0){
 		continue;
 	}
-	header("Location: ".$variant['url']);
+	$url = $variant['url'];
+	if(!empty($get_vars)){
+		$url .= strpos($variant['url'], '?') === false ? '?' : '&';
+		$url .= http_build_query($get_vars);
+	}
+	header("Location: $url");
 	die();
 }
