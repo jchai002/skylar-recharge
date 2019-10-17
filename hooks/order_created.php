@@ -218,6 +218,36 @@ foreach($order['line_items'] as $line_item){
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
 
+	if($product['type'] == 'Scent Club Gift' && $rc_order['type'] == 'CHECKOUT'){
+
+		$months = [
+			30725266440279 => 3,
+			30725267882071 => 6,
+			30725267914839 => 12,
+		];
+
+		// Create gift subscription
+		$next_charge_date = date('Y-m-d', offset_date_skip_weekend(get_next_month())); // TODO: Read month from property
+		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
+			'address_id' => $rc_order['address_id'],
+			'next_charge_scheduled_at' => $next_charge_date,
+			'product_title' => 'Scent Club Gift',
+			'price' => 0,
+			'quantity' => 1,
+			'shopify_variant_id' => $line_item['variant_id'],
+			'order_interval_unit' => 'month',
+			'order_interval_frequency' => 1,
+			'charge_interval_frequency' => 1,
+			'order_day_of_month' => 1,
+			'expire_after_specific_number_of_charges' => $months[$line_item['variant_id']],
+		]);
+		print_r($res);
+		if(!empty($res['subscriptions'])){
+			echo insert_update_rc_subscription($db, $res['subscriptions'], $rc, $sc);
+		}
+		continue;
+	}
+
 	$has_bb_sub = false;
 	foreach($subscriptions as $subscription){
 		if($subscription['shopify_variant_id'] == $line_item['variant_id']){
@@ -226,7 +256,7 @@ foreach($order['line_items'] as $line_item){
 			break;
 		}
 	}
-	if($product['type'] == 'Body Bundle' && !$has_bb_sub){
+	if($product['type'] == 'Body Bundle' && !$has_bb_sub && $rc_order['type'] == 'CHECKOUT'){
 		$variant = get_variant($db, $line_item['variant_id']);
 		echo "Adding body bundle ".PHP_EOL;
 
