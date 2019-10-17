@@ -20,6 +20,8 @@ $get_vars = $_GET;
 
 
 if(empty($test_id) || empty($split_tests[$test_id])){
+	var_dump($split_tests);
+	var_dump($test_id);
 	header("Location: /");
 	die();
 }
