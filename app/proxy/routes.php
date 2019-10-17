@@ -68,6 +68,10 @@ $router->route('/quick-add$/i', function() {
 	require('pages/addtobox_lander.php');
 	return true;
 });
+$router->route('/split$/i', function() {
+	require('pages/split.php');
+	return true;
+});
 
 $router->route('/check-invalid-email$/i', function() use(&$json_output) {
 	$json_output = true;
