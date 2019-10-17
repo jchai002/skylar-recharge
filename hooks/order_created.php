@@ -232,6 +232,8 @@ foreach($order['line_items'] as $line_item){
 			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
 			'product_title' => 'Scent Club Gift',
+			'variant_title' => '',
+			'title' => 'Scent Club Gift',
 			'price' => 0,
 			'quantity' => 1,
 			'shopify_variant_id' => $line_item['variant_id'],
