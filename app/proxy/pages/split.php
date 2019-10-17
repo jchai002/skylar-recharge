@@ -20,6 +20,14 @@ $split_tests = [
 ];
 
 $get_vars = $_GET;
+// Unset shopify vars
+foreach([
+	'shop', 'path_prefix', 'timestamp', 'signature'
+] as $unset_key){
+	if(array_key_exists($unset_key, $get_vars)){
+		unset($get_vars[$unset_key]);
+	}
+}
 
 
 if(empty($split_tests[$test_id])){
