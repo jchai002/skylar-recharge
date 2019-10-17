@@ -29,7 +29,7 @@ if(empty($order)){
 
 // Cancel and refund test orders
 print_r($order);
-if($order['financial_status'] != 'refunded'){
+if(!empty($order['cancelled_at'])){
 	foreach($order['discount_applications'] as $discount){
 		if($discount['type'] != 'discount_code'){
 			continue;
