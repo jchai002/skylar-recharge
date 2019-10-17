@@ -1,6 +1,9 @@
 <?php
 global $db;
 
+$test_id = $test_id ?? 1;
+$test_id--;
+
 $split_tests = [
 	[
 		'variants' => [
@@ -19,13 +22,12 @@ $split_tests = [
 $get_vars = $_GET;
 
 
-if(empty($test_id) || empty($split_tests[$test_id])){
-	var_dump($split_tests);
-	var_dump($test_id);
-//	header("Location: /");
+if(empty($split_tests[$test_id])){
+//	var_dump($split_tests);
+//	var_dump($test_id);
+	header("Location: /");
 	die();
 }
-$test_id--;
 
 $test = $split_tests[$test_id];
 $total_weight = array_sum(array_column($test['variants'], 'weight'));
