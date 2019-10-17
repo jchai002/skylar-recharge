@@ -28,16 +28,18 @@ if(empty($order)){
 //print_r($order);
 
 // Cancel and refund test orders
-foreach($order['discount_applications'] as $discount){
-	if($discount['type'] != 'discount_code'){
-		continue;
+if($order['financial_status'] != 'refunded'){
+	foreach($order['discount_applications'] as $discount){
+		if($discount['type'] != 'discount_code'){
+			continue;
+		}
+		if($discount['code'] != 'TESTORDER'){
+			continue;
+		}
+		echo "Canceling order, test".PHP_EOL;
+		cancel_and_refund_order($order, $sc, $rc);
+		break;
 	}
-	if($discount['code'] != 'TESTORDER'){
-		continue;
-	}
-	echo "Canceling order, test".PHP_EOL;
-	cancel_and_refund_order($order, $sc, $rc);
-	break;
 }
 
 echo insert_update_order($db, $order, $sc).PHP_EOL;
@@ -213,13 +215,13 @@ $has_hand_cream = false;
 $has_orly_gwp = false;
 foreach($order['line_items'] as $line_item){
 	// Create body bundle subs
-	echo "Checking body bundle... ";
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
 
 	$has_bb_sub = false;
 	foreach($subscriptions as $subscription){
 		if($subscription['shopify_variant_id'] == $line_item['variant_id']){
+			echo "Has body bundle".PHP_EOL;
 			$has_bb_sub = true;
 			break;
 		}
