@@ -11,7 +11,8 @@ do {
 		'page' => $page,
 		'limit' => 250,
 		'status' => 'queued',
-		'scheduled_at' => date('Y-m-19'),
+		'scheduled_at_min' => date('Y-m-d'),
+		'scheduled_at_max' => date('Y-m-t'),
 	]);
 	foreach($res['orders'] as $order){
 		if(count($order['line_items']) != 1){
@@ -25,6 +26,8 @@ do {
 		$orders[] = $order;
 	}
 } while(count($res['orders']) >= 250);
+
+echo "Updating ".count($orders)." orders".PHP_EOL;
 
 foreach($orders as $order){
 	$line_item = [
