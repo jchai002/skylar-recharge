@@ -49,7 +49,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false){
 			CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
 			CURLOPT_POST => true,
 			CURLOPT_POSTFIELDS => json_encode([
-				"theme" => "Settings update: ".trim(str_replace('[pullme]', '', $theme['name'])),
+				"theme" => "Settings update: ".trim(str_ireplace('[pullme]', '', $theme['name'])),
 				"head" => "settings-theme-".$theme['id'],
 				"base" => "master",
 			]),
@@ -60,7 +60,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false){
 	}
 	$theme = $sc->put('/admin/api/2019-10/themes/'.$theme['id'].'.json', [
 		'theme' => [
-			'name' => '[PULLED] '.trim(str_replace('[pullme]', '', $theme['name']))
+			'name' => '[PULLED] '.trim(str_ireplace('[pullme]', '', $theme['name']))
 		]
 	]);
 	echo $theme['name'].PHP_EOL;
