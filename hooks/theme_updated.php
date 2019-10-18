@@ -37,6 +37,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 		CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
 	]);
 	$res = curl_exec($ch);
+	var_dump($res);
 	$pull_request = json_decode($res, true);
 
 	if(empty($pull_request)){
@@ -54,6 +55,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 			]),
 		]);
 		$res = curl_exec($ch);
+		var_dump($res);
 		$pull_request = json_decode($res, true);
 	}
 
