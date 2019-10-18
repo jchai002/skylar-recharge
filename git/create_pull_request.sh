@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-whoami
+GITHUB_TOKEN=$3
 cd /home/deploy/repos/$1/skylar-shopify-theme
 echo $PWD
 git checkout master
 git pull
 git checkout settings-theme-$2 && git pull || git checkout -b settings-theme-$2
-echo $4 > src/config/settings_data.json
+echo $5 > src/config/settings_data.json
 hub pr list -h settings-theme-$2
 git commit -am "pull settings from shopify" && git push --set-upstream origin settings-theme-$2
-[[ -z $(hub pr list -h settings-theme-$2) ]] && hub pull-request -m "Settings update: "$3
+[[ -z $(hub pr list -h settings-theme-$2) ]] && hub pull-request -m "Settings update: "$4
