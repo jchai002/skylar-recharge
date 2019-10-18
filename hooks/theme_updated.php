@@ -19,7 +19,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 	$dir = ENV_TYPE == 'LIVE' ? 'production' : 'staging';
 	$settings_data = 'test';
 
-	$command = "sudo -u deploy ../git/create_pull_request.sh $dir ".$theme['id'].' "'.addcslashes(trim(str_replace('[pullme]', '', $theme['name'])), '"').'" "'.addcslashes($settings_data, '"').'"';
+	$command = "sudo -u deploy bash ../git/create_pull_request.sh $dir ".$theme['id'].' "'.addcslashes(trim(str_replace('[pullme]', '', $theme['name'])), '"').'" "'.addcslashes($settings_data, '"').'"';
 
 	$tmp = shell_exec("$command 2>&1");
 	echo "> $command ".PHP_EOL."< ".htmlentities(trim($tmp)) . "\n";
