@@ -13,4 +13,4 @@ if [[ ${PULL_REQUEST} == "[]" ]]
 then
     PULL_REQUEST=$(curl -g -u JTimNolan:$3 -H "Content-Type: application/json" -d '{"title":"Settings update: '$4'", "head":"settings-theme-'$2'", "base":"master"}' -X POST "https://api.github.com/repos/JTimNolan/skylar-shopify-theme/pulls" | jq -r '.')
 fi
-echo ${PULL_REQUEST}
+echo "READ_OUTPUT:"${PULL_REQUEST}

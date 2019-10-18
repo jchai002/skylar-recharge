@@ -24,6 +24,16 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 	$tmp = shell_exec("$command 2>&1");
 	echo str_replace($_ENV['GITHUB_TOKEN'], '***', "> $command ".PHP_EOL."< ".$tmp . "\n");
 
+	// See if the pull request already exists
+	$ch = curl_init();
+	curl_setopt_array($ch, [
+		CURLOPT_URL => 'https://api.github.com/repos/JTimNolan/skylar-shopify-theme/pulls?head=settings-theme-'.$theme['id'],
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_USERPWD => "JTimNolan:".$_ENV['GITHUB_TOKEN'],
+		CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+	]);
+	$res = curl_exec($ch);
+
 	// TODO Get PR number and update theme name
 
 }
