@@ -58,9 +58,10 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 		$res = curl_exec($ch);
 		$pull_request = json_decode($res, true);
 	}
+	$new_name = '[PULLED] '.trim(str_ireplace('[pulled]', '', str_ireplace('[pullme]', '', $theme['name'])));
 	$theme = $sc->put('/admin/api/2019-10/themes/'.$theme['id'].'.json', [
 		'theme' => [
-			'name' => '[PULLED] '.trim(str_ireplace('[pullme]', '', $theme['name']))
+			'name' => $new_name
 		]
 	]);
 	echo $theme['name'].PHP_EOL;
