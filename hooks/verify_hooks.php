@@ -84,7 +84,7 @@ foreach($webhooks_required as $req_hook){
 		if(!empty($req_hook['api_version'])){
 			$new_webhook['api_version'] = $req_hook['api_version'];
 		}
-		$response = $sc->call("POST", "/admin/webhooks.json", ["webhook" => $new_webhook]);
+		$response = $sc->call("POST", "/admin/api/webhooks.json", ["webhook" => $new_webhook]);
 		var_dump($response);
 	}
 }
