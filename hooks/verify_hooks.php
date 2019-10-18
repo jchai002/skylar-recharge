@@ -47,11 +47,13 @@ $webhooks_required = [
 	[
 		'type'=>'themes/create',
 		'address' => 'https://ec2production.skylar.com/hooks/theme_updated.php',
+		'api_version' => '2019-10',
 	],
 	// Theme sync
 	[
 		'type'=>'themes/update',
 		'address' => 'https://ec2production.skylar.com/hooks/theme_updated.php',
+		'api_version' => '2019-10',
 	],
 ];
 
@@ -74,7 +76,15 @@ foreach($webhooks_required as $req_hook){
 	}
 	if(!$hook_exists){
 		echo "Creating webhook ".$req_hook['type'].PHP_EOL;
-		$response = $sc->call("POST", "/admin/webhooks.json", ["webhook" => ["topic"=>$req_hook['type'], "address"=>$req_hook['address'], "format"=>"json"]]);
+		$new_webhook = [
+			"topic"=>$req_hook['type'],
+			"address"=>$req_hook['address'],
+			"format"=>"json",
+		];
+		if(!empty($req_hook['api_version'])){
+			$new_webhook['api_version'] = $req_hook['api_version'];
+		}
+		$response = $sc->call("POST", "/admin/webhooks.json", ["webhook" => $new_webhook]);
 		var_dump($response);
 	}
 }
