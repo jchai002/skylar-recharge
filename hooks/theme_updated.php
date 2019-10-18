@@ -17,6 +17,7 @@ echo insert_update_theme($db, $theme);
 if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 	$settings_data = $sc->get('/admin/api/2019-10/themes/'.$theme['id'].'/assets.json', ['asset'=>['key'=>'config/settings_data.json']])['value'];
 
+	die();
 	$dir = ENV_TYPE == 'LIVE' ? 'production' : 'staging';
 	$commands = [
 		'whoami',
@@ -31,7 +32,6 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 		$tmp = shell_exec("$command 2>&1");
 		echo "> $command ".PHP_EOL."< ".htmlentities(trim($tmp)) . "\n";
 	}
-	die();
 	file_put_contents('/home/deploy/repos/'.$dir.'/src/config/settings_data.json', $settings_data);
 	$command = 'git commit -am "pull settings from shopify" && git push';
 	$tmp = shell_exec("$command 2>&1");
