@@ -22,7 +22,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 	$tmp = shell_exec("$command 2>&1");
 	echo "> $command ".PHP_EOL."< ".$tmp . "\n";
 
-	file_put_contents("/home/deploy/repos/$dir/skylar-shopify-theme", $settings_data);
+	var_dump(file_put_contents("/home/deploy/repos/$dir/skylar-shopify-theme", $settings_data));
 
 	$command = "sudo -u deploy bash ../git/make_theme_commit.sh $dir ".$theme['id'];
 	$tmp = shell_exec("$command 2>&1");
