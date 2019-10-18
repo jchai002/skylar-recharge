@@ -20,16 +20,18 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 	$dir = ENV_TYPE == 'LIVE' ? 'production' : 'staging';
 	$commands = [
 		'whoami',
+		'su -u deploy',
 		'cd ~/repos/'.$dir.'/skylar-shopify-theme',
 		'echo $PWD',
-		'git checkout master',
-		'sudo -u deploy /usr/bin/git pull',
-		'git checkout settings-theme-'.$theme['id'].' || git checkout -b settings-theme-'.$theme['id'],
+//		'git checkout master',
+//		'sudo -u deploy /usr/bin/git pull',
+//		'git checkout settings-theme-'.$theme['id'].' || git checkout -b settings-theme-'.$theme['id'],
 	];
 	foreach($commands as $command){
 		$tmp = shell_exec("$command 2>&1");
 		echo "> $command ".PHP_EOL."< ".htmlentities(trim($tmp)) . "\n";
 	}
+	die();
 	file_put_contents('/home/deploy/repos/'.$dir.'/src/config/settings_data.json', $settings_data);
 	$command = 'git commit -am "pull settings from shopify" && git push';
 	$tmp = shell_exec("$command 2>&1");
