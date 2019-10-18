@@ -17,12 +17,16 @@ echo insert_update_theme($db, $theme);
 if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 	$settings_data = $sc->get('/admin/api/2019-10/themes/'.$theme['id'].'/assets.json', ['asset'=>['key'=>'config/settings_data.json']])['value'];
 	$dir = ENV_TYPE == 'LIVE' ? 'production' : 'staging';
-	$settings_data = 'test'.rand(1,99999);
 
-	$command = "sudo -u deploy bash ../git/create_pull_request.sh $dir ".$theme['id'].' '.$_ENV['GITHUB_TOKEN'].' "'.addcslashes(trim(str_replace('[pullme]', '', $theme['name'])), '"').'" "'.addcslashes($settings_data, '"').'"';
-
+	$command = "sudo -u deploy bash ../git/prep_theme_commit.sh $dir ".$theme['id'];
 	$tmp = shell_exec("$command 2>&1");
-	echo str_replace($_ENV['GITHUB_TOKEN'], '***', "> $command ".PHP_EOL."< ".$tmp . "\n");
+	echo "> $command ".PHP_EOL."< ".$tmp . "\n";
+
+	file_put_contents("/home/deploy/repos/$dir/skylar-shopify-theme", $settings_data);
+
+	$command = "sudo -u deploy bash ../git/make_theme_commit.sh $dir ".$theme['id'];
+	$tmp = shell_exec("$command 2>&1");
+	echo "> $command ".PHP_EOL."< ".$tmp . "\n";
 
 	// See if the pull request already exists
 	$ch = curl_init();
@@ -33,6 +37,27 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 		CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
 	]);
 	$res = curl_exec($ch);
+	$pull_request = json_decode($res, true);
+
+	if(empty($pull_request)){
+		$ch = curl_init();
+		curl_setopt_array($ch, [
+			CURLOPT_URL => 'https://api.github.com/repos/JTimNolan/skylar-shopify-theme/pulls',
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_USERPWD => "JTimNolan:".$_ENV['GITHUB_TOKEN'],
+			CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => json_encode([
+				"theme" => "Settings update: ".trim(str_replace('[pullme]', '', $theme['name'])),
+				"head" => "settings-theme-".$theme['id'],
+				"base" => "master",
+			]),
+		]);
+		$res = curl_exec($ch);
+		$pull_request = json_decode($res, true);
+	}
+
+	print_r($pull_request);
 
 	// TODO Get PR number and update theme name
 
