@@ -14,6 +14,8 @@ if(empty($theme)){
 
 echo insert_update_theme($db, $theme);
 
+var_dump(strpos(strtolower($theme['name']), '[pullme]'));
+
 if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 	$settings_data = $sc->get('/admin/api/2019-10/themes/'.$theme['id'].'/assets.json', ['asset'=>['key'=>'config/settings_data.json']])['value'];
 	$dir = ENV_TYPE == 'LIVE' ? 'production' : 'staging';
