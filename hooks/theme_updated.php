@@ -19,7 +19,6 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 	$dir = ENV_TYPE == 'LIVE' ? 'production' : 'staging';
 	$settings_data = 'test';
 
-	shell_exec("sudo -u deploy dos2unix ../git/create_pull_request.sh");
 	$command = "sudo -u deploy bash ../git/create_pull_request.sh $dir ".$theme['id'].' "'.addcslashes(trim(str_replace('[pullme]', '', $theme['name'])), '"').'" "'.addcslashes($settings_data, '"').'"';
 
 	$tmp = shell_exec("$command 2>&1");
