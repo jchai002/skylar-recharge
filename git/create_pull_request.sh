@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 GITHUB_TOKEN=$3
-echo GITHUB_TOKEN
+echo $GITHUB_TOKEN
 cd /home/deploy/repos/$1/skylar-shopify-theme
 echo $PWD
 git checkout master
