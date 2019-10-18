@@ -35,9 +35,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_USERPWD => "JTimNolan:".$_ENV['GITHUB_TOKEN'],
 		CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
-		CURLOPT_HEADER => [
-			"User-Agent: Skylar App",
-		],
+		CURLOPT_USERAGENT => 'Skylar App',
 	]);
 	$res = curl_exec($ch);
 	var_dump($res);
@@ -56,9 +54,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 				"head" => "settings-theme-".$theme['id'],
 				"base" => "master",
 			]),
-			CURLOPT_HEADER => [
-				"User-Agent: Skylar App",
-			],
+			CURLOPT_USERAGENT => 'Skylar App',
 		]);
 		$res = curl_exec($ch);
 		var_dump($res);
