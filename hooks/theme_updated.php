@@ -17,7 +17,7 @@ echo insert_update_theme($db, $theme);
 if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 	$settings_data = $sc->get('/admin/api/2019-10/themes/'.$theme['id'].'/assets.json', ['asset'=>['key'=>'config/settings_data.json']])['value'];
 	$dir = ENV_TYPE == 'LIVE' ? 'production' : 'staging';
-	$settings_data = 'test';
+	$settings_data = 'test'.rand(1,99999);
 
 	$command = "sudo -u deploy bash ../git/create_pull_request.sh $dir ".$theme['id'].' "'.addcslashes(trim(str_replace('[pullme]', '', $theme['name'])), '"').'" "'.addcslashes($settings_data, '"').'"';
 
