@@ -57,7 +57,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 		$pull_request = json_decode($res, true);
 	}
 
-	print_r($pull_request);
+	var_dump($pull_request);
 
 	// TODO Get PR number and update theme name
 
