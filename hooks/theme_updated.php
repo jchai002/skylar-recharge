@@ -22,7 +22,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 	$command = "sudo -u deploy bash ../git/create_pull_request.sh $dir ".$theme['id'].' '.$_ENV['GITHUB_TOKEN'].' "'.addcslashes(trim(str_replace('[pullme]', '', $theme['name'])), '"').'" "'.addcslashes($settings_data, '"').'"';
 
 	$tmp = shell_exec("$command 2>&1");
-	echo str_replace($_ENV['GITHUB_TOKEN'], '***', "> $command ".PHP_EOL."< ".htmlentities(trim($tmp)) . "\n");
+	echo str_replace($_ENV['GITHUB_TOKEN'], '***', "> $command ".PHP_EOL."< ".$tmp . "\n");
 
 	// TODO Get PR number and update theme name
 
