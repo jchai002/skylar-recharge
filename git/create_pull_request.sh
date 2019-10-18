@@ -10,5 +10,5 @@ hub pr list -h settings-theme-$2
 git commit -am "pull settings from shopify" && git push --set-upstream origin settings-theme-$2
 if [[ $(curl -u JTimNolan:$3 -X GET "https://api.github.com/repos/JTimNolan/skylar-shopify-theme/pulls?head=skylar-shopify-theme:settings-theme-$2" | jq -r '.') == "[]" ]]
 then
-    echo $(curl -g -u JTimNolan:$3 -H "Content-Type: application/json" -d '{"title":"Settings update: '$4'", "head":"skylar-shopify-theme:settings-theme-'$2'", "base":"master"}' -X POST "https://api.github.com/repos/JTimNolan/skylar-shopify-theme/pulls" | jq -r '.')
+    echo $(curl -g -u JTimNolan:$3 -H "Content-Type: application/json" -d '{"title":"Settings update: '$4'", "head":"settings-theme-'$2'", "base":"master"}' -X POST "https://api.github.com/repos/JTimNolan/skylar-shopify-theme/pulls" | jq -r '.')
 fi
