@@ -22,8 +22,8 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 	$tmp = shell_exec("$command 2>&1");
 	echo "> $command ".PHP_EOL."< ".$tmp . "\n";
 
-	if(!is_writable("/home/deploy/repos/$dir/skylar-shopify-theme")){
-		die("can't write to /home/deploy/repos/$dir/skylar-shopify-theme/src/config/settings_data.json");
+	if(!is_writable("../git/settings_data.json")){
+		die("can't write to ../git/settings_data.json");
 	}
 
 	var_dump(file_put_contents("/home/deploy/repos/$dir/skylar-shopify-theme/src/config/settings_data.json", $settings_data));
