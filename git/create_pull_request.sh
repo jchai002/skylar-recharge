@@ -15,4 +15,4 @@ then
 else
     PULL_REQUEST=$(PULL_REQUEST | jq -r '.[0]')
 fi
-echo $PULL_REQUEST
+echo ${PULL_REQUEST}
