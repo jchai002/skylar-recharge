@@ -60,7 +60,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 	} else {
 		$pull_request = $pull_request[0];
 	}
-	$new_name = 'pr#'.$pull_request['number'].' '.trim(str_ireplace('pr#'.$pull_request['number'], '', str_ireplace('[pullme]', '', $theme['name'])));
+	$new_name = 'PR#'.$pull_request['number'].' '.trim(str_ireplace('PR#'.$pull_request['number'], '', str_ireplace('[pullme]', '', $theme['name'])));
 	$theme = $sc->put('/admin/api/2019-10/themes/'.$theme['id'].'.json', [
 		'theme' => [
 			'name' => $new_name
