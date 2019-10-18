@@ -38,7 +38,6 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 		CURLOPT_USERAGENT => 'Skylar App',
 	]);
 	$res = curl_exec($ch);
-	var_dump($res);
 	$pull_request = json_decode($res, true);
 
 	if(empty($pull_request)){
@@ -57,12 +56,13 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== 'false'){
 			CURLOPT_USERAGENT => 'Skylar App',
 		]);
 		$res = curl_exec($ch);
-		var_dump($res);
 		$pull_request = json_decode($res, true);
 	}
-
-	var_dump($pull_request);
-
-	// TODO Get PR number and update theme name
-
+	$theme = $sc->put('/admin/api/2019-10/themes/'.$theme['id'].'.json', [
+		'theme' => [
+			'name' => '[PULLED] '.trim(str_replace('[pullme]', '', $theme['name']))
+		]
+	]);
+	echo $theme['name'].PHP_EOL;
+	echo insert_update_theme($db, $theme);
 }
