@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd /home/deploy/repos/$1/skylar-shopify-theme
+cd /home/deploy/repos/$1/skylar-shopify-theme || exit 1
 echo $PWD
 git checkout master
 git pull
