@@ -34,6 +34,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 	$pull_request = json_decode($res, true);
 
 	if(empty($pull_request)){
+		echo "Creating pull request".PHP_EOL;
 		$ch = curl_init();
 		curl_setopt_array($ch, [
 			CURLOPT_URL => 'https://api.github.com/repos/JTimNolan/skylar-shopify-theme/pulls',
@@ -51,8 +52,10 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 		$res = curl_exec($ch);
 		$pull_request = json_decode($res, true);
 	} else {
+		echo "Found pull request".PHP_EOL;
 		$pull_request = $pull_request[0];
 	}
+	print_r($pull_request);
 	$new_name = 'PR#'.$pull_request['number'].' '.trim(str_ireplace('PR#'.$pull_request['number'], '', str_ireplace('[pullme]', '', $theme['name'])));
 	$theme = $sc->put('/admin/api/2019-10/themes/'.$theme['id'].'.json', [
 		'theme' => [
