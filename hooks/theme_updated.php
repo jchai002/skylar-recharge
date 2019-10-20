@@ -24,7 +24,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 	// See if the pull request already exists
 	$ch = curl_init();
 	curl_setopt_array($ch, [
-		CURLOPT_URL => 'https://api.github.com/repos/JTimNolan/skylar-shopify-theme/pulls?head=settings-theme-'.$theme['id'],
+		CURLOPT_URL => 'https://api.github.com/repos/JTimNolan/skylar-shopify-theme/pulls?head=JTimNolan:settings-theme-'.$theme['id'],
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_USERPWD => "JTimNolan:".$_ENV['GITHUB_TOKEN'],
 		CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
