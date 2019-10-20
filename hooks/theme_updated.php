@@ -44,7 +44,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 			CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
 			CURLOPT_POST => true,
 			CURLOPT_POSTFIELDS => json_encode([
-				"theme" => "Settings update: ".trim(str_ireplace('[pullme]', '', $theme['name'])),
+				"title" => "Settings update: ".trim(str_ireplace('[pullme]', '', $theme['name'])),
 				"head" => "settings-theme-".$theme['id'],
 				"base" => "master",
 			]),
