@@ -56,13 +56,9 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 		$pull_request = $pull_request[0];
 	}
 	$new_name = $theme['name'];
-	echo $new_name.PHP_EOL;
 	$new_name = trim(str_ireplace('[pullme]', '', $new_name));
-	echo $new_name.PHP_EOL;
 	$new_name = trim(preg_replace('/^PR#\d+/i', '', $new_name));
-	echo $new_name.PHP_EOL;
 	$new_name = 'PR#'.$pull_request['number'].' '.$new_name;
-	echo $new_name.PHP_EOL;
 	$theme = $sc->put('/admin/api/2019-10/themes/'.$theme['id'].'.json', [
 		'theme' => [
 			'name' => $new_name
