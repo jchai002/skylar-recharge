@@ -32,6 +32,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 	]);
 	$res = curl_exec($ch);
 	$pull_request = json_decode($res, true);
+	print_r($res);
 
 	if(empty($pull_request)){
 		echo "Creating pull request".PHP_EOL;
@@ -56,7 +57,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 		$pull_request = $pull_request[0];
 	}
 	print_r($pull_request);
-	$new_name = 'PR#'.$pull_request['number'].' '.trim(str_ireplace('PR#'.$pull_request['number'], '', str_ireplace('[pullme]', '', $theme['name'])));
+	$new_name = 'PR#'.$pull_request['number'].trim(str_ireplace('PR#'.$pull_request['number'], '', str_ireplace('[pullme]', '', $theme['name'])));
 	$theme = $sc->put('/admin/api/2019-10/themes/'.$theme['id'].'.json', [
 		'theme' => [
 			'name' => $new_name
