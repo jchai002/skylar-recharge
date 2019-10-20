@@ -15,22 +15,11 @@ if(empty($theme)){
 echo insert_update_theme($db, $theme);
 
 if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST['force'])){
-	$settings_data = $sc->get('/admin/api/2019-10/themes/'.$theme['id'].'/assets.json', ['asset'=>['key'=>'config/settings_data.json']])['value'];
 	$dir = ENV_TYPE == 'LIVE' ? 'production' : 'staging';
 
-	$command = "sudo -u deploy bash ../git/prep_theme_commit.sh $dir ".$theme['id'];
+	$command = "sudo -u deploy bash ../git/make_theme_commit.sh $dir ".$theme['id']." ".$_ENV['SHOPIFY_PRIVATE_APP_KEY'].":".$_ENV['SHOPIFY_PRIVATE_APP_SECRET'];
 	$tmp = shell_exec("$command 2>&1");
-	echo "> $command ".PHP_EOL."< ".$tmp . "\n";
-
-	if(!is_writable("../git/settings_data.json")){
-		die("can't write to ../git/settings_data.json");
-	}
-
-	var_dump(file_put_contents("/home/deploy/repos/$dir/skylar-shopify-theme/src/config/settings_data.json", $settings_data));
-
-	$command = "sudo -u deploy bash ../git/make_theme_commit.sh $dir ".$theme['id'];
-	$tmp = shell_exec("$command 2>&1");
-	echo "> $command ".PHP_EOL."< ".$tmp . "\n";
+	echo str_replace($_ENV['SHOPIFY_PRIVATE_APP_KEY'].":".$_ENV['SHOPIFY_PRIVATE_APP_SECRET'], '***', "> $command ".PHP_EOL."< ".$tmp . "\n");
 
 	// See if the pull request already exists
 	$ch = curl_init();
