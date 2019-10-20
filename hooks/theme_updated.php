@@ -59,7 +59,7 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 	echo $new_name.PHP_EOL;
 	$new_name = trim(str_ireplace('[pullme]', '', $new_name));
 	echo $new_name.PHP_EOL;
-	$new_name = trim(preg_replace('/^PR#\d+/gi', '', $new_name));
+	$new_name = trim(preg_replace('/^PR#\d+/i', '', $new_name));
 	echo $new_name.PHP_EOL;
 	$new_name = 'PR#'.$pull_request['number'].' '.$new_name;
 	echo $new_name.PHP_EOL;
