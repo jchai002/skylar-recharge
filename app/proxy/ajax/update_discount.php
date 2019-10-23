@@ -11,8 +11,11 @@ if(empty($_REQUEST['discount_code'])){
 	'LDAY15',
 	'TRYSCENTCLUB',
 	'SCENTCLUBNYC',
-	'FALLFEELS',
-	'FRIENDS15',
+	'SURPRISE15',
+	'MY30',
+	'FORME20',
+	'FAVFINDS20',
+	'BOXING20',
 ])){
 	$res = ['error' => 'Invalid discount code.'];
 } else {
