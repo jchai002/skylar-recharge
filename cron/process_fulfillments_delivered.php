@@ -72,8 +72,13 @@ foreach($fulfillments as $fulfillment){
 	$stmt_get_attributes->execute([$fulfillment['id']]);
 	$cart_attributes = json_decode($stmt_get_attributes->fetchColumn(), true);
 
+	$dummy_order = ['attributes' => $cart_attributes];
+
+	$gift_message = get_order_attribute($dummy_order, 'gift_message');
+	$gift_message_email = get_order_attribute($dummy_order, 'gift_message_email');
+
 	// Gift message
-	if(!empty($cart_attributes['gift_message']) && !empty($cart_attributes['gift_message_email'])){
+	if(!empty($gift_message) && !empty($gift_message_email)){
 		echo "Has gift message... ";
 		$ch = curl_init('https://a.klaviyo.com/api/v2/list/HSQctC/subscribe');
 
@@ -84,7 +89,7 @@ foreach($fulfillments as $fulfillment){
 				'api_key' => 'pk_4c31e0386c15cca46c19dac063c013054c',
 				'profiles' => [
 					[
-						'email' => $cart_attributes['gift_message_email'],
+						'email' => $gift_message_email,
 						'$source' => 'Gift Message'
 					]
 				],
@@ -97,7 +102,7 @@ foreach($fulfillments as $fulfillment){
 		$res = curl_exec($ch);
 		$stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2, note) VALUES ('KLAVIYO', 'SUBSCRIBE', :email, :list, :response)");
 		$stmt->execute([
-			'email' => $cart_attributes['gift_message_email'],
+			'email' => $gift_message_email,
 			'list' => 'HSQctC',
 			'response' => $res,
 		]);
@@ -114,23 +119,23 @@ foreach($fulfillments as $fulfillment){
 				'from_name' => 'Skylar',
 				'subject' => 'Your Gift Has Arrived!',
 				'to' => json_encode([
-					['email' => $cart_attributes['gift_message_email']],
-					['email' => 'tim@timnolansolutions.com'],
+					['email' => $gift_message_email],
+					['email' => 'tim@skylar.com'],
 				]),
 				'context' => json_encode([
-					'gift_message' => $cart_attributes['gift_message'],
+					'gift_message' => $gift_message,
 				]),
 			]
 		]);
 		$res = curl_exec($ch);
 		$stmt = $db->prepare("INSERT INTO event_log (category, action, value, value2, note) VALUES ('KLAVIYO', 'EMAIL_SENT', :email, :message, :response)");
 		$stmt->execute([
-			'email' => $cart_attributes['gift_message_email'],
-			'message' => $cart_attributes['gift_message'],
+			'email' => $gift_message_email,
+			'message' => $gift_message,
 			'response' => $res,
 		]);
 		$res = json_decode($res, true);
-		echo "Sent to ".$cart_attributes['gift_message_email'].PHP_EOL;
+		echo "Sent to ".$gift_message_email.PHP_EOL;
 //		var_dump($res);
 	}
 
