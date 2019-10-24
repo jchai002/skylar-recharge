@@ -959,12 +959,12 @@ function sc_get_profile_data(PDO $db, RechargeClient $rc, $shopify_customer_id){
 }
 function sc_get_profile_products($profile_data){
 	$product_strings = [
-		'arrow' => 'arrow::Full Size|rollie:12235409129559:Rollie',
-		'capri' => 'capri::Full Size|rollie:12235492425815:Rollie',
-		'coral' => 'coral::Full Size|rollie:12235492360279:Rollie',
-		'isle' => 'isle::Full Size|rollie:12235492327511:Rollie',
-		'meadow' => 'meadow::Full Size|rollie:12235492393047:Rollie',
-		'willow' => 'willow::Full Size|rollie:12588614484055:Rollie',
+		'arrow' => 'arrow::Full Size|arrow-rollie::Rollie',
+		'capri' => 'capri::Full Size|capri-rollie::Rollie',
+		'coral' => 'coral::Full Size|coral-rollie::Rollie',
+		'isle' => 'isle::Full Size|isle-rollie::Rollie',
+		'meadow' => 'meadow::Full Size|meadow-rollie::Rollie',
+		'willow' => 'willow::Full Size|willow-rollie::Rollie',
 	];
 	$answer_mapping = [
 		'scent' => [
