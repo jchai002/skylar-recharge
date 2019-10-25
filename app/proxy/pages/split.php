@@ -8,7 +8,7 @@ $split_tests = [
 	[
 		'variants' => [
 			[
-				'url' => 'https://try.skylar.com/sample-palette-a',
+				'url' => 'https://get.skylar.com/sample-palette-a',
 				'weight' => '50'
 			],
 			[
