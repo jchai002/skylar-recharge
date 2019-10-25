@@ -224,10 +224,18 @@ foreach($order['line_items'] as $line_item){
 			30725266440279 => 3,
 			30725267882071 => 6,
 			30725267914839 => 12,
+			30995105480791 => 2, // Ship nows
+			30995105513559 => 5,
+			30995105546327 => 11,
 		];
 
 		// Create gift subscription
-		$next_charge_date = date('Y-m-d', offset_date_skip_weekend(get_next_month())); // TODO: Read month from property
+		$first_month_of_sub = get_oli_attribute($line_item, '_subscription_months');
+		if(empty($first_month_of_sub)){
+			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(get_next_month()));
+		} else {
+			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(strtotime($first_month_of_sub.'-01')));
+		}
 		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
 			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
