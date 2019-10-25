@@ -16,6 +16,7 @@ if(empty($_REQUEST['discount_code'])){
 	'FORME20',
 	'FAVFINDS20',
 	'BOXING20',
+	'JOLLY20',
 ])){
 	$res = ['error' => 'Invalid discount code.'];
 } else {
