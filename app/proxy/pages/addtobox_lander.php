@@ -112,7 +112,7 @@ echo "<!-- ".print_r($variant, true)." -->";
                 <div class="sc-lander-image">
                     {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
                     {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
-                        <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
+                        <img class="lazyload" data-srcset="{{ variant.image | img_url: 'x280' }} 1x, {{ variant.image | img_url: 'x280', scale: 2 }} 2x" />
                     {% endfor %}
                 </div>
                 <div class="sc-lander-note">
@@ -125,7 +125,7 @@ echo "<!-- ".print_r($variant, true)." -->";
                 <div class="sc-lander-image">
                     {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
                     {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
-                        <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
+                        <img class="lazyload" data-srcset="{{ variant.image | img_url: 'x280' }} 1x, {{ variant.image | img_url: 'x280', scale: 2 }} 2x" />
                     {% endfor %}
                 </div>
                 <div class="sc-lander-note">
