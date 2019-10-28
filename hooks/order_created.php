@@ -265,6 +265,7 @@ foreach($order['line_items'] as $line_item){
 					'product_title' => 'Free Pink Satin Gift Bag',
 					'variant_title' => '',
 				]);
+				print_r($res);
 				if(!empty($res['onetimes'])){
 					echo insert_update_rc_subscription($db, $res['onetimes'], $rc, $sc);
 				}
