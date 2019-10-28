@@ -45,7 +45,7 @@ if(!empty($add_to_charge)){
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
 
     // Check if they already have this product in a sub
-    $stmt = $db->prepare("SELECT * FROM rc_subscriptions rcs
+    $stmt = $db->prepare("SELECT rcs.* FROM rc_subscriptions rcs
     LEFT JOIN rc_addresses rca ON rcs.address_id=rca.id
     LEFT JOIN rc_customers rcc ON rca.rc_customer_id=rcc.id
     WHERE (rcs.status = 'ONETIME' OR rcs.status = 'ACTIVE')
