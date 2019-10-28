@@ -232,6 +232,7 @@ foreach($order['line_items'] as $line_item){
 		// Create gift subscription
 		$first_month_of_sub = get_oli_attribute($line_item, '_subscription_months');
 		$add_gift_box = !empty(get_oli_attribute($line_item, '_add_gift_box'));
+		$gift_note = get_oli_attribute($line_item, '_gift_note');
 		var_dump($line_item['properties']);
 		if(empty($first_month_of_sub)){
 			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(get_next_month()));
@@ -256,6 +257,17 @@ foreach($order['line_items'] as $line_item){
 		print_r($res);
 		if(!empty($res['subscription'])){
 			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
+			if(!empty($gift_note)){
+				$cart_attributes = [];
+				foreach($order['note_attributes'] as $attribute){
+					$cart_attributes[$attribute['name']] = $attribute['value'];
+				}
+				$cart_attributes['_gift_note'] = $gift_note;
+				$address_res = $rc->put('/addresses/'.$rc_order['address_id'], [
+					'note_attributes' => $cart_attributes,
+				]);
+				print_r($address_res);
+			}
 			if($add_gift_box){
 				$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes', [
 					'next_charge_scheduled_at' => $next_charge_date,
