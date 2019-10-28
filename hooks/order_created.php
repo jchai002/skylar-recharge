@@ -258,13 +258,11 @@ foreach($order['line_items'] as $line_item){
 		if(!empty($res['subscription'])){
 			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
 			if(!empty($gift_note)){
-				$cart_attributes = [];
-				foreach($order['note_attributes'] as $attribute){
-					$cart_attributes[$attribute['name']] = $attribute['value'];
-				}
-				$cart_attributes['_gift_note'] = $gift_note;
+				$order['note_attributes'][] = ['name' => 'gift_message', 'value' => $gift_note];
+				$order['note_attributes'][] = ['name' => 'gift_message_email', 'value' => get_oli_attribute($line_item, '_email')];
+				$order['note_attributes'][] = ['name' => 'gift_message_name', 'value' => get_oli_attribute($line_item, '_first_name')];
 				$address_res = $rc->put('/addresses/'.$rc_order['address_id'], [
-					'note_attributes' => $cart_attributes,
+					'note_attributes' => $order['note_attributes'],
 				]);
 				print_r($address_res);
 			}
