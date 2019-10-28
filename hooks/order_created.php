@@ -231,6 +231,7 @@ foreach($order['line_items'] as $line_item){
 
 		// Create gift subscription
 		$first_month_of_sub = get_oli_attribute($line_item, '_subscription_months');
+		$add_gift_box = !empty(get_oli_attribute($line_item, '_add_gift_box'));
 		if(empty($first_month_of_sub)){
 			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(get_next_month()));
 		} else {
@@ -254,6 +255,20 @@ foreach($order['line_items'] as $line_item){
 		print_r($res);
 		if(!empty($res['subscriptions'])){
 			echo insert_update_rc_subscription($db, $res['subscriptions'], $rc, $sc);
+			if($add_gift_box){
+				$res = $rc->post('/addresses'.$rc_order['address_id'].'/onetimes', [
+					'next_charge_scheduled_at' => $next_charge_date,
+					'price' => 0,
+					'quantity' => 1,
+					'shopify_variant_id' => 19811989880919, // Pink Satin Gift Bag
+					'title' => 'Free Pink Satin Gift Bag',
+					'product_title' => 'Free Pink Satin Gift Bag',
+					'variant_title' => '',
+				]);
+				if(!empty($res['onetimes'])){
+					echo insert_update_rc_subscription($db, $res['onetimes'], $rc, $sc);
+				}
+			}
 		}
 		continue;
 	}
