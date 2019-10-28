@@ -254,7 +254,7 @@ foreach($order['line_items'] as $line_item){
 			'expire_after_specific_number_of_charges' => $months[$line_item['variant_id']],
 		]);
 		print_r($res);
-		if(!empty($res['subscriptions'])){
+		if(!empty($res['subscription'])){
 			echo insert_update_rc_subscription($db, $res['subscriptions'], $rc, $sc);
 			if($add_gift_box){
 				$res = $rc->post('/addresses'.$rc_order['address_id'].'/onetimes', [
@@ -267,7 +267,7 @@ foreach($order['line_items'] as $line_item){
 					'variant_title' => '',
 				]);
 				print_r($res);
-				if(!empty($res['onetimes'])){
+				if(!empty($res['onetime'])){
 					echo insert_update_rc_subscription($db, $res['onetimes'], $rc, $sc);
 				}
 			}
