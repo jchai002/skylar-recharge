@@ -101,6 +101,7 @@ echo "<!-- ".print_r($res, true)." -->";
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container sc-portal-lander">
 	<?php if(!empty($add_to_charge) && empty($res['error'])){ ?>
+        <!-- <?php print_r($product) ?> -->
         <div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
         <?php if($product['type'] == 'Body Bundle'){ ?>
                 <div class="sc-lander-price">
