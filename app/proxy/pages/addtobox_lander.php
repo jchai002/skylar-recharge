@@ -54,6 +54,8 @@ if(!empty($add_to_charge)){
     AND rcc.recharge_id=:rc_customer_id
     AND rcs.variant_id=:variant_id");
 
+	echo "<!-- ".$customer['id']." ".$variant['id']." -->";
+
 	$stmt->execute([
 		'rc_customer_id' => $customer['id'],
 		'variant_id' => $variant['id'],
