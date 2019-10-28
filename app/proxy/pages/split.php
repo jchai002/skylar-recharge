@@ -6,6 +6,7 @@ $test_id--;
 
 $split_tests = [
 	[
+		'experiment_id' => 'GH4vmMloTt6aKumxnL-BiA',
 		'variants' => [
 			[
 				'url' => 'https://get.skylar.com/sample-palette-a',
@@ -40,6 +41,7 @@ if(empty($split_tests[$test_id])){
 $test = $split_tests[$test_id];
 $total_weight = array_sum(array_column($test['variants'], 'weight'));
 $weight = rand(0, $total_weight);
+$get_vars['exp_id'] = $test['experiment_id'];
 
 foreach($test['variants'] as $variant){
 	$weight -= $variant['weight'];
