@@ -257,7 +257,7 @@ foreach($order['line_items'] as $line_item){
 		if(!empty($res['subscription'])){
 			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
 			if($add_gift_box){
-				$res = $rc->post('/addresses'.$rc_order['address_id'].'/onetimes', [
+				$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes', [
 					'next_charge_scheduled_at' => $next_charge_date,
 					'price' => 0,
 					'quantity' => 1,
