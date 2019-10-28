@@ -232,6 +232,7 @@ foreach($order['line_items'] as $line_item){
 		// Create gift subscription
 		$first_month_of_sub = get_oli_attribute($line_item, '_subscription_months');
 		$add_gift_box = !empty(get_oli_attribute($line_item, '_add_gift_box'));
+		var_dump($line_item['properties']);
 		if(empty($first_month_of_sub)){
 			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(get_next_month()));
 		} else {
