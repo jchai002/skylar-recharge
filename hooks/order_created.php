@@ -219,7 +219,11 @@ foreach($order['line_items'] as $line_item){
 	print_r($product);
 
 	// Mark line item fulfilled in shopify
+	echo "Checking fulfillment... ";
+	echo $line_item['fulfillment_service'];
+	echo $line_item['id'].PHP_EOL;
 	if($line_item['fulfillment_service'] == 'skylar-autofulfill' || $line_item['id'] == 4101147820119){
+		echo "Marking fulfilled by ".$line_item['fulfillment_service'].PHP_EOL;
 		$fulfillment = $sc->post('/admin/api/2019-10/orders/'.$order['id'].'/fulfillments.json', ['fulfillment' => [
 			'location_id' => 34417934423, // Autofulfill location ID
 			'tracking_number' => null,
