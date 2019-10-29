@@ -24,7 +24,7 @@ LEFT JOIN rc_subscriptions s ON aco.followup_subscription_id=s.id
 WHERE s.id IS NOT NULL AND s.deleted_at IS NULL
 AND aco.order_line_item_id=?");
 
-$stmt_get_attributes = $db->prepare("SELECT o.attributes FROM orders o LEFT JOIN order_line_items oli ON oli.order_id=o.id WHERE oli.fulfillment_id=?");
+$stmt_get_attributes = $db->prepare("SELECT o.attributes, o.shopify_id FROM orders o LEFT JOIN order_line_items oli ON oli.order_id=o.id WHERE oli.fulfillment_id=?");
 
 $stmt_mark_processed = $db->prepare("UPDATE fulfillments SET delivery_processed_at=:now WHERE id=:id");
 foreach($fulfillments as $fulfillment){
@@ -32,6 +32,8 @@ foreach($fulfillments as $fulfillment){
 
 	$stmt_get_order_lines->execute([$fulfillment['id']]);
 	foreach($stmt_get_order_lines->fetchAll() as $line_item){
+
+
 
 		$stmt_get_subscription_id->execute([$line_item['id']]);
 		if($stmt_get_subscription_id->rowCount() == 0){
@@ -73,9 +75,8 @@ foreach($fulfillments as $fulfillment){
 	}
 
 	$stmt_get_attributes->execute([$fulfillment['id']]);
-	$cart_attributes = json_decode($stmt_get_attributes->fetchColumn(), true);
-
-	$dummy_order = ['attributes' => $cart_attributes];
+	$dummy_order = $stmt_get_attributes->fetch();
+	$dummy_order['attributes'] = json_decode($dummy_order['attributes'], true);
 
 	$gift_message = get_order_attribute($dummy_order, 'gift_message');
 	$gift_message_email = get_order_attribute($dummy_order, 'gift_message_email');
@@ -147,7 +148,36 @@ foreach($fulfillments as $fulfillment){
 		]);
 		$res = json_decode($res, true);
 		echo "Sent to ".$gift_message_email.PHP_EOL;
-//		var_dump($res);
+
+		// Get RC order & address
+		$res = $rc->get('/orders', ['shopify_order_id' => $dummy_order['shopify_id']]);
+		if(!empty($res['orders'])){
+			$rc_order = $res['orders'][0];
+			$res = $rc->get('/addresses/'.$rc_order['address_id']);
+			if(!empty($res['address'])){
+				echo "Found address, removing gift message attributes".PHP_EOL;
+				$address = $res['address'];
+				$note_attributes = [];
+				foreach($address['note_attributes'] as $attribute){
+					$note_attributes[$attribute['name']] = $attribute['value'];
+				}
+				if(!empty($note_attributes['gift_message'])){
+					unset($note_attributes['gift_message']);
+				}
+				if(!empty($note_attributes['gift_message_email'])){
+					unset($note_attributes['gift_message_email']);
+				}
+				if(!empty($note_attributes['gift_message_name'])){
+					unset($note_attributes['gift_message_name']);
+				}
+				$res = $rc->put('/addresses/'.$address['id'], [
+					'note_attributes' => $note_attributes,
+				]);
+				print_r($res);
+			}
+
+		}
+
 	}
 
 

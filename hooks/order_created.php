@@ -228,6 +228,14 @@ foreach($order['line_items'] as $line_item){
 			30995105513559 => 5,
 			30995105546327 => 11,
 		];
+		$gift_variants = [
+			2 => 30995105480791,
+			3 => 30995105480791,
+			5 => 30995105513559,
+			6 => 30995105513559,
+			11 => 30995105546327,
+			12 => 30995105546327,
+		];
 
 		// Create gift subscription
 
@@ -248,6 +256,9 @@ foreach($order['line_items'] as $line_item){
 			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(strtotime($first_month_of_sub.'-01')));
 		}
 		var_dump($next_charge_date);
+
+		$months = $months[$line_item['variant_id']];
+
 		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
 			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
@@ -256,17 +267,26 @@ foreach($order['line_items'] as $line_item){
 			'title' => 'Scent Club Gift',
 			'price' => 0,
 			'quantity' => 1,
-			'shopify_variant_id' => $line_item['variant_id'],
+			'shopify_variant_id' => $gift_variants[$months],
 			'order_interval_unit' => 'month',
 			'order_interval_frequency' => 1,
 			'charge_interval_frequency' => 1,
 			'order_day_of_month' => 1,
-			'expire_after_specific_number_of_charges' => $months[$line_item['variant_id']],
+			'expire_after_specific_number_of_charges' => $months,
 			'properties' => $line_item['properties'],
 		]);
 		print_r($res);
 		if(!empty($res['subscription'])){
 			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
+			if(!empty($gift_note) && !empty(get_oli_attribute($line_item, '_email'))){
+				$order['note_attributes'][] = ['name' => 'gift_message', 'value' => $gift_note];
+				$order['note_attributes'][] = ['name' => 'gift_message_email', 'value' => get_oli_attribute($line_item, '_email')];
+				$order['note_attributes'][] = ['name' => 'gift_message_name', 'value' => get_oli_attribute($line_item, '_first_name')];
+				$address_res = $rc->put('/addresses/'.$rc_order['address_id'], [
+					'note_attributes' => $order['note_attributes'],
+				]);
+				print_r($address_res);
+			}
 			if($add_gift_box){
 				$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes', [
 					'next_charge_scheduled_at' => $next_charge_date,
