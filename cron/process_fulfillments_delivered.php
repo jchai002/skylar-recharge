@@ -88,6 +88,7 @@ foreach($fulfillments as $fulfillment){
 			$res = klaviyo_send_transactional_email($db, $gift_message_email, 'gift_message', [
 				'gift_message' => $gift_message,
 			]);
+			continue;
 		}
 
 		$ch = curl_init('https://a.klaviyo.com/api/v2/list/HSQctC/subscribe');
