@@ -45,13 +45,16 @@ $get_vars['exp_id'] = $test['experiment_id'];
 
 if(!empty($_REQUEST['test'])){
 	echo "$weight of $total_weight".PHP_EOL;
-	die();
 }
 
-foreach($test['variants'] as $variant){
+foreach($test['variants'] as $index => $variant){
 	$weight -= $variant['weight'];
 	if($weight > 0){
 		continue;
+	}
+	if(!empty($_REQUEST['test'])){
+		echo "Variant: ".($index+1);
+		die();
 	}
 	$url = $variant['url'];
 	if(!empty($get_vars)){
