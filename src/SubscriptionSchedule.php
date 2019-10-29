@@ -176,9 +176,11 @@ class SubscriptionSchedule {
 				$item['scheduled_at'] = date('Y-m-d', $next_charge_time);
 				$item['scheduled_at_time'] = $next_charge_time;
 				$item['index'] = $subscription_index;
+				// TODO: If expires, add what number in series it is
 				$this->add_item_to_schedule($item);
 
 				$subscription_index++;
+				// TODO: Stop if subscription is expired
 				$next_charge_time = self::get_subscription_time_by_index($subscription_index, $charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
 				if($subscription_index > 100){
 					throw new Exception('Too many loops');
