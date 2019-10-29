@@ -14,7 +14,7 @@ $split_tests = [
 			],
 			[
 				'url' => 'https://skylar.com/pages/sample-palette-a',
-				'weight' => '50'
+				'weight' => '55'
 			],
 		]
 	]
