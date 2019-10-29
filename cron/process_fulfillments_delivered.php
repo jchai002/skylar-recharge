@@ -3,10 +3,14 @@ require_once(__DIR__.'/../includes/config.php');
 
 $rc = new RechargeClient();
 $sc = new ShopifyClient();
-
-$stmt = $db->prepare("SELECT * FROM fulfillments WHERE delivered_at >= ? AND delivery_processed_at IS NULL");
-$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
-//$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*30))]);
+if(!empty($_REQUEST['id'])){
+	$stmt = $db->prepare("SELECT * FROM fulfillments WHERE shopify_id=?");
+	$stmt->execute([$_REQUEST['id']]);
+} else {
+	$stmt = $db->prepare("SELECT * FROM fulfillments WHERE delivered_at >= ? AND delivery_processed_at IS NULL");
+	$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*7))]);
+	//$stmt->execute([date('Y-m-d H:i:s', time()-(60*60*24*30))]);
+}
 $fulfillments = $stmt->fetchAll();
 
 
