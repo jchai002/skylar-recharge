@@ -227,9 +227,9 @@ foreach($order['line_items'] as $line_item){
 		$fulfillment = $sc->post('/admin/api/2019-10/orders/'.$order['id'].'/fulfillments.json', ['fulfillment' => [
 			'location_id' => 34417934423, // Autofulfill location ID
 			'tracking_number' => null,
-			'line_items' => [
+			'line_items' => [[
 				'id' => $line_item['id'],
-			]
+			]]
 		]]);
 		print_r($fulfillment);
 		print_r($sc->last_error);
