@@ -43,6 +43,11 @@ $total_weight = array_sum(array_column($test['variants'], 'weight'));
 $weight = rand(0, $total_weight);
 $get_vars['exp_id'] = $test['experiment_id'];
 
+if(!empty($_REQUEST['test'])){
+	echo "$weight of $total_weight".PHP_EOL;
+	die();
+}
+
 foreach($test['variants'] as $variant){
 	$weight -= $variant['weight'];
 	if($weight > 0){
