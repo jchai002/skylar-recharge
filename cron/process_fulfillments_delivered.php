@@ -84,9 +84,11 @@ foreach($fulfillments as $fulfillment){
 	if(!empty($gift_message) && !empty($gift_message_email)){
 		echo "Has gift message... ";
 
-		$res = klaviyo_send_transactional_email($db, $gift_message_email, 'gift_message', [
-			'gift_message' => $gift_message,
-		]);
+		if($gift_message_email == 'christine@skylar.com'){
+			$res = klaviyo_send_transactional_email($db, $gift_message_email, 'gift_message', [
+				'gift_message' => $gift_message,
+			]);
+		}
 
 		$ch = curl_init('https://a.klaviyo.com/api/v2/list/HSQctC/subscribe');
 
