@@ -234,6 +234,7 @@ foreach($order['line_items'] as $line_item){
 		$add_gift_box = !empty(get_oli_attribute($line_item, '_add_gift_box'));
 		$gift_note = get_oli_attribute($line_item, '_gift_note');
 		var_dump($line_item['properties']);
+		var_dump(get_oli_attribute($line_item, '_subscription_months'));
 		echo $first_month_of_sub;
 		if(empty($first_month_of_sub)){
 			echo "next month";
