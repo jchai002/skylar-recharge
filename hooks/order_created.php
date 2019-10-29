@@ -253,19 +253,11 @@ foreach($order['line_items'] as $line_item){
 			'charge_interval_frequency' => 1,
 			'order_day_of_month' => 1,
 			'expire_after_specific_number_of_charges' => $months[$line_item['variant_id']],
+			'properties' => $line_item['properties'],
 		]);
 		print_r($res);
 		if(!empty($res['subscription'])){
 			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
-			if(!empty($gift_note)){
-				$order['note_attributes'][] = ['name' => 'gift_message', 'value' => $gift_note];
-				$order['note_attributes'][] = ['name' => 'gift_message_email', 'value' => get_oli_attribute($line_item, '_email')];
-				$order['note_attributes'][] = ['name' => 'gift_message_name', 'value' => get_oli_attribute($line_item, '_first_name')];
-				$address_res = $rc->put('/addresses/'.$rc_order['address_id'], [
-					'note_attributes' => $order['note_attributes'],
-				]);
-				print_r($address_res);
-			}
 			if($add_gift_box){
 				$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes', [
 					'next_charge_scheduled_at' => $next_charge_date,
