@@ -84,7 +84,7 @@ foreach($fulfillments as $fulfillment){
 	if(!empty($gift_message) && !empty($gift_message_email)){
 		echo "Has gift message... ";
 
-		if($gift_message_email == 'christine@skylar.com'){
+		if($gift_message_email == 'christinearnstad1@gmail.com'){
 			$res = klaviyo_send_transactional_email($db, $gift_message_email, 'gift_message', [
 				'gift_message' => $gift_message,
 			]);
