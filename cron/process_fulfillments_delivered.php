@@ -68,7 +68,6 @@ foreach($fulfillments as $fulfillment){
 		}
 	}
 
-
 	$stmt_get_attributes->execute([$fulfillment['id']]);
 	$cart_attributes = json_decode($stmt_get_attributes->fetchColumn(), true);
 

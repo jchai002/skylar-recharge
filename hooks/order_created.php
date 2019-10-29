@@ -239,6 +239,7 @@ foreach($order['line_items'] as $line_item){
 		} else {
 			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(strtotime($first_month_of_sub.'-01')));
 		}
+		var_dump($next_charge_date);
 		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
 			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
