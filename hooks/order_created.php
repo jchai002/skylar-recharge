@@ -218,6 +218,18 @@ foreach($order['line_items'] as $line_item){
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
 
+	// Mark line item fulfilled in shopify
+	if($line_item['fulfillment_service'] == 'skylar-autofulfill' || $line_item['id'] == 4101147820119){
+		$fulfillment = $sc->post('/admin/api/2019-10/orders/'.$order['id'].'/fulfillments.json', ['fulfillment' => [
+			'location_id' => 34417934423, // Autofulfill location ID
+			'tracking_number' => null,
+			'line_items' => [
+				'id' => $line_item['id'],
+			]
+		]]);
+		print_r($fulfillment);
+	}
+
 	if($product['type'] == 'Scent Club Gift' && $rc_order['type'] == 'CHECKOUT'){
 
 		$months = [
