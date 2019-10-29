@@ -234,9 +234,12 @@ foreach($order['line_items'] as $line_item){
 		$add_gift_box = !empty(get_oli_attribute($line_item, '_add_gift_box'));
 		$gift_note = get_oli_attribute($line_item, '_gift_note');
 		var_dump($line_item['properties']);
+		echo $first_month_of_sub;
 		if(empty($first_month_of_sub)){
+			echo "next month";
 			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(get_next_month()));
 		} else {
+			echo "first month of sub";
 			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(strtotime($first_month_of_sub.'-01')));
 		}
 		var_dump($next_charge_date);
