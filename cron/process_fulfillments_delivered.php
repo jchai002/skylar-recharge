@@ -170,8 +170,12 @@ foreach($fulfillments as $fulfillment){
 				if(!empty($note_attributes['gift_message_name'])){
 					unset($note_attributes['gift_message_name']);
 				}
+				$cart_attributes = [];
+				foreach($note_attributes as $name => $value){
+					$cart_attributes[] = ['name'=>$name, 'value'=>$value];
+				}
 				$res = $rc->put('/addresses/'.$address['id'], [
-					'note_attributes' => $note_attributes,
+					'note_attributes' => $cart_attributes,
 				]);
 				print_r($res);
 			}
