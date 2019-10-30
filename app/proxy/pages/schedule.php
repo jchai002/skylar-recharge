@@ -3,6 +3,7 @@
 global $db, $sc, $rc, $ids_by_scent;
 
 if($_REQUEST['c'] == 644696211543){
+    global $is_alias;
     var_dump($is_alias);
 }
 
