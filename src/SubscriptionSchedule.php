@@ -3,6 +3,7 @@
 class SubscriptionSchedule {
 
 	public $hidden_subscription_ids = [];
+	public $is_alias = false;
 
 	private $db;
 	private $rc;

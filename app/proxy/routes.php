@@ -397,8 +397,8 @@ function require_customer_id($callback_if_true){
 {% endif %}";
 		return false;
 	}
-	$alias_override = !empty($_REQUEST['alias']) && $_REQUEST['alias'] == md5($_ENV['ALIASKEY'].$customer_id);
-	if(!empty($alias_override)){
+	$is_alias = !empty($_REQUEST['alias']) && $_REQUEST['alias'] == md5($_ENV['ALIASKEY'].$customer_id);
+	if(!empty($is_alias)){
 		global $sc;
 		$first_name = 'Alias';
 		if($sc === null){
@@ -423,6 +423,8 @@ function require_customer_id($callback_if_true){
 		$callback_if_true();
 		return true;
 	}
+
+	// TODO: Replace admin_customers logic with a redirect to an actual alias session
 
 	ob_start();
 	$callback_if_true();

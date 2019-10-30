@@ -19,6 +19,7 @@ if($stmt->rowCount() > 1){
 if(!empty($rc_customer_id)){
 	$months = $_REQUEST['months'] ?? 12;
 	$schedule = new SubscriptionSchedule($db, $rc, $rc_customer_id, strtotime(date('Y-m-t',strtotime("+$months months"))));
+
 	if(!empty($_REQUEST['hidden_subs'])){
 		$schedule->hidden_subscription_ids = $_REQUEST['hidden_subs'];
 	}

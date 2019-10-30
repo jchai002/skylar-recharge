@@ -2,6 +2,10 @@
 
 global $db, $sc, $rc, $ids_by_scent;
 
+if($_REQUEST['c'] == 644696211543){
+    var_dump($is_alias);
+}
+
 $customer = get_customer($db, $_REQUEST['c'], $sc);
 $stmt = $db->prepare("SELECT recharge_id FROM rc_customers WHERE id=?");
 $stmt->execute([$customer['id']]);
