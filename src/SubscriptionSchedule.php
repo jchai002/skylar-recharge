@@ -59,6 +59,9 @@ class SubscriptionSchedule {
 				if(empty($sub['next_charge_scheduled_at'])){
 					continue;
 				}
+				if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $sub['shopify_product_id']))){
+					continue;
+				}
 				$this->subscriptions[$sub['id']] = $this->normalize_subscription($sub);
 			}
 		}
@@ -168,9 +171,6 @@ class SubscriptionSchedule {
 		foreach($this->subscriptions as $subscription){
 			$next_charge_time = $charge_time = strtotime($subscription['next_charge_scheduled_at']);
 			if(empty($charge_time)){
-				continue;
-			}
-			if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $subscription['shopify_product_id']))){
 				continue;
 			}
 			// Iterate through months, adding subscription as sub as individual items to each one
