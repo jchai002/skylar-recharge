@@ -420,14 +420,18 @@ function require_customer_id($callback_if_true){
 		{% assign account_query = 'c=$customer_id&alias=".$_REQUEST['alias']."' | append: theme_query %}
 		{% if customer.id != $customer_id %}{% assign customer_first_name = '$first_name' %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
 		{% assign customer_id = $customer_id %}";
-		$callback_if_true();
+		$callback_if_true([
+			'is_alias' => $is_alias
+		]);
 		return true;
 	}
 
 	// TODO: Replace admin_customers logic with a redirect to an actual alias session
 
 	ob_start();
-	$callback_if_true();
+	$callback_if_true([
+		'is_alias' => $is_alias
+	]);
 	$output = ob_get_contents();
 	ob_end_clean();
 	echo "{% assign admin_customers = '".implode('|',$admin_customers)."' %}

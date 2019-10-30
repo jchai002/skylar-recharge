@@ -1,6 +1,6 @@
 <?php
 
-global $db, $sc, $rc;
+global $db, $sc, $rc, $is_alias;
 
 $customer = get_customer($db, $_REQUEST['c'], $sc);
 $stmt = $db->prepare("SELECT recharge_id FROM rc_customers WHERE id=?");
@@ -19,7 +19,9 @@ if($stmt->rowCount() > 1){
 if(!empty($rc_customer_id)){
 	$months = $_REQUEST['months'] ?? 12;
 	$schedule = new SubscriptionSchedule($db, $rc, $rc_customer_id, strtotime(date('Y-m-t',strtotime("+$months months"))));
-
+	if(!empty($is_alias)){
+		$schedule->is_alias = true;
+	}
 	if(!empty($_REQUEST['hidden_subs'])){
 		$schedule->hidden_subscription_ids = $_REQUEST['hidden_subs'];
 	}
