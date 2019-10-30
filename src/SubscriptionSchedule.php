@@ -170,6 +170,9 @@ class SubscriptionSchedule {
 			if(empty($charge_time)){
 				continue;
 			}
+			if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $subscription['shopify_product_id']))){
+				continue;
+			}
 			// Iterate through months, adding subscription as sub as individual items to each one
 			$subscription_index = 0;
 			while($next_charge_time < $this->max_time){
