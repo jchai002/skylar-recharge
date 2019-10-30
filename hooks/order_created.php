@@ -214,7 +214,6 @@ echo "Checking line items".PHP_EOL;
 $has_hand_cream = false;
 $has_orly_gwp = false;
 foreach($order['line_items'] as $line_item){
-	// Create body bundle subs
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
 
@@ -323,6 +322,7 @@ foreach($order['line_items'] as $line_item){
 		continue;
 	}
 
+	// Create body bundle subs
 	$has_bb_sub = false;
 	foreach($subscriptions as $subscription){
 		if($subscription['shopify_variant_id'] == $line_item['variant_id']){
@@ -352,8 +352,8 @@ foreach($order['line_items'] as $line_item){
 			'quantity' => 1,
 			'shopify_variant_id' => $line_item['variant_id'],
 			'order_interval_unit' => 'month',
-			'order_interval_frequency' => 1,
-			'charge_interval_frequency' => 1,
+			'order_interval_frequency' => 2,
+			'charge_interval_frequency' => 2,
 			'order_day_of_month' => $charge_day,
 		]);
 		print_r($res);

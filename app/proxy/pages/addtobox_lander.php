@@ -73,8 +73,8 @@ if(!empty($add_to_charge)){
 				'product_title' => $product['title'],
 				'variant_title' => $variant['title'],
 				'order_interval_unit' => 'month',
-				'order_interval_frequency' => '1',
-				'charge_interval_frequency' => '1',
+				'order_interval_frequency' => '2',
+				'charge_interval_frequency' => '2',
 			]);
 			if(!empty($res['subscription'])){
 				insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
@@ -120,7 +120,7 @@ echo "<!-- ".print_r($variant, true)." -->";
                     {% endfor %}
                 </div>
                 <div class="sc-lander-note">
-                    This item will ship each month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+                    This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
                 </div>
         <?php } else { ?>
                 <div class="sc-lander-price">
