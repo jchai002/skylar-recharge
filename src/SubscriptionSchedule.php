@@ -390,6 +390,9 @@ class SubscriptionSchedule {
 		$order['next_charge_scheduled_at'] = $order['scheduled_at'];
 		$order['scheduled_at_time'] = strtotime($order['scheduled_at']);
 		foreach($order['line_items'] as $index => $item){
+			if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))){
+				continue;
+			}
 			$item['id'] = $item['subscription_id'];
 			$item['type'] = 'order';
 			$item['order_id'] = $order['id'];
@@ -405,6 +408,9 @@ class SubscriptionSchedule {
 		$charge['next_charge_scheduled_at'] = $charge['scheduled_at'];
 		$charge['scheduled_at_time'] = strtotime($charge['scheduled_at']);
 		foreach($charge['line_items'] as $index => $item){
+			if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))){
+				continue;
+			}
 			$item['id'] = $item['subscription_id'];
 			$item['type'] = 'charge';
 			$item['charge_id'] = $charge['id'];
