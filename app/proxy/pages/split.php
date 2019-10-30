@@ -14,7 +14,7 @@ $split_tests = [
 			],
 			[
 				'url' => 'https://skylar.com/pages/sample-palette-a',
-				'weight' => '55'
+				'weight' => '100'
 			],
 		]
 	]
@@ -40,7 +40,7 @@ if(empty($split_tests[$test_id])){
 
 $test = $split_tests[$test_id];
 $total_weight = array_sum(array_column($test['variants'], 'weight'));
-$weight = rand(0, $total_weight);
+$weight = rand(1, $total_weight);
 $get_vars['exp_id'] = $test['experiment_id'];
 
 if(!empty($_REQUEST['test'])){
