@@ -380,7 +380,7 @@ $router->route('/settings$/i', function() {
 
 $admin_customers = [644696211543];
 function require_customer_id($callback_if_true){
-	global $admin_customers;
+	global $admin_customers, $is_alias;
 	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
 	header('Content-Type: application/liquid');
 	if(empty($customer_id)){
