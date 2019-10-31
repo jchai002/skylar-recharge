@@ -161,6 +161,9 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 $update_order = false;
 $order_tags = explode(', ',$order['tags']);
 
+$has_hand_cream = false;
+$has_orly_gwp = false;
+$has_gwp_handcream = false;
 foreach($order['line_items'] as $line_item){
 	$product = get_product($db, $line_item['product_id']);
 	if(in_array('Hand Cream', explode(', ', $product['tags']))){
@@ -169,8 +172,14 @@ foreach($order['line_items'] as $line_item){
 	if($product['shopify_id'] == 4042122756183){
 		$has_orly_gwp = true;
 	}
+	if($product['shopify_id'] == 4312664113239){
+		$has_gwp_handcream = true;
+	}
 }
-if($has_orly_gwp && (!$has_hand_cream || $order['shipping_address']['country_code'] != 'US')){
+if(
+	($has_orly_gwp && (!$has_hand_cream || $order['shipping_address']['country_code'] != 'US'))
+	|| ($has_gwp_handcream && $order['subtotal_price'] < 60)
+){
 	$order_tags[] = 'HOLD: Invalid GWP';
 	$update_order = true;
 	send_alert($db, 3, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP', 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
@@ -211,8 +220,6 @@ if(empty($sc_main_sub)){
 	]);
 }
 echo "Checking line items".PHP_EOL;
-$has_hand_cream = false;
-$has_orly_gwp = false;
 foreach($order['line_items'] as $line_item){
 	// Create body bundle subs
 	$product = get_product($db, $line_item['product_id']);
