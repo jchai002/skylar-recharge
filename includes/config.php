@@ -838,17 +838,28 @@ function is_admin_address($address_id){
 		//29806558, // Tim
 	]);
 }
+$monthly_scent_cache = [
+	'admin' => [],
+	'live' => [],
+];
 function sc_get_monthly_scent(PDO $db, $time = null, $admin_preview = false){
+	global $monthly_scent_cache;
 	if(empty($time)){
 		$time = time();
 	}
+	$date = date('Y-m', $time).'-01';
+	if(array_key_exists($date, $monthly_scent_cache[($admin_preview ? 'admin' : 'live')])){
+		return $monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date];
+	}
 	$preview_clause = $admin_preview ? '' : 'AND sc_live = 1';
 	$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=? $preview_clause");
-	$stmt->execute([date('Y-m', $time).'-01']);
+	$stmt->execute([$date]);
 	if($stmt->rowCount() < 1){
+		$monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date] = false;
 		return false;
 	}
-	return $stmt->fetch();
+	$monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date] = $stmt->fetch();
+	return $monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date];
 }
 function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $main_sub = []){
 	if(empty($main_sub)){
