@@ -277,7 +277,9 @@ foreach($order['line_items'] as $line_item){
 		$properties = $line_item['properties'];
 		$properties[] = ['name' => '_original_line_item_id', 'value' => $line_item['id']];
 
-		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
+		$monthly_scent_info = sc_get_monthly_scent($db, strtotime($next_charge_date), true);
+
+		$sub_data = [
 			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
 			'product_title' => 'Scent Club Gift',
@@ -292,7 +294,13 @@ foreach($order['line_items'] as $line_item){
 			'order_day_of_month' => 1,
 			'expire_after_specific_number_of_charges' => $months,
 			'properties' => $properties,
-		]);
+		];
+
+		if(!empty($monthly_scent_info) && !empty($monthly_scent_info['sku'])){
+			$sub_data['sku'] = $monthly_scent_info['sku'];
+		}
+
+		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', $sub_data);
 		print_r($res);
 		if(!empty($res['subscription'])){
 			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
