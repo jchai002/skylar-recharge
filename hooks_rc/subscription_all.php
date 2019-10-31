@@ -6,7 +6,7 @@ $sc = new ShopifyClient();
 // get $charge from webhook
 if(!empty($_REQUEST['id'])){
 	// cheaty since we're just using it to look up the charge
-	$subscription = ['id' => $_REQUEST['id']];
+	$res = $rc->get('/subscriptions/'.$_REQUEST['id']);
 } else {
 	respondOK();
 	$data = file_get_contents('php://input');
@@ -14,10 +14,9 @@ if(!empty($_REQUEST['id'])){
 	if(!empty($data)){
 		$res = json_decode($data, true);
 	}
-	if(empty($res['subscription'])){
-		exit;
-	}
-	$subscription = $res['subscription'];
+}
+if(empty($res['subscription'])){
+	exit;
 }
 $subscription = $res['subscription'];
 var_dump($subscription);

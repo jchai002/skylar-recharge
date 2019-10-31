@@ -22,7 +22,7 @@ try {
 } catch(\Throwable $e){
 	log_event($db, 'EXCEPTION', json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'subscription_created_insert', json_encode($subscription), '', 'webhook');
 }
-
+die();
 
 if($subscription['status'] != 'ACTIVE'){
 	die();
