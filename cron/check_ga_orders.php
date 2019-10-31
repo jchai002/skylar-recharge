@@ -36,6 +36,7 @@ foreach($stmt->fetchAll() as $row){
 	$response = send_ga_transaction_hit($shopify_order, $sources, [], true);
 	if(empty($response->getDebugResponse()['hitParsingResult'][0]['valid'])){
 		echo "ERROR IN HIT!"; // TODO: Log and alert
+		log_event($db, 'ANALYTICS', $shopify_order['order_number'], 'HIT_ERROR', $response->getDebugResponse(), '', 'CRON');
 		continue;
 	}
 	print_r($response->getDebugResponse());
