@@ -125,6 +125,11 @@ function offset_date_skip_weekend($time){
 	if(date('m', $time) == 9 && $time == strtotime('first monday '.date('Y-m', $time))){
 		$time += 24*60*60; //  Add a day
 	}
+	// Cyber Monday
+	$cyber_monday = date('Y-m-d', strtotime('last thursday of november '.date('Y', $time))+(4*24*60*60));
+	if(date('Y-m-d', $time) == $cyber_monday){
+		$time += 24*60*60; //  Add a day
+	}
 	return $time;
 }
 
