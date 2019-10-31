@@ -252,14 +252,6 @@ foreach($order['line_items'] as $line_item){
 			30995105513559 => 5,
 			30995105546327 => 11,
 		];
-		$gift_variants = [
-			2 => 30995105480791,
-			3 => 30995105480791,
-			5 => 30995105513559,
-			6 => 30995105513559,
-			11 => 30995105546327,
-			12 => 30995105546327,
-		];
 
 		// Create gift subscription
 
@@ -282,6 +274,8 @@ foreach($order['line_items'] as $line_item){
 		var_dump($next_charge_date);
 
 		$months = $months[$line_item['variant_id']];
+		$properties = $line_item['properties'];
+		$properties[] = ['name' => '_original_line_item_id', 'value' => $line_item['id']];
 
 		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
 			'address_id' => $rc_order['address_id'],
@@ -291,13 +285,13 @@ foreach($order['line_items'] as $line_item){
 			'title' => 'Scent Club Gift',
 			'price' => 0,
 			'quantity' => 1,
-			'shopify_variant_id' => $gift_variants[$months],
+			'shopify_variant_id' => $line_item['shopify_variant_id'],
 			'order_interval_unit' => 'month',
 			'order_interval_frequency' => 1,
 			'charge_interval_frequency' => 1,
 			'order_day_of_month' => 1,
 			'expire_after_specific_number_of_charges' => $months,
-			'properties' => $line_item['properties'],
+			'properties' => $properties,
 		]);
 		print_r($res);
 		if(!empty($res['subscription'])){
