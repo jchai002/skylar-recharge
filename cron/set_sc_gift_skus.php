@@ -4,8 +4,10 @@ require_once(__DIR__.'/../includes/config.php');
 $scent_club_variant_ids = $stmt = $db->query("SELECT v.shopify_id AS shopify_variant_id FROM products p
 LEFT JOIN variants v ON p.id=v.product_id
 WHERE p.type='Scent Club Gift'
-AND p.deleted_at IS NOT NULL
-AND v.deleted_at IS NOT NULL;")->fetchAll(PDO::FETCH_COLUMN);
+AND p.deleted_at IS NULL
+AND v.deleted_at IS NULL;")->fetchAll(PDO::FETCH_COLUMN);
+
+print_r($scent_club_variant_ids);
 
 // Load scent club gift subs
 $subscriptions = [];
@@ -26,7 +28,7 @@ foreach($scent_club_variant_ids as $variant_id){
 			$subscriptions[] = $subscription;
 		}
 		echo "Adding ".count($res['subscriptions'])." to array - total: ".count($subscriptions).PHP_EOL;
-		echo "Rate: ".(count($subscriptions) / (microtime(true) - $start_time))." charges/s".PHP_EOL;
+		echo "Rate: ".(count($subscriptions) / (microtime(true) - $start_time))." subs/s".PHP_EOL;
 	} while(count($res['subscriptions']) >= $page_size);
 }
 echo "Total: ".count($subscriptions).PHP_EOL;
