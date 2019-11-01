@@ -31,7 +31,10 @@ do {
 
 $stmt = $db->query("SELECT shopify_id as id, tags FROM orders WHERE tags LIKE '%HOLD: Scent Club Blackout%'");
 
-foreach($stmt->fetchAll() as $order){
+$orders = $stmt->fetchAll();
+
+echo "Starting untagging on ".count($orders)." orders".PHP_EOL;
+foreach($orders as $order){
 
 	$tags = explode(', ', $order['tags']);
 
