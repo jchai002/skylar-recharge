@@ -1,5 +1,5 @@
 <?php
-global $db, $rc;
+global $db, $rc, $sc;
 
 $res = $rc->get('/subscriptions/'.intval($_REQUEST['id']));
 if(empty($res['subscription']) || $res['subscription']['status'] == 'ONETIME'){
