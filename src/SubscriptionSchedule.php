@@ -16,6 +16,7 @@ class SubscriptionSchedule {
 	private $subscriptions = [];
 	private $onetimes = [];
 	private $charges = [];
+	private $old_charges = [];
 
 	public function __construct(PDO $db, RechargeClient $rc, $rc_customer_id, $max_time = null, $min_time = null){
 		$this->db = $db;
@@ -50,6 +51,16 @@ class SubscriptionSchedule {
 			}
 		}
 		return $this->charges;
+	}
+
+	public function old_charges($charges_to_set = null){
+		if(!is_null($charges_to_set)){
+			$this->old_charges = [];
+			foreach($charges_to_set as $charge){
+				$this->old_charges[$charge['id']] = $this->normalize_charge($charge);
+			}
+		}
+		return $this->old_charges;
 	}
 
 	public function subscriptions($subs_to_set = null){
@@ -139,6 +150,18 @@ class SubscriptionSchedule {
 				$charges = array_merge($charges, $res['charges']);
 			}
 			$this->charges($charges);
+		}
+		if($this->is_alias && empty($this->old_charges)){
+			$charges = [];
+			$res = $this->rc->get('/charges', [
+				'customer_id' => $this->rc_customer_id,
+				'date_max' => date('Y-m-d'),
+				'limit' => 250,
+			]);
+			if(!empty($res['charges'])){
+				$charges = $res['charges'];
+			}
+			$this->old_charges($charges);
 		}
 	}
 
