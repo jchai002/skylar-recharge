@@ -45,7 +45,7 @@ if(!empty($add_to_charge)){
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
 
     // Check if they already have this product in a sub
-        $stmt = $db->prepare("SELECT * FROM rc_subscriptions rcs
+    $stmt = $db->prepare("SELECT rcs.* FROM rc_subscriptions rcs
     LEFT JOIN rc_addresses rca ON rcs.address_id=rca.id
     LEFT JOIN rc_customers rcc ON rca.rc_customer_id=rcc.id
     WHERE (rcs.status = 'ONETIME' OR rcs.status = 'ACTIVE')
@@ -53,6 +53,8 @@ if(!empty($add_to_charge)){
     AND rcs.cancelled_at IS NULL
     AND rcc.recharge_id=:rc_customer_id
     AND rcs.variant_id=:variant_id");
+
+	echo "<!-- ".$customer['id']." ".$variant['id']." -->";
 
 	$stmt->execute([
 		'rc_customer_id' => $customer['id'],
@@ -71,8 +73,8 @@ if(!empty($add_to_charge)){
 				'product_title' => $product['title'],
 				'variant_title' => $variant['title'],
 				'order_interval_unit' => 'month',
-				'order_interval_frequency' => '1',
-				'charge_interval_frequency' => '1',
+				'order_interval_frequency' => '2',
+				'charge_interval_frequency' => '2',
 			]);
 			if(!empty($res['subscription'])){
 				insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
@@ -95,6 +97,7 @@ if(!empty($add_to_charge)){
 }
 header('Content-Type: application/liquid');
 echo "<!-- ".print_r($res, true)." -->";
+echo "<!-- ".print_r($variant, true)." -->";
 ?>
 
 {% assign portal_page = 'lander-addtobox' %}
@@ -107,17 +110,31 @@ echo "<!-- ".print_r($res, true)." -->";
                     <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save over 22%!</span>
                 </div>
                 <div class="sc-lander-image">
-                    <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
+                    {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
+                    {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
+                        {% if variant.image != nil %}
+                            <img class="lazyload" data-srcset="{{ variant.image | img_url: 'x280' }} 1x, {{ variant.image | img_url: 'x280', scale: 2 }} 2x" />
+                        {% else %}
+                            <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
+                        {% endif %}
+                    {% endfor %}
                 </div>
                 <div class="sc-lander-note">
-                    This item will ship each month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+                    This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
                 </div>
         <?php } else { ?>
                 <div class="sc-lander-price">
                     <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span>
                 </div>
                 <div class="sc-lander-image">
-                    <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: '220x280', crop: 'center', scale: 2 }} 2x" />
+                    {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
+                    {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
+                        {% if variant.image != nil %}
+                            <img class="lazyload" data-srcset="{{ variant.image | img_url: 'x280' }} 1x, {{ variant.image | img_url: 'x280', scale: 2 }} 2x" />
+                        {% else %}
+                            <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
+                        {% endif %}
+                    {% endfor %}
                 </div>
                 <div class="sc-lander-note">
                     This item will ship in your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.

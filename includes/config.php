@@ -122,7 +122,12 @@ function offset_date_skip_weekend($time){
 		$time += 24*60*60; //  Add a day
 	}
 	// Labor day
-	if($time == strtotime('first monday '.date('Y-m', $time))){
+	if(date('m', $time) == 9 && $time == strtotime('first monday '.date('Y-m', $time))){
+		$time += 24*60*60; //  Add a day
+	}
+	// Cyber Monday
+	$cyber_monday = date('Y-m-d', strtotime('last thursday of november '.date('Y', $time))+(4*24*60*60));
+	if(date('Y-m-d', $time) == $cyber_monday){
 		$time += 24*60*60; //  Add a day
 	}
 	return $time;
@@ -671,8 +676,15 @@ function is_scent_club_swap($product){
 function is_scent_club_promo($product){
 	return $product['type'] == 'Scent Club Promo';
 }
+function is_scent_club_gift($product){
+	return $product['type'] == 'Scent Club Gift';
+}
 function is_scent_club_any($product){
-	return is_scent_club($product) || is_scent_club_month($product) || is_scent_club_swap($product) || is_scent_club_promo($product);
+	return is_scent_club($product)
+		|| is_scent_club_month($product)
+		|| is_scent_club_swap($product)
+		|| is_scent_club_promo($product)
+		|| is_scent_club_gift($product);
 }
 function sc_conditional_billing(RechargeClient $rc, $customer_id, $customer = false){
 	if(empty($customer)){
@@ -826,17 +838,28 @@ function is_admin_address($address_id){
 		//29806558, // Tim
 	]);
 }
+$monthly_scent_cache = [
+	'admin' => [],
+	'live' => [],
+];
 function sc_get_monthly_scent(PDO $db, $time = null, $admin_preview = false){
+	global $monthly_scent_cache;
 	if(empty($time)){
 		$time = time();
 	}
+	$date = date('Y-m', $time).'-01';
+	if(array_key_exists($date, $monthly_scent_cache[($admin_preview ? 'admin' : 'live')])){
+		return $monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date];
+	}
 	$preview_clause = $admin_preview ? '' : 'AND sc_live = 1';
 	$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=? $preview_clause");
-	$stmt->execute([date('Y-m', $time).'-01']);
+	$stmt->execute([$date]);
 	if($stmt->rowCount() < 1){
+		$monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date] = false;
 		return false;
 	}
-	return $stmt->fetch();
+	$monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date] = $stmt->fetch();
+	return $monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date];
 }
 function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $main_sub = []){
 	if(empty($main_sub)){

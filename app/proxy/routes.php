@@ -380,7 +380,7 @@ $router->route('/settings$/i', function() {
 
 $admin_customers = [644696211543];
 function require_customer_id($callback_if_true){
-	global $admin_customers;
+	global $admin_customers, $is_alias;
 	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
 	header('Content-Type: application/liquid');
 	if(empty($customer_id)){
@@ -397,8 +397,8 @@ function require_customer_id($callback_if_true){
 {% endif %}";
 		return false;
 	}
-	$alias_override = !empty($_REQUEST['alias']) && $_REQUEST['alias'] == md5($_ENV['ALIASKEY'].$customer_id);
-	if(!empty($alias_override)){
+	$is_alias = !empty($_REQUEST['alias']) && $_REQUEST['alias'] == md5($_ENV['ALIASKEY'].$customer_id);
+	if(!empty($is_alias)){
 		global $sc;
 		$first_name = 'Alias';
 		if($sc === null){
@@ -420,12 +420,18 @@ function require_customer_id($callback_if_true){
 		{% assign account_query = 'c=$customer_id&alias=".$_REQUEST['alias']."' | append: theme_query %}
 		{% if customer.id != $customer_id %}{% assign customer_first_name = '$first_name' %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
 		{% assign customer_id = $customer_id %}";
-		$callback_if_true();
+		$callback_if_true([
+			'is_alias' => $is_alias
+		]);
 		return true;
 	}
 
+	// TODO: Replace admin_customers logic with a redirect to an actual alias session
+
 	ob_start();
-	$callback_if_true();
+	$callback_if_true([
+		'is_alias' => $is_alias
+	]);
 	$output = ob_get_contents();
 	ob_end_clean();
 	echo "{% assign admin_customers = '".implode('|',$admin_customers)."' %}

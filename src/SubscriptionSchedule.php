@@ -3,6 +3,7 @@
 class SubscriptionSchedule {
 
 	public $hidden_subscription_ids = [];
+	public $is_alias = false;
 
 	private $db;
 	private $rc;
@@ -15,6 +16,7 @@ class SubscriptionSchedule {
 	private $subscriptions = [];
 	private $onetimes = [];
 	private $charges = [];
+	private $old_charges = [];
 
 	public function __construct(PDO $db, RechargeClient $rc, $rc_customer_id, $max_time = null, $min_time = null){
 		$this->db = $db;
@@ -51,11 +53,24 @@ class SubscriptionSchedule {
 		return $this->charges;
 	}
 
+	public function old_charges($charges_to_set = null){
+		if(!is_null($charges_to_set)){
+			$this->old_charges = [];
+			foreach($charges_to_set as $charge){
+				$this->old_charges[$charge['id']] = $this->normalize_charge($charge);
+			}
+		}
+		return $this->old_charges;
+	}
+
 	public function subscriptions($subs_to_set = null){
 		if(!is_null($subs_to_set)){
 			$this->subscriptions = [];
 			foreach($subs_to_set as $sub){
 				if(empty($sub['next_charge_scheduled_at'])){
+					continue;
+				}
+				if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $sub['shopify_product_id']))){
 					continue;
 				}
 				$this->subscriptions[$sub['id']] = $this->normalize_subscription($sub);
@@ -136,6 +151,18 @@ class SubscriptionSchedule {
 			}
 			$this->charges($charges);
 		}
+		if($this->is_alias && empty($this->old_charges)){
+			$charges = [];
+			$res = $this->rc->get('/charges', [
+				'customer_id' => $this->rc_customer_id,
+				'date_max' => date('Y-m-d'),
+				'limit' => 250,
+			]);
+			if(!empty($res['charges'])){
+				$charges = $res['charges'];
+			}
+			$this->old_charges($charges);
+		}
 	}
 
 	private function generate(){
@@ -176,9 +203,11 @@ class SubscriptionSchedule {
 				$item['scheduled_at'] = date('Y-m-d', $next_charge_time);
 				$item['scheduled_at_time'] = $next_charge_time;
 				$item['index'] = $subscription_index;
+				// TODO: If expires, add what number in series it is
 				$this->add_item_to_schedule($item);
 
 				$subscription_index++;
+				// TODO: Stop if subscription is expired
 				$next_charge_time = self::get_subscription_time_by_index($subscription_index, $charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
 				if($subscription_index > 100){
 					throw new Exception('Too many loops');
@@ -384,6 +413,9 @@ class SubscriptionSchedule {
 		$order['next_charge_scheduled_at'] = $order['scheduled_at'];
 		$order['scheduled_at_time'] = strtotime($order['scheduled_at']);
 		foreach($order['line_items'] as $index => $item){
+			if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))){
+				continue;
+			}
 			$item['id'] = $item['subscription_id'];
 			$item['type'] = 'order';
 			$item['order_id'] = $order['id'];
@@ -399,6 +431,9 @@ class SubscriptionSchedule {
 		$charge['next_charge_scheduled_at'] = $charge['scheduled_at'];
 		$charge['scheduled_at_time'] = strtotime($charge['scheduled_at']);
 		foreach($charge['line_items'] as $index => $item){
+			if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))){
+				continue;
+			}
 			$item['id'] = $item['subscription_id'];
 			$item['type'] = 'charge';
 			$item['charge_id'] = $charge['id'];

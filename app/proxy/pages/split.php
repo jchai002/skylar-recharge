@@ -6,6 +6,7 @@ $test_id--;
 
 $split_tests = [
 	[
+		'experiment_id' => 'P2nm02EvRI2_P53yPBkMcA',
 		'variants' => [
 			[
 				'url' => 'https://get.skylar.com/sample-palette-a',
@@ -13,7 +14,7 @@ $split_tests = [
 			],
 			[
 				'url' => 'https://skylar.com/pages/sample-palette-a',
-				'weight' => '50'
+				'weight' => '100'
 			],
 		]
 	]
@@ -39,12 +40,21 @@ if(empty($split_tests[$test_id])){
 
 $test = $split_tests[$test_id];
 $total_weight = array_sum(array_column($test['variants'], 'weight'));
-$weight = rand(0, $total_weight);
+$weight = rand(1, $total_weight);
+$get_vars['exp_id'] = $test['experiment_id'];
 
-foreach($test['variants'] as $variant){
+if(!empty($_REQUEST['test'])){
+	echo "$weight of $total_weight".PHP_EOL;
+}
+
+foreach($test['variants'] as $index => $variant){
 	$weight -= $variant['weight'];
 	if($weight > 0){
 		continue;
+	}
+	if(!empty($_REQUEST['test'])){
+		echo "Variant: ".($index+1);
+		die();
 	}
 	$url = $variant['url'];
 	if(!empty($get_vars)){

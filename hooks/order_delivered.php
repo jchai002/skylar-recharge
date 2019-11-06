@@ -30,6 +30,8 @@ if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($fulfillment['order_id']).'.json');
 }
 
+die();
+
 $cart_attributes = [];
 foreach($order['note_attributes'] as $attribute){
 	$cart_attributes[$attribute['name']] = $attribute['value'];

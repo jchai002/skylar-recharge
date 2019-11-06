@@ -110,7 +110,7 @@ foreach($order['line_items'] as $line_item){
 			continue;
 		}
 		$sc_product = $stmt->fetch();
-		if(time() < offset_date_skip_weekend(strtotime($sc_product['sc_date'])) + 6.5*60*60){ // Hold until 6 am
+		if(time() < offset_date_skip_weekend(strtotime($sc_product['sc_date'])) + 6*60*60){ // Hold until 6 am
 			$scent_club_hold = true;
 		}
 	}
@@ -161,6 +161,9 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 $update_order = false;
 $order_tags = explode(', ',$order['tags']);
 
+$has_hand_cream = false;
+$has_orly_gwp = false;
+$has_gwp_handcream = false;
 foreach($order['line_items'] as $line_item){
 	$product = get_product($db, $line_item['product_id']);
 	if(in_array('Hand Cream', explode(', ', $product['tags']))){
@@ -169,8 +172,14 @@ foreach($order['line_items'] as $line_item){
 	if($product['shopify_id'] == 4042122756183){
 		$has_orly_gwp = true;
 	}
+	if($product['shopify_id'] == 4312664113239){
+		$has_gwp_handcream = true;
+	}
 }
-if($has_orly_gwp && (!$has_hand_cream || $order['shipping_address']['country_code'] != 'US')){
+if(
+	($has_orly_gwp && (!$has_hand_cream || $order['shipping_address']['country_code'] != 'US'))
+	|| ($has_gwp_handcream && $order['subtotal_price'] < 60)
+){
 	$order_tags[] = 'HOLD: Invalid GWP';
 	$update_order = true;
 	send_alert($db, 3, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP', 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
@@ -211,12 +220,26 @@ if(empty($sc_main_sub)){
 	]);
 }
 echo "Checking line items".PHP_EOL;
-$has_hand_cream = false;
-$has_orly_gwp = false;
 foreach($order['line_items'] as $line_item){
-	// Create body bundle subs
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
+
+	// Mark line item fulfilled in shopify
+	echo "Checking fulfillment... ";
+	echo $line_item['fulfillment_service'];
+	echo $line_item['id'].PHP_EOL;
+	if($line_item['fulfillment_service'] == 'skylar-autofulfill'){
+		echo "Marking fulfilled by ".$line_item['fulfillment_service'].PHP_EOL;
+		$fulfillment = $sc->post('/admin/api/2019-10/orders/'.$order['id'].'/fulfillments.json', ['fulfillment' => [
+			'location_id' => 34417934423, // Autofulfill location ID
+			'tracking_number' => null,
+			'line_items' => [[
+				'id' => $line_item['id'],
+			]]
+		]]);
+		print_r($fulfillment);
+		print_r($sc->last_error);
+	}
 
 	if($product['type'] == 'Scent Club Gift' && $rc_order['type'] == 'CHECKOUT'){
 
@@ -230,13 +253,32 @@ foreach($order['line_items'] as $line_item){
 		];
 
 		// Create gift subscription
-		$first_month_of_sub = get_oli_attribute($line_item, '_subscription_months');
+
+		$properties = [];
+		foreach($line_item['properties'] as $property){
+			$properties[$property['name']] = $property['value'];
+		}
+
+		$first_month_of_sub = get_oli_attribute($line_item, '_subscription_month');
+		$add_gift_box = !empty(get_oli_attribute($line_item, '_add_gift_box'));
+		$gift_note = get_oli_attribute($line_item, '_gift_note');
+		echo $first_month_of_sub;
 		if(empty($first_month_of_sub)){
+			echo "next month";
 			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(get_next_month()));
 		} else {
+			echo "first month of sub";
 			$next_charge_date = date('Y-m-d', offset_date_skip_weekend(strtotime($first_month_of_sub.'-01')));
 		}
-		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
+		var_dump($next_charge_date);
+
+		$months = $months[$line_item['variant_id']];
+		$properties = $line_item['properties'];
+		$properties[] = ['name' => '_original_line_item_id', 'value' => $line_item['id']];
+
+		$monthly_scent_info = sc_get_monthly_scent($db, strtotime($next_charge_date), true);
+
+		$sub_data = [
 			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
 			'product_title' => 'Scent Club Gift',
@@ -244,20 +286,52 @@ foreach($order['line_items'] as $line_item){
 			'title' => 'Scent Club Gift',
 			'price' => 0,
 			'quantity' => 1,
-			'shopify_variant_id' => $line_item['variant_id'],
+			'shopify_variant_id' => $line_item['shopify_variant_id'],
 			'order_interval_unit' => 'month',
 			'order_interval_frequency' => 1,
 			'charge_interval_frequency' => 1,
 			'order_day_of_month' => 1,
-			'expire_after_specific_number_of_charges' => $months[$line_item['variant_id']],
-		]);
+			'expire_after_specific_number_of_charges' => $months,
+			'properties' => $properties,
+		];
+
+		if(!empty($monthly_scent_info) && !empty($monthly_scent_info['sku'])){
+			$sub_data['sku'] = $monthly_scent_info['sku'];
+		}
+
+		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', $sub_data);
 		print_r($res);
-		if(!empty($res['subscriptions'])){
-			echo insert_update_rc_subscription($db, $res['subscriptions'], $rc, $sc);
+		if(!empty($res['subscription'])){
+			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
+			if(!empty($gift_note) && !empty(get_oli_attribute($line_item, '_email'))){
+				$order['note_attributes'][] = ['name' => 'gift_message', 'value' => $gift_note];
+				$order['note_attributes'][] = ['name' => 'gift_message_email', 'value' => get_oli_attribute($line_item, '_email')];
+				$order['note_attributes'][] = ['name' => 'gift_message_name', 'value' => get_oli_attribute($line_item, '_first_name')];
+				$address_res = $rc->put('/addresses/'.$rc_order['address_id'], [
+					'note_attributes' => $order['note_attributes'],
+				]);
+				print_r($address_res);
+			}
+			if($add_gift_box){
+				$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes', [
+					'next_charge_scheduled_at' => $next_charge_date,
+					'price' => 0,
+					'quantity' => 1,
+					'shopify_variant_id' => 19811989880919, // Pink Satin Gift Bag
+					'title' => 'Free Pink Satin Gift Bag',
+					'product_title' => 'Free Pink Satin Gift Bag',
+					'variant_title' => '',
+				]);
+				print_r($res);
+				if(!empty($res['onetime'])){
+					echo insert_update_rc_subscription($db, $res['onetimes'], $rc, $sc);
+				}
+			}
 		}
 		continue;
 	}
 
+	// Create body bundle subs
 	$has_bb_sub = false;
 	foreach($subscriptions as $subscription){
 		if($subscription['shopify_variant_id'] == $line_item['variant_id']){
@@ -287,13 +361,13 @@ foreach($order['line_items'] as $line_item){
 			'quantity' => 1,
 			'shopify_variant_id' => $line_item['variant_id'],
 			'order_interval_unit' => 'month',
-			'order_interval_frequency' => 1,
-			'charge_interval_frequency' => 1,
+			'order_interval_frequency' => 2,
+			'charge_interval_frequency' => 2,
 			'order_day_of_month' => $charge_day,
 		]);
 		print_r($res);
-		if(!empty($res['subscriptions'])){
-			echo insert_update_rc_subscription($db, $res['subscriptions'], $rc, $sc);
+		if(!empty($res['subscription'])){
+			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
 		}
 		continue;
 	}
