@@ -2,7 +2,7 @@
 
 $rc = new RechargeClient();
 
-$discount_code = empty($discount_code) ? '' : $_REQUEST['discount_code'];
+$discount_code = empty($_REQUEST['discount_code']) ? '' : $_REQUEST['discount_code'];
 $discount_code = strtoupper(trim($discount_code));
 
 if(empty($discount_code)){
