@@ -2,12 +2,15 @@
 
 $rc = new RechargeClient();
 
-if(empty($_REQUEST['discount_code'])){
+$discount_code = empty($discount_code) ? '' : $_REQUEST['discount_code'];
+$discount_code = strtoupper(trim($discount_code));
+
+if(empty($discount_code)){
 	$res = $rc->post('/addresses/'.intval($_REQUEST['address_id']).'/remove_discount');
 	if(!empty($res['error'])){
 		$res = $rc->post('/charges/'.intval($_REQUEST['charge_id']).'/remove_discount');
 	}
-} else if(in_array($_REQUEST['discount_code'], [
+} else if(in_array($discount_code, [
 	'LDAY15',
 	'TRYSCENTCLUB',
 	'SCENTCLUBNYC',
@@ -22,7 +25,7 @@ if(empty($_REQUEST['discount_code'])){
 } else {
 	$res = $rc->post('/addresses/'.intval($_REQUEST['address_id']).'/remove_discount');
 	$res = $rc->post('/charges/'.intval($_REQUEST['charge_id']).'/apply_discount', [
-		'discount_code' => $_REQUEST['discount_code'],
+		'discount_code' => $discount_code,
 	]);
 }
 if(!empty($res['error'])){
