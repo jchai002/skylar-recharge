@@ -216,6 +216,7 @@ $has_orly_gwp = false;
 foreach($order['line_items'] as $line_item){
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
+	$oli_frequency = get_oli_attribute($line_item, '_frequency');
 
 	// Mark line item fulfilled in shopify
 	echo "Checking fulfillment... ";
@@ -331,7 +332,7 @@ foreach($order['line_items'] as $line_item){
 			break;
 		}
 	}
-	if($product['type'] == 'Body Bundle' && !$has_bb_sub && $rc_order['type'] == 'CHECKOUT'){
+	if($product['type'] == 'Body Bundle' && !$has_bb_sub && $rc_order['type'] == 'CHECKOUT' && !empty($oli_frequency)){
 		$variant = get_variant($db, $line_item['variant_id']);
 		echo "Adding body bundle ".PHP_EOL;
 
@@ -352,8 +353,8 @@ foreach($order['line_items'] as $line_item){
 			'quantity' => 1,
 			'shopify_variant_id' => $line_item['variant_id'],
 			'order_interval_unit' => 'month',
-			'order_interval_frequency' => 2,
-			'charge_interval_frequency' => 2,
+			'order_interval_frequency' => $oli_frequency,
+			'charge_interval_frequency' => $oli_frequency,
 			'order_day_of_month' => $charge_day,
 		]);
 		print_r($res);
