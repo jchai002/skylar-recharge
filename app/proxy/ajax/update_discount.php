@@ -30,12 +30,14 @@ if(empty($discount_code)){
 }
 if(!empty($res['error'])){
 	echo json_encode([
+		'discount_code' => $discount_code,
 		'success' => false,
 		'res' => $res,
 		'error' => $res['error']
 	]);
 } else {
 	echo json_encode([
+		'discount_code' => $discount_code,
 		'success' => true,
 		'res' => $res,
 	]);
