@@ -20,6 +20,7 @@ if(empty($discount_code)){
 	'FAVFINDS20',
 	'BOXING20',
 	'JOLLY20',
+	'GOODTRADE',
 ])){
 	$res = ['error' => 'Invalid discount code.'];
 } else {
