@@ -251,6 +251,7 @@ uasort($other_onetimes, function($a, $b){
                                 <?php
                                     $frequencies = [];
                                     $product = get_product($db, $item['shopify_product_id']);
+                                    echo "<!--".print_r($product['tags'], true)."-->";
                                     if(in_array('Portal Category: Gift', $product['tags'])){
                                         $frequencies = [];
                                     } else if($product['type'] == 'Body Bundle'){
