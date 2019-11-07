@@ -166,7 +166,7 @@ $has_orly_gwp = false;
 $has_gwp_handcream = false;
 foreach($order['line_items'] as $line_item){
 	$product = get_product($db, $line_item['product_id']);
-	if(in_array('Hand Cream', explode(', ', $product['tags']))){
+	if(in_array('Hand Cream', $product['tags'])){
 		$has_hand_cream = true;
 	}
 	if($product['shopify_id'] == 4042122756183){

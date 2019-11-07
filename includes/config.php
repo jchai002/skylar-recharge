@@ -647,6 +647,7 @@ function get_product(PDO $db, $shopify_product_id){
 		$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 		$stmt->execute([$shopify_product_id]);
 		$product_cache[$shopify_product_id] = $stmt->fetch();
+		$product_cache[$shopify_product_id]['tags'] = explode(', ', $product_cache[$shopify_product_id]['tags']);
 	}
 	return $product_cache[$shopify_product_id];
 }
