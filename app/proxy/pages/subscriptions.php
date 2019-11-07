@@ -284,10 +284,10 @@ uasort($other_onetimes, function($a, $b){
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="portal-edit-links">
-                                        <a class="portal-edit-cancel<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : '-other' ?>" href="#">Cancel Shipment</a>
-                                    </div>
-                                <?php } ?>
+									<?php } ?>
+                                <div class="portal-edit-links">
+                                    <a class="portal-edit-cancel<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : '-other' ?>" href="#">Cancel Shipment</a>
+                                </div>
                             </div>
                             <?php if(!empty($scent_change_options)){ ?>
                                 <div class="portal-edit-divider"></div>
@@ -422,34 +422,40 @@ uasort($other_onetimes, function($a, $b){
                                 <div class="calendar<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? ' one-month' : '' ?> floating-calendar hidden"></div>
                             </div>
                             */ ?>
-							<?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+
+							<?php
+							$frequencies = [];
+							$product = get_product($db, $item['shopify_product_id']);
+							echo "<!--".print_r($product['tags'], true)."-->";
+							if(in_array('Portal Category: Gift', $product['tags'])){
+								$frequencies = [];
+							} else if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
+								$frequencies = [];
+							} else if($product['type'] == 'Body Bundle'){
+								$frequencies = [
+									'1' => 'Monthly',
+									'2' => 'Every 2 months',
+								];
+							} else if(strpos($product['type'], 'Body') !== false){
+								$frequencies = [
+									'onetime' => 'Once',
+									'1' => 'Monthly',
+									'2' => 'Every 2 months',
+								];
+							} else {
+								$frequencies = [
+									'onetime' => 'Once',
+									'6' => 'Every 6 months',
+									'9' => 'Every 9 months',
+								];
+							}
+							if(!empty($frequencies)){
+								?>
                                 <div class="portal-edit-select portal-edit-frequency">
                                     <label class="portal-edit-label" for="edit-frequency-<?=$item['subscription_id']?>">Frequency</label>
                                     <div class="portal-edit-control">
                                         <select class="edit-frequency" id="edit-frequency-<?=$item['subscription_id']?>" name="frequency">
-											<?php
-											$frequencies = [];
-											$product = get_product($db, $item['shopify_product_id']);
-											if($product['type'] == 'Body Bundle'){
-												$frequencies = [
-													'onetime' => 'Once',
-													'1' => 'Monthly',
-													'2' => 'Every 2 months',
-												];
-											} else if(strpos($product['type'], 'Body') !== false){
-												$frequencies = [
-													'1' => 'Monthly',
-													'2' => 'Every 2 months',
-												];
-											} else {
-												$frequencies = [
-													'onetime' => 'Once',
-													'6' => 'Every 6 months',
-													'9' => 'Every 9 months',
-												];
-											}
-											foreach($frequencies as $value => $label){
-												?>
+											<?php foreach($frequencies as $value => $label){ ?>
                                                 <option value="<?=$value?>"<?=$value == 'onetime' ? ' selected' : '' ?>><?=$label?></option>
 											<?php } ?>
                                         </select>
