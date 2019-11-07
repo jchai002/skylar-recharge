@@ -401,8 +401,12 @@ foreach($order['line_items'] as $line_item){
 			continue;
 		}
 //		print_r($stmt->fetchAll());
+		$next_charge_time = offset_date_skip_weekend(strtotime('+21 days'));
+		if(offset_date_skip_weekend(strtotime(date('Y-m-').'01', $next_charge_time)) == $next_charge_time){
+			$next_charge_time += 25*60*60; // Add a day to offset AC from SC day
+		}
     	$res = $rc->post('/addresses/'.$rc_order['address_id'].'/onetimes/',[
-    		'next_charge_scheduled_at' => date('Y-m-d', offset_date_skip_weekend(strtotime('+21 days'))),
+    		'next_charge_scheduled_at' => date('Y-m-d', $next_charge_time),
 			'price' => '58',
 			'quantity' => 1,
 			'shopify_variant_id' => 31022109635, // Isle full size
