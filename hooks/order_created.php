@@ -175,10 +175,18 @@ foreach($order['line_items'] as $line_item){
 	if($product['shopify_id'] == 4312664113239){
 		$has_gwp_handcream = true;
 	}
+	if($product['shopify_id'] == 4325189648471){
+		$has_gwp_travelbag = true;
+	}
+	if($product['shopify_id'] == 4345453445207){
+		$has_gwp_arrow_rollie = true;
+	}
 }
 if(
 	($has_orly_gwp && (!$has_hand_cream || $order['shipping_address']['country_code'] != 'US'))
 	|| ($has_gwp_handcream && $order['subtotal_price'] < 60)
+	|| ($has_gwp_travelbag && $order['subtotal_price'] < 60)
+	|| ($has_gwp_arrow_rollie && $order['subtotal_price'] < 80)
 ){
 	$order_tags[] = 'HOLD: Invalid GWP';
 	$update_order = true;
