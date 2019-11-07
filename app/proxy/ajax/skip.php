@@ -86,7 +86,7 @@ if($subscription['status'] == 'ONETIME'){
 			if(date('d', strtotime($charge['scheduled_at'])) > $order_day_of_month){
 				$next_charge_date = date('Y-m-', get_next_month(strtotime($charge['scheduled_at']))).$order_day_of_month;
 				$next_charge_date = date('Y-m-d',offset_date_skip_weekend(strtotime($next_charge_date)));
-				$res = [$res, $sc->post('/subscriptions/'.$subscription['id']."/set_next_charge_date", [
+				$res = [$res, $rc->post('/subscriptions/'.$subscription['id']."/set_next_charge_date", [
 					'date' => $next_charge_date,
 				])];
 			}
