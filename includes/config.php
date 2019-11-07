@@ -510,12 +510,12 @@ function get_month_by_offset($offset, $now = null){
 	}
 	return strtotime(date('Y-m', $now).'-01');
 }
-function get_subscription_price($product, $variant, $is_sc_member=false){
+function get_subscription_price($product, $variant){
 	if(is_scent_club_any($product)){
 		return $variant['price'];
 	}
 	if($product['type'] == 'Body Bundle'){
-		return $variant['price'];
+		return 40;
 	}
 	if(strpos($product['type'], 'Body') !== false){
 		return round($variant['price']*.9);

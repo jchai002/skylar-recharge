@@ -216,7 +216,7 @@ $has_orly_gwp = false;
 foreach($order['line_items'] as $line_item){
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
-	$oli_frequency = get_oli_attribute($line_item, '_frequency');
+	$oli_frequency = get_oli_attribute($line_item, '_frequency') ?? 0;
 
 	// Mark line item fulfilled in shopify
 	echo "Checking fulfillment... ";
@@ -349,7 +349,7 @@ foreach($order['line_items'] as $line_item){
 			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
 			'product_title' => $product['title'],
-			'price' => $variant['price'],
+			'price' => get_subscription_price($product, $variant),
 			'quantity' => 1,
 			'shopify_variant_id' => $line_item['variant_id'],
 			'order_interval_unit' => 'month',

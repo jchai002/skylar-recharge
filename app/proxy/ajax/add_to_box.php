@@ -31,7 +31,7 @@ $res_id = false;
 $main_sub = sc_get_main_subscription($db, $rc, [
 	'address_id' => $charge['address_id'],
 ]);
-$price = get_subscription_price($product, $variant, !empty($main_sub));
+$price = get_subscription_price($product, $variant);
 $properties = [];
 if(!empty($_REQUEST['parent_id'])){
 	$properties['_parent_id'] = $_REQUEST['parent_id'];
