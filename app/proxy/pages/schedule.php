@@ -136,6 +136,8 @@ print_r($schedule->get());
                                     {% endif %}
                                     {% endfor %}
                                     <div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
+                                         data-subscription-frequency="<?=$item['order_day_of_month']?>"
+                                         data-subscription-interval="<?=$item['order_interval_index']?>"
                                          data-address-id="<?=$item['address_id']?>"
                                          data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
                                          data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
