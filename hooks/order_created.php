@@ -351,7 +351,7 @@ foreach($order['line_items'] as $line_item){
 			$charge_day = date('t', get_next_month());
 		}
 
-		$next_charge_date = date('Y-m-'.$charge_day, get_next_month());
+		$next_charge_date = date('Y-m-'.$charge_day, get_month_by_offset(2));
 		echo $charge_day.PHP_EOL;
 		echo $next_charge_date.PHP_EOL;
 		$res = $rc->post('/addresses/'.$rc_order['address_id'].'/subscriptions', [
