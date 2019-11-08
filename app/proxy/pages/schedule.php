@@ -192,6 +192,7 @@ print_r($schedule->get());
 													<?php } else if(is_scent_club_gift(get_product($db, $item['shopify_product_id']))){ ?>
                                                         <div class="sc-item-title">Scent Club Gift</div>
                                                         <div class="sc-item-subtitle"><?= $item['index'] + 1 ?> of {{ box_product.variants.first.title }}</div>
+                                                        <!-- <?php print_r($item) ?> -->
 													<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
                                                         <div class="sc-item-title">Skylar Scent Club</div>
                                                         <div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
