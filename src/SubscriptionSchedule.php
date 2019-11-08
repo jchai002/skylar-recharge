@@ -66,6 +66,12 @@ class SubscriptionSchedule {
 						continue;
 					}
 					// If SC gift checkout but start date is not checkout date, nothing shipped to don't count it
+					$this->prev_charges[$charge['id']]['debug'] = [
+						$charge['type'],
+						get_oli_attribute($line_item, '_subscription_month'),
+						$this->prev_charges[$charge['id']]['scheduled_at_time'],
+						date('Y-m', $this->prev_charges[$charge['id']]['scheduled_at_time']),
+					];
 					if($charge['type'] == 'CHECKOUT' && get_oli_attribute($line_item, '_subscription_month') != date('Y-m', $this->prev_charges[$charge['id']]['scheduled_at_time'])){
 						continue;
 					}
