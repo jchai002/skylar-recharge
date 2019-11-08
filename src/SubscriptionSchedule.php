@@ -376,6 +376,7 @@ class SubscriptionSchedule {
 					'order_interval_frequency',
 					'order_interval_unit',
 					'index',
+					'expire_after_specific_number_of_charges',
 				] as $duplicate_key){
 					if(!empty($item[$duplicate_key])){
 						$scheduled_item[$duplicate_key] = $item[$duplicate_key];
