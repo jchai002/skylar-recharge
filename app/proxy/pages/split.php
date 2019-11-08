@@ -6,7 +6,7 @@ $test_id--;
 
 $split_tests = [
 	[
-		'experiment_id' => 'P2nm02EvRI2_P53yPBkMcA',
+		'experiment_id' => 'A04AkVyWSTm7PiFNeBHIgQ',
 		'variants' => [
 			[
 				'url' => 'https://get.skylar.com/sample-palette-a',
