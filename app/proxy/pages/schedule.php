@@ -51,7 +51,7 @@ $next_section_shown = false;
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
 <!--
-<?php print_r($schedule->charges()); ?>
+<?php print_r($schedule->prev_charges()); ?>
 $schedule
 <?php
 echo count($schedule->get()).PHP_EOL;
