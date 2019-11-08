@@ -49,7 +49,7 @@ echo "Total: ".count($charges).PHP_EOL;
 
 $start_time = microtime(true);
 echo "Starting updates".PHP_EOL;
-// TODO: Add progress messages every 20 calls
+$start_time = microtime(true);
 foreach($charges as $index=>$charge){
 	echo "Moving charge ".$charge['id']." address ".$charge['address_id']." ";
 	$res = $rc->post('/charges/'.$charge['id'].'/change_next_charge_date', [
@@ -61,4 +61,7 @@ foreach($charges as $index=>$charge){
 		continue;
 	}
 	echo $res['charge']['scheduled_at'].PHP_EOL;
+	if($index % 20 == 0 && $index > 0){
+		echo "Updated: ".$index."/".count($charges)." Rate: ".($index / (microtime(true) - $start_time))." orders/s".PHP_EOL;
+	}
 }
