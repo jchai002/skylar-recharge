@@ -375,6 +375,7 @@ class SubscriptionSchedule {
 					'order_day_of_month',
 					'order_interval_frequency',
 					'order_interval_unit',
+					'index',
 				] as $duplicate_key){
 					if(!empty($item[$duplicate_key])){
 						$scheduled_item[$duplicate_key] = $item[$duplicate_key];
@@ -410,6 +411,7 @@ class SubscriptionSchedule {
 			}
 			$item['properties'] = $properties;
 		}
+		$item['index'] = $item['index'] ?? 0;
 		$item['types'] = $item['types'] ?? [$item['type']];
 		$item['skipped'] = $item['skipped'] ?? false;
 		$item['is_sc_any'] = is_scent_club_any(get_product($this->db, $item['shopify_product_id']));
