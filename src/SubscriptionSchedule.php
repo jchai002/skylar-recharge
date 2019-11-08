@@ -17,7 +17,6 @@ class SubscriptionSchedule {
 	private $onetimes = [];
 	private $charges = [];
 	private $prev_charges = [];
-	private $subscription_prev_charge_count = [];
 
 	public function __construct(PDO $db, RechargeClient $rc, $rc_customer_id, $max_time = null, $min_time = null){
 		$this->db = $db;
@@ -64,6 +63,10 @@ class SubscriptionSchedule {
 				$this->prev_charges[$charge['id']] = $this->normalize_charge($charge);
 				foreach($charge['line_items'] as $line_item){
 					if(empty($this->subscriptions[$line_item['subscription_id']])){
+						continue;
+					}
+					// If SC gift checkout but start date is not checkout date, nothing shipped to don't count it
+					if($charge['type'] == 'CHECKOUT' && get_oli_attribute($line_item, '_subscription_month') != date('Y-m', $this->prev_charges[$charge['id']]['scheduled_at_time'])){
 						continue;
 					}
 					$this->subscriptions[$line_item['subscription_id']]['previous_charge_count']++;
