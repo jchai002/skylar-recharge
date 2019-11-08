@@ -222,7 +222,7 @@ class SubscriptionSchedule {
 				$item['scheduled_at'] = date('Y-m-d', $next_charge_time);
 				$item['scheduled_at_time'] = $next_charge_time;
 				$item['index'] = $subscription_index + $item['previous_charge_count'];
-				if(!empty($item['expire_after_specific_number_of_charges']) && $item['index'] > $item['expire_after_specific_number_of_charges']){
+				if(!empty($item['expire_after_specific_number_of_charges']) && $item['index'] >= $item['expire_after_specific_number_of_charges']){
 					break;
 				}
 				$this->add_item_to_schedule($item);
