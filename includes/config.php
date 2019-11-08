@@ -53,6 +53,7 @@ $ids_by_scent = [
 ];
 
 $test_emails = [
+	'julie@skylar.com',
 	'jhoang@avisan.com',
 	'julie_hoang22@hotmail.com',
 	'ticklishcoast@gmail.com',

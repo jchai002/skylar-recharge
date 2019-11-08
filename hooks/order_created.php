@@ -252,8 +252,6 @@ foreach($order['line_items'] as $line_item){
 				'id' => $line_item['id'],
 			]]
 		]]);
-		print_r($fulfillment);
-		print_r($sc->last_error);
 	}
 
 	if($product['type'] == 'Scent Club Gift' && $rc_order['type'] == 'CHECKOUT'){
