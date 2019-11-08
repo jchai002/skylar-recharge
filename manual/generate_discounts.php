@@ -7,8 +7,6 @@ $num_to_generate = 1500;
 // For now just use this:
 $price_rule_template = 591968895063;
 $prefix = "RF-10-";
-$rand_chars = 5;
-$characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
 $batch_mode = true;
 
 mt_srand($price_rule_template);
@@ -16,10 +14,7 @@ mt_srand($price_rule_template);
 // GENERATE CODES
 $codes = [];
 for($i = 0; $i < $num_to_generate; $i++){
-	$code = $prefix;
-	for ($j = 0; $j < $rand_chars; $j++) {
-		$code .= $characters[mt_rand(0, strlen($characters) - 1)];
-	}
+	$code = $prefix.generate_discount_string();
 	if($i < $start_from){
 		continue;
 	}

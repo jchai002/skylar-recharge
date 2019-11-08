@@ -1213,3 +1213,15 @@ function uuidv4($data = null){
 
 	return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
+
+function generate_discount_string($seed = null, $rand_chars = 5){
+	if(!is_null($seed)){
+		mt_srand($seed);
+	}
+	$characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+	$code = '';
+	for ($j = 0; $j < $rand_chars; $j++) {
+		$code .= $characters[mt_rand(0, strlen($characters) - 1)];
+	}
+	return $code;
+}
