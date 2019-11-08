@@ -212,7 +212,7 @@ class SubscriptionSchedule {
 				$item = $subscription;
 				$item['scheduled_at'] = date('Y-m-d', $next_charge_time);
 				$item['scheduled_at_time'] = $next_charge_time;
-				$item['index'] = $subscription_index;
+				$item['index'] = $subscription_index + $item['previous_charge_count'];
 				// TODO: If expires, add what number in series it is
 				$this->add_item_to_schedule($item);
 
@@ -271,7 +271,7 @@ class SubscriptionSchedule {
 				$item = $subscription;
 				$item['scheduled_at'] = date('Y-m-d', $next_charge_time);
 				$item['scheduled_at_time'] = $next_charge_time;
-				$item['index'] = $subscription_index;
+				$item['index'] = $subscription_index + $item['previous_charge_count'];
 				$item['skipped'] = true;
 				$item['skipped_via_iteration'] = true;
 				$this->add_item_to_schedule($item);
