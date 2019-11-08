@@ -16,7 +16,8 @@ class SubscriptionSchedule {
 	private $subscriptions = [];
 	private $onetimes = [];
 	private $charges = [];
-	private $old_charges = [];
+	private $prev_charges = [];
+	private $subscription_prev_charge_count = [];
 
 	public function __construct(PDO $db, RechargeClient $rc, $rc_customer_id, $max_time = null, $min_time = null){
 		$this->db = $db;
@@ -53,14 +54,23 @@ class SubscriptionSchedule {
 		return $this->charges;
 	}
 
-	public function old_charges($charges_to_set = null){
+	public function prev_charges($charges_to_set = null){
 		if(!is_null($charges_to_set)){
-			$this->old_charges = [];
+			$this->prev_charges = [];
 			foreach($charges_to_set as $charge){
-				$this->old_charges[$charge['id']] = $this->normalize_charge($charge);
+				if(!in_array($charge['status'], ['SUCCESS', 'REFUNDED', 'PARTIALLY_REFUNDED'])){
+					continue;
+				}
+				$this->prev_charges[$charge['id']] = $this->normalize_charge($charge);
+				foreach($charge['line_items'] as $line_item){
+					if(empty($this->subscriptions[$line_item['subscription_id']])){
+						continue;
+					}
+					$this->subscriptions[$line_item['subscription_id']]['previous_charge_count']++;
+				}
 			}
 		}
-		return $this->old_charges;
+		return $this->prev_charges;
 	}
 
 	public function subscriptions($subs_to_set = null){
@@ -151,17 +161,17 @@ class SubscriptionSchedule {
 			}
 			$this->charges($charges);
 		}
-		if($this->is_alias && empty($this->old_charges)){
+		if($this->is_alias && empty($this->prev_charges)){
 			$charges = [];
 			$res = $this->rc->get('/charges', [
 				'customer_id' => $this->rc_customer_id,
-				'date_max' => date('Y-m-d'),
+				'date_max' => date('Y-m-d', strtotime('+1 day')),
 				'limit' => 250,
 			]);
 			if(!empty($res['charges'])){
 				$charges = $res['charges'];
 			}
-			$this->old_charges($charges);
+			$this->prev_charges($charges);
 		}
 	}
 
@@ -456,6 +466,7 @@ class SubscriptionSchedule {
 		$subscription['type'] = 'subscription';
 		$subscription['scheduled_at'] = $subscription['next_charge_scheduled_at'];
 		$subscription['scheduled_at_time'] = strtotime($subscription['scheduled_at']);
+		$subscription['previous_charge_count'] = 0;
 		if(!empty($subscription['order_day_of_month'])){
 			$subscription['order_interval_index'] = $subscription['order_day_of_month'];
 		} else if(!empty($subscription['order_day_of_week'])){
