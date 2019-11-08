@@ -52,6 +52,22 @@ $ids_by_scent = [
 	'willow' => ['variant' => 8328726413399,   'product' => 785329455191],
 ];
 
+$test_emails = [
+	'jhoang@avisan.com',
+	'julie_hoang22@hotmail.com',
+	'ticklishcoast@gmail.com',
+	'linedhurdle@gmail.com',
+	'julie_hoang22@me.com',
+	'harperangela87@gmail.com',
+	'jimdalton@comcast.net ',
+	'jimskylar10801@gmail.com',
+	'jimtest3@gmail.com',
+	'jimskylar2019@outlook.com',
+	'jimskylar2019@gmail.com',
+	'lolagrace@gmail.com',
+	'hsherpa18+1007@gmail.com',
+];
+
 if (!function_exists('getallheaders')){
     function getallheaders(){
         $headers = [];

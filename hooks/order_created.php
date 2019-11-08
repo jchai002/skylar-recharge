@@ -193,6 +193,12 @@ if(
 	send_alert($db, 3, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP', 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
 }
 
+
+if(in_array($order['email'], $test_emails)){
+	$order_tags[] = 'HOLD: Test Order';
+	$update_order = true;
+}
+
 // Get recharge version of order
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
 //print_r($rc_order);
