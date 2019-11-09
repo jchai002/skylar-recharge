@@ -226,6 +226,12 @@ foreach($res['subscriptions'] as $subscription){
 	}
 }
 
+$gift_card_gwp_pricerules = [
+	50 =>  ['id' => 600146706519, 'prefix' => 'GC10-', 'amount' => 10],
+	100 => ['id' => 600147558487, 'prefix' => 'GC20-', 'amount' => 20],
+	150 => ['id' => 600147918935, 'prefix' => 'GC30-', 'amount' => 30],
+	200 => ['id' => 600148181079, 'prefix' => 'GC40-', 'amount' => 40],
+];
 $stmt_get_order_line = $db->prepare("SELECT id FROM order_line_items WHERE shopify_id=?");
 if(empty($sc_main_sub)){
 	$sc_main_sub = sc_get_main_subscription($db, $rc, [
@@ -238,6 +244,21 @@ foreach($order['line_items'] as $line_item){
 	$product = get_product($db, $line_item['product_id']);
 	print_r($product);
 	$oli_frequency = get_oli_attribute($line_item, '_frequency') ?? 0;
+
+	if($product['type'] == 'Gift Card'){
+		if(strpos($order['email'], '@skylar.com') !== false || date('m') == 12 && date('d') >= 23 && date('d') <= 24){
+			$pricerule = $gift_card_gwp_pricerules[$line_item['price']/100];
+			$code = $pricerule['prefix'].generate_discount_string($line_item['id']);
+			$res = $sc->post('/admin/api/2019-10/price_rules/'.$pricerule['id'].'/discount_codes.json',['discount_code' => [
+				'code' => $code,
+			]]);
+			if(empty($res['code'])){
+				log_event($db, 'CREATE_DISCOUNT', $code, 'ERROR', json_encode($res), json_encode($sc->last_error));
+			} else {
+				klaviyo_send_transactional_email($db, $order['email'], 'gift_card_extra_discount', ['code'=>$code, 'amount' => $pricerule['amount']]);
+			}
+		}
+	}
 
 	// Mark line item fulfilled in shopify
 	echo "Checking fulfillment... ";
