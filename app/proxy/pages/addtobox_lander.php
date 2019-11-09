@@ -92,7 +92,7 @@ if(!empty($add_to_charge)){
 				insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
 			}
         }
-		log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, '', 'customer');
+		log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, getallheaders(), 'customer');
     }
 }
 header('Content-Type: application/liquid');
