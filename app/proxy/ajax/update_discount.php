@@ -11,12 +11,10 @@ if(empty($discount_code)){
 		$res = $rc->post('/charges/'.intval($_REQUEST['charge_id']).'/remove_discount');
 	}
 } else if(in_array($discount_code, [
-	'LDAY15',
 	'TRYSCENTCLUB',
 	'SCENTCLUBNYC',
 	'SURPRISE15',
-	'MY30',
-	'FORME20',
+	'MY50',
 	'FAVFINDS20',
 	'BOXING20',
 	'JOLLY20',
