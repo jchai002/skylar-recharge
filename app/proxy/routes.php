@@ -68,7 +68,7 @@ $router->route('/quick-add$/i', function() {
 	require('pages/addtobox_lander.php');
 	return true;
 });
-$router->route('/split\/(\d+)$/i', function($test_id) {
+$router->route('/split\/(\W+)$/i', function($test_id) {
 	require('pages/split.php');
 	return true;
 });

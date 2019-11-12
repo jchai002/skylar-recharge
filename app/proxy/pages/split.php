@@ -1,11 +1,24 @@
 <?php
 global $db;
 
-$test_id = $test_id ?? 1;
-$test_id--;
-
 $split_tests = [
-	[
+	'holiday' => [
+		'variants' => [
+			[
+				'url' => 'https://skylar.com/collections/great-gifts',
+				'weight' => '1'
+			],
+			[
+				'url' => 'https://skylar.com/pages/earlybird',
+				'weight' => '1'
+			],
+			[
+				'url' => 'https://skylar.com',
+				'weight' => '1'
+			],
+		]
+	],
+	'1' => [
 		'experiment_id' => 'A04AkVyWSTm7PiFNeBHIgQ',
 		'variants' => [
 			[
@@ -17,9 +30,11 @@ $split_tests = [
 				'weight' => '100'
 			],
 		]
-	]
+	],
 ];
 
+
+$test_id = $test_id ?? array_key_first($split_tests);
 $get_vars = $_GET;
 // Unset shopify vars
 foreach([
@@ -41,7 +56,9 @@ if(empty($split_tests[$test_id])){
 $test = $split_tests[$test_id];
 $total_weight = array_sum(array_column($test['variants'], 'weight'));
 $weight = rand(1, $total_weight);
-$get_vars['exp_id'] = $test['experiment_id'];
+if(!empty($test['experiment_id'])){
+	$get_vars['exp_id'] = $test['experiment_id'];
+}
 
 if(!empty($_REQUEST['test'])){
 	echo "$weight of $total_weight".PHP_EOL;
