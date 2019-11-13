@@ -19,7 +19,7 @@ $split_tests = [
 		]
 	],
 	'1' => [
-		'experiment_id' => 'A04AkVyWSTm7PiFNeBHIgQ',
+		'experiment_id' => 'Y7uryreySJS5Fo6Cvao36A',
 		'variants' => [
 			[
 				'url' => 'https://get.skylar.com/sample-palette-a',
