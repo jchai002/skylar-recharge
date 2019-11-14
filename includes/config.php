@@ -351,6 +351,31 @@ function insert_update_theme(PDO $db, $theme){
 
 	return $db->lastInsertId();
 }
+function insert_update_rc_discount(PDO $db, $recharge_discount){
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_rc_discount'])){
+		$_stmt_cache['iu_rc_discount'] = $db->prepare("INSERT INTO rc_discounts (recharge_id, code, value, type, status, usage_limit, applies_to_resource, applies_to_id, duration, duration_usage_limit, once_per_customer, prerequisite_subtotal_min, created_at, updated_at, starts_at, ends_at) VALUES (:recharge_id, :code, :value, :type, :status, :usage_limit, :applies_to_resource, :applies_to_id, :duration, :duration_usage_limit, :once_per_customer, :prerequisite_subtotal_min, :created_at, :updated_at, :starts_at, :ends_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), recharge_id=:recharge_id, code=:code, value=:value, type=:type, status=:status, usage_limit=:usage_limit, applies_to_resource=:applies_to_resource, applies_to_id=:applies_to_id, duration=:duration, duration_usage_limit=:duration_usage_limit, once_per_customer=:once_per_customer, prerequisite_subtotal_min=:prerequisite_subtotal_min, created_at=:created_at, updated_at=:updated_at, starts_at=:starts_at, ends_at=:ends_at");
+	}
+	$_stmt_cache['iu_rc_discount']->execute([
+		'recharge_id' => $recharge_discount['id'],
+		'code' => $recharge_discount['code'],
+		'value' => $recharge_discount['value'],
+		'type' => $recharge_discount['discount_type'],
+		'status' => $recharge_discount['status'],
+		'usage_limit' => $recharge_discount['usage_limit'],
+		'applies_to_resource' => $recharge_discount['applies_to_resource'],
+		'applies_to_id' => $recharge_discount['applies_to_id'],
+		'duration' => $recharge_discount['duration'],
+		'duration_usage_limit' => $recharge_discount['duration_usage_limit'],
+		'once_per_customer' => $recharge_discount['once_per_customer'],
+		'prerequisite_subtotal_min' => $recharge_discount['prerequisite_subtotal_min'],
+		'created_at' => $recharge_discount['created_at'],
+		'updated_at' => $recharge_discount['updated_at'],
+		'starts_at' => $recharge_discount['starts_at'],
+		'ends_at' => $recharge_discount['ends_at'],
+	]);
+	return $db->lastInsertId();
+}
 function insert_update_rc_customer(PDO $db, $recharge_customer, ShopifyClient $sc){
 	global $_stmt_cache;
 	if(empty($_stmt_cache['iu_rc_customer'])){

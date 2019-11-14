@@ -8,6 +8,21 @@ $interval = 5;
 $page_size = 250;
 $min_date = date('Y-m-d H:i:00P', time()-60*6);
 
+// Discounts
+echo "Updating Discounts".PHP_EOL;
+$page = 0;
+do {
+	$page++;
+	$res = $rc->get('/discounts', [
+		'updated_at_min' => $min_date,
+		'limit' => $page_size,
+		'page' => $page,
+	]);
+	foreach($res['discounts'] as $discount){
+		echo insert_update_rc_discount($db, $discount).PHP_EOL;
+	}
+} while(count($res) >= $page_size);
+
 // Customers
 echo "Updating Customers".PHP_EOL;
 $page = 0;
