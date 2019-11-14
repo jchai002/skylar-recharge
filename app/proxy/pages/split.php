@@ -2,22 +2,6 @@
 global $db;
 
 $split_tests = [
-	'holiday' => [
-		'variants' => [
-			[
-				'url' => 'https://skylar.com/collections/great-gifts',
-				'weight' => '1'
-			],
-			[
-				'url' => 'https://skylar.com/pages/earlybird',
-				'weight' => '1'
-			],
-			[
-				'url' => 'https://skylar.com',
-				'weight' => '1'
-			],
-		]
-	],
 	'1' => [
 		'experiment_id' => 'Y7uryreySJS5Fo6Cvao36A',
 		'variants' => [
@@ -32,6 +16,38 @@ $split_tests = [
 		]
 	],
 ];
+
+if(time() < strtotime('2019-11-18 00:00:00')){
+	$split_tests['holiday'] = [
+		'variants' => [
+			[
+				'url' => 'https://skylar.com/pages/earlybird',
+				'weight' => '50'
+			],
+			[
+				'url' => 'https://skylar.com/pages/holiday',
+				'weight' => '50'
+			],
+		]
+	];
+} else {
+	$split_tests['holiday'] = [
+		'variants' => [
+			[
+				'url' => 'https://skylar.com/collections/great-gifts',
+				'weight' => '33'
+			],
+			[
+				'url' => 'https://skylar.com',
+				'weight' => '33'
+			],
+			[
+				'url' => 'https://skylar.com/pages/holiday',
+				'weight' => '33'
+			],
+		]
+	];
+}
 
 
 $test_id = $test_id ?? array_key_first($split_tests);
