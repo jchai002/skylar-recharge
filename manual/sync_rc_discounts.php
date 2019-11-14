@@ -9,12 +9,12 @@ $page_size = 250;
 $page = 0;
 do {
 	$page++;
-	$res = $rc->get("/onetimes", [
+	$res = $rc->get("/discounts", [
 		'page' => $page,
 		'limit' => $page_size,
 	]);
 
-	foreach($res['onetimes'] as $subscription){
-		echo insert_update_rc_subscription($db, $subscription, $rc, $sc)." ".$subscription['id'].PHP_EOL;
+	foreach($res['discounts'] as $discount){
+		echo insert_update_rc_discount($db, $discount)." ".$discount['id'].PHP_EOL;
 	}
-} while(count($res['onetimes']) >= $page_size);
+} while(count($res['discounts']) >= $page_size);
