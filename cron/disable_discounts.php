@@ -8,11 +8,6 @@ LEFT JOIN rc_discounts d ON d.id=ds.rc_discount_id
 WHERE triggered_at IS NULL
 AND trigger_after <= '$now'")->fetchAll();
 
-echo $db->query("SELECT ds.type, ds.id as discount_schedule_id, d.recharge_id as discount_id, d.code FROM rc_discount_schedule ds
-LEFT JOIN rc_discounts d ON d.id=ds.rc_discount_id
-WHERE triggered_at IS NULL
-AND trigger_after <= '$now'")->queryString;
-
 $stmt_update_schedule = $db->prepare("UPDATE rc_discount_schedule SET triggered_at = '$now' WHERE id=?");
 foreach($discount_schedule as $row){
 	if($row['type'] == 'disable'){
