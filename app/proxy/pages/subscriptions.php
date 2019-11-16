@@ -873,7 +873,7 @@ uasort($other_onetimes, function($a, $b){
             e.preventDefault();
             $(this).addClass('disabled');
             $.featherlight.close();
-            if(AccountController.selected_box_item.data('sc')){
+            if(AccountController.selected_box_item.data('sc') !== undefined){
                 $.featherlight($('.sc-cancel-confirm-modal'));
                 return;
             }
