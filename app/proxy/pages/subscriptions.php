@@ -874,7 +874,7 @@ uasort($other_onetimes, function($a, $b){
             $(this).addClass('disabled');
             $.featherlight.close();
             if(AccountController.selected_box_item.data('sc') !== undefined){
-                $.featherlight($('.sc-cancel-confirm-modal'));
+                $.featherlight($('#sc-cancel-confirm-modal'));
                 return;
             }
             AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id'))
