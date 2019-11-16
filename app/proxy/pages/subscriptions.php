@@ -717,7 +717,7 @@ uasort($other_onetimes, function($a, $b){
                     <textarea name="other_reason" title="Other Reason"></textarea>
                 </div>
                 <div class="sc-skip-options">
-                    <a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id'), AccountController.get_skip_reason()); return false;">Cancel Subscription</a>
+                    <a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id'), AccountController.get_skip_reason()).then(function(){AccountController.reload()}); return false;">Cancel Subscription</a>
                     <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Go Back</a>
                 </div>
             </form>
