@@ -135,6 +135,7 @@ uasort($other_onetimes, function($a, $b){
                         data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
 					<?php } ?>
                      data-product-name="<?=$item['product_title']?>"
+					<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
                 >
                     <div class="portal-item-edit">Edit</div>
                     <div class="portal-item-subscribed">Subscribed <img class="lazyload lazypreload" height="15" data-src="{{ 'subscription-icon.svg' | file_url }}" /></div>
@@ -675,7 +676,51 @@ uasort($other_onetimes, function($a, $b){
         </div>
         <div class="portal-skip-options">
             <a class="action_button" onclick="$.featherlight.close(); return false;">Keep This Item</a>
-            <a class="portal-skip-other-link" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id')).then(function(){AccountController.load_subscriptions();}); return false;">Remove This Item</a>
+            <a class="portal-skip-other-link">Remove This Item</a>
+        </div>
+    </div>
+    <div id="sc-cancel-confirm-modal" class="sc-confirm-modal">
+        <div>
+            <div class="sc-modal-title">Why would you like to cancel your subscription?</div>
+            <form id="sc-cancel-reason-form" class="skip-reason-form">
+                <div class="skip-reason-list">
+                    <label>
+                        <input type="radio" name="skip_reason" value="I don't like the scent or products">
+                        <span class="radio-visual"></span>
+                        <span>I don't like the scent or products</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I have too much">
+                        <span class="radio-visual"></span>
+                        <span>I have too much</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I'm having a sensitivity to the product">
+                        <span class="radio-visual"></span>
+                        <span>I'm having a sensitivity to the product</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="It's too expensive">
+                        <span class="radio-visual"></span>
+                        <span>It's too expensive</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I just don't want a subscription">
+                        <span class="radio-visual"></span>
+                        <span>I just don't want a subscription</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="other">
+                        <span class="radio-visual"></span>
+                        <span>Other Reason</span>
+                    </label>
+                    <textarea name="other_reason" title="Other Reason"></textarea>
+                </div>
+                <div class="sc-skip-options">
+                    <a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id'), AccountController.get_skip_reason()); return false;">Cancel Subscription</a>
+                    <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Go Back</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -818,13 +863,24 @@ uasort($other_onetimes, function($a, $b){
         $('.portal-item .portal-edit-cancel').unbind().click(function(e){
             e.preventDefault();
             AccountController.selected_box_item = $(this).closest('.portal-item');
-            $('.sc-skip-image img').attr('src', AccountController.selected_box_item.data('master-image'));
-            $('#sc-remove-confirm-modal .sc-modal-subtitle').html(AccountController.selected_box_item.data('product-name'));
             $.featherlight.close();
-            $.featherlight($('#sc-remove-confirm-modal'), {
+            $.featherlight($('#portal-remove-other-confirm-modal'), {
                 variant: 'scent-club',
                 afterOpen: $.noop, // Fix dumb app bug
             });
+        });
+        $('.portal-skip-other-link').click(function(e){
+            e.preventDefault();
+            $(this).addClass('disabled');
+            $.featherlight.close();
+            if(AccountController.selected_box_item.data('sc')){
+                $.featherlight($('.sc-cancel-confirm-modal'));
+                return;
+            }
+            AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id'))
+                .then(function(){
+                    AccountController.load_subscriptions();
+                });
         });
         optional_scripts.onload('pignose', function(){
             $('.portal-item-edit-container .calendar').each(function(){

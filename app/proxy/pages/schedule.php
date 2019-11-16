@@ -511,6 +511,50 @@ print_r($schedule->get());
             </form>
         </div>
     </div>
+    <div id="sc-cancel-confirm-modal" class="sc-confirm-modal">
+        <div>
+            <div class="sc-modal-title">Why would you like to cancel your subscription?</div>
+            <form id="sc-cancel-reason-form" class="skip-reason-form">
+                <div class="skip-reason-list">
+                    <label>
+                        <input type="radio" name="skip_reason" value="I don't like the scent or products">
+                        <span class="radio-visual"></span>
+                        <span>I don't like the scent or products</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I have too much">
+                        <span class="radio-visual"></span>
+                        <span>I have too much</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I'm having a sensitivity to the product">
+                        <span class="radio-visual"></span>
+                        <span>I'm having a sensitivity to the product</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="It's too expensive">
+                        <span class="radio-visual"></span>
+                        <span>It's too expensive</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I just don't want a subscription">
+                        <span class="radio-visual"></span>
+                        <span>I just don't want a subscription</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="other">
+                        <span class="radio-visual"></span>
+                        <span>Other Reason</span>
+                    </label>
+                    <textarea name="other_reason" title="Other Reason"></textarea>
+                </div>
+                <div class="sc-skip-options">
+                    <a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id'), AccountController.get_skip_reason()); return false;">Cancel Subscription</a>
+                    <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Go Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
     <div id="sc-remove-confirm-modal">
         <div class="sc-skip-image sc-desktop">
             <img src="" />
