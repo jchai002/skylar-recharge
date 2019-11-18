@@ -869,18 +869,11 @@ uasort($other_onetimes, function($a, $b){
                 afterOpen: $.noop, // Fix dumb app bug
             });
         });
-        $('.portal-skip-other-link').click(function(e){
+        $('.portal-skip-other-link').unbind().click(function(e){
             e.preventDefault();
             $(this).addClass('disabled');
             $.featherlight.close();
-            if(AccountController.selected_box_item.data('sc') !== undefined){
-                $.featherlight($('#sc-cancel-confirm-modal'));
-                return;
-            }
-            AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id'))
-                .then(function(){
-                    AccountController.load_subscriptions();
-                });
+            $.featherlight($('#sc-cancel-confirm-modal'));
         });
         optional_scripts.onload('pignose', function(){
             $('.portal-item-edit-container .calendar').each(function(){

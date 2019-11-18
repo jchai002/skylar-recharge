@@ -549,7 +549,7 @@ print_r($schedule->get());
                     <textarea name="other_reason" title="Other Reason"></textarea>
                 </div>
                 <div class="sc-skip-options">
-                    <a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id'), AccountController.get_skip_reason()).then(function(){AccountController.load_subscriptions();});; return false;">Cancel Subscription</a>
+                    <a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id'), AccountController.get_skip_reason()).then(function(){AccountController.reload()}); return false;">Cancel Subscription</a>
                     <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Go Back</a>
                 </div>
             </form>
@@ -566,7 +566,7 @@ print_r($schedule->get());
                 <img src="" />
             </div>
             <div class="sc-skip-options">
-                <a class="action_button" onclick="$(this).addClass('disabled'); $.featherlight.close(); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id')).then(function(){AccountController.load_schedule($('.sc-load-more').data('months'))}); return false;">Yes, Remove</a>
+                <a class="action_button portal-skip-other-link">Yes, Remove</a>
                 <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Cancel</a>
             </div>
         </div>
@@ -787,6 +787,12 @@ print_r($schedule->get());
         });
 
 
+        $('.portal-skip-other-link').unbind().click(function(e){
+            e.preventDefault();
+            $(this).addClass('disabled');
+            $.featherlight.close();
+            $.featherlight($('#sc-cancel-confirm-modal'));
+        });
         $('.sc-upcoming-shipment .add-and-save').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
             AccountController.show_add_and_save();
