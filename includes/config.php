@@ -780,8 +780,6 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id,
 		]);
 		$charges = $res['charges'] ?? [];
 
-		$products_by_id = [];
-		$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
 		$offset = sc_is_address_in_blackout($db, $rc, $address_id) ? 1 : 0;
 		$next_charge_month = date('Y-m', get_month_by_offset($offset));
 		while(true){
@@ -792,11 +790,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id,
 				if($charge_date != $next_charge_month){
 					continue;
 				}
-				if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
-					$stmt->execute([$item['shopify_product_id']]);
-					$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
-				}
-				if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
+				if(is_scent_club_any(get_product($db,$item['shopify_product_id']))){
 					continue 2;
 				}
 			}
@@ -806,11 +800,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id,
 					continue;
 				}
 				foreach($charge['line_items'] as $item){
-					if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
-						$stmt->execute([$item['shopify_product_id']]);
-						$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
-					}
-					if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
+					if(is_scent_club_any(get_product($db,$item['shopify_product_id']))){
 						continue 3;
 					}
 				}
@@ -820,11 +810,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id,
 					continue;
 				}
 				foreach($order['line_items'] as $item){
-					if(!array_key_exists($item['shopify_product_id'], $products_by_id)){
-						$stmt->execute([$item['shopify_product_id']]);
-						$products_by_id[$item['shopify_product_id']] = $stmt->fetch();
-					}
-					if(is_scent_club_any($products_by_id[$item['shopify_product_id']])){
+					if(is_scent_club_any(get_product($db,$item['shopify_product_id']))){
 						continue 3;
 					}
 				}
