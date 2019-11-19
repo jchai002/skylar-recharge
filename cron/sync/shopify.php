@@ -85,7 +85,7 @@ if(
 	}
 
 	echo "Updating missing fulfillments".PHP_EOL;
-	$stmt = $db->query("SELECT o.id FROM skylar.orders o
+	$stmt = $db->query("SELECT o.shopify_id FROM skylar.orders o
 		LEFT JOIN order_line_items oli ON o.id=oli.order_id
 		WHERE oli.fulfillment_id IS NULL
 		and o.created_at >= '".date('Y-m-d', strtotime('-30 days'))."'
@@ -98,6 +98,10 @@ if(
 		$fulfillment_res = $sc->get('/admin/orders/'.$order_id.'/fulfillments.json', [
 			'limit' => $page_size,
 		]);
+		if(empty($fulfillment_res)){
+			print_r($sc->last_error);
+			echo "No fulfillment!".PHP_EOL;
+		}
 		foreach($fulfillment_res as $fulfillment){
 			echo "   - ".insert_update_fulfillment($db, $fulfillment).PHP_EOL;
 		}
