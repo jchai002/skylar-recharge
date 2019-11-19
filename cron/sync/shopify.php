@@ -91,7 +91,7 @@ if(
 		and o.created_at >= '".date('Y-m-d', strtotime('-30 days'))."'
 		AND o.cancelled_at IS NULL
 		AND o.closed_at IS NOT NULL
-		GROUP BY o.id
+		GROUP BY o.shopify_id
 ;");
 	foreach($stmt->fetchAll(PDO::FETCH_COLUMN) as $order_id){
 		echo " - ".$order_id.": ".PHP_EOL;
