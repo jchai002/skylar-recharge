@@ -753,6 +753,12 @@ function sc_get_main_subscription(PDO $db, RechargeClient $rc, $filters = []){
 	return false;
 }
 function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id, $main_sub = [], $force_offset = null){
+	if(empty($main_sub)){
+		$main_sub = sc_get_main_subscription($db, $rc, [
+			'address_id' => $address_id,
+			'status' => 'ACTIVE',
+		]);
+	}
 	if(!is_null($force_offset)){
 		$next_charge_month = date('Y-m', get_month_by_offset($force_offset));
 	} else {
@@ -790,7 +796,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id,
 				if($charge_date != $next_charge_month){
 					continue;
 				}
-				if(is_scent_club_any(get_product($db,$item['shopify_product_id']))){
+				if(!empty(get_oli_attribute($item, '_swap')) && get_oli_attribute($item, '_swap') == $main_sub['id']){
 					continue 2;
 				}
 			}
@@ -800,7 +806,7 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id,
 					continue;
 				}
 				foreach($charge['line_items'] as $item){
-					if(is_scent_club_any(get_product($db,$item['shopify_product_id']))){
+					if(!empty(get_oli_attribute($item, '_swap')) && get_oli_attribute($item, '_swap') == $main_sub['id']){
 						continue 3;
 					}
 				}
@@ -810,20 +816,14 @@ function sc_calculate_next_charge_date(PDO $db, RechargeClient $rc, $address_id,
 					continue;
 				}
 				foreach($order['line_items'] as $item){
-					if(is_scent_club_any(get_product($db,$item['shopify_product_id']))){
+					if(!empty(get_oli_attribute($item, '_swap')) && get_oli_attribute($item, '_swap') == $main_sub['id']){
 						continue 3;
 					}
 				}
 			}
-			// If we've made it this far, there is no SC-related stuff scheduled for this offset
+			// If we've made it this far, there is no swapped item scheduled for this offset
 			break;
 		}
-	}
-	if(empty($main_sub)){
-		$main_sub = sc_get_main_subscription($db, $rc, [
-			'address_id' => $address_id,
-			'status' => 'ACTIVE',
-		]);
 	}
 
 	$day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
