@@ -77,12 +77,30 @@ if(
 	foreach($stmt->fetchAll(PDO::FETCH_COLUMN) as $order_id){
 		echo " - ".$order_id.": ".PHP_EOL;
 		$fulfillment_res = $sc->get('/admin/orders/'.$order_id.'/fulfillments.json', [
-			'updated_at_min' => $min_date,
 			'limit' => $page_size,
-			'page' => $page,
 		]);
 		foreach($fulfillment_res as $fulfillment){
 			echo "   - ".insert_update_fulfillment($db, $fulfillment).PHP_EOL;
 		}
 	}
+
+	echo "Updating missing fulfillments".PHP_EOL;
+	$stmt = $db->query("SELECT o.id FROM skylar.orders o
+		LEFT JOIN order_line_items oli ON o.id=oli.order_id
+		WHERE oli.fulfillment_id IS NULL
+		and o.created_at >= '".date('Y-m-d', strtotime('-30 days'))."'
+		AND o.cancelled_at IS NULL
+		AND o.closed_at IS NOT NULL
+		GROUP BY o.id
+;");
+	foreach($stmt->fetchAll(PDO::FETCH_COLUMN) as $order_id){
+		echo " - ".$order_id.": ".PHP_EOL;
+		$fulfillment_res = $sc->get('/admin/orders/'.$order_id.'/fulfillments.json', [
+			'limit' => $page_size,
+		]);
+		foreach($fulfillment_res as $fulfillment){
+			echo "   - ".insert_update_fulfillment($db, $fulfillment).PHP_EOL;
+		}
+	}
+
 }
