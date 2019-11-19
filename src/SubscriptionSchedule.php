@@ -276,7 +276,10 @@ class SubscriptionSchedule {
 					}
 					foreach($shipment_list['addresses'] as $shipments){
 						foreach($shipments['items'] as $shipment_item){
-							if(is_scent_club_any(get_product($this->db, $shipment_item['shopify_product_id']))){
+							if(
+								!empty($shipment_item['properties']['_swap'])
+								&& $shipment_item['properties']['_swap'] == $subscription['id']
+							){
 								$subscription_index--;
 								$next_charge_time = self::get_subscription_time_by_index($subscription_index, $charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
 								continue 4;
