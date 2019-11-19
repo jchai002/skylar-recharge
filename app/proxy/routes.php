@@ -426,8 +426,6 @@ function require_customer_id($callback_if_true){
 		return true;
 	}
 
-	// TODO: Replace admin_customers logic with a redirect to an actual alias session
-
 	ob_start();
 	$callback_if_true([
 		'is_alias' => $is_alias
@@ -446,7 +444,11 @@ function require_customer_id($callback_if_true){
 	<script>
 		location.href = '/account/login?next='+encodeURIComponent(location.pathname+location.search);
 	</script>
-{% elsif customer.id == $customer_id or admin_customers contains customer.id %}
+{% elsif customer.id != $customer_id and admin_customers contains customer.id %}
+	<script>
+		location.search = '?c=$customer_id&alias=".md5($_ENV['ALIASKEY'].$customer_id)."';
+	</script>
+{% elsif customer.id == $customer_id %}
 	{% assign is_alias = customer.id != $customer_id %}
 	{% if customer.id != $customer_id %}{% assign customer_first_name = 'Alias'  %}{% else %}{% assign customer_first_name = customer.first_name %}{% endif %}
 	{% assign customer_id = $customer_id %}
