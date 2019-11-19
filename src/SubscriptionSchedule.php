@@ -210,6 +210,13 @@ class SubscriptionSchedule {
 			}
 		}
 
+		foreach($this->onetimes as $onetime){
+			if($onetime['scheduled_at_time'] > $this->max_time || $onetime['scheduled_at_time'] < $this->min_time){
+				continue;
+			}
+			$this->add_item_to_schedule($onetime);
+		}
+
 		foreach($this->subscriptions as $subscription){
 			$next_charge_time = $charge_time = strtotime($subscription['next_charge_scheduled_at']);
 			if(empty($charge_time)){
