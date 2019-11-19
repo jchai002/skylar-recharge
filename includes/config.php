@@ -923,10 +923,12 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $ma
 //		echo "No monthly scent";
 		return false;
 	}
+	$properties = $main_sub['properties'];
+	$properties['_swap'] = $main_sub['id'];
 	$res = $rc->post('/addresses/'.$address_id.'/onetimes', [
 		'next_charge_scheduled_at' => date('Y-m-d H:i:s', $time),
 		'shopify_variant_id' => $scent_info['shopify_variant_id'],
-		'properties' => $main_sub['properties'],
+		'properties' => $properties,
 		'price' => $main_sub['price'],
 		'quantity' => 1,
 		'product_title' => 'Skylar Scent Club',
@@ -954,10 +956,12 @@ function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $
 	}
 	$variant_title = $stmt->fetchColumn();
 	sc_delete_month_onetime($db, $rc, $address_id, $time);
+	$properties = $main_sub['properties'];
+	$properties['_swap'] = $main_sub['id'];
 	$res = $rc->post('/addresses/'.$address_id.'/onetimes', [
 		'next_charge_scheduled_at' => date('Y-m-d H:i:s', $time),
 		'shopify_variant_id' => $shopify_variant_id,
-		'properties' => $main_sub['properties'],
+		'properties' => $properties,
 		'price' => $main_sub['price'],
 		'quantity' => 1,
 		'product_title' => 'Scent Club Swap-in',

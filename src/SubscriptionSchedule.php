@@ -414,12 +414,18 @@ class SubscriptionSchedule {
 	}
 
 	private function normalize_item($item){
+		// Explode properties into associative format
 		if(!empty($item['properties']) && array_keys($item['properties'])[0] == 0){
 			$properties = [];
 			foreach($item['properties'] as $property){
 				$properties[$property['name']] = $property['value'];
 			}
 			$item['properties'] = $properties;
+		}
+
+		// If it's swapped in (e.g. SC month) use the order interval property from the original item
+		if(!empty($item['properties']['_swap']) && !empty($this->subscriptions[$item['properties']['_swap']]) && !empty($this->subscriptions[$item['properties']['_swap']]['order_interval_frequency'])){
+			$item['order_interval_frequency'] = $this->subscriptions[$item['properties']['_swap']]['order_interval_frequency'];
 		}
 		$item['index'] = $item['index'] ?? 0;
 		$item['types'] = $item['types'] ?? [$item['type']];

@@ -74,8 +74,12 @@ foreach($schedule->onetimes() as $item){
 //			if(!empty(get_oli_attribute($item, '_parent_id')) && !in_array(get_oli_attribute($item, '_parent_id'), $schedule->subscriptions())){
 //				continue;
 //			}
-	if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){
-		// TODO: Should be only this month
+    // Don't show scent club swaps (monthly products and swap-ins)
+	if(!empty($item['properties']['_swap'])){
+	    // Change next ship date on parent
+        if(!empty($this->subscriptions[$item['properties']['_swap']]) && $item['scheduled_at_time'] < $this->subscriptions[$item['properties']['_swap']]['scheduled_at_time']){
+			$this->subscriptions[$item['properties']['_swap']]['scheduled_at_time'] = $item['scheduled_at_time'];
+        }
 		continue;
 	}
 	$other_onetimes[] = $item;

@@ -216,9 +216,7 @@ print_r($schedule->get());
                                                 <div>
                                                     <div class="sc-item-detail-label">Delivery</div>
                                                     <div class="sc-item-detail-value">
-                                                        <?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
-                                                            Every Month
-                                                        <?php } else if(empty($item['order_interval_frequency'])){ ?>
+                                                        <?php if(empty($item['order_interval_frequency'])){ ?>
                                                             Once
                                                         <?php } else if($item['order_interval_frequency'] == '1'){ ?>
                                                             Every <?=$item['order_interval_unit']?>
