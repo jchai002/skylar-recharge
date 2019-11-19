@@ -88,11 +88,38 @@ if(
 	$stmt = $db->query("SELECT o.shopify_id FROM skylar.orders o
 		LEFT JOIN order_line_items oli ON o.id=oli.order_id
 		WHERE oli.fulfillment_id IS NULL
+		and o.created_at >= '".date('Y-m-d', strtotime('-60 days'))."'
+		AND o.cancelled_at IS NULL
+		AND o.closed_at IS NOT NULL
+		GROUP BY o.shopify_id
+;");
+	foreach($stmt->fetchAll(PDO::FETCH_COLUMN) as $order_id){
+		echo " - ".$order_id.": ".PHP_EOL;
+		$fulfillment_res = $sc->get('/admin/orders/'.$order_id.'/fulfillments.json', [
+			'limit' => $page_size,
+		]);
+		if(empty($fulfillment_res)){
+			print_r($sc->last_error);
+			echo "No fulfillment!".PHP_EOL;
+		}
+		foreach($fulfillment_res as $fulfillment){
+			echo "   - ".insert_update_fulfillment($db, $fulfillment).PHP_EOL;
+		}
+	}
+
+	echo "Updating Old EPTs".PHP_EOL;
+	$stmt = $db->query("SELECT o.shopify_id FROM skylar.orders o
+		LEFT JOIN order_line_items oli ON o.id=oli.order_id
+		LEFT JOIN fulfillments f ON f.id=oli.fulfillment_id
+		LEFT JOIN ep_trackers ept ON ept.tracking_code=f.tracking_number
+		WHERE ept.id IS NULL
+		AND shipment_status IS NOT NULL
 		and o.created_at >= '".date('Y-m-d', strtotime('-30 days'))."'
 		AND o.cancelled_at IS NULL
 		AND o.closed_at IS NOT NULL
 		GROUP BY o.shopify_id
 ;");
+	echo $stmt->queryString;
 	foreach($stmt->fetchAll(PDO::FETCH_COLUMN) as $order_id){
 		echo " - ".$order_id.": ".PHP_EOL;
 		$fulfillment_res = $sc->get('/admin/orders/'.$order_id.'/fulfillments.json', [

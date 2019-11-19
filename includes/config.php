@@ -339,6 +339,9 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
 //    	echo $id." ".$line_item['id'];
 		$_stmt_cache['iu_line_item_fulfillment_id']->execute([$id, $line_item['id']]);
     }
+    if(!empty($tracker)){
+    	insert_update_tracker($db, $tracker);
+	}
 
     return $id;
 }
