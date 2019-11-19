@@ -297,7 +297,7 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
 							'carrier' => 'UPS Mail Innovations',
 						]);
 					} catch(\Throwable $e){
-						var_dump($e);
+//						var_dump($e);
 						log_event($db, 'EXCEPTION', $shopify_fulfillment['tracking_number'], 'fulfillment_tracker_create', json_encode($shopify_fulfillment), json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'API');
 					}
 				} else if($shopify_fulfillment['tracking_company'] == 'Passport'){
@@ -307,11 +307,11 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
 							'carrier' => 'PassportGlobal',
 						]);
 					} catch(\Throwable $e){
-						var_dump($e);
+//						var_dump($e);
 						log_event($db, 'EXCEPTION', $shopify_fulfillment['tracking_number'], 'fulfillment_tracker_create', json_encode($shopify_fulfillment), json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'API');
 					}
 				} else {
-					var_dump($e);
+//					var_dump($e);
 					log_event($db, 'EXCEPTION', $shopify_fulfillment['tracking_number'], 'fulfillment_tracker_create', json_encode($shopify_fulfillment), json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'API');
 				}
 			}
