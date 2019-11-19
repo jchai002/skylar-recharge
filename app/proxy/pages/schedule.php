@@ -163,11 +163,9 @@ print_r($schedule->get());
                                             <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
                                         <?php } else if(is_ac_followup_lineitem($item)){ ?>
                                             <a class="ac-item-corner-link ac-cancel-link" href="#"><span>Cancel My Trial</span></a>
-                                        <?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
-                                            <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
-                                        <?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
-                                            <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
-                                        <?php } else if($item['type'] == 'onetime'){ ?>
+										<?php } else if(!empty($item['properties']['_swap'])){ ?>
+                                            <a class="sc-remove-link" href="#"><span>Remove Item</span></a>
+										<?php } else if($item['type'] == 'onetime'){ ?>
                                             <a class="sc-remove-link" href="#"><span>Remove Item</span></a>
                                         <?php } else if(!empty($item['charge_id'])){ ?>
                                             <a class="sc-skip-link<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '-club' : '' ?>" href="#"><span>Skip Box</span></a>
@@ -192,17 +190,19 @@ print_r($schedule->get());
 													<?php } else if(is_scent_club_gift(get_product($db, $item['shopify_product_id']))){ ?>
                                                         <div class="sc-item-title">Scent Club Gift*</div>
                                                         <div class="sc-item-subtitle"><?= $item['index'] + 1 ?> of <?= $item['expire_after_specific_number_of_charges'] ?? "{{ box_product.variants.first.title }}" ?>*</div>
-													<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
+													<?php } else if(!empty($item['properties']['_swap'])){ ?>
                                                         <div class="sc-item-title">Skylar Scent Club</div>
                                                         <div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
                                                         <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" alt="Swap scent icon" /> <span>Swap Scent</span></a></div>
+													<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
+                                                        <div class="sc-item-title">Skylar Scent Club</div>
+                                                        <div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
                                                     <?php } else if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
                                                         <div class="sc-item-title">Skylar Scent Club</div>
                                                         <div class="sc-item-subtitle"></div>
                                                     <?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
                                                         <div class="sc-item-title"><?=$item['product_title']?></div>
                                                         <div class="sc-item-subtitle"><?=$item['variant_title']?></div>
-                                                        <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" alt="Swap scent icon" /> <span>Swap Scent</span></a></div>
                                                     <?php } else { ?>
                                                         <div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
                                                         {% if box_variant.title != 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
