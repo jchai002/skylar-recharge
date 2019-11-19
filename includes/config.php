@@ -253,6 +253,11 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=
 			'properties' => json_encode($line_item['properties']),
 		]);
 	}
+	if(!empty($order['fulfillments'])){
+		foreach($order['fulfillments'] as $fulfillment){
+			insert_update_fulfillment($db, $fulfillment);
+		}
+	}
 	return $order_id;
 }
 function insert_update_customer(PDO $db, $shopify_customer){
@@ -331,7 +336,7 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
 		$_stmt_cache['iu_line_item_fulfillment_id'] = $db->prepare("UPDATE order_line_items SET fulfillment_id = ? WHERE shopify_id=?");
 	}
     foreach($shopify_fulfillment['line_items'] as $line_item){
-    	echo $id." ".$line_item['id'];
+//    	echo $id." ".$line_item['id'];
 		$_stmt_cache['iu_line_item_fulfillment_id']->execute([$id, $line_item['id']]);
     }
 
