@@ -167,7 +167,7 @@ print_r($schedule->get());
                                             <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
 										<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id'])) && !empty($item['properties']['_swap'])){ ?>
                                             <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
-										<?php } else if($item['type'] == 'onetime'){ ?>
+										<?php } else if($item['type'] == 'onetime' || in_array('onetime', $item['types'])){ ?>
                                             <a class="sc-remove-link" href="#"><span>Remove Item</span></a>
                                         <?php } else if(!empty($item['charge_id'])){ ?>
                                             <a class="sc-skip-link<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '-club' : '' ?>" href="#"><span>Skip Box</span></a>
