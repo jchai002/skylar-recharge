@@ -554,7 +554,7 @@ class SubscriptionSchedule {
 				}
 			}
 		}
-		return $next_time;
+		return offset_date_skip_weekend($next_time);
 	}
 
 }
