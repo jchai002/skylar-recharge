@@ -445,6 +445,7 @@ function require_customer_id($callback_if_true){
 		location.href = '/account/login?next='+encodeURIComponent(location.pathname+location.search);
 	</script>
 {% elsif customer.id != $customer_id and admin_customers contains customer.id %}
+	{% layout 'scredirect' %}
 	<script>
 		location.search = '?c=$customer_id&alias=".md5($_ENV['ALIASKEY'].$customer_id)."';
 	</script>
@@ -454,6 +455,7 @@ function require_customer_id($callback_if_true){
 	{% assign customer_id = $customer_id %}
 	".$output."
 {% else %}
+	{% layout 'scredirect' %}
 	<script>
 		location.search = location.search.replace('c=".$customer_id."','c={{customer.id}}');
 	</script>
