@@ -3,7 +3,7 @@ global $db;
 
 $split_tests = [
 	'1' => [
-		'experiment_id' => 'Y7uryreySJS5Fo6Cvao36A',
+//		'experiment_id' => 'Y7uryreySJS5Fo6Cvao36A',
 		'variants' => [
 			[
 //				'url' => 'https://get.skylar.com/sample-palette-a',
