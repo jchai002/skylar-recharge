@@ -239,7 +239,7 @@ uasort($other_onetimes, function($a, $b){
                     <div class="portal-item-actions">
                         <div class="action_button add-and-save">Add and save!</div>
                     </div>
-                    <form class="portal-item-edit-container">
+                    <form class="portal-item-edit-container" <?=!is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '' : 'style="display:block;"' ?>>
                         <?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
                             <div class="portal-edit-row">
                                 <?php if(get_product($db, $item['shopify_product_id'])['type'] == 'Body Bundle'){ ?>
