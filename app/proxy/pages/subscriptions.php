@@ -371,7 +371,9 @@ uasort($other_onetimes, function($a, $b){
 					<?php } ?>
                      data-product-name="<?=$item['product_title']?>"
                 >
-                    <div class="portal-item-edit">Edit</div>
+					<?php if(!is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+                        <div class="portal-item-edit">Edit</div>
+                    <?php } ?>
                     <div class="portal-item-details">
                         <div class="portal-item-img">
 							<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
