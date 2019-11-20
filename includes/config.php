@@ -135,6 +135,9 @@ function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $t
 	]);
 }
 function offset_date_skip_weekend($time){
+	// TODO: Need to fix this logic to iterate over itself repeatedly until valid
+	$day_month_year = date('Y-m-d', $time);
+	$day_month = date('m-d', $time);
 	while(in_array(date('N', $time), [6,7])){ // While it's a weekend
 		$time += 24*60*60; //  Add a day
 	}
@@ -147,6 +150,19 @@ function offset_date_skip_weekend($time){
 	if(date('Y-m-d', $time) == $cyber_monday){
 		$time += 24*60*60; //  Add a day
 	}
+	// Christmas
+	if(date('m-d', $time) == '12-25'){
+		$time += 24*60*60; //  Add a day
+	}
+	// New years
+	if(date('m-d', $time) == '12-31'){
+		$time += 2*24*60*60; //  Add 2 days
+	}
+	// New years
+	if(date('m-d', $time) == '01-01'){
+		$time += 24*60*60; //  Add a day
+	}
+
 	return $time;
 }
 
