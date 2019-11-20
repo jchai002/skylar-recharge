@@ -81,15 +81,16 @@ if($subscription['status'] == 'ONETIME'){
 		log_event($db, 'SUBSCRIPTION', $subscription['id'], 'SKIP', $reason, 'Skipped via user account: '.json_encode([$subscription,$res]), 'Customer');
 		// Handle recharge bug where they double skip
 		// If subscription day of month for next charge date > subscription charge day of month (normal) then it will double skip
-		if(!empty($_REQUEST['theme_id'])){
-			$order_day_of_month = $subscription['order_day_of_month'] ?? 1;
-			if(date('d', strtotime($charge['scheduled_at'])) > $order_day_of_month){
-				$next_charge_date = date('Y-m-', get_next_month(strtotime($charge['scheduled_at']))).$order_day_of_month;
-				$next_charge_date = date('Y-m-d',offset_date_skip_weekend(strtotime($next_charge_date)));
-				$res = [$res, $rc->post('/subscriptions/'.$subscription['id']."/set_next_charge_date", [
-					'date' => $next_charge_date,
-				])];
-			}
+		// Also, order_day_of_month is frequently not set
+		// So, we will assume the 1st just to get this working
+		// Once we know that we can manually move their shipment forward one month
+		$order_day_of_month = $subscription['order_day_of_month'] ?? 1;
+		if(date('d', strtotime($charge['scheduled_at'])) > $order_day_of_month){
+			$next_charge_date = date('Y-m-', get_next_month(strtotime($charge['scheduled_at']))).$order_day_of_month;
+			$next_charge_date = date('Y-m-d',offset_date_skip_weekend(strtotime($next_charge_date)));
+			$res = [$res, $rc->post('/subscriptions/'.$subscription['id']."/set_next_charge_date", [
+				'date' => $next_charge_date,
+			])];
 		}
 	}
 }
