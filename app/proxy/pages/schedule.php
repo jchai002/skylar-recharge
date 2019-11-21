@@ -508,9 +508,20 @@ print_r($schedule->get());
             </form>
         </div>
     </div>
+    <div id="portal-remove-other-confirm-modal">
+        <div class="portal-modal-title">Are you sure you want to remove this item?</div>
+        <div class="portal-modal-subtitle">
+            Subscribers get to add exclusive deals to their box. <br />
+            If you remove, you won’t be able to get this at an awesome deal.
+        </div>
+        <div class="portal-skip-options">
+            <a class="action_button" onclick="$.featherlight.close(); return false;">Keep This Item</a>
+            <a class="portal-skip-other-link">Remove This Item</a>
+        </div>
+    </div>
     <div id="sc-cancel-confirm-modal" class="sc-confirm-modal">
         <div>
-            <div class="sc-modal-title">Why would you like to cancel your subscription?</div>
+            <div class="sc-modal-title">Why would you like to remove this item?</div>
             <form id="sc-cancel-reason-form" class="skip-reason-form">
                 <div class="skip-reason-list">
                     <label>
@@ -532,11 +543,6 @@ print_r($schedule->get());
                         <input type="radio" name="skip_reason" value="It's too expensive">
                         <span class="radio-visual"></span>
                         <span>It's too expensive</span>
-                    </label>
-                    <label>
-                        <input type="radio" name="skip_reason" value="I just don't want a subscription">
-                        <span class="radio-visual"></span>
-                        <span>I just don't want a subscription</span>
                     </label>
                     <label>
                         <input type="radio" name="skip_reason" value="other">
@@ -819,11 +825,11 @@ print_r($schedule->get());
         $('.sc-unsub-link, .sc-remove-link').unbind().click(function(e){
             e.preventDefault();
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
-            $('.sc-skip-image img').attr('src', AccountController.selected_box_item.data('master-image'));
-            var text = AccountController.selected_box_item.data('month-text')+' '+AccountController.selected_box_item.find('.sc-item-title').text().trim().replace('Monthly ', '');
-            $('#sc-remove-confirm-modal .sc-modal-subtitle').html(text);
+            // $('.sc-skip-image img').attr('src', AccountController.selected_box_item.data('master-image'));
+            // var text = AccountController.selected_box_item.data('month-text')+' '+AccountController.selected_box_item.find('.sc-item-title').text().trim().replace('Monthly ', '');
+            // $('#sc-remove-confirm-modal .sc-modal-subtitle').html(text);
             $.featherlight.close();
-            $.featherlight($('#sc-remove-confirm-modal'), {
+            $.featherlight($('#portal-remove-other-confirm-modal'), {
                 variant: 'scent-club',
                 afterOpen: $.noop, // Fix dumb app bug
             });
