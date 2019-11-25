@@ -60,31 +60,33 @@ $has_fullsize = !empty(array_intersect(array_column($rate['items'], 'sku'), $ful
 
 switch($rate['destination']['country']){
 	case 'US':
-		if($has_sc || $has_ac){
-			$_RATES[] = [
-				'service_name' => 'Standard Shipping (3-7 business days)',
-				'service_code' => 'Standard Weight-based',
-				'total_price' => 0,
-				'description' => 'Free for Scent Club Members!',
-				'currency' => 'USD',
-			];
-		} else {
-			if($total_price >= 40){
-				$_RATES[] = [
-					'service_name' => 'Free Standard Shipping (3-7 business days)',
-					'service_code' => 'Standard Weight-based',
-					'total_price' => 0,
-					'description' => '',
-					'currency' => 'USD',
-				];
-			} else {
+		if(!in_array($rate['destination']['province'], ['HI', 'AK'])){
+			if($has_sc || $has_ac){
 				$_RATES[] = [
 					'service_name' => 'Standard Shipping (3-7 business days)',
 					'service_code' => 'Standard Weight-based',
-					'total_price' => 499,
-					'description' => '',
+					'total_price' => 0,
+					'description' => 'Free for Scent Club Members!',
 					'currency' => 'USD',
 				];
+			} else {
+				if($total_price >= 40){
+					$_RATES[] = [
+						'service_name' => 'Free Standard Shipping (3-7 business days)',
+						'service_code' => 'Standard Weight-based',
+						'total_price' => 0,
+						'description' => '',
+						'currency' => 'USD',
+					];
+				} else {
+					$_RATES[] = [
+						'service_name' => 'Standard Shipping (3-7 business days)',
+						'service_code' => 'Standard Weight-based',
+						'total_price' => 499,
+						'description' => '',
+						'currency' => 'USD',
+					];
+				}
 			}
 		}
 		$_RATES[] = [
