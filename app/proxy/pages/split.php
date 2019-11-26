@@ -18,37 +18,22 @@ $split_tests = [
 	],
 ];
 
-if(time() < strtotime('2019-11-18 00:00:00')){
-	$split_tests['holiday'] = [
-		'variants' => [
-			[
-				'url' => 'https://skylar.com/pages/earlybird',
-				'weight' => '50'
-			],
-			[
-				'url' => 'https://skylar.com/pages/holiday',
-				'weight' => '50'
-			],
-		]
-	];
-} else {
-	$split_tests['holiday'] = [
-		'variants' => [
-			[
-				'url' => 'https://skylar.com/collections/great-gifts',
-				'weight' => '33'
-			],
-			[
-				'url' => 'https://skylar.com',
-				'weight' => '33'
-			],
-			[
-				'url' => 'https://skylar.com/pages/holiday',
-				'weight' => '33'
-			],
-		]
-	];
-}
+$split_tests['holiday'] = [
+	'variants' => [
+		[
+			'url' => 'https://skylar.com/collections/great-gifts',
+			'weight' => '60'
+		],
+		[
+			'url' => 'https://skylar.com',
+			'weight' => '30'
+		],
+		[
+			'url' => 'https://skylar.com/pages/holiday',
+			'weight' => '10'
+		],
+	]
+];
 
 
 $test_id = $test_id ?? array_key_first($split_tests);
