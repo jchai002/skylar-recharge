@@ -591,6 +591,7 @@ print_r($schedule->get());
         </div>
     </div>
 </div>
+{% require 'sc-portal-modals' %}
 <script class="portal-data" type="application/json"><?=json_encode(['subscriptions'=>array_merge($schedule->subscriptions(), $schedule->onetimes())])?></script>
 {{ 'featherlight.js' | asset_url | script_tag }}
 {{ 'featherlight.css' | asset_url | stylesheet_tag }}
