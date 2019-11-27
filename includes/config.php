@@ -31,7 +31,8 @@ if(strpos(getcwd(), 'production') !== false){
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 }
-if(!empty($_REQUEST['c']) && ($_REQUEST['c'] == 644696211543 || $_REQUEST['c'] == 2096453255255)){
+if((!empty($_REQUEST['c']) && ($_REQUEST['c'] == 644696211543 || $_REQUEST['c'] == 2096453255255))
+	|| (!empty($_REQUEST['theme_id']) && $_REQUEST['theme_id'] == 73087418455)){
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
