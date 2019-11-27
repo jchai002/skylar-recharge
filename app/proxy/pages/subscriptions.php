@@ -77,8 +77,8 @@ foreach($schedule->onetimes() as $item){
     // Don't show scent club swaps (monthly products and swap-ins)
 	if(!empty($item['properties']['_swap'])){
 	    // Change next ship date on parent
-        if(!empty($this->subscriptions[$item['properties']['_swap']]) && $item['scheduled_at_time'] < $this->subscriptions[$item['properties']['_swap']]['scheduled_at_time']){
-			$this->subscriptions[$item['properties']['_swap']]['scheduled_at_time'] = $item['scheduled_at_time'];
+        if(!empty($schedule->subscriptions()[$item['properties']['_swap']]) && $item['scheduled_at_time'] < $schedule->subscriptions()[$item['properties']['_swap']]['scheduled_at_time']){
+			$schedule->subscriptions()[$item['properties']['_swap']]['scheduled_at_time'] = $item['scheduled_at_time'];
         }
 		continue;
 	}
