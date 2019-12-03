@@ -30,25 +30,38 @@ LEFT JOIN rc_subscriptions rcs ON rcs.id=aco.followup_subscription_id
 LEFT JOIN rc_addresses rca ON rca.id=rcs.address_id
 WHERE rcs.cancelled_at IS NULL
 AND rcs.deleted_at IS NULL
-AND rcs.next_charge_scheduled_at IN ('2019-09-03');");
+AND rcs.next_charge_scheduled_at IN ('2019-12-03');");
 
-foreach($stmt->fetchAll() as $row){
+$rows = $stmt->fetchAll();
+
+echo count($rows)." rows".PHP_EOL;
+
+
+foreach($rows as $row){
 	$move_to_time = strtotime($row['next_charge_scheduled_at']);
 //	$move_to_time = strtotime('2019-09-04');
 	if($move_to_time < time()){
 		$move_to_time = strtotime('tomorrow');
 	}
-	echo $row['rc_subscription_id'].PHP_EOL;
+	$move_to_time = offset_date_skip_weekend($move_to_time);
+	if(offset_date_skip_weekend(strtotime(date('Y-m-').'01', $move_to_time)) == $move_to_time){
+		echo "Moving to next day, SC day detected".PHP_EOL;
+		$move_to_time += 25*60*60; // Add a day to offset AC from SC day
+	}
+	$move_to_time = offset_date_skip_weekend($move_to_time);
+	echo $row['rc_subscription_id']." ".date('Y-m-d', $move_to_time).PHP_EOL;
+	/*
 	$res = $rc->get('/onetimes', ['address_id'=>$row['rc_address_id']]);
 	foreach($res['onetimes'] as $onetime){
 		insert_update_rc_subscription($db, $onetime, $rc, $sc);
 	}
+	*/
 	$sub = get_rc_subscription($db, $row['rc_subscription_id'], $rc, $sc);
 	if(!empty($sub['cancelled_at'])){
 		continue;
 	}
 	$res = $rc->put('/onetimes/'.$row['rc_subscription_id'], [
-		'next_charge_scheduled_at' => date('Y-m-d', offset_date_skip_weekend($move_to_time)),
+		'next_charge_scheduled_at' => date('Y-m-d', $move_to_time),
 	]);
 	if(empty($res['onetime'])){
 		echo "Error! ".print_r($res, true).PHP_EOL;
