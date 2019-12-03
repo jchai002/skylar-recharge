@@ -72,6 +72,10 @@ $router->route('/split\/(\S+)$/i', function($test_id) {
 	require('pages/split.php');
 	return true;
 });
+$router->route('/geocheck$/i', function() {
+	require('ajax/geo_api.php');
+	return true;
+});
 
 $router->route('/check-invalid-email$/i', function() use(&$json_output) {
 	$json_output = true;
