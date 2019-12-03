@@ -22,15 +22,15 @@ $split_tests['holiday'] = [
 	'variants' => [
 		[
 			'url' => 'https://skylar.com/collections/great-gifts',
-			'weight' => '33'
+			'weight' => '20'
 		],
 		[
 			'url' => 'https://skylar.com',
-			'weight' => '33'
+			'weight' => '30'
 		],
 		[
 			'url' => 'https://skylar.com/pages/cybermonday',
-			'weight' => '33'
+			'weight' => '50'
 		],
 	]
 ];
