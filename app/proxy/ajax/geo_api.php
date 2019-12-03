@@ -9,6 +9,16 @@ if(function_exists('getallheaders')){
 	if(!empty($headers['X-Forwarded-For'])){
 		$ip = $headers['X-Forwarded-For'];
 	}
+	if(!empty($headers['Origin'])){
+		$origin = parse_url($headers['Origin']);
+		if(in_array($origin['host'], [
+			'localhost',
+			'mave-and-muse.myshopify.com',
+			'skylar.com'
+		]) || strpos($origin['host'], 'shopify_preview.com') !== false){
+			header("Access-Control-Allow-Origin: ".$headers['Origin']);
+		}
+	}
 }
 if(!empty($_REQUEST['ip'])){
 	$ip = $_REQUEST['ip'];
