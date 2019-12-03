@@ -13,7 +13,7 @@ if(function_exists('getallheaders')){
 		$origin = parse_url($headers['Origin']);
 		if(in_array($origin['host'], [
 			'localhost',
-			'mave-and-muse.myshopify.com',
+			'maven-and-muse.myshopify.com',
 			'skylar.com'
 		]) || strpos($origin['host'], 'shopify_preview.com') !== false){
 			header("Access-Control-Allow-Origin: ".$headers['Origin']);
