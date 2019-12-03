@@ -6,9 +6,9 @@ if(!empty($_SERVER['REMOTE_ADDR'])){
 }
 if(function_exists('getallheaders')){
 	$headers = getallheaders();
-}
-if(!empty($headers['X-Forwarded-For'])){
-	$ip = $headers['X-Forwarded-For'];
+	if(!empty($headers['X-Forwarded-For'])){
+		$ip = $headers['X-Forwarded-For'];
+	}
 }
 if(!empty($_REQUEST['ip'])){
 	$ip = $_REQUEST['ip'];
