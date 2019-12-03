@@ -11,10 +11,10 @@ $data = json_decode($data, true);
 $rate = $data['rate'];
 
 $headers = getallheaders();
-$shop_url = $headers['X-Shopify-Shop-Domain'];
-if(empty($shop_url)){
+if(empty($headers['X-Shopify-Shop-Domain'])){
 	die();
 }
+$shop_url = $headers['X-Shopify-Shop-Domain'];
 $free_override = $is_test = false;
 foreach($rate['items'] as $item){
 	if(empty($item['properties'])){
