@@ -193,10 +193,15 @@ if(
 	send_alert($db, 3, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP', 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
 }
 
-
-if(in_array($order['email'], $test_emails)){
-	$order_tags[] = 'HOLD: Test Order';
-	$update_order = true;
+$order_email_parts = explode($order['email'],'@');
+$order_email_parts[0] = strtok($order_email_parts[0], '+');
+foreach($test_emails as $test_email){
+	$test_email_parts = explode($test_email,'@');
+	if($order_email_parts[0] == $test_email_parts[0] && $order_email_parts[1] == $test_email_parts[1]){
+		$order_tags[] = 'HOLD: Test Order';
+		$update_order = true;
+		break;
+	}
 }
 
 // Get recharge version of order

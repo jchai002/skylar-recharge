@@ -67,7 +67,8 @@ $test_emails = [
 	'jimskylar2019@outlook.com',
 	'jimskylar2019@gmail.com',
 	'lolagrace@gmail.com',
-	'hsherpa18+1007@gmail.com',
+	'hsherpa18@gmail.com',
+	'rachelH@gmail.com',
 ];
 
 if (!function_exists('getallheaders')){
