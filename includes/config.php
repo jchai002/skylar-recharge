@@ -174,9 +174,9 @@ function insert_update_product(PDO $db, $shopify_product){
 	global $_stmt_cache;
 	if(empty($_stmt_cache['iu_product'])){
 		$_stmt_cache['iu_product'] = $db->prepare("INSERT INTO products
-(shopify_id, handle, title, type, tags, updated_at, published_at)
-VALUES (:shopify_id, :handle, :title, :type, :tags, :updated_at, :published_at)
-ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, type=:type, tags=:tags, updated_at=:updated_at, published_at=:published_at");
+(shopify_id, handle, title, type, tags, updated_at, published_at, synced_at)
+VALUES (:shopify_id, :handle, :title, :type, :tags, :updated_at, :published_at, :synced_at)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, type=:type, tags=:tags, updated_at=:updated_at, published_at=:published_at, synced_at=:synced_at");
 	}
 	$now = date('Y-m-d H:i:s');
 	$_stmt_cache['iu_product']->execute([
@@ -185,8 +185,9 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, typ
 		'title' => $shopify_product['title'],
 		'type' => $shopify_product['product_type'],
 		'tags' => $shopify_product['tags'],
-		'updated_at' => $now,
-		'published_at' => $shopify_product['published_at']
+		'updated_at' => $shopify_product['updated_at'],
+		'published_at' => $shopify_product['published_at'],
+		'synced_at' => $now,
 	]);
 //	print_r($shopify_product);
 	$product_id = $db->lastInsertId();
@@ -203,7 +204,8 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 			'title' => $shopify_variant['title'],
 			'sku' => $shopify_variant['sku'],
 			'price' => $shopify_variant['price'],
-			'updated_at' => $now,
+			'updated_at' => $shopify_variant['updated_at'],
+			'synced_at' => $now,
 		]);
 	}
 	return $product_id;

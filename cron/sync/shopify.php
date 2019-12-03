@@ -66,6 +66,51 @@ if(
 	(date('G', $start_time) == 12 && date('i', $start_time) < 4 && !in_array(date('N', $start_time), [6,7]))
 	|| (!empty($argv) && !empty($argv[1]) && $argv[1] == 'all')
 ){
+
+	echo "Pull all products".PHP_EOL;
+	$sync_start = date('Y-m-d H:m:s');
+	$page = 0;
+	do {
+		$page++;
+		$res = $sc->get('/admin/products.json', [
+			'limit' => $page_size,
+			'page' => $page,
+		]);
+		foreach($res as $product){
+			echo insert_update_product($db, $product).PHP_EOL;
+		}
+	} while(count($res) >= $page_size);
+
+	echo "Check unsynced products".PHP_EOL;
+	$stmt = $db->query("SELECT id, shopify_id
+		FROM products
+		WHERE (synced_at < '$sync_start' OR synced_at IS NULL) AND deleted_at IS NULL");
+	$stmt_delete_product = $db->prepare("UPDATE products SET deleted_at='$sync_start' WHERE id=?");
+	$stmt_delete_product_variants = $db->prepare("UPDATE variants SET deleted_at='$sync_start' WHERE product_id=?");
+	foreach($stmt->fetchAll() as $row){
+		$res = $sc->get('/admin/products/'.$row['shopify_id'].'.json');
+		if(empty($res) && $sc->last_response_headers['http_status_code'] == '404'){
+			echo "Deleting ".$row['shopify_id'].PHP_EOL;
+			$stmt_delete_product->execute([$row['id']]);
+			$stmt_delete_product_variants->execute([$row['id']]);
+		} elseif(!empty($res)) {
+			echo insert_update_product($db, $res);
+		}
+	}
+
+	echo "Check unsynced variants".PHP_EOL;
+	$stmt = $db->query("SELECT id, shopify_id
+		FROM variants
+		WHERE (synced_at < '$sync_start' OR synced_at IS NULL) AND deleted_at IS NULL");
+	$stmt_delete_variant = $db->prepare("UPDATE variants SET deleted_at='$sync_start' WHERE id=?");
+	foreach($stmt->fetchAll() as $row){
+		$res = $sc->get('/admin/variants/'.$row['shopify_id'].'/.json');
+		if(empty($res) && $sc->last_response_headers['http_status_code'] == '404'){
+			echo "Deleting ".$row['shopify_id'].PHP_EOL;
+			$stmt_delete_product->execute([$row['id']]);
+		}
+	}
+
 	echo "Updating missing AC fulfillments".PHP_EOL;
 	$stmt = $db->query("SELECT o.shopify_id FROM ac_orders aco
 		LEFT JOIN order_line_items oli ON aco.order_line_item_id=oli.id
