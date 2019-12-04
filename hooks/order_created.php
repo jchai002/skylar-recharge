@@ -184,7 +184,7 @@ foreach($order['line_items'] as $line_item){
 }
 if(
 	($has_orly_gwp && (!$has_hand_cream || $order['shipping_address']['country_code'] != 'US'))
-	|| ($has_gwp_handcream && $order['total_line_items_price'] < 60)
+	|| ($has_gwp_handcream && $order['total_line_items_price'] < 70)
 	|| ($has_gwp_travelbag && $order['total_line_items_price'] < 60)
 	|| ($has_gwp_arrow_rollie && $order['total_line_items_price'] < 80)
 ){
