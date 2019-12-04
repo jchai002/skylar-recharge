@@ -22,7 +22,7 @@ $commands = [
 	'whoami',
 	'sudo -u deploy /usr/bin/git pull',
 	'git status',
-	'php composer.phar install',
+	'php composer.phar install --no-dev',
 ];
 foreach($commands as $command){
 	$tmp = shell_exec("$command 2>&1");
