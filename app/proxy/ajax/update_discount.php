@@ -15,7 +15,7 @@ if(empty($discount_code)){
 	'SCENTCLUBNYC',
 	'SURPRISE15',
 	'MY50',
-	'FAVFINDS20',
+	'MYTREAT20',
 	'BOXING20',
 	'JOLLY20',
 	'GOODTRADE',
