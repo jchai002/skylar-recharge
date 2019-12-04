@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$start_date = date('Y-m-d');
+$start_date = '2019-12-03';
 $start_time = time();
 $page = 0;
 $page_size = 250;
