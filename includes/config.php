@@ -1174,6 +1174,30 @@ function is_ac_delivered($followup_line_item){
 	}
 	return false;
 }
+function is_discount_allowed_in_account($discount_code){
+	if(in_array($discount_code, [
+		'TRYSCENTCLUB',
+		'SCENTCLUBNYC',
+		'SURPRISE15',
+		'MY50',
+		'MYTREAT20',
+		'BOXING20',
+		'JOLLY20',
+		'GOODTRADE',
+		'MERRY30',
+		'GIFT25',
+	])){
+		return false;
+	}
+	foreach([
+		'RF-5', 'GET-50',
+	] as $prefix){
+		if(strpos($discount_code, $prefix) === 0){
+			return false;
+		}
+	}
+	return true;
+}
 // Klaviyo
 function klaviyo_send_transactional_email(PDO $db, $to_email, $email_type, $properties=[]){
     $properties['email_type'] = $email_type;

@@ -10,18 +10,7 @@ if(empty($discount_code)){
 	if(!empty($res['error'])){
 		$res = $rc->post('/charges/'.intval($_REQUEST['charge_id']).'/remove_discount');
 	}
-} else if(in_array($discount_code, [
-	'TRYSCENTCLUB',
-	'SCENTCLUBNYC',
-	'SURPRISE15',
-	'MY50',
-	'MYTREAT20',
-	'BOXING20',
-	'JOLLY20',
-	'GOODTRADE',
-	'MERRY30',
-	'GIFT25',
-])){
+} else if(!is_discount_allowed_in_account($discount_code)){
 	$res = ['error' => 'Invalid discount code.'];
 } else {
 	$res = $rc->post('/addresses/'.intval($_REQUEST['address_id']).'/remove_discount');
@@ -29,6 +18,7 @@ if(empty($discount_code)){
 		'discount_code' => $discount_code,
 	]);
 }
+
 if(!empty($res['error'])){
 	echo json_encode([
 		'discount_code' => $discount_code,
