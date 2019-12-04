@@ -28,10 +28,6 @@ $split_tests['holiday'] = [
 			'url' => 'https://skylar.com',
 			'weight' => '30'
 		],
-		[
-			'url' => 'https://skylar.com/pages/cybermonday',
-			'weight' => '50'
-		],
 	]
 ];
 
