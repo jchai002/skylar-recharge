@@ -22,5 +22,6 @@ foreach($orders as $order){
 		'id' => $order['id'],
 		'tags' => implode(', ', $tags),
 	]]);
+	insert_update_order($db, $res, $sc);
 	echo " ".$res['tags'].PHP_EOL;
 }
