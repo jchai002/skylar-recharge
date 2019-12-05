@@ -5,7 +5,11 @@ require_once dirname(__FILE__).'/../vendor/autoload.php';
 date_default_timezone_set('America/Los_Angeles');
 
 spl_autoload_register(function($class){
-	require_once(__DIR__.'/class.'.$class.'.php');
+	$file = __DIR__.'/class.'.$class.'.php';
+	if(file_exists($file)){
+		/** @noinspection PhpIncludeInspection */
+		require_once($file);
+	}
 });
 
 $dotenv = new Dotenv\Dotenv(__DIR__.'/..');
