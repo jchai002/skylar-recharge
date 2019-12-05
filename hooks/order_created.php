@@ -170,10 +170,12 @@ if(!OrderCreatedController::are_gwps_valid($order)){
 	$order_tags[] = 'HOLD: Invalid GWP';
 	$update_order = true;
 	send_alert($db, 3, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP. https://skylar.com/admin/orders/'.$order['id'], 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
+	echo "Sent alert - GWP invalid".PHP_EOL;
 } else if(!OrderCreatedController::are_gwps_free($order['line_items'])){
 	$order_tags[] = 'Charged For GWP';
 	$update_order = true;
 	send_alert($db, 3, 'Order '.$order['name'].' was charged for a GWP, likely in error. Please check it. https://skylar.com/admin/orders/'.$order['id'], 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
+	echo "Sent alert - charged for gwp".PHP_EOL;
 }
 
 if(match_email($order['email'], $test_emails)){
