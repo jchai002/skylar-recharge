@@ -161,43 +161,16 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 $update_order = false;
 $order_tags = explode(', ',$order['tags']);
 
-$has_hand_cream = false;
-$has_orly_gwp = false;
-$has_gwp_handcream = false;
-$has_gwp = false;
-$charged_for_gwp = false;
-foreach($order['line_items'] as $line_item){
-	$product = get_product($db, $line_item['product_id']);
-	if(in_array('Hand Cream', $product['tags'])){
-		$has_hand_cream = true;
-	}
-	if($product['shopify_id'] == 4042122756183){
-		$has_gwp = $has_orly_gwp = true;
-		$charged_for_gwp = $charged_for_gwp || $line_item['final_price'] == 0;
-	}
-	if($product['shopify_id'] == 4312664113239){
-		$has_gwp = $has_gwp_handcream = true;
-		$charged_for_gwp = $charged_for_gwp || $line_item['final_price'] == 0;
-	}
-	if($product['shopify_id'] == 4325189648471){
-		$has_gwp = $has_gwp_travelbag = true;
-		$charged_for_gwp = $charged_for_gwp || $line_item['final_price'] == 0;
-	}
-	if($product['shopify_id'] == 4345453445207){
-		$has_gwp = $has_gwp_arrow_rollie = true;
-		$charged_for_gwp = $charged_for_gwp || $line_item['final_price'] == 0;
-	}
+// Add product to line item
+foreach($order['line_items'] as $index=>$line_item){
+	$order['line_items'][$index]['product'] = get_product($db, $line_item['product_id']);
 }
-if(
-	($has_orly_gwp && (!$has_hand_cream || $order['shipping_address']['country_code'] != 'US'))
-	|| ($has_gwp_handcream && $order['total_line_items_price'] < 70)
-	|| ($has_gwp_travelbag && $order['total_line_items_price'] < 60)
-	|| ($has_gwp_arrow_rollie && $order['total_line_items_price'] < 80)
-){
+
+if(!OrderCreatedController::are_gwps_valid($order)){
 	$order_tags[] = 'HOLD: Invalid GWP';
 	$update_order = true;
 	send_alert($db, 3, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP. https://skylar.com/admin/orders/'.$order['id'], 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
-} else if($has_gwp && $charged_for_gwp){
+} else if(!OrderCreatedController::are_gwps_free($order['line_items'])){
 	$order_tags[] = 'Charged For GWP';
 	$update_order = true;
 	send_alert($db, 3, 'Order '.$order['name'].' was charged for a GWP, likely in error. Please check it. https://skylar.com/admin/orders/'.$order['id'], 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
