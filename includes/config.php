@@ -1194,7 +1194,7 @@ function is_discount_allowed_in_account($discount_code){
 		return false;
 	}
 	foreach([
-		'RF-5', 'GET-50',
+		'RS-20-', 'GS-50-',
 	] as $prefix){
 		if(strpos($discount_code, $prefix) === 0){
 			return false;
