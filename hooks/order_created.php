@@ -165,7 +165,7 @@ $order_tags = explode(', ',$order['tags']);
 foreach($order['line_items'] as $index=>$line_item){
 	$order['line_items'][$index]['product'] = get_product($db, $line_item['product_id']);
 }
-
+echo "Checking GWPs".PHP_EOL;
 if(!OrderCreatedController::are_gwps_valid($order)){
 	$order_tags[] = 'HOLD: Invalid GWP';
 	$update_order = true;
