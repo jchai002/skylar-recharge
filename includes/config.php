@@ -1202,6 +1202,17 @@ function is_discount_allowed_in_account($discount_code){
 	}
 	return true;
 }
+function match_email($email, $test_emails){
+	$order_email_parts = explode('@',$email);
+	$order_email_parts[0] = strtok($order_email_parts[0], '+');
+	foreach($test_emails as $test_email){
+		$test_email_parts = explode('@',$test_email);
+		if($order_email_parts[0] == $test_email_parts[0] && $order_email_parts[1] == $test_email_parts[1]){
+			return true;
+		}
+	}
+	return false;
+}
 // Klaviyo
 function klaviyo_send_transactional_email(PDO $db, $to_email, $email_type, $properties=[]){
     $properties['email_type'] = $email_type;
