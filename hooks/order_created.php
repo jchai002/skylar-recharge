@@ -164,22 +164,28 @@ $order_tags = explode(', ',$order['tags']);
 $has_hand_cream = false;
 $has_orly_gwp = false;
 $has_gwp_handcream = false;
+$has_gwp = false;
+$charged_for_gwp = false;
 foreach($order['line_items'] as $line_item){
 	$product = get_product($db, $line_item['product_id']);
 	if(in_array('Hand Cream', $product['tags'])){
 		$has_hand_cream = true;
 	}
 	if($product['shopify_id'] == 4042122756183){
-		$has_orly_gwp = true;
+		$has_gwp = $has_orly_gwp = true;
+		$charged_for_gwp = $charged_for_gwp || $line_item['final_price'] == 0;
 	}
 	if($product['shopify_id'] == 4312664113239){
-		$has_gwp_handcream = true;
+		$has_gwp = $has_gwp_handcream = true;
+		$charged_for_gwp = $charged_for_gwp || $line_item['final_price'] == 0;
 	}
 	if($product['shopify_id'] == 4325189648471){
-		$has_gwp_travelbag = true;
+		$has_gwp = $has_gwp_travelbag = true;
+		$charged_for_gwp = $charged_for_gwp || $line_item['final_price'] == 0;
 	}
 	if($product['shopify_id'] == 4345453445207){
-		$has_gwp_arrow_rollie = true;
+		$has_gwp = $has_gwp_arrow_rollie = true;
+		$charged_for_gwp = $charged_for_gwp || $line_item['final_price'] == 0;
 	}
 }
 if(
@@ -190,7 +196,11 @@ if(
 ){
 	$order_tags[] = 'HOLD: Invalid GWP';
 	$update_order = true;
-	send_alert($db, 3, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP', 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
+	send_alert($db, 3, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP. https://skylar.com/admin/orders/'.$order['id'], 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
+} else if($has_gwp && $charged_for_gwp){
+	$order_tags[] = 'Charged For GWP';
+	$update_order = true;
+	send_alert($db, 3, 'Order '.$order['name'].' was charged for a GWP, likely in error. Please check it. https://skylar.com/admin/orders/'.$order['id'], 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
 }
 
 if(match_email($order['email'], $test_emails)){
