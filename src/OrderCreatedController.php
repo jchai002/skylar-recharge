@@ -36,7 +36,7 @@ class OrderCreatedController {
 
 	public static function are_gwps_free($line_items){
 		foreach($line_items as $line_item){
-			if($line_item['product']['type'] == 'GWP' && $line_item['final_price'] != 0){
+			if($line_item['product']['type'] == 'GWP' && $line_item['price'] != $line_item['total_discount']){
 				return false;
 			}
 		}

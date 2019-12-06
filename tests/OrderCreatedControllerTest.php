@@ -42,7 +42,8 @@ class OrderCreatedControllerTest extends TestCase{
 		$this->assertTrue(
 			OrderCreatedController::are_gwps_free([[
 				'product_id' => 4312664113239,
-				'final_price' => 0,
+				'price' => '16.00',
+				'total_discount' => '16.00',
 				'product' => ['type' => 'GWP']
 			]])
 		);
@@ -50,7 +51,8 @@ class OrderCreatedControllerTest extends TestCase{
 		$this->assertFalse(
 			OrderCreatedController::are_gwps_free([[
 				'product_id' => 4312664113239,
-				'final_price' => 20,
+				'price' => '16.00',
+				'total_discount' => '10.00',
 				'product' => ['type' => 'GWP']
 			]])
 		);
