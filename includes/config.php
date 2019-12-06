@@ -989,6 +989,20 @@ function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $
 	sc_calculate_next_charge_date($db, $rc, $address_id);
 	return $res['onetime'];
 }
+function sc_create_promo_sub(RechargeClient $rc, $address_id, $date, $months_to_charge, $promo_day = 19){
+	return $rc->post('/addresses/'.$address_id.'/subscriptions', [
+		'next_charge_scheduled_at' => $date,
+		'product_title' => 'Scent Club Promo',
+		'price' => 0,
+		'quantity' => 1,
+		'shopify_variant_id' => 28003712663639,
+		'order_interval_unit' => 'month',
+		'order_interval_frequency' => 1,
+		'charge_interval_frequency' => $row['shipments'] ?? $months_to_charge,
+		'order_day_of_month' => $promo_day,
+		'expire_after_specific_number_of_charges' => 1,
+	]);
+}
 function sc_pull_profile_data(PDO $db, RechargeClient $rc, $rc_customer_id, $shopify_customer_id=false){
 	$profile_data = [
 		'daysoff' => '',

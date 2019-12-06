@@ -113,18 +113,8 @@ while($rawrow = fgetcsv($f)){
 
 	$date = date('d') > $promo_day ? date('Y-m-', strtotime('next month')).$promo_day : date('Y-m-').$promo_day;
 
-	$res = $rc->post('/addresses/'.$address['id'].'/subscriptions', [
-		'next_charge_scheduled_at' => $date,
-		'product_title' => 'Scent Club Promo',
-		'price' => 0,
-		'quantity' => 1,
-		'shopify_variant_id' => 28003712663639,
-		'order_interval_unit' => 'month',
-		'order_interval_frequency' => 1,
-		'charge_interval_frequency' => $row['shipments'] ?? $months_to_charge,
-		'order_day_of_month' => $promo_day,
-		'expire_after_specific_number_of_charges' => 1,
-	]);
+	$res = sc_create_promo_sub($rc, $address['id'], $date, $row['shipments'] ?? $months_to_charge, $promo_day);
+
 	if(empty($res['subscription'])){
 		echo "CREATE subscription ERROR:";
 		print_r($row);
