@@ -247,6 +247,7 @@ class SubscriptionSchedule {
 			// Show skipped SC subscriptions (iterate backwards)
 			$subscription_index = -1;
 			$next_charge_time = self::get_subscription_time_by_index($subscription_index, $charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
+			$blackout_date_parts = explode('-', date('Y-m'), get_last_month($next_charge_time));
 			while($next_charge_time >= $this->min_time){
 				// Check if other scent club is in this month already
 				$next_charge_date_parts = explode('-', date('Y-m-d', $next_charge_time));
@@ -254,6 +255,21 @@ class SubscriptionSchedule {
 				// Need to check historical orders
 				foreach($this->orders as $order){
 					$ship_date_parts = explode('-', date('Y-m', strtotime($order['scheduled_at'])));
+
+					// Check if customer was in blackout
+					if($subscription_index == -1 && $ship_date_parts[0] == $blackout_date_parts[0] && $ship_date_parts[1] == $blackout_date_parts[1]){
+						$monthly_scent = sc_get_monthly_scent($this->db, $next_charge_time);
+						if(!empty($monthly_scent)){
+							foreach($order['line_items'] as $order_item){
+								// Blackout will always be SC container with "this" month's sku
+								if(is_scent_club(get_product($this->db, $order_item['shopify_product_id'])) && $order_item['sku'] == $monthly_scent['sku']){
+									// In blackout means we can stop rewinding, as no SC before that
+									break 3;
+								}
+							}
+						}
+					}
+
 					if($ship_date_parts[0] != $next_charge_date_parts[0] || $ship_date_parts[1] != $next_charge_date_parts[1]){
 						// Month or year doesn't match
 						continue;
