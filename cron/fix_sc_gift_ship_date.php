@@ -9,7 +9,8 @@ AND v.deleted_at IS NULL;")->fetchAll(PDO::FETCH_COLUMN);
 
 print_r($scent_club_variant_ids);
 
-// Load scent club gift subs
+// Load SC gift subscriptions with ship date of two months from now
+$min_time = get_month_by_offset(2);
 $subscriptions = [];
 $start_time = microtime(true);
 foreach($scent_club_variant_ids as $variant_id){
@@ -25,6 +26,9 @@ foreach($scent_club_variant_ids as $variant_id){
 			'status' => 'ACTIVE',
 		]);
 		foreach($res['subscriptions'] as $subscription){
+			if(strtotime($subscription['next_charge_scheduled_at']) < $min_time){
+				continue;
+			}
 			$subscriptions[] = $subscription;
 		}
 		echo "Adding ".count($res['subscriptions'])." to array - total: ".count($subscriptions).PHP_EOL;
@@ -33,21 +37,26 @@ foreach($scent_club_variant_ids as $variant_id){
 }
 echo "Total: ".count($subscriptions).PHP_EOL;
 
-$starting_point = 0;
-$num_to_process = count($subscriptions);
-$start_time = microtime(true);
-echo "Starting updates $starting_point - ".($starting_point+$num_to_process).PHP_EOL;
-foreach($subscriptions as $index=>$subscription){
-	$monthly_scent_info = sc_get_monthly_scent($db, strtotime($subscription['next_charge_scheduled_at']), true);
-	if(empty($monthly_scent_info)){
+$new_date = date('Y-m-d', offset_date_skip_weekend(get_next_month()));
+foreach($subscriptions as $subscription){
+	echo "Checking ".$subscription['id'].'... ';
+	// Check if _subscription_month property is in the past
+	$subscription_month = get_oli_attribute($subscription, '_subscription_month');
+	if(empty($subscription_month)){
+		$subscription_month = date('Y-m', strtotime($subscription['created_at']));
+	}
+	if(strtotime($subscription_month.'-01') >= $min_time){
+		echo "Skipping, sub was intended for later".PHP_EOL;
 		continue;
 	}
-	if(!$subscription['sku_override'] || $subscription['sku'] != $monthly_scent_info['sku']){
-		// Sku doesn't match or isn't overridden, set it
-		echo "Updating SKU on sub ".$subscription['id']." address ".$subscription['address_id'].PHP_EOL;
-		$res = $rc->put('/subscriptions/'.$subscription['id'], [
-			'sku' => $monthly_scent_info['sku'],
-		]);
+	// If so, that's a bad skip. Move to next month
+	echo "originally ".$subscription_month.", updating to $new_date ... ";
+	$res = $rc->post('/subscriptions/'.$subscription['id'].'/set_next_charge_date', [
+		'date' => $new_date,
+	]);
+	if(empty($res['subscription'])){
 		print_r($res);
+		die("Couldn't update subscription month");
 	}
+	echo $res['subscription']['next_charge_scheduled_at'].PHP_EOL;
 }
