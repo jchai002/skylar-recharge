@@ -270,6 +270,15 @@ foreach($order['line_items'] as $line_item){
 			30995105546327 => 11,
 		];
 
+		$variant_map = [
+			30725266440279 => 30725266440279,
+			30725267882071 => 30725267882071,
+			30725267914839 => 30725267914839,
+			30995105480791 => 30725266440279, // Ship nows
+			30995105513559 => 30725267882071,
+			30995105546327 => 30725267914839,
+		];
+
 		// Create gift subscription
 
 		$properties = [];
@@ -304,7 +313,7 @@ foreach($order['line_items'] as $line_item){
 			'title' => 'Scent Club Gift',
 			'price' => 0,
 			'quantity' => 1,
-			'shopify_variant_id' => $line_item['variant_id'],
+			'shopify_variant_id' => $variant_map[$line_item['variant_id']],
 			'order_interval_unit' => 'month',
 			'order_interval_frequency' => 1,
 			'charge_interval_frequency' => 1,
