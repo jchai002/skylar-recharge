@@ -2,11 +2,11 @@
 require_once(__DIR__.'/../includes/config.php');
 
 $start_from = 0;
-$num_to_generate = 1500;
+$num_to_generate = 500;
 //$model_after = "GET20-*****";
 // For now just use this:
-$price_rule_template = 591968895063;
-$prefix = "RF-10-";
+$price_rule_template = 612618928215;
+$prefix = "RS-20-";
 $batch_mode = true;
 
 mt_srand($price_rule_template);
