@@ -621,7 +621,7 @@ foreach($all_products as $product){
 	$variants = [];
 	foreach($product['variants'] as $variant){
 		$variant['attributes'] = $attributes_by_variant[$variant['id']];
-		$variants[$variant['id']] = $variant;
+		$variants[$variant['id']] = $variant ?? [];
 	}
 	$product['variants'] = $variants;
 	$products_by_id[$product['id']] = $product;
