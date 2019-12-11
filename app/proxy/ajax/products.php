@@ -15,7 +15,7 @@ foreach($all_products as $product){
 	$products_by_id[$product['id']] = $product;
 }
 
-//header('Content-Type: application/json');
+header('Content-Type: application/json');
 echo json_encode([
 	'products' => $products_by_id,
 	'attributes' => getAttributes(),
