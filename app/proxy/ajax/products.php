@@ -5,23 +5,7 @@ $all_products = $sc->get('/admin/products.json', [
 	'limit' => 250,
 ]);
 
-$products_by_id = [];
-foreach($all_products as $product){
-	$variants = [];
-	foreach($product['variants'] as $variant){
-		$variants[$variant['id']] = $variant;
-	}
-	$product['variants'] = $variants;
-	$products_by_id[$product['id']] = $product;
-}
-
-echo json_encode([
-	'products' => $products_by_id,
-	'attributes' => getAttributes(),
-]);
-
-function getAttributes(){
-	$product_attributes = json_decode('{
+$product_attributes = json_decode('{
 	"scent": {
 		"arrow": {
 			"id": 1,
@@ -195,7 +179,7 @@ function getAttributes(){
 		}
 	}
 }', true);
-	$variant_attributes = json_decode('[
+$variant_attributes = json_decode('[
 	{
 		"variant_id": 31022048003,
 		"scent": "arrow",
@@ -623,5 +607,26 @@ function getAttributes(){
 		"product_type": "body_fragrance_duo"
 	}
 ]', true);
-	return [$product_attributes, $variant_attributes];
+
+$attributes_by_variant = [];
+
+foreach($variant_attributes as $attribute_list){
+	$attributes_by_variant[$attribute_list['variant_id']] = $attribute_list;
+	unset($attributes_by_variant[$attribute_list['variant_id']]['variant_id']);
 }
+
+$products_by_id = [];
+foreach($all_products as $product){
+	$variants = [];
+	foreach($product['variants'] as $variant){
+		$variant['attributes'] = $attributes_by_variant;
+		$variants[$variant['id']] = $variant;
+	}
+	$product['variants'] = $variants;
+	$products_by_id[$product['id']] = $product;
+}
+
+echo json_encode([
+	'products' => $products_by_id,
+	'attributes' => $product_attributes,
+]);
