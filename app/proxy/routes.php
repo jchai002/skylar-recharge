@@ -76,7 +76,8 @@ $router->route('/geocheck$/i', function() {
 	require('ajax/geo_api.php');
 	return true;
 });
-$router->route('/products$/i', function() {
+$router->route('/products$/i', function() use(&$json_output) {
+	$json_output = true;
 	require('ajax/products.php');
 	return true;
 });
