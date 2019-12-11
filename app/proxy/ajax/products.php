@@ -3,6 +3,7 @@ global $sc, $db;
 
 $all_products = $sc->get('/admin/products.json', [
 	'limit' => 250,
+	'published_status' => 'published',
 ]);
 
 $product_attributes = json_decode('{
