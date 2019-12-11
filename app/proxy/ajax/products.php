@@ -195,7 +195,6 @@ function getAttributes(){
 		}
 	}
 }', true);
-	var_dump(json_last_error_msg());
 	$variant_attributes = json_decode('[
 	{
 		"variant_id": 31022048003,
@@ -624,6 +623,5 @@ function getAttributes(){
 		"product_type": "body_fragrance_duo"
 	}
 ]', true);
-	var_dump(json_last_error_msg());
 	return [$product_attributes, $variant_attributes];
 }
