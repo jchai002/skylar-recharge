@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__.'/../../../includes/config.php');
+global $sc, $db;
 
 $all_products = $sc->get('/admin/products.json', [
 	'limit' => 250,
