@@ -60,6 +60,29 @@ do {
 	}
 } while(count($res) >= $page_size);
 
+// metafields
+echo "Updating product metafields".PHP_EOL;
+$updated_product_ids = $db->query("SELECT shopify_id FROM products WHERE updated_at >= '$min_date'")->fetchAll(PDO::FETCH_COLUMN);
+foreach($updated_product_ids AS $product_id){
+	$metafields = $sc->get('/admin/products/'.$product_id.'/metafields.json');
+	if(empty($metafields)){
+		print_r($sc->last_error);
+		echo "Couldn't get metafields for $product_id".PHP_EOL;
+		continue;
+	}
+	print_r(insert_update_metafields($db, $metafields));
+}
+echo "Updating variant metafields".PHP_EOL;
+$updated_variant_ids = $db->query("SELECT shopify_id FROM variants WHERE updated_at >= '$min_date'")->fetchAll(PDO::FETCH_COLUMN);
+foreach($updated_variant_ids AS $variant_id){
+	$metafields = $sc->get('/admin/variants/'.$variant_id.'/metafields.json');
+	if(empty($metafields)){
+		print_r($sc->last_error);
+		echo "Couldn't get metafields for $variant_id".PHP_EOL;
+		continue;
+	}
+	print_r(insert_update_metafields($db, $metafields));
+}
 
 // Daily syncs
 if(
@@ -109,6 +132,31 @@ if(
 			echo "Deleting ".$row['shopify_id'].PHP_EOL;
 			$stmt_delete_product->execute([$row['id']]);
 		}
+	}
+
+
+	// Update all Metafields
+	echo "Updating all product metafields".PHP_EOL;
+	$updated_product_ids = $db->query("SELECT shopify_id FROM products WHERE deleted_at IS NULL")->fetchAll(PDO::FETCH_COLUMN);
+	foreach($updated_product_ids AS $product_id){
+		$metafields = $sc->get('/admin/products/'.$product_id.'/metafields.json');
+		if(empty($metafields)){
+			print_r($sc->last_error);
+			echo "Couldn't get metafields for $product_id".PHP_EOL;
+			continue;
+		}
+		print_r(insert_update_metafields($db, $metafields));
+	}
+	echo "Updating variant metafields".PHP_EOL;
+	$updated_variant_ids = $db->query("SELECT shopify_id FROM variants WHERE deleted_at IS NULL")->fetchAll(PDO::FETCH_COLUMN);
+	foreach($updated_variant_ids AS $variant_id){
+		$metafields = $sc->get('/admin/variants/'.$variant_id.'/metafields.json');
+		if(empty($metafields)){
+			print_r($sc->last_error);
+			echo "Couldn't get metafields for $variant_id".PHP_EOL;
+			continue;
+		}
+		print_r(insert_update_metafields($db, $metafields));
 	}
 
 	echo "Updating missing AC fulfillments".PHP_EOL;

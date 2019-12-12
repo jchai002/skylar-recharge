@@ -5,6 +5,50 @@ $all_products = $sc->get('/admin/products.json', [
 	'limit' => 250,
 	'published_status' => 'published',
 ]);
+$stmt_product_metafields = $db->prepare("SELECT * FROM metafields WHERE owner_resource='product' AND owner_id=?");
+$stmt_variant_metafields = $db->prepare("SELECT * FROM metafields WHERE owner_resource='variant' AND owner_id=?");
+foreach($all_products as $product){
+	$stmt_product_metafields->execute([$product['id']]);
+	$product['metafields'] = [];
+	foreach($stmt_product_metafields->fetchAll() as $metafield){
+		if(!array_key_exists($metafield['namespace'], $product['metafields'])){
+			$product['metafields'][$metafield['namespace']] = [];
+		}
+		switch($metafield['value_type']){
+			default:
+				$product['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value'];
+				break;
+			case 'integer':
+				$product['metafields'][$metafield['namespace']][$metafield['key']] = intval($metafield['value']);
+				break;
+			case 'json_string':
+				$product['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
+				break;
+
+		}
+	}
+	foreach($product['variants'] as $index=>$variant){
+		$stmt_variant_metafields->execute([$variant['id']]);
+		$product['variants'][$index]['metafields'] = [];
+		foreach($stmt_product_metafields->fetchAll() as $metafield){
+			if(!array_key_exists($metafield['namespace'], $product['variants'][$index]['metafields'])){
+				$product['variants'][$index]['metafields'][$metafield['namespace']] = [];
+			}
+			switch($metafield['value_type']){
+				default:
+					$product['variants'][$index]['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value'];
+					break;
+				case 'integer':
+					$product['variants'][$index]['metafields'][$metafield['namespace']][$metafield['key']] = intval($metafield['value']);
+					break;
+				case 'json_string':
+					$product['variants'][$index]['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
+					break;
+
+			}
+		}
+	}
+}
 
 $product_attributes = json_decode('{
 	"scent": {
