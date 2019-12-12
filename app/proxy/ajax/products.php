@@ -1,4 +1,6 @@
 <?php
+// Too much data to output buffer - just kill for performance
+ob_end_clean();
 global $sc, $db;
 
 $all_products = $sc->get('/admin/products.json', [
@@ -670,8 +672,6 @@ foreach($all_products as $product){
 	$products_by_id[$product['id']] = $product;
 }
 
-// Too much data to output buffer - just kill for performance
-ob_end_flush();
 header('Content-Type: application/json');
 echo json_encode([
 	'products' => $products_by_id,
