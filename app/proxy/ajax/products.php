@@ -634,9 +634,9 @@ foreach($all_products as $product){
 			case 'integer':
 				$product['metafields'][$metafield['namespace']][$metafield['key']] = intval($metafield['value']);
 				break;
-			case 'json_string':
-				$product['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
-				break;
+//			case 'json_string':
+//				$product['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
+//				break;
 
 		}
 	}
@@ -656,9 +656,9 @@ foreach($all_products as $product){
 				case 'integer':
 					$variant['metafields'][$metafield['namespace']][$metafield['key']] = intval($metafield['value']);
 					break;
-				case 'json_string':
-					$variant['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
-					break;
+//				case 'json_string':
+//					$variant['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
+//					break;
 
 			}
 		}
