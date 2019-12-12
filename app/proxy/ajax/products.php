@@ -627,7 +627,7 @@ foreach($all_products as $product){
 		if(!array_key_exists($metafield['namespace'], $product['metafields'])){
 			$product['metafields'][$metafield['namespace']] = [];
 		}
-		$product['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value'];
+		$product['metafields'][$metafield['namespace']][$metafield['key']] = 1;
 		continue;
 		switch($metafield['value_type']){
 			default:
