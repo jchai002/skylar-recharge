@@ -671,8 +671,10 @@ foreach($all_products as $product){
 	$product['variants'] = $variants;
 	$products_by_id[$product['id']] = $product;
 }
-
+ob_end_flush();
+header('Content-Type: application/json');
 echo json_encode([
 	'products' => $products_by_id,
 	'attributes' => $product_attributes,
 ]);
+die();
