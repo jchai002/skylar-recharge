@@ -15,7 +15,7 @@ if(empty($product)){
 	die('no data');
 }
 
-echo insert_update_product($db, $product);
+echo insert_update_product($db, $product).PHP_EOL;
 
 $metafields = $sc->get('/admin/products/'.$product['id'].'/metafields.json');
 if(empty($metafields)){
