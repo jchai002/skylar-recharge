@@ -617,8 +617,8 @@ foreach($variant_attributes as $attribute_list){
 }
 
 $products_by_id = [];
-$stmt_product_metafields = $db->prepare("SELECT * FROM metafields WHERE owner_resource='product' AND owner_id=?");
-$stmt_variant_metafields = $db->prepare("SELECT * FROM metafields WHERE owner_resource='variant' AND owner_id=?");
+$stmt_product_metafields = $db->prepare("SELECT namespace, `key`, `value` FROM metafields WHERE owner_resource='product' AND owner_id=?");
+$stmt_variant_metafields = $db->prepare("SELECT namespace, `key`, `value` FROM metafields WHERE owner_resource='variant' AND owner_id=?");
 foreach($all_products as $product){
 	$variants = [];
 	$product['metafields'] = new ArrayObject();
@@ -634,9 +634,9 @@ foreach($all_products as $product){
 			case 'integer':
 				$product['metafields'][$metafield['namespace']][$metafield['key']] = intval($metafield['value']);
 				break;
-			case 'json_string':
-				$product['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
-				break;
+//			case 'json_string':
+//				$product['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
+//				break;
 
 		}
 	}
@@ -655,9 +655,9 @@ foreach($all_products as $product){
 				case 'integer':
 					$variant['metafields'][$metafield['namespace']][$metafield['key']] = intval($metafield['value']);
 					break;
-				case 'json_string':
-					$variant['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
-					break;
+//				case 'json_string':
+//					$variant['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
+//					break;
 
 			}
 		}
