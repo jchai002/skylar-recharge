@@ -623,7 +623,6 @@ foreach($all_products as $product){
 	$variants = [];
 	$product['metafields'] = new ArrayObject();
 	$stmt_product_metafields->execute([$product['id']]);
-	/*
 	foreach($stmt_product_metafields->fetchAll() as $metafield){
 		if(!array_key_exists($metafield['namespace'], $product['metafields'])){
 			$product['metafields'][$metafield['namespace']] = [];
@@ -641,12 +640,10 @@ foreach($all_products as $product){
 
 		}
 	}
-	*/
 	foreach($product['variants'] as $variant){
 		$variant['attributes'] = $attributes_by_variant[$variant['id']];
 		$stmt_variant_metafields->execute([$variant['id']]);
 		$variant['metafields'] = new ArrayObject();
-		/*
 		foreach($stmt_product_metafields->fetchAll() as $metafield){
 			if(!array_key_exists($metafield['namespace'], $variant['metafields'])){
 				$variant['metafields'][$metafield['namespace']] = [];
@@ -664,7 +661,6 @@ foreach($all_products as $product){
 
 			}
 		}
-		*/
 		$variants[$variant['id']] = $variant ?? [];
 	}
 	$product['variants'] = $variants;
