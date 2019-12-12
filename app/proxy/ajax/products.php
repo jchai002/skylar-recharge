@@ -627,8 +627,6 @@ foreach($all_products as $product){
 		if(!array_key_exists($metafield['namespace'], $product['metafields'])){
 			$product['metafields'][$metafield['namespace']] = [];
 		}
-//		$product['metafields'][$metafield['namespace']][$metafield['key']] = 1;
-//		continue;
 		switch($metafield['value_type']){
 			default:
 				$product['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value'];
@@ -651,8 +649,6 @@ foreach($all_products as $product){
 			if(!array_key_exists($metafield['namespace'], $variant['metafields'])){
 				$variant['metafields'][$metafield['namespace']] = [];
 			}
-//			$variant['metafields'][$metafield['namespace']][$metafield['key']] = 1;
-//			continue;
 			switch($metafield['value_type']){
 				default:
 					$variant['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value'];
@@ -671,6 +667,8 @@ foreach($all_products as $product){
 	$product['variants'] = $variants;
 	$products_by_id[$product['id']] = $product;
 }
+
+// Too much data to output buffer - just kill for performance
 ob_end_flush();
 header('Content-Type: application/json');
 echo json_encode([
