@@ -619,8 +619,15 @@ foreach($variant_attributes as $attribute_list){
 }
 
 $products_by_id = [];
-$stmt_product_metafields = $db->prepare("SELECT namespace, `key`, `value`, value_type FROM metafields WHERE owner_resource='product' AND owner_id=?");
-$stmt_variant_metafields = $db->prepare("SELECT namespace, `key`, `value`, value_type FROM metafields WHERE owner_resource='variant' AND owner_id=?");
+$exclusions_cluase = "
+AND NOT (namespace = 'spr' AND `key` = 'reviews')
+AND NOT (namespace = 'yotpo' AND `key` = 'bottomline')
+AND NOT (namespace = 'yotpo' AND `key` = 'qa_bottomline')
+AND NOT (namespace = 'yotpo' AND `key` = 'catalog_bottomline')
+AND NOT (namespace = 'yotpo_reviews' AND `key` = '1000')
+AND NOT (namespace = 'yotpo' AND `key` = 'richsnippetshtml')";
+$stmt_product_metafields = $db->prepare("SELECT namespace, `key`, `value`, value_type FROM metafields WHERE owner_resource='product' AND owner_id=?".$exclusions_cluase);
+$stmt_variant_metafields = $db->prepare("SELECT namespace, `key`, `value`, value_type FROM metafields WHERE owner_resource='variant' AND owner_id=?".$exclusions_cluase);
 foreach($all_products as $product){
 	$variants = [];
 	$product['metafields'] = new ArrayObject();
