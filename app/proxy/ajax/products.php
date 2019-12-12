@@ -634,11 +634,12 @@ foreach($all_products as $product){
 			case 'integer':
 				$product['metafields'][$metafield['namespace']][$metafield['key']] = intval($metafield['value']);
 				break;
-//			case 'json_string':
-//				$product['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
-//				break;
+			case 'json_string':
+				$product['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
+				break;
 
 		}
+		$product['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value_type'];
 	}
 	foreach($product['variants'] as $variant){
 
@@ -656,11 +657,12 @@ foreach($all_products as $product){
 				case 'integer':
 					$variant['metafields'][$metafield['namespace']][$metafield['key']] = intval($metafield['value']);
 					break;
-//				case 'json_string':
-//					$variant['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
-//					break;
+				case 'json_string':
+					$variant['metafields'][$metafield['namespace']][$metafield['key']] = json_decode($metafield['value']);
+					break;
 
 			}
+			$variant['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value'];
 		}
 		$variants[$variant['id']] = $variant ?? [];
 	}
