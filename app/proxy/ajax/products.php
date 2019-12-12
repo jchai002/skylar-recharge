@@ -627,7 +627,7 @@ foreach($all_products as $product){
 		if(!array_key_exists($metafield['namespace'], $product['metafields'])){
 			$product['metafields'][$metafield['namespace']] = [];
 		}
-		$product['metafields'][$metafield['namespace']][$metafield['key']] = 1;
+		$product['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value'];
 		continue;
 		switch($metafield['value_type']){
 			default:
@@ -651,7 +651,7 @@ foreach($all_products as $product){
 			if(!array_key_exists($metafield['namespace'], $variant['metafields'])){
 				$variant['metafields'][$metafield['namespace']] = [];
 			}
-			$variant['metafields'][$metafield['namespace']][$metafield['key']] = 1;
+			$variant['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value'];
 			continue;
 			switch($metafield['value_type']){
 				default:
