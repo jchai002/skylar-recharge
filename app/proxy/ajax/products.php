@@ -641,7 +641,7 @@ foreach($all_products as $product){
 				break;
 
 		}
-		$product['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value_type'];
+		$product['metafields'][$metafield['namespace']][$metafield['key']] = $metafield['value'];
 	}
 	foreach($product['variants'] as $variant){
 
