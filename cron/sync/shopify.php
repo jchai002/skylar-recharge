@@ -127,7 +127,7 @@ if(
 		WHERE (synced_at < '$sync_start' OR synced_at IS NULL) AND deleted_at IS NULL");
 	$stmt_delete_variant = $db->prepare("UPDATE variants SET deleted_at='$sync_start' WHERE id=?");
 	foreach($stmt->fetchAll() as $row){
-		$res = $sc->get('/admin/variants/'.$row['shopify_id'].'/.json');
+		$res = $sc->get('/admin/variants/'.$row['shopify_id'].'.json');
 		if(empty($res) && $sc->last_response_headers['http_status_code'] == '404'){
 			echo "Deleting ".$row['shopify_id'].PHP_EOL;
 			$stmt_delete_product->execute([$row['id']]);
