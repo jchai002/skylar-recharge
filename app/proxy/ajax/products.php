@@ -643,7 +643,8 @@ foreach($all_products as $product){
 		}
 	}
 	foreach($product['variants'] as $variant){
-		$variant['attributes'] = $attributes_by_variant[$variant['id']];
+
+		$variant['attributes'] = $attributes_by_variant[$variant['id']] ?? new ArrayObject();
 		$stmt_variant_metafields->execute([$variant['id']]);
 		$variant['metafields'] = new ArrayObject();
 		foreach($stmt_product_metafields->fetchAll() as $metafield){
