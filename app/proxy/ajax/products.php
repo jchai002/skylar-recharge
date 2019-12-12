@@ -621,11 +621,11 @@ $stmt_product_metafields = $db->prepare("SELECT * FROM metafields WHERE owner_re
 $stmt_variant_metafields = $db->prepare("SELECT * FROM metafields WHERE owner_resource='variant' AND owner_id=?");
 foreach($all_products as $product){
 	$variants = [];
-	$product['metafields'] = [];
+	$product['metafields'] = new ArrayObject();
 	$stmt_product_metafields->execute([$product['id']]);
 	foreach($stmt_product_metafields->fetchAll() as $metafield){
 		if(!array_key_exists($metafield['namespace'], $product['metafields'])){
-			$product['metafields'][$metafield['namespace']] = new ArrayObject();
+			$product['metafields'][$metafield['namespace']] = [];
 		}
 		switch($metafield['value_type']){
 			default:
@@ -643,10 +643,10 @@ foreach($all_products as $product){
 	foreach($product['variants'] as $variant){
 		$variant['attributes'] = $attributes_by_variant[$variant['id']];
 		$stmt_variant_metafields->execute([$variant['id']]);
-		$variant['metafields'] = [];
+		$variant['metafields'] = new ArrayObject();
 		foreach($stmt_product_metafields->fetchAll() as $metafield){
 			if(!array_key_exists($metafield['namespace'], $variant['metafields'])){
-				$variant['metafields'][$metafield['namespace']] = new ArrayObject();
+				$variant['metafields'][$metafield['namespace']] = [];
 			}
 			switch($metafield['value_type']){
 				default:
