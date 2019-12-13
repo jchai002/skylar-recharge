@@ -237,6 +237,9 @@ class SubscriptionSchedule {
 				$subscription_index++;
 				$next_charge_time = self::get_subscription_time_by_index($subscription_index, $charge_time, $subscription['order_interval_frequency'], $subscription['order_interval_unit'], $subscription['order_interval_index']);
 				if($subscription_index > 100){
+					if(ENV_TYPE == 'LIVE'){
+						break;
+					}
 					throw new Exception('Too many loops');
 				}
 			}
