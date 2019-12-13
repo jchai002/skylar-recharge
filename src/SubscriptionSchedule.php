@@ -318,6 +318,7 @@ class SubscriptionSchedule {
 					if(ENV_TYPE == 'LIVE'){
 						break;
 					}
+					break;
 					throw new Exception('Too many loops');
 				}
 			}
