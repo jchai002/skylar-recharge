@@ -32,6 +32,7 @@ AND NOT (namespace = 'yotpo_reviews' AND `key` = '1000')
 AND NOT (namespace = 'yotpo' AND `key` = 'richsnippetshtml')";
 $stmt_product_metafields = $db->prepare("SELECT namespace, `key`, `value`, value_type FROM metafields WHERE owner_resource='product' AND  owner_id=? AND deleted_at IS NULL".$exclusions_cluase);
 $stmt_variant_metafields = $db->prepare("SELECT namespace, `key`, `value`, value_type FROM metafields WHERE owner_resource='variant' AND owner_id=? AND deleted_at IS NULL".$exclusions_cluase);
+$stmt_get_variant_kit = $db->prepare("SELECT vc.shopify_id FROM variant_kits vk LEFT JOIN variants vp ON vk.parent_variant=vp.id LEFT JOIN variants vc ON vk.child_variant=vc.variant WHERE vp.shopify_id=?");
 foreach($all_products as $product){
 	$variants = [];
 	$product['metafields'] = new ArrayObject();
@@ -54,7 +55,8 @@ foreach($all_products as $product){
 		}
 	}
 	foreach($product['variants'] as $variant){
-
+		$stmt_get_variant_kit->execute([$variant['id']]);
+		$variant['kit_ids'] = $stmt_get_variant_kit->rowCount() > 0 ? $stmt_get_variant_kit->fetchAll(PDO::FETCH_COLUMN) : new ArrayObject();
 		$variant['attributes'] = $attributes_by_variant[$variant['id']] ?? new ArrayObject();
 		$stmt_variant_metafields->execute([$variant['id']]);
 		$variant['metafields'] = new ArrayObject();
