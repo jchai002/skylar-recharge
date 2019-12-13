@@ -550,7 +550,7 @@ class SubscriptionSchedule {
 			$date_month = date('m', $start_time);
 			$date_day = date('d', $start_time);
 			$date_month += $order_interval_frequency*$index;
-			while($date_month < 0){
+			while($date_month < 1){
 				$date_month += 12;
 				$date_year -= 1;
 			}
@@ -558,14 +558,14 @@ class SubscriptionSchedule {
 				$date_month -= 12;
 				$date_year += 1;
 			}
-			$max_day = date('T', strtotime(implode('-',[$date_year,$date_month,'01'])));
+			$max_day = date('t', strtotime("$date_year-$date_month-01"));
 			if(!empty($order_interval_index)){
 				$date_day = $order_interval_index;
 			}
 			if($date_day > $max_day){
 				$date_day = $max_day;
 			}
-			$next_time = strtotime(implode('-', [$date_year, $date_month, $date_day]));
+			$next_time = strtotime("$date_year-$date_month-$date_day");
 		} else { // week
 			$next_time = strtotime(($index >= 0 ? '+ ' : '').(7*$index).' days', $start_time);
 			if($order_interval_index !== false){
