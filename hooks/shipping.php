@@ -25,16 +25,14 @@ foreach($rate['items'] as $item){
 	]) || $item['product_id'] == 3875807395927){
 		$is_rc = true;
 	}
+	if(!empty(get_oli_attribute($item, '_test'))){
+		$is_test = true;
+	}
+	if(!empty(get_oli_attribute($item, '_freeship_override'))){
+		$free_override = true;
+	}
 	if(empty($item['properties'])){
 		continue;
-	}
-	foreach($item['properties'] as $key=>$value){
-		if($key == 'test' && $value == 1){
-			$is_test = true;
-		}
-		if($key == '_freeship_override' && $value == 1){
-			$free_override = true;
-		}
 	}
 }
 $_RATES = [];
