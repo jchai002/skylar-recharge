@@ -16,8 +16,9 @@ if(empty($headers['X-Shopify-Shop-Domain'])){
 }
 $shop_url = $headers['X-Shopify-Shop-Domain'];
 $is_rc = $free_override = $is_test = false;
+$debug = [];
 foreach($rate['items'] as $item){
-	if(in_array(get_product($db, $item['product_id']), [
+	if(in_array(get_product($db, $item['product_id'])['type'], [
 		'subscription',
 		'Scent Club',
 		'Scent Club Gift',
