@@ -37,7 +37,7 @@ foreach($rate['items'] as $item){
 	}
 }
 if($rate['destination']['postal_code'] == '90292' && strtolower($rate['destination']['address1']) == '4505 glencoe ave'){
-	$test = true;
+	$is_test = true;
 }
 $_RATES = [];
 
