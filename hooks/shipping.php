@@ -23,7 +23,10 @@ foreach($rate['items'] as $item){
 		'Scent Club',
 		'Scent Club Gift',
 		'Body Bundle',
-	]) || $item['product_id'] == 3875807395927){
+	]) || in_array($item['product_id'], [
+		3875807395927, // AC sample
+		3950215004247, // AC sample RC version
+	])){
 		$is_rc = true;
 	}
 	if(!empty(get_oli_attribute($item, '_test'))){
