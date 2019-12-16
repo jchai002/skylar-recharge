@@ -15,34 +15,25 @@ if(empty($headers['X-Shopify-Shop-Domain'])){
 	die();
 }
 $shop_url = $headers['X-Shopify-Shop-Domain'];
-$is_rc = $free_override = $is_test = false;
-$debug = [];
+$free_override = $is_test = false;
 foreach($rate['items'] as $item){
-	if(in_array(get_product($db, $item['product_id'])['type'], [
-		'subscription',
-		'Scent Club',
-		'Scent Club Gift',
-		'Body Bundle',
-	]) || in_array($item['product_id'], [
-		3875807395927, // AC sample
-		3950215004247, // AC sample RC version
-	])){
-		$is_rc = true;
-	}
-	if(!empty(get_oli_attribute($item, '_test'))){
-		$is_test = true;
-	}
-	if(!empty(get_oli_attribute($item, '_freeship_override'))){
-		$free_override = true;
-	}
 	if(empty($item['properties'])){
 		continue;
 	}
-}
-if($rate['destination']['postal_code'] == '90292' && strtolower($rate['destination']['address1']) == '4505 glencoe ave'){
-	$is_test = true;
+	foreach($item['properties'] as $key=>$value){
+		if($key == 'test' && $value == 1){
+			$is_test = true;
+		}
+		if($key == '_freeship_override' && $value == 1){
+			$free_override = true;
+		}
+	}
 }
 $_RATES = [];
+if(!$is_test){
+//	echo json_encode(["rates"=>$_RATES]);
+//	die();
+}
 
 $stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
 $sc_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -66,8 +57,6 @@ $stmt = $db->query("SELECT sku FROM variants WHERE shopify_id IN(".implode(',',a
 $fullsize_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $has_fullsize = !empty(array_intersect(array_column($rate['items'], 'sku'), $fullsize_skus));
 
-$happyship_live = time() >= strtotime('12/18/19 12:00 am pst') && time() <= strtotime('12/19/19 11:59 pm pst');
-$justintime_live = time() >= strtotime('12/20/19 12:00 am pst') && time() <= strtotime('12/21/19 11:59 pm pst');
 
 switch($rate['destination']['country']){
 	case 'US':
@@ -107,9 +96,6 @@ switch($rate['destination']['country']){
 			'description' => 'Order must be placed before noon PST Monday-Friday',
 			'currency' => 'USD',
 		];
-		if($is_rc && $total_price >= 75 && ($happyship_live || $is_test)){
-			$_RATES[count($_RATES)-1]['total_price'] = 0;
-		}
 		if(!in_array($rate['destination']['province'], ['HI', 'AK', 'AS', 'FM', 'GU', 'MH', 'MP', 'PW', 'PR', 'VI', 'AE', 'AA', 'AP'])){ // Exclude outside lower 48
 			$_RATES[] = [
 				'service_name' => 'Next Day Shipping (1 business day)',
@@ -118,9 +104,6 @@ switch($rate['destination']['country']){
 				'description' => 'Order must be placed before noon PST Monday-Friday. Excludes AK and HI',
 				'currency' => 'USD',
 			];
-			if($is_rc && $total_price >= 100 && ($justintime_live || $is_test)){
-				$_RATES[count($_RATES)-1]['total_price'] = 0;
-			}
 		}
 		break;
 	case 'CA':
@@ -208,7 +191,7 @@ if($free_override){
 		$_RATES[$index]['total_price'] = 0;
 	}
 }
-log_event($db, 'SHIPPING_RATES', json_encode($_RATES), 'REQUESTED', json_encode($rate), json_encode(['is_test' => $is_test, 'is_rc' => $is_rc, 'has_fullsize'=>$has_fullsize, 'has_sc' => $has_sc, 'total_price' => $total_price, 'total_weight' => $total_weight, 'headers' => $headers]));
+log_event($db, 'SHIPPING_RATES', json_encode($_RATES), 'REQUESTED', json_encode($rate), json_encode(['has_fullsize'=>$has_fullsize, 'has_sc' => $has_sc, 'total_price' => $total_price, 'total_weight' => $total_weight, 'headers' => $headers]));
 
 echo json_encode(["rates"=>$_RATES]);
 
