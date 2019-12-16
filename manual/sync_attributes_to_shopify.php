@@ -10,7 +10,7 @@ $attribute_values = [
 ];
 
 
-$variant_attributes = $db->query("SELECT * FROM variant_attribute_codes")->fetchAll();
+$variant_attributes = $db->query("SELECT vc.* FROM variant_attribute_codes vc LEFT JOIN variants v ON vc.variant_id=v.shopify_id WHERE v.deleted_at IS NULL")->fetchAll();
 
 $stmt_get_metafield = $db->prepare("SELECT shopify_id, value FROM metafields WHERE owner_resource='variant' AND owner_id=? AND namespace='skylar' AND `key`='attributes' AND deleted_at IS NULL");
 foreach($variant_attributes as $variant_attribute){
@@ -43,9 +43,13 @@ foreach($variant_attributes as $variant_attribute){
 			'value' => json_encode($new_value),
 		]]);
 		if(empty($res)){
-			echo "Error!";
-			print_r($sc->last_error);
-			die();
+			if($sc->last_error['errors'] == 'Not Found'){
+				echo "Variant not found in Shopify. Skipping".PHP_EOL;
+			} else {
+				echo "Error!";
+				print_r($sc->last_error);
+				die();
+			}
 		}
 		echo $res['id'].PHP_EOL;
 		continue;
