@@ -36,6 +36,9 @@ foreach($rate['items'] as $item){
 		continue;
 	}
 }
+if($rate['destination']['postal_code'] == '90292' && strtolower($rate['destination']['address1']) == '4505 glencoe ave'){
+	$test = true;
+}
 $_RATES = [];
 
 $stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
