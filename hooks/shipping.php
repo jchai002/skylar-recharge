@@ -36,10 +36,6 @@ foreach($rate['items'] as $item){
 	}
 }
 $_RATES = [];
-if(!$is_test){
-//	echo json_encode(["rates"=>$_RATES]);
-//	die();
-}
 
 $stmt = $db->query("SELECT DISTINCT sku FROM sc_product_info");
 $sc_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -205,7 +201,7 @@ if($free_override){
 		$_RATES[$index]['total_price'] = 0;
 	}
 }
-log_event($db, 'SHIPPING_RATES', json_encode($_RATES), 'REQUESTED', json_encode($rate), json_encode(['has_fullsize'=>$has_fullsize, 'has_sc' => $has_sc, 'total_price' => $total_price, 'total_weight' => $total_weight, 'headers' => $headers]));
+log_event($db, 'SHIPPING_RATES', json_encode($_RATES), 'REQUESTED', json_encode($rate), json_encode(['is_test' => $is_test, 'is_rc' => $is_rc, 'has_fullsize'=>$has_fullsize, 'has_sc' => $has_sc, 'total_price' => $total_price, 'total_weight' => $total_weight, 'headers' => $headers]));
 
 echo json_encode(["rates"=>$_RATES]);
 
