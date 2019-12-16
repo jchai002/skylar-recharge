@@ -15,8 +15,16 @@ if(empty($headers['X-Shopify-Shop-Domain'])){
 	die();
 }
 $shop_url = $headers['X-Shopify-Shop-Domain'];
-$free_override = $is_test = false;
+$is_rc = $free_override = $is_test = false;
 foreach($rate['items'] as $item){
+	if(in_array(get_product($db, $item['product_id']), [
+		'subscription',
+		'Scent Club',
+		'Scent Club Gift',
+		'Body Bundle',
+	]) || $item['product_id'] == 3875807395927){
+		$is_rc = true;
+	}
 	if(empty($item['properties'])){
 		continue;
 	}
@@ -57,6 +65,8 @@ $stmt = $db->query("SELECT sku FROM variants WHERE shopify_id IN(".implode(',',a
 $fullsize_skus = $stmt->fetchAll(PDO::FETCH_COLUMN);
 $has_fullsize = !empty(array_intersect(array_column($rate['items'], 'sku'), $fullsize_skus));
 
+$happyship_live = time() >= strtotime('12/18/19 12:00 am pst') && time() <= strtotime('12/19/19 11:59 pm pst');
+$justintime_live = time() >= strtotime('12/20/19 12:00 am pst') && time() <= strtotime('12/21/19 11:59 pm pst');
 
 switch($rate['destination']['country']){
 	case 'US':
@@ -96,6 +106,9 @@ switch($rate['destination']['country']){
 			'description' => 'Order must be placed before noon PST Monday-Friday',
 			'currency' => 'USD',
 		];
+		if($is_rc && $total_price >= 75 && ($happyship_live || $is_test)){
+			$_RATES[count($_RATES)-1]['total_price'] = 0;
+		}
 		if(!in_array($rate['destination']['province'], ['HI', 'AK', 'AS', 'FM', 'GU', 'MH', 'MP', 'PW', 'PR', 'VI', 'AE', 'AA', 'AP'])){ // Exclude outside lower 48
 			$_RATES[] = [
 				'service_name' => 'Next Day Shipping (1 business day)',
@@ -104,6 +117,9 @@ switch($rate['destination']['country']){
 				'description' => 'Order must be placed before noon PST Monday-Friday. Excludes AK and HI',
 				'currency' => 'USD',
 			];
+			if($is_rc && $total_price >= 100 && ($justintime_live || $is_test)){
+				$_RATES[count($_RATES)-1]['total_price'] = 0;
+			}
 		}
 		break;
 	case 'CA':
