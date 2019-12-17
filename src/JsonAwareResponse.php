@@ -10,18 +10,15 @@ class JsonAwareResponse extends Response
 	 */
 	private $json;
 
-	public function getBody()
-	{
+	public function getJson(){
 		if ($this->json) {
 			return $this->json;
 		}
-		// get parent Body stream
-		$body = parent::getBody();
-
-		// if JSON HTTP header detected - then decode
-		if (false !== strpos($this->getHeaderLine('Content-Type'), 'application/json')) {
-			return $this->json = \json_decode($body, true);
+		if (false === strpos($this->getHeaderLine('Content-Type'), 'application/json')) {
+			return [];
 		}
-		return $body;
+		// get parent Body stream
+		$this->json = json_decode((string) parent::getBody(), true);
+		return $this->json;
 	}
 }
