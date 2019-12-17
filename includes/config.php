@@ -946,6 +946,7 @@ function sc_delete_month_onetime(PDO $db, RechargeClient $rc, $address_id, $time
 function is_admin_address($address_id){
 	return in_array($address_id, [
 		29478544, // Julie
+		38807342, // julie@skylar.com
 		29102064, // Jim
 		//29806558, // Tim
 	]);
