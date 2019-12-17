@@ -15,7 +15,8 @@
     "ext-pdo": "*",
     "theiconic/php-ga-measurement-protocol": "^2.7",
     "google/apiclient": "^2.0",
-    "chuyskywalker/rolling-curl": "^3.1"
+    "chuyskywalker/rolling-curl": "^3.1",
+    "guzzlehttp/guzzle": "~6.0"
   },
   "autoload": {
     "psr-4": { "": "src/" }
