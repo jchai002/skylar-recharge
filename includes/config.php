@@ -48,6 +48,23 @@ $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 $sc = new ShopifyClient();
 $rc = new RechargeClient();
 
+$cc = new GuzzleHttp\Client([
+	'base_uri' => 'https://api.cin7.com/api/v1/',
+	'auth' =>  [$_ENV['CIN7_API_USER'], $_ENV['CIN7_API_SECRET']],
+]);
+
+/** @var GuzzleHttp\HandlerStack $handler */
+$handler = $cc->getConfig('handler');
+$handler->push(\GuzzleHttp\Middleware::mapResponse(function (\Psr\Http\Message\ResponseInterface $response) {
+	return new JsonAwareResponse(
+		$response->getStatusCode(),
+		$response->getHeaders(),
+		$response->getBody(),
+		$response->getProtocolVersion(),
+		$response->getReasonPhrase()
+	);
+}), 'json_decode_middleware');
+
 $ids_by_scent = [
 	'arrow'  => ['variant' => 31022048003,     'product' => 8985085187],
 	'capri'  => ['variant' => 5541512970271,   'product' => 443364081695],
