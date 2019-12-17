@@ -199,9 +199,11 @@ print_r($schedule->get());
 													<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
                                                         <div class="sc-item-title">Skylar Scent Club</div>
                                                         <div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
+                                                        <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" alt="Swap scent icon" /> <span>Swap Scent</span></a></div>
                                                     <?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
                                                         <div class="sc-item-title"><?=$item['product_title']?></div>
                                                         <div class="sc-item-subtitle"><?=$item['variant_title']?></div>
+                                                        <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" alt="Swap scent icon" /> <span>Swap Scent</span></a></div>
                                                     <?php } else { ?>
                                                         <div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
                                                         {% if box_variant.title != 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
