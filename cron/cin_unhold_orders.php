@@ -25,11 +25,20 @@ do {
 	$stmt = $db->prepare("SELECT * FROM orders WHERE number=?");
 	foreach($cc_orders as $index=>$cc_order){
 		echo "Checking order ".$cc_order['reference']."... ";
+		if($cc_order['logisticsStatus'] != 9){
+			if(!empty($row['cancelled_at'])){
+				echo "logisticsStatus is ".$cc_order['logisticsStatus'].", skipping cin7 id: ".$cc_order['id'].PHP_EOL;
+				continue;
+			}
+		}
+		if(empty($cc_order['FreightDescription'])){
+			echo "Skipping, empty freight description".PHP_EOL;
+			continue;
+		}
 		$order_number = str_ireplace('#sb','',$cc_order['reference']);
 		$stmt->execute([$order_number]);
 		if($stmt->rowCount() == 0){
-			echo "Couldn't find order in DB!";
-			// TODO: Alert
+			echo "Couldn't find order in DB, must not be Shopify";
 			continue;
 		}
 		$row = $stmt->fetch();

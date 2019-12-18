@@ -37,7 +37,13 @@ if(!empty($res['customers'])){
 	}
 }
 
-if(!empty($add_to_charge)){
+$confirm_url = "/tools/skylar/quick-add?".http_build_query([
+		'c' => $_REQUEST['c'],
+		'v' => $_REQUEST['v'],
+		'confirm' => 1,
+]);
+
+if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
 	$variant = get_variant($db, $_REQUEST['v']);
 	$product = get_product($db, $variant['shopify_product_id']);
 	$price = get_subscription_price($product, $variant);
@@ -103,13 +109,54 @@ echo "<!-- ".print_r($variant, true)." -->";
 {% assign portal_page = 'lander-addtobox' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container sc-portal-lander">
-	<?php if(!empty($add_to_charge) && empty($res['error'])){ ?>
+	<?php if(!empty($add_to_charge) && empty($_REQUEST['confirm'])){ ?>
+        <div class="sc-lander-title"><?=$product['title']?></div>
+		<?php if($product['type'] == 'Body Bundle'){ ?>
+            <div class="sc-lander-price">
+                <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save over 22%!</span>
+            </div>
+            <div class="sc-lander-image">
+                {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
+                {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
+                {% if variant.image != nil %}
+                <img class="lazyload" data-srcset="{{ variant.image | img_url: 'x280' }} 1x, {{ variant.image | img_url: 'x280', scale: 2 }} 2x" />
+                {% else %}
+                <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="sc-lander-button">
+                <a href="<?=$confirm_url?>" class="action_button">Add This Item To My <?=$month?> Box</a>
+            </div>
+            <div class="sc-lander-note">
+                This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+            </div>
+		<?php } else { ?>
+            <div class="sc-lander-price">
+                <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span>
+            </div>
+            <div class="sc-lander-image">
+                {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
+                {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
+                {% if variant.image != nil %}
+                <img class="lazyload" data-srcset="{{ variant.image | img_url: 'x280' }} 1x, {{ variant.image | img_url: 'x280', scale: 2 }} 2x" />
+                {% else %}
+                <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="sc-lander-button">
+                <a href="<?=$confirm_url?>" class="action_button">Add This Item To My <?=$month?> Box</a>
+            </div>
+		<?php } ?>
+	<?php } else if(!empty($add_to_charge) && empty($res['error'])){ ?>
         <div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
         <?php if($product['type'] == 'Body Bundle'){ ?>
                 <div class="sc-lander-price">
                     <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save over 22%!</span>
                 </div>
                 <div class="sc-lander-image">
+                    <div class="sc-lander-check">{% include 'svg-definitions' with 'svg-circle-check-green' %}</div>
                     {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
                     {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
                         {% if variant.image != nil %}
@@ -127,6 +174,7 @@ echo "<!-- ".print_r($variant, true)." -->";
                     <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span>
                 </div>
                 <div class="sc-lander-image">
+                    <div class="sc-lander-check">{% include 'svg-definitions' with 'svg-circle-check-green' %}</div>
                     {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
                     {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
                         {% if variant.image != nil %}
@@ -140,16 +188,19 @@ echo "<!-- ".print_r($variant, true)." -->";
                     This item will ship in your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
                 </div>
         <?php } ?>
+        <div class="sc-lander-button">
+            <a href="/tools/skylar/schedule" class="action_button">Login to My Account</a>
+        </div>
 	<?php } else {
 		log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, 'Failed and saw error', 'customer');
 		?>
 		<div class="sc-lander-note">
 			Sorry, we were unable to locate your account! Please log in to add your item:
 		</div>
+        <div class="sc-lander-button">
+            <a href="/tools/skylar/schedule" class="action_button">Login to My Account</a>
+        </div>
 	<?php } ?>
-	<div class="sc-lander-button">
-		<a href="/tools/skylar/schedule" class="action_button">Login to My Account</a>
-	</div>
 </div>
 <style>
 	.promo_banner {
