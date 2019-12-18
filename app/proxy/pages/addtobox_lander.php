@@ -43,12 +43,15 @@ $confirm_url = "/tools/skylar/quick-add?".http_build_query([
 		'confirm' => 1,
 ]);
 
-if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
+if(!empty($add_to_charge)){
 	$variant = get_variant($db, $_REQUEST['v']);
 	$product = get_product($db, $variant['shopify_product_id']);
 	$price = get_subscription_price($product, $variant);
 	$subscription_price = get_subscription_price($product, $variant);
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
+}
+
+if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
 
     // Check if they already have this product in a sub
     $stmt = $db->prepare("SELECT rcs.* FROM rc_subscriptions rcs
