@@ -5,7 +5,7 @@ $new_sku = $db->query("SELECT sku FROM sc_product_info WHERE sc_date = '".date('
 if(empty($new_sku)){
 	die("No sku!");
 }
-echo "Changing all promotions this month to $new_sku".PHP_EOL;
+echo "Changing all promotions ".date('Y-m-d')." to ".date('Y-m-t')." to $new_sku".PHP_EOL;
 
 $page = 0;
 $orders = [];
