@@ -1255,6 +1255,8 @@ function is_discount_allowed_in_account($discount_code){
 		'GOODTRADE',
 		'MERRY30',
 		'GIFT25',
+		'MY2020',
+		'MYSCENT50',
 	])){
 		return false;
 	}
