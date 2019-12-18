@@ -112,7 +112,7 @@ echo "<!-- ".print_r($variant, true)." -->";
 {% assign portal_page = 'lander-addtobox' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container sc-portal-lander">
-	<?php if(!empty($add_to_charge) && empty($_REQUEST['confirm'])){ ?>
+	<?php if(!empty($add_to_charge) && empty($_REQUEST['confirm']) && !empty($variant)){ ?>
         <div class="sc-lander-title"><?=$product['title']?></div>
 		<?php if($product['type'] == 'Body Bundle'){ ?>
             <div class="sc-lander-price">
