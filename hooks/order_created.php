@@ -177,6 +177,12 @@ if(!OrderCreatedController::are_gwps_valid($order)){
 	send_alert($db, 3, 'Order '.$order['name'].' was charged for a GWP, likely in error. Please check it. https://skylar.com/admin/orders/'.$order['id'], 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
 	echo "Sent alert - charged for gwp".PHP_EOL;
 }
+if(OrderCreatedController::shipping_looks_wrong($order)){
+	$order_tags[] = 'HOLD: Shipping Discount Unused';
+	$update_order = true;
+	send_alert($db, 4, 'Order '.$order['name'].' has an unused shipping discount, likely in error. Please check it. https://skylar.com/admin/orders/'.$order['id'], 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
+	echo "Sent alert - charged for gwp".PHP_EOL;
+}
 
 if(match_email($order['email'], $test_emails)){
 	$order_tags[] = 'HOLD: Test Order';

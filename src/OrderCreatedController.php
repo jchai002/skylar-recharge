@@ -43,4 +43,20 @@ class OrderCreatedController {
 		return true;
 	}
 
+	public static function shipping_looks_wrong($order){
+		if(empty($order['discount_codes'])){
+			return false;
+		}
+		switch(strtoupper($order['discount_codes'][0]['code'])){
+			default:
+				return false;
+			case 'JUSTINTIME':
+				return $order['shipping_lines'][0]['code'] != 'US Next Day' && $order['shipping_address']['country_code'] == 'US';
+				break;
+			case 'HAPPYSHIP':
+				return $order['shipping_lines'][0]['code'] != 'US 2 Day' && $order['shipping_address']['country_code'] == 'US';
+				break;
+		}
+	}
+
 }

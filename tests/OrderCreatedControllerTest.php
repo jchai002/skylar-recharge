@@ -58,4 +58,28 @@ class OrderCreatedControllerTest extends TestCase{
 		);
 	}
 
+	public function test_shipping_looks_wrong(){
+		$order = [
+			'discount_codes' => [],
+			'shipping_lines' => [['code' => 'US Next Day']],
+			'shipping_address' => ['country_code' => 'US'],
+		];
+		// No code is ok
+		$this->assertFalse(OrderCreatedController::shipping_looks_wrong($order));
+
+		// JUSTINTIME with next day is ok
+		$order['discount_codes'] = [['code' => 'JUSTINTIME']];
+		$this->assertFalse(OrderCreatedController::shipping_looks_wrong($order));
+		// JUSTINTIME without next day is not ok
+		$order['shipping_lines'][0]['code'] = 'US 2 Day';
+		$this->assertTrue(OrderCreatedController::shipping_looks_wrong($order));
+
+		// HAPPYSHIP with 2 day is ok
+		$order['discount_codes'] = [['code' => 'HAPPYSHIP']];
+		$this->assertFalse(OrderCreatedController::shipping_looks_wrong($order));
+		// HAPPYSHIP without 2 day is not ok
+		$order['shipping_lines'][0]['code'] = 'US Next Day';
+		$this->assertTrue(OrderCreatedController::shipping_looks_wrong($order));
+	}
+
 }
