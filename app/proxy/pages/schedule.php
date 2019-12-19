@@ -150,6 +150,7 @@ print_r($schedule->get());
                                          data-subscription-id="<?=$item['subscription_id']?>"
                                         <?= !empty($item['charge_id']) ? 'data-charge-id="'.$item['charge_id'].'"' : '' ?>
                                          data-type="<?=$item['type']?>"
+                                         data-types="<?=implode($item['types'])?>"
                                         <?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
                                          data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
                                         <?= is_ac_followup_lineitem($item) ? 'data-ac' : '' ?>
@@ -560,6 +561,45 @@ print_r($schedule->get());
             </form>
         </div>
     </div>
+    <div id="sc-cancel-item-confirm-modal" class="sc-confirm-modal">
+        <div>
+            <div class="sc-modal-title">Why would you like to remove this item?</div>
+            <form id="sc-cancel-item-reason-form" class="skip-reason-form">
+                <div class="skip-reason-list">
+                    <label>
+                        <input type="radio" name="skip_reason" value="I don't like the scent or products">
+                        <span class="radio-visual"></span>
+                        <span>I don't like the scent or products</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I have too much">
+                        <span class="radio-visual"></span>
+                        <span>I have too much</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="I'm having a sensitivity to the product">
+                        <span class="radio-visual"></span>
+                        <span>I'm having a sensitivity to the product</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="It's too expensive">
+                        <span class="radio-visual"></span>
+                        <span>It's too expensive</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="skip_reason" value="other">
+                        <span class="radio-visual"></span>
+                        <span>Other Reason</span>
+                    </label>
+                    <textarea name="other_reason" title="Other Reason"></textarea>
+                </div>
+                <div class="sc-skip-options">
+                    <a class="action_button skip-confirm-button disabled" onclick="if($(this).hasClass('disabled')){return false;} $(this).addClass('disabled'); AccountController.remove_sub(AccountController.selected_box_item.data('subscription-id'), AccountController.get_skip_reason()).then(function(){AccountController.reload()}); return false;">Remove Item</a>
+                    <a class="action_button inverted" onclick="$.featherlight.close(); return false;">Go Back</a>
+                </div>
+            </form>
+        </div>
+    </div>
     <div id="sc-remove-confirm-modal">
         <div class="sc-skip-image sc-desktop">
             <img src="" />
@@ -797,7 +837,11 @@ print_r($schedule->get());
             e.preventDefault();
             $(this).addClass('disabled');
             $.featherlight.close();
-            $.featherlight($('#sc-cancel-confirm-modal'));
+            if(AccountController.selected_box_item.data('types').split(',').indexOf('onetime')){
+                $.featherlight($('#sc-cancel-item-confirm-modal'));
+            } else {
+                $.featherlight($('#sc-cancel-confirm-modal'));
+            }
         });
         $('.sc-upcoming-shipment .add-and-save').unbind().click(function(e){
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
