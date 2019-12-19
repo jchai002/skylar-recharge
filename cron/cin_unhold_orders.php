@@ -11,7 +11,7 @@ do {
 	/* @var $res JsonAwareResponse */
 	$res = $cc->get('SalesOrders', [
 		'query' => [
-			'fields' => implode(',', ['id', 'reference', 'logisticsStatus']),
+			'fields' => implode(',', ['id', 'reference', 'logisticsStatus', 'freightDescription']),
 			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date'",
 			'order' => 'CreatedDate ASC',
 			'rows' => $page_size,
