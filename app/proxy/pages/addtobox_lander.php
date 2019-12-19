@@ -152,7 +152,7 @@ echo "<!-- ".print_r($variant, true)." -->";
                 <a href="<?=$confirm_url?>" class="action_button">Add This Item To My <?=$month?> Box</a>
             </div>
 		<?php } ?>
-	<?php } else if(!empty($add_to_charge) && empty($res['error'])){ ?>
+	<?php } else if(!empty($add_to_charge) && empty($res['error']) && !empty($variant['id'])){ ?>
         <div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
         <?php if($product['type'] == 'Body Bundle'){ ?>
                 <div class="sc-lander-price">
