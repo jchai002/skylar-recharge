@@ -129,7 +129,7 @@ echo "<!-- ".print_r($variant, true)." -->";
                 {% endfor %}
             </div>
             <div class="sc-lander-button">
-                <a href="<?=$confirm_url?>" class="action_button">Add This Item To My <?=$month?> Box</a>
+                <a href="<?=$confirm_url?>" class="action_button confirm-button">Add This Item To My <?=$month?> Box</a>
             </div>
             <div class="sc-lander-note">
                 This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
@@ -149,7 +149,7 @@ echo "<!-- ".print_r($variant, true)." -->";
                 {% endfor %}
             </div>
             <div class="sc-lander-button">
-                <a href="<?=$confirm_url?>" class="action_button">Add This Item To My <?=$month?> Box</a>
+                <a href="<?=$confirm_url?>" class="action_button confirm-button">Add This Item To My <?=$month?> Box</a>
             </div>
 		<?php } ?>
 	<?php } else if(!empty($add_to_charge) && empty($res['error']) && !empty($variant['id'])){ ?>
