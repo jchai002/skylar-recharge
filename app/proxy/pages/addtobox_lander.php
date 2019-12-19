@@ -212,4 +212,7 @@ echo "<!-- ".print_r($variant, true)." -->";
 	.header {
 		position: fixed;
 	}
+    .add-spacing.container.content.main {
+        margin-top: 0;
+    }
 </style>
