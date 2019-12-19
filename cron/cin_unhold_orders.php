@@ -31,7 +31,7 @@ do {
 				continue;
 			}
 		}
-		if(empty($cc_order['FreightDescription'])){
+		if(empty($cc_order['freightDescription'])){
 			echo "Skipping, empty freight description".PHP_EOL;
 			continue;
 		}
