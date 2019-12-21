@@ -118,6 +118,9 @@ switch($rate['destination']['country']){
 				'description' => 'Order must be placed before noon PST Monday-Friday. Excludes AK and HI',
 				'currency' => 'USD',
 			];
+			if(time() < strtotime('2019-12-22')){
+				unset($_RATES[count($_RATES)-1]['description']);
+			}
 			if($is_rc && $total_price >= 100 && ($justintime_live || $is_test)){
 				$_RATES[count($_RATES)-1]['total_price'] = 0;
 			}
