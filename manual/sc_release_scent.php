@@ -9,6 +9,11 @@ $scent = null;
 $start_date = date('Y-m-t');
 $end_date = date('Y-m-01', get_month_by_offset(2));
 
+$scent_info = sc_get_monthly_scent($db, get_next_month());
+if(empty($scent_info)){
+	die("No Live Monthly Scent!");
+}
+
 echo "Getting $start_date to $end_date".PHP_EOL;
 
 $charges = [];
