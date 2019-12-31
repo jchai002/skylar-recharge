@@ -174,6 +174,10 @@ function offset_date_skip_weekend($time){
 	if(date('Y-m-d', $time) == $cyber_monday){
 		$time += 24*60*60; //  Add a day
 	}
+	// Christmas Eve
+	if(date('m-d', $time) == '12-24'){
+		$time += 24*60*60*2; //  Add 2 days
+	}
 	// Christmas
 	if(date('m-d', $time) == '12-25'){
 		$time += 24*60*60; //  Add a day
@@ -655,21 +659,35 @@ function get_subscription_price($product, $variant){
 // Start Scent Club
 function sc_is_address_in_blackout(PDO $db, RechargeClient $rc, $address_id){
 	$next_month_scent = sc_get_monthly_scent($db, get_next_month());
-	if(!empty($next_month_scent)){
-		$res = $rc->get('/orders', [
-			'address_id' => $address_id,
-			'scheduled_at_min' => date('Y-m-t', get_last_month()),
-			'scheduled_at_max' => date('Y-m', get_next_month()).'-01',
-			'status' => 'SUCCESS'
-		]);
-		if(!empty($res['orders'])){
-			$this_month_orders = $res['orders'];
-			foreach($this_month_orders as $this_month_order){
-				foreach($this_month_order['line_items'] as $line_item){
-					if($line_item['sku'] == $next_month_scent['sku']){
-						return true;
-						break 2;
-					}
+	if(empty($next_month_scent)){
+		return false;
+	}
+	global $_stmt_cache;
+	if(empty($_stmt_cache['blackout_check'])){
+		$_stmt_cache['blackout_check'] = $db->prepare("SELECT o.shopify_id AS order_id FROM rc_addresses rca
+LEFT JOIN rc_customers rcc ON rca.rc_customer_id=rcc.id
+LEFT JOIN customers c ON rcc.customer_id=c.id
+LEFT JOIN orders o ON c.id=o.customer_id
+WHERE o.tags like '%Scent Club Blackout%'
+AND rca.recharge_id = ?");
+	}
+	$_stmt_cache['blackout_check']->execute([$address_id]);
+	if($_stmt_cache['blackout_check']->rowCount() != 0){
+		return true;
+	}
+	$res = $rc->get('/orders', [
+		'address_id' => $address_id,
+		'scheduled_at_min' => date('Y-m-t', get_last_month()),
+		'scheduled_at_max' => date('Y-m', get_next_month()).'-01',
+		'status' => 'SUCCESS'
+	]);
+	if(!empty($res['orders'])){
+		$this_month_orders = $res['orders'];
+		foreach($this_month_orders as $this_month_order){
+			foreach($this_month_order['line_items'] as $line_item){
+				if($line_item['sku'] == $next_month_scent['sku']){
+					return true;
+					break 2;
 				}
 			}
 		}
