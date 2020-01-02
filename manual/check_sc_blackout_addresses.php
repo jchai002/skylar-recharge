@@ -6,10 +6,16 @@ require_once(__DIR__.'/../includes/config.php');
 $page = 0;
 $scent = null;
 
-$start_date = date('Y-m-t');
-$end_date = date('Y-m-01', get_month_by_offset(2));
+$offset = 0;
+if(time() <= offset_date_skip_weekend(strtotime(date('Y-m-01')))){
+	$offset = -1;
+}
+echo "offset: $offset".PHP_EOL;
 
-$scent_info = sc_get_monthly_scent($db, get_next_month());
+$start_date = date('Y-m-t', get_month_by_offset($offset));
+$end_date = date('Y-m-01', get_month_by_offset(2+$offset));
+
+$scent_info = sc_get_monthly_scent($db, get_month_by_offset($offset));
 if(empty($scent_info)){
 	die("No Live Monthly Scent!");
 }
@@ -37,6 +43,15 @@ foreach($stmt->fetchAll() as $row){
 		echo "Ok".PHP_EOL;
 		continue;
 	}
-	echo "Found charge, recalculating... ";
+	echo "Found charge ";
+	foreach($res['charges'] as $charge){
+		foreach($charge['line_items'] as $line_item){
+			if(is_scent_club_month(get_product($db, $line_item['shopify_product_id']))){
+				echo "Removing onetime ".$line_item['subscription_id']."... ".PHP_EOL;
+				$rc->delete('/onetimes/'.$line_item['subscription_id']);
+			}
+		}
+	}
+	echo "Recalculating... ";
 	echo sc_calculate_next_charge_date($db, $rc, $row['address_id']).PHP_EOL;
 }

@@ -6,10 +6,18 @@ require_once(__DIR__.'/../includes/config.php');
 $page = 0;
 $scent = null;
 
-$start_date = date('Y-m-t');
-$end_date = date('Y-m-01', get_month_by_offset(2));
+$offset = 0;
+if(time() <= offset_date_skip_weekend(strtotime(date('Y-m-01')))){
+	$offset = -1;
+}
+echo "offset: $offset".PHP_EOL;
 
-$scent_info = sc_get_monthly_scent($db, get_next_month());
+$start_date = date('Y-m-t', get_month_by_offset($offset));
+$end_date = date('Y-m-01', get_month_by_offset(2+$offset));
+
+echo "$start_date - $end_date".PHP_EOL;
+
+$scent_info = sc_get_monthly_scent($db, get_month_by_offset($offset));
 if(empty($scent_info)){
 	die("No Live Monthly Scent!");
 }
