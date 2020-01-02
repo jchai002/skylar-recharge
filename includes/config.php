@@ -1275,6 +1275,7 @@ function is_discount_allowed_in_account($discount_code){
 		'GIFT25',
 		'MY2020',
 		'MYSCENT50',
+		'BUMO50',
 	])){
 		return false;
 	}
