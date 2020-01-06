@@ -16,8 +16,8 @@ $product_attributes = [
 	'category' => $db->query("SELECT code, c.* FROM product_categories c")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
 ];
 $meta_attributes = [
-	'type_category' => ['map_from' => 'product_type', 'map_to' => 'category', 'values' => $db->query("SELECT type_id AS product_type, category_id FROM product_type_categories t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
-	'scent_family' => ['map_from' => 'scent', 'map_to' => 'scent_family', 'values' => $db->query("SELECT scent_id AS scent, family_id FROM scent_family_map t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
+	'type_category' => ['map_from' => 'product_type', 'map_to' => 'category', 'values' => $db->query("SELECT type_id, category_id FROM product_type_categories t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
+	'scent_family' => ['map_from' => 'scent', 'map_to' => 'scent_family', 'values' => $db->query("SELECT scent_id, family_id FROM scent_family_map t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
 ];
 $variant_attributes = $db->query("SELECT * FROM variant_attribute_codes")->fetchAll();
 
@@ -26,7 +26,10 @@ foreach($variant_attributes as $attribute_list){
 	$variant_id = $attribute_list['variant_id'];
 	$attributes_by_variant[$variant_id] = $attribute_list;
 	unset($attributes_by_variant[$variant_id]['variant_id']);
+	echo $variant_id;
+	print_r($attributes_by_variant[$variant_id]);
 	foreach($meta_attributes as $meta_attribute){
+		print_r($meta_attribute);
 		// Check if map_from is set
 		if(empty($attribute_list[$meta_attribute['map_from']])){
 //			$attributes_by_variant[$variant_id][$meta_attribute['map_to']] = [];
@@ -35,6 +38,8 @@ foreach($variant_attributes as $attribute_list){
 		// Map values from meta onto variant
 		$map_to = $meta_attribute['map_to'];
 		$map_from = $meta_attribute['map_from'];
+		echo "$map_to => $map_from";
+		print_r($meta_attribute['values']);
 //		$values = $meta_attribute['values'][$product_attributes[$map_from]['id']];
 //		$attributes_by_variant[$variant_id][$map_to] = $values;
 	}
