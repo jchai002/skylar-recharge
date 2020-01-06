@@ -39,8 +39,8 @@ foreach($variant_attributes as $attribute_list){
 		$map_to = $meta_attribute['map_to'];
 		$map_from = $meta_attribute['map_from'];
 		echo "$map_to => $map_from";
-		print_r($product_attributes[$map_from]);
-//		print_r($meta_attribute['values']);
+//		print_r($product_attributes[$map_from]);
+		print_r($meta_attribute['values'][$map_from]);
 //		$values = $meta_attribute['values'][$product_attributes[$map_from]['id']];
 //		$attributes_by_variant[$variant_id][$map_to] = $values;
 	}
