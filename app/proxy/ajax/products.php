@@ -26,7 +26,6 @@ foreach($variant_attributes as $attribute_list){
 	$variant_id = $attribute_list['variant_id'];
 	$attributes_by_variant[$variant_id] = $attribute_list;
 	unset($attributes_by_variant[$variant_id]['variant_id']);
-	/*
 	foreach($meta_attributes as $meta_attribute){
 		// Check if map_from is set
 		if(empty($attribute_list[$meta_attribute['map_from']])){
@@ -39,7 +38,6 @@ foreach($variant_attributes as $attribute_list){
 		$values = $meta_attribute['values'][$product_attributes[$map_from]['id']];
 //		$attributes_by_variant[$variant_id][$map_to] = $values;
 	}
-	*/
 }
 $products_by_id = [];
 $exclusions_cluase = "
