@@ -16,7 +16,7 @@ $product_attributes = [
 	'category' => $db->query("SELECT code, c.* FROM product_categories c")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
 ];
 $meta_attributes = [
-	'type_category' => ['map_from' => 'product_type', 'map_to' => 'category', 'values' => $db->query("SELECT * FROM product_type_categories_codes t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
+	'type_category' => ['map_from' => 'product_type', 'map_to' => 'category', 'values' => $db->query("SELECT * FROM product_type_category_codes t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
 	'scent_family' => ['map_from' => 'scent', 'map_to' => 'scent_family', 'values' => $db->query("SELECT * FROM scent_family_codes t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
 ];
 $variant_attributes = $db->query("SELECT * FROM variant_attribute_codes")->fetchAll();
