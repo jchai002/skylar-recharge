@@ -102,5 +102,6 @@ header('Content-Type: application/json');
 echo json_encode([
 	'products' => $products_by_id,
 	'attributes' => $product_attributes,
+	'meta_attributes' => $meta_attributes,
 ]);
 die();
