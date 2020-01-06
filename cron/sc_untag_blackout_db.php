@@ -49,4 +49,6 @@ foreach($orders as $order){
 		'tags' => implode(', ', $tags),
 	]]);
 	echo " ".$res['tags'].PHP_EOL;
+	// TODO: insert_update order
 }
+// TODO: Create loop that re-checks
