@@ -26,13 +26,12 @@ foreach($variant_attributes as $attribute_list){
 	$variant_id = $attribute_list['variant_id'];
 	$attributes_by_variant[$variant_id] = $attribute_list;
 	unset($attributes_by_variant[$variant_id]['variant_id']);
-	echo $variant_id;
 	foreach($meta_attributes as $meta_attribute){
 		// Check if map_from is set
 		$map_to = $meta_attribute['map_to'];
 		$map_from = $meta_attribute['map_from'];
 		if(empty($attributes_by_variant[$variant_id][$map_from])){
-//			$attributes_by_variant[$variant_id][$meta_attribute['map_to']] = [];
+			$attributes_by_variant[$variant_id][$meta_attribute['map_to']] = [];
 			continue;
 		}
 		// Map values from meta onto variant
