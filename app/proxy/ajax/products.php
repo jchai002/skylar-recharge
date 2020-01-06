@@ -9,9 +9,15 @@ $all_products = $sc->get('/admin/products.json', [
 ]);
 
 $product_attributes = [
-	'product_type' => $db->query("SELECT code, p.* FROM product_types p")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
+	'product_type' => $db->query("SELECT code, t.* FROM product_types t")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
 	'scent' => $db->query("SELECT code, s.* FROM scents s")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
 	'format' => $db->query("SELECT code, p.* FROM product_formats p")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
+	'scent_family' => $db->query("SELECT code, f.* FROM scent_families f")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
+	'category' => $db->query("SELECT code, c.* FROM product_categories c")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
+];
+$meta_attributes = [
+	'type_category' => ['map_from' => 'product_type', 'map_to' => 'category', 'values' => $db->query("SELECT type_id, category_id FROM product_type_categories t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
+	'scent_family' => ['map_from' => 'scent', 'map_to' => 'scent_family', 'values' => $db->query("SELECT scent_id, family_id FROM scent_family_map t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
 ];
 $variant_attributes = $db->query("SELECT * FROM variant_attribute_codes")->fetchAll();
 
@@ -20,6 +26,15 @@ $attributes_by_variant = [];
 foreach($variant_attributes as $attribute_list){
 	$attributes_by_variant[$attribute_list['variant_id']] = $attribute_list;
 	unset($attributes_by_variant[$attribute_list['variant_id']]['variant_id']);
+	foreach($meta_attributes as $meta_attribute){
+		// Check if map_from is set
+		if(empty($attribute_list[$meta_attribute['map_from']])){
+			$attributes_by_variant[$meta_attribute['map_to']] = [];
+			continue;
+		}
+		// Map values from meta onto variant
+		$attributes_by_variant[$meta_attribute['map_to']] = $meta_attribute['values'][$attribute_list[$meta_attribute['map_from']]];
+	}
 }
 
 $products_by_id = [];
