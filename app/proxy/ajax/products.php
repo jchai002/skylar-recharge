@@ -30,7 +30,7 @@ foreach($variant_attributes as $attribute_list){
 		// Check if map_from is set
 		$map_to = $meta_attribute['map_to'];
 		$map_from = $meta_attribute['map_from'];
-		if(empty($attributes_by_variant[$variant_id][$map_from])){
+		if(empty($attributes_by_variant[$variant_id][$map_from]) || empty($attributes_by_variant[$variant_id][$map_from][0])){
 			$attributes_by_variant[$variant_id][$meta_attribute['map_to']] = [];
 			continue;
 		}
