@@ -14,6 +14,7 @@ $product_attributes = [
 	'format' => $db->query("SELECT code, p.* FROM product_formats p")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
 	'scent_family' => $db->query("SELECT code, f.* FROM scent_families f")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
 	'category' => $db->query("SELECT code, c.* FROM product_categories c")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
+	'sizes' => $db->query("SELECT code, s.* FROM product_sizes s")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
 ];
 $meta_attributes = [
 	'type_category' => ['map_from' => 'product_type', 'map_to' => 'category', 'values' => $db->query("SELECT * FROM product_type_category_codes t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
