@@ -1,7 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$new_attributes = [];
 $attribute_values = [
 	'product_type' => $db->query("SELECT code, t.* FROM product_types t")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
 	'scent' => $db->query("SELECT code, s.* FROM scents s")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE),
@@ -86,8 +85,4 @@ foreach($all_variant_attributes as $attribute_list){
 	}
 	echo $res['id'].PHP_EOL;
 	continue;
-}
-if(!empty($new_attributes)){
-	echo "New Attributes: ";
-	print_r($new_attributes);
 }
