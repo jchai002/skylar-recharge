@@ -72,7 +72,7 @@ if(
 	(date('G') == 12 && date('i') < 5)
 	|| (!empty($argv) && !empty($argv[1]) && $argv[1] == 'all')
 ){
-
+	$sync_start = time();
 	echo "Pulling all subscriptions".PHP_EOL;
 	$page = 0;
 	do {
@@ -104,7 +104,7 @@ if(
 	echo "Updating subscriptions with old charge dates".PHP_EOL;
 	$stmt = $db->query("
 SELECT * FROM rc_subscriptions
-WHERE (synced_at <= '".date('Y-m-d')."' OR synced_at IS NULL)
+WHERE (synced_at < '".date('Y-m-d H:i:s', $sync_start)."' OR synced_at IS NULL)
 AND next_charge_scheduled_at IS NOT NULL
 AND cancelled_at IS NULL
 AND deleted_at IS NULL
