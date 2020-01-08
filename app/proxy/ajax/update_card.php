@@ -71,8 +71,8 @@ if(empty($res['customers'])){
 	} else {
 		$res_all[] = $res = $stripe_customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
 		$stripe_customer->source = $token;
-		$stripe_customer->default_source = $token;
-		$stripe_customer->invoice_settings->default_payment_method = null;
+//		$stripe_customer->default_source = $token;
+//		$stripe_customer->invoice_settings->default_payment_method = null;
 		$stripe_customer->save();
 	}
 }
