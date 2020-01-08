@@ -68,8 +68,9 @@ do {
 	}
 } while(count($res) >= $page_size);
 
+// Hourly sync
 if(
-	(date('G') == 12 && date('i') < 5)
+	(date('i') < 5)
 	|| (!empty($argv) && !empty($argv[1]) && $argv[1] == 'all')
 ){
 	$sync_start = time();
@@ -114,7 +115,9 @@ AND deleted_at IS NULL
 	foreach($stmt->fetchAll() as $subscription){
 		$res = $rc->get('/subscriptions/'.$subscription['recharge_id']);
 		if(!empty($res['subscription'])){
-			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc).PHP_EOL;
+			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc) . PHP_EOL;
+		} else if(empty($res['errors'])){
+			print_r($res);
 		} else if($res['errors'] == 'Not Found') {
 			echo "Marking ".$subscription['recharge_id'].' deleted'.PHP_EOL;
 			$stmt_mark_deleted->execute([
