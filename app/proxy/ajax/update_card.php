@@ -33,7 +33,7 @@ if(empty($res['customers'])){
 		'billing_city' => $_REQUEST['billing_city'],
 		'billing_province' => $_REQUEST['billing_province'],
 		'billing_country' => $_REQUEST['billing_country'],
-		'stripe_customer_token' => $token,
+		'stripe_customer_token' => $stripe_customer->id,
 	]);
 	if(!empty($res['error'])){
 		echo json_encode([
@@ -71,6 +71,8 @@ if(empty($res['customers'])){
 	} else {
 		$res_all[] = $res = $stripe_customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
 		$stripe_customer->source = $token;
+		$stripe_customer->default_source = $token;
+		$stripe_customer->invoice_settings->default_payment_method = null;
 		$stripe_customer->save();
 	}
 }
