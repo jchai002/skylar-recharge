@@ -40,6 +40,7 @@ $sc_next_month_scent = sc_get_monthly_scent($db, get_next_month(), true);
 if($sc_next_month_scent['sc_live']){
 	$sc_next_month_scent = sc_get_monthly_scent($db, get_month_by_offset(2), true);
 }
+$discount_save_available = true;
 
 // figure out when to put the add to box section
 $next_section_index = 0;
@@ -710,6 +711,17 @@ uasort($other_onetimes, function($a, $b){
 		<?php } ?>
         <div class="portal-skip-options">
             <a class="action_button" onclick="$.featherlight.close(); AccountController.skip_charge(AccountController.selected_box_item.data('subscription-id'), AccountController.selected_box_item.data('charge-id'), 'sc-save'); return false;">Skip A Month</a>
+            <a class="next-modal">No, I'd still like to cancel</a>
+        </div>
+    </div>
+    <div id="portal-sc-cancel-save-discount" class="portal-modal-save-discount">
+        <div class="portal-modal-title">Are you sure?</div>
+        <div class="portal-modal-description">
+            <div>We'll apply $10 off this months scent.</div>
+            <div class="portal-modal-discount-image"></div>
+        </div>
+        <div class="portal-skip-options">
+            <a class="action_button" onclick="$.featherlight.close(); AccountController.apply_save_discount(AccountController.selected_box_item.data('subscription-id')); return false;">Get $10 Off</a>
             <a class="portal-skip-other-link">No, I'd still like to cancel</a>
         </div>
     </div>
@@ -910,6 +922,18 @@ uasort($other_onetimes, function($a, $b){
                     afterOpen: $.noop,
                 });
             }
+        });
+        $('#portal-sc-cancel-save-skip .next-modal').unbind().click(function(e){
+            $.featherlight.close();
+            <?php if($discount_save_available){?>
+                $.featherlight($('#portal-sc-cancel-save-discount'), {
+                    variant: 'scent-club',
+                    afterOpen: $.noop,
+                });
+            <?php } else { ?>
+                $.featherlight.close();
+                $.featherlight($('#sc-cancel-confirm-modal'));
+            <?php } ?>
         });
         $('.portal-skip-other-link').unbind().click(function(e){
             e.preventDefault();
