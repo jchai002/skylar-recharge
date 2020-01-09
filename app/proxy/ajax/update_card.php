@@ -74,6 +74,19 @@ try {
 			$stripe_customer->source = $token;
 			$stripe_customer->invoice_settings->default_payment_method = null;
 			$stripe_customer->save();
+			$res_all[] = $res = $rc->put('/customers/' . $customer['id'], [
+				'first_name' => $_REQUEST['billing_first_name'],
+				'last_name' => $_REQUEST['billing_last_name'],
+				'billing_first_name' => $_REQUEST['billing_first_name'],
+				'billing_last_name' => $_REQUEST['billing_last_name'],
+				'billing_address1' => $_REQUEST['billing_address1'],
+				'billing_address2' => $_REQUEST['billing_address2'],
+				'billing_zip' => $_REQUEST['billing_zip'],
+				'billing_phone' => $_REQUEST['billing_zip'],
+				'billing_city' => $_REQUEST['billing_city'],
+				'billing_province' => $_REQUEST['billing_province'],
+				'billing_country' => $_REQUEST['billing_country'],
+			]);
 		}
 	}
 } catch (\Stripe\Error\Card $e){
