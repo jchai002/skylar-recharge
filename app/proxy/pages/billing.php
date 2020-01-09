@@ -32,6 +32,8 @@ if(!empty($main_sub)){
 					} else {
 						$cc_info = \Stripe\Customer::retrieveSource($stripe_customer->id, $stripe_customer->invoice_settings->default_payment_method);
 					}
+				} else if(!empty($stripe_customer->default_source)){
+					$cc_info = \Stripe\Customer::retrieveSource($stripe_customer->id, $stripe_customer->default_source);
 				}
 			} catch(\Stripe\Error\InvalidRequest $e){
 				if(!empty($stripe_customer->default_source)){
