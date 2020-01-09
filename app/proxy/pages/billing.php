@@ -21,15 +21,24 @@ if(!empty($main_sub)){
 		if($customer['processor_type'] == 'stripe'){
 			\Stripe\Stripe::setApiKey($_ENV['STRIPE_API_KEY']);
 			$stripe_customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
-			// TODO: $stripe_customer->invoice_settings->default_payment_method
-            if(!empty($stripe_customer->default_source)){
-                foreach($stripe_customer->sources->data as $source){
-                    if($source->id == $stripe_customer->default_source){
-                        $cc_info = $source;
-                        break;
+			try {
+                if(!empty($stripe_customer->invoice_settings->default_payment_method)){
+                    if(strpos($stripe_customer->invoice_settings->default_payment_method, 'pm_') === 0){
+						$cc_info = \Stripe\PaymentMethod::retrieve($stripe_customer->invoice_settings->default_payment_method)->card;
+                    } else {
+                        $cc_info = \Stripe\Customer::retrieveSource($stripe_customer->id, $stripe_customer->invoice_settings->default_payment_method);
                     }
                 }
-            }
+			} catch(\Stripe\Error\InvalidRequest $e){
+				if(!empty($stripe_customer->default_source)){
+					foreach($stripe_customer->sources->data as $source){
+						if($source->id == $stripe_customer->default_source){
+							$cc_info = $source;
+							break;
+						}
+					}
+				}
+			}
 		}
 	} catch(\Stripe\Error\InvalidRequest $e){
 		$cc_info = [];
