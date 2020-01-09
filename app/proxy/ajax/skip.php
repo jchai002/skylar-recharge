@@ -2,6 +2,7 @@
 header('Content-Type: application/json');
 
 global $db, $rc;
+$reason = !empty($_REQUEST['reason']) ? $_REQUEST['reason'] : '';
 
 if(empty($_REQUEST['charge_id']) && !empty($_REQUEST['unskip']) && !empty($_REQUEST['subscription_id'])){
 	// No charge id unskip = just move the date back
@@ -41,7 +42,6 @@ $res = $rc->get('/charges/'.$charge_id);
 $charge = $res['charge'];
 $res['line'] = 33;
 $main_sub = [];
-$reason = !empty($_REQUEST['reason']) ? $_REQUEST['reason'] : '';
 
 if($subscription['status'] == 'ONETIME'){
 	// Can only 'skip' onetimes if they are scent club
