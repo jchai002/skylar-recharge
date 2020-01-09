@@ -718,7 +718,7 @@ uasort($other_onetimes, function($a, $b){
         <div class="portal-modal-title">Are you sure?</div>
         <div class="portal-modal-description">
             <div>We'll apply $10 off this months scent.</div>
-            <div class="portal-modal-discount-image"></div>
+            <div class="portal-modal-discount-image">{% include 'svg-definitions' with 'heart-dollar' %}</div>
         </div>
         <div class="portal-skip-options">
             <a class="action_button" onclick="$.featherlight.close(); AccountController.apply_save_discount(AccountController.selected_box_item.data('subscription-id')); return false;">Get $10 Off</a>
