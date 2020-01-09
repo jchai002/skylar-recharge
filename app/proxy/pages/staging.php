@@ -695,6 +695,7 @@ uasort($other_onetimes, function($a, $b){
     </div>
     <div id="portal-sc-cancel-save-skip" class="portal-modal-save-skip">
         <div class="portal-modal-title">Did you know you can skip a month?</div>
+        <?php print_r($sc_next_month_scent); ?>
 		<?php if(!empty($sc_next_month_scent)){ ?>
             {% assign scent_product = all_products["<?=$sc_next_month_scent['handle']?>"] %}
             <div class="portal-modal-description">
@@ -702,9 +703,9 @@ uasort($other_onetimes, function($a, $b){
                 <div class="sc-swap-option">
                     <img src="{{ scent_product.metafields.scent_club.swap_icon | file_img_url: '30x30' }}" />
                     {% if scent_product.metafields.skylar.scent_tags != blank %}
-                    <div class="monthly-scent-name">{{ scent_product.metafields.skylar.scent_tags | replace : ", ", " ‧ " }}</div>
+                    <div class="monthly-scent-name">{{ scent_product.metafields.skylar.scent_tags | replace : ", ", " • " }}</div>
                     {% elsif scent_product.metafields.tag_p_grid != blank %}
-                    <div class="monthly-scent-name">{{ scent_product.metafields.tag_p_grid.text | replace : ", ", " ‧ " }}</div>
+                    <div class="monthly-scent-name">{{ scent_product.metafields.tag_p_grid.text | replace : ", ", " • " }}</div>
                     {% endif %}
                 </div>
             </div>

@@ -113,6 +113,9 @@ AND deleted_at IS NULL
 	echo "Updating ".$stmt->rowCount()." unsynced subs".PHP_EOL;
 	$stmt_mark_deleted = $db->prepare("UPDATE rc_subscriptions SET deleted_at=:deleted_at WHERE recharge_id=:recharge_id");
 	foreach($stmt->fetchAll() as $subscription){
+		if(empty($subscription['recharge_id'])){
+			continue;
+		}
 		$res = $rc->get('/subscriptions/'.$subscription['recharge_id']);
 		if(!empty($res['subscription'])){
 			echo insert_update_rc_subscription($db, $res['subscription'], $rc, $sc) . PHP_EOL;
