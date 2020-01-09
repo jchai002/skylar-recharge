@@ -739,7 +739,9 @@ $rc_address_cache = [];
 function get_rc_address(PDO $db, $recharge_address_id, RechargeClient $rc, ShopifyClient $sc){
 	global $rc_address_cache;
 	if(!array_key_exists($recharge_address_id, $rc_address_cache)){
-		$stmt = $db->prepare("SELECT * FROM rc_addresses WHERE recharge_id=?");
+		$stmt = $db->prepare("SELECT rca.*, rcc.recharge_id AS recharge_customer_id FROM rc_addresses rca
+LEFT JOIN rc_customers rcc ON rca.rc_customer_id=rcc.id
+WHERE rca.recharge_id=?");
 		$stmt->execute([$recharge_address_id]);
 		if($stmt->rowCount() < 1){
 			// Not in the DB, load it from ReCharge
