@@ -34,5 +34,5 @@ $res_all[] = $res = $rc->post('/charges/'.$charge_id.'/apply_discount', [
 echo json_encode([
 	'discount_code' => $discount_code,
 	'success' => true,
-	'res' => $res,
+	'res' => $res_all,
 ]);
