@@ -22,7 +22,7 @@ if($stmt->rowCount() == 0){
 }
 
 // apply it to the next charge on the subscription id
-$res_all[] = $res = $rc->get('/charges/', ['subscription_id' => intval($_REQUEST['subscription_id'])]);
+$res_all[] = $res = $rc->get('/charges/', ['status' => 'QUEUED', 'subscription_id' => intval($_REQUEST['subscription_id'])]);
 if(!empty($res['charges'])){
 	$charge_id = $res['charges'][0]['id'];
 }
