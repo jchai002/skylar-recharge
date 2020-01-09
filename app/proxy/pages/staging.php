@@ -695,7 +695,6 @@ uasort($other_onetimes, function($a, $b){
     </div>
     <div id="portal-sc-cancel-save-skip" class="portal-modal-save-skip">
         <div class="portal-modal-title">Did you know you can skip a month?</div>
-        <?php print_r($sc_next_month_scent); ?>
 		<?php if(!empty($sc_next_month_scent)){ ?>
             {% assign scent_product = all_products["<?=$sc_next_month_scent['handle']?>"] %}
             <div class="portal-modal-description">
