@@ -15,7 +15,14 @@ if(empty($_REQUEST['charge_id']) && !empty($_REQUEST['unskip']) && !empty($_REQU
 		'res' => $res,
 		'next_charge_date' => $next_charge_date,
 	]));
+}
 
+if(empty($_REQUEST['charge_id']) && !empty($_REQUEST['subscription_id']) && !empty($_REQUEST['type']) && $_REQUEST['type'] == 'sc-save'){
+	// Coming from a subscriptions page cancel save, pull the charge
+	$res = $rc->get('/charges/', ['subscription_id' => intval($_REQUEST['subscription_id'])]);
+	if(!empty($res['charges'])){
+		$_REQUEST['charge_id'] = $res['charges'][0]['id'];
+	}
 }
 
 if(empty($_REQUEST['subscription_id']) || empty($_REQUEST['charge_id'])){
