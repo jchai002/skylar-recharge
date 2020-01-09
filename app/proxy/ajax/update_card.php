@@ -15,39 +15,7 @@ $res_all[] = $res = $rc->get('/customers/', [
 
 try {
 	if(empty($res['customers'])){
-		$res_all[] = $res = $stripe_customer = \Stripe\Customer::retrieve($customer['stripe_customer_token']);
-		$stripe_customer->source = $token;
-		$stripe_customer->save();
-
-		$shopify_customer = $sc->get('/admin/customers/' . $_REQUEST['c'] . '.json');
-		$res_all[] = $res = $rc->post('/customers/', [
-			'shopify_customer_id' => $_REQUEST['c'],
-			'email' => $shopify_customer['email'],
-			'first_name' => $_REQUEST['billing_first_name'],
-			'last_name' => $_REQUEST['billing_last_name'],
-			'billing_first_name' => $_REQUEST['billing_first_name'],
-			'billing_last_name' => $_REQUEST['billing_last_name'],
-			'billing_address1' => $_REQUEST['billing_address1'],
-			'billing_address2' => $_REQUEST['billing_address2'],
-			'billing_zip' => $_REQUEST['billing_zip'],
-			'billing_phone' => $_REQUEST['billing_zip'],
-			'billing_city' => $_REQUEST['billing_city'],
-			'billing_province' => $_REQUEST['billing_province'],
-			'billing_country' => $_REQUEST['billing_country'],
-			'stripe_customer_token' => $stripe_customer->id,
-		]);
-		if(!empty($res['error'])){
-			echo json_encode([
-				'success' => false,
-				'error' => $res['error'],
-				'res' => $res_all,
-			]);
-		} else {
-			echo json_encode([
-				'success' => true,
-				'res' => $res_all
-			]);
-		}
+		$error = "Recharge customer doesn't exist - no way to access stripe account";
 	} else {
 		$customer = $res['customers'][0];
 		if($customer['processor_type'] != 'stripe'){
