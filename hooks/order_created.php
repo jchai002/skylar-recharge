@@ -61,7 +61,8 @@ if(
 ){;
 	send_alert($db, 5,
 		"Received Order with $0 total_line_items_price price: ".PHP_EOL.print_r($order, true),
-		"Skylar Alert: $0 Line item total"
+		"Skylar Alert: $0 Line item total",
+	['time@skylar.com', 'jazyln@skylar.com']
 	);
 }
 
