@@ -41,7 +41,7 @@ if($sc_next_month_scent['sc_live']){
 	$sc_next_month_scent = sc_get_monthly_scent($db, get_month_by_offset(2), true);
 }
 $discount_code = "ST-10-".$rc_customer_id;
-$stmt = $db->query("SELECT * FROM rc_discounts WEHRE code='$discount_code'");
+$stmt = $db->query("SELECT * FROM rc_discounts WHERE code='$discount_code'");
 if(empty($stmt)){
     print_r($db->errorInfo());
 }
