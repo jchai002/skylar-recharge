@@ -132,44 +132,44 @@ function log_event(PDO $db, $category='', $value='', $action='', $value2='', $no
 		'actor' => $actor,
 		'date_created' => date('Y-m-d H:i:s'),
 	]);
-	function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $to_emails = ['tim@skylar.com'], $properties = []){
+}
+function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $to_emails = ['tim@skylar.com'], $properties = []){
 
-		$msg = is_array($msg) ? print_r($msg, true) : $msg;
+	$msg = is_array($msg) ? print_r($msg, true) : $msg;
 
-		$stmt = $db->prepare("SELECT 1 FROM alert_logs WHERE alert_id=:alert_id AND message=:message AND message_sent=1 AND date_created <= :window");
-		$stmt->execute([
-			'alert_id' => $alert_id,
-			'message' => $msg,
-			'window' => date('Y-m-d H:i:s', time()-60*60),
-		]);
-		$smother_message = $stmt->rowCount() != 0;
+	$stmt = $db->prepare("SELECT 1 FROM alert_logs WHERE alert_id=:alert_id AND message=:message AND message_sent=1 AND date_created <= :window");
+	$stmt->execute([
+		'alert_id' => $alert_id,
+		'message' => $msg,
+		'window' => date('Y-m-d H:i:s', time()-60*60),
+	]);
+	$smother_message = $stmt->rowCount() != 0;
 
-		$properties['message'] = $msg;
-		$properties['subject'] = $subject;
+	$properties['message'] = $msg;
+	$properties['subject'] = $subject;
 
-		if($smother_message){
-			$alert_sent = false;
-		} else {
-			foreach($to_emails as $to_email){
-				$res = klaviyo_send_event([
-					'token' => "KvQM7Q",
-					'event' => 'Internal Alert',
-					'customer_properties' => [
-						'$email' => $to_email,
-					],
-					'properties' => $properties,
-				]);
-			}
-			$alert_sent = true;
+	if($smother_message){
+		$alert_sent = false;
+	} else {
+		foreach($to_emails as $to_email){
+			$res = klaviyo_send_event([
+				'token' => "KvQM7Q",
+				'event' => 'Internal Alert',
+				'customer_properties' => [
+					'$email' => $to_email,
+				],
+				'properties' => $properties,
+			]);
 		}
-		$stmt = $db->prepare("INSERT INTO alert_logs (alert_id, message, message_sent, message_smothered, date_created) VALUES ($alert_id, :message, :message_sent, :message_smothered, :date_created)");
-		$stmt->execute([
-			'message' => $msg,
-			'message_sent' => $alert_sent ? 1 : 0,
-			'message_smothered' => $smother_message ? 1 : 0,
-			'date_created' => date('Y-m-d H:i:s'),
-		]);
+		$alert_sent = true;
 	}
+	$stmt = $db->prepare("INSERT INTO alert_logs (alert_id, message, message_sent, message_smothered, date_created) VALUES ($alert_id, :message, :message_sent, :message_smothered, :date_created)");
+	$stmt->execute([
+		'message' => $msg,
+		'message_sent' => $alert_sent ? 1 : 0,
+		'message_smothered' => $smother_message ? 1 : 0,
+		'date_created' => date('Y-m-d H:i:s'),
+	]);
 }
 function offset_date_skip_weekend($time){
 	// TODO: Need to fix this logic to iterate over itself repeatedly until valid
