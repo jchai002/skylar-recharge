@@ -102,3 +102,9 @@ if(empty($main_sub)){
 		}
 	}
 }
+
+$stmt = $db->prepare("UPDATE orders SET charge_processed_at = :now WHERE shopify_id = :order_id");
+$stmt->execute([
+	'now' => date('Y-m-d H:i:s'),
+	'order_id' => $charge['shopify_order_id']
+]);
