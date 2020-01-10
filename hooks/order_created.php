@@ -58,35 +58,11 @@ if(
 	$order['source_name'] != 'shopify_draft_order'
 	&& $order['total_line_items_price'] <= 0
 	&& !in_array('28003712663639', array_column($order['line_items'], 'variant_id'))
-){
-	$to = implode(', ',[
-		'tim@skylar',
-	]);
-	$msg = "Received Order with $0 total_line_items_price price: ".PHP_EOL.print_r($order, true);
-	$headers = [
-		'From' => 'Skylar Alerts <alerts@skylar.com>',
-		'Reply-To' => 'tim@timnolansolutions.com',
-		'X-Mailer' => 'PHP/' . phpversion(),
-	];
-
-	if($smother_message){
-		echo "Smothering Alert";
-	} else {
-		echo "Sending Alert: ".PHP_EOL.$msg.PHP_EOL;
-
-		mail($to, "ALERT: $0 Order", $msg
-//				,implode("\r\n",$headers)
-		);
-
-		$alert_sent = true;
-	}
-	$stmt = $db->prepare("INSERT INTO alert_logs (alert_id, message, message_sent, message_smothered, date_created) VALUES ($alert_id, :message, :message_sent, :message_smothered, :date_created)");
-	$stmt->execute([
-		'message' => $msg,
-		'message_sent' => $alert_sent ? 1 : 0,
-		'message_smothered' => $smother_message ? 1 : 0,
-		'date_created' => date('Y-m-d H:i:s'),
-	]);
+){;
+	send_alert($db, 5,
+		"Received Order with $0 total_line_items_price price: ".PHP_EOL.print_r($order, true),
+		"Skylar Alert: $0 Line item total"
+	);
 }
 
 echo "Checking SC hold logic".PHP_EOL;
