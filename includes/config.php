@@ -160,6 +160,7 @@ function log_event(PDO $db, $category='', $value='', $action='', $value2='', $no
 					'properties' => $properties,
 				]);
 			}
+			$alert_sent = true;
 		}
 		$stmt = $db->prepare("INSERT INTO alert_logs (alert_id, message, message_sent, message_smothered, date_created) VALUES ($alert_id, :message, :message_sent, :message_smothered, :date_created)");
 		$stmt->execute([
