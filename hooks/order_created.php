@@ -49,22 +49,6 @@ echo insert_update_order($db, $order, $sc).PHP_EOL;
 
 
 
-echo "Checking alert".PHP_EOL;
-$alert_id = 2;
-$smother_message = false;
-$alert_sent = false;
-$msg = null;
-if(
-	$order['source_name'] != 'shopify_draft_order'
-	&& $order['total_line_items_price'] <= 0
-	&& !in_array('28003712663639', array_column($order['line_items'], 'variant_id'))
-){;
-	send_alert($db, 5,
-		"Received Order with $0 total_line_items_price price: ".PHP_EOL.print_r($order, true),
-		"Skylar Alert: $0 Line item total",
-	['time@skylar.com', 'jazyln@skylar.com']
-	);
-}
 
 echo "Checking SC hold logic".PHP_EOL;
 $res = $sc->get('/admin/customers/search.json', [
@@ -137,6 +121,21 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 
 $update_order = false;
 $order_tags = explode(', ',$order['tags']);
+
+// Checking $0
+if(
+	$order['source_name'] != 'shopify_draft_order'
+	&& $order['total_line_items_price'] <= 0
+	&& !in_array('28003712663639', array_column($order['line_items'], 'variant_id'))
+){;
+	send_alert($db, 5,
+		"Received Order with $0 total_line_items_price price: ".PHP_EOL.print_r($order, true),
+		"Skylar Alert: $0 Line item total",
+		['tim@skylar.com', 'jazyln@skylar.com']
+	);
+	$order_tags['HOLD: Free Order'];
+	$update_order = true;
+}
 
 // Add product to line item
 foreach($order['line_items'] as $index=>$line_item){
