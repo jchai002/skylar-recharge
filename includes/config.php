@@ -145,8 +145,12 @@ function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $t
 	]);
 	$smother_message = $stmt->rowCount() != 0;
 
-	$properties['message'] = $msg;
-	$properties['subject'] = $subject;
+	$properties = array_merge([
+		'message' => $msg,
+		'subject' => $subject,
+		'to' => $to_emails,
+		'alert_id' => $alert_id,
+	],$properties);
 
 	if($smother_message){
 		$alert_sent = false;
