@@ -21,19 +21,19 @@ $meta_attributes = [
 	'scent_family' => ['map_from' => 'scent', 'map_to' => 'scent_family', 'values' => $db->query("SELECT * FROM scent_family_codes t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
 ];
 $variant_attributes = $db->query("SELECT * FROM variant_attribute_codes")->fetchAll();
-$search_collections = $db->query("SELECT c.handle, p.shopify_id AS product_id
+
+$collections = [];
+foreach($db->query("SELECT c.handle, c.shopify_id AS collection_id, p.shopify_id AS product_ids
 FROM collections c
 LEFT JOIN collection_products cp ON c.id=cp.collection_id
 LEFT JOIN products p ON cp.product_id=p.id
-WHERE c.handle IN (
-	'fine-fragrance',
-	'travel-size-fragrance',
-	'great-gifts',
-	'body-lotion',
-	'body-care',
-	'body-wash',
-	'hand-cream'
-);")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP);
+ORDER BY c.id, cp.position;")->fetchAll() as $row){
+	if(empty($collections[$row['handle']])){
+		$collections[$row['handle']] = $row;
+		$collections[$row['handle']]['product_ids'] = [];
+	}
+	$collections[$row['handle']]['product_ids'][] = $row['product_ids'];
+}
 
 $attributes_by_variant = [];
 foreach($variant_attributes as $attribute_list){
@@ -122,6 +122,6 @@ echo json_encode([
 	'products' => $products_by_id,
 	'attributes' => $product_attributes,
 	'meta_attributes' => $meta_attributes,
-	'search_collections' => $search_collections,
+	'collections' => $collections,
 ]);
 die();
