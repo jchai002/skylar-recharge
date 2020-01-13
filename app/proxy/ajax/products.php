@@ -27,6 +27,15 @@ foreach($db->query("SELECT c.handle, c.shopify_id AS collection_id, c.title, c.c
 FROM collections c
 LEFT JOIN collection_products cp ON c.id=cp.collection_id
 LEFT JOIN products p ON cp.product_id=p.id
+WHERE c.handle IN (
+    'fine-fragrance',
+	'travel-size-fragrance',
+	'great-gifts',
+	'body-lotion',
+	'body-care',
+	'body-wash',
+	'hand-cream'
+)
 ORDER BY c.id, cp.position;")->fetchAll() as $row){
 	if(empty($collections[$row['handle']])){
 		$collections[$row['handle']] = $row;
