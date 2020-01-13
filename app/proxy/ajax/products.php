@@ -21,7 +21,7 @@ $meta_attributes = [
 	'scent_family' => ['map_from' => 'scent', 'map_to' => 'scent_family', 'values' => $db->query("SELECT * FROM scent_family_codes t")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP)],
 ];
 $variant_attributes = $db->query("SELECT * FROM variant_attribute_codes")->fetchAll();
-$search_collections = $db->query("SELECT c.handle, p.handle, p.shopify_id AS product_id
+$search_collections = $db->query("SELECT c.handle, p.shopify_id AS product_id
 FROM collections c
 LEFT JOIN collection_products cp ON c.id=cp.collection_id
 LEFT JOIN products p ON cp.product_id=p.id
