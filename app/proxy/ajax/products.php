@@ -33,7 +33,7 @@ WHERE c.handle IN (
 	'body-care',
 	'body-wash',
 	'hand-cream'
-);")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE);
+);")->fetchAll(PDO::FETCH_COLUMN | PDO::FETCH_GROUP);
 
 $attributes_by_variant = [];
 foreach($variant_attributes as $attribute_list){
