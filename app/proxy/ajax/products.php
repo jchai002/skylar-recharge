@@ -23,7 +23,7 @@ $meta_attributes = [
 $variant_attributes = $db->query("SELECT * FROM variant_attribute_codes")->fetchAll();
 
 $collections = [];
-foreach($db->query("SELECT c.handle, c.shopify_id AS collection_id, c.title, c.collection_type AS type, p.shopify_id AS product_ids
+foreach($db->query("SELECT c.handle, c.shopify_id AS id, c.title, c.collection_type AS type, p.shopify_id AS product_ids
 FROM collections c
 LEFT JOIN collection_products cp ON c.id=cp.collection_id
 LEFT JOIN products p ON cp.product_id=p.id
