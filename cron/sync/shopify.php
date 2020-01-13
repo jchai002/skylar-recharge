@@ -4,6 +4,7 @@ require_once(__DIR__.'/../../includes/config.php');
 $interval = 5;
 $page_size = 250;
 $sc = new ShopifyClient();
+$scp = new ShopifyPrivateClient();
 $min_date = date('Y-m-d H:i:00P', time()-60*6);
 $start_time = time();
 
@@ -19,6 +20,21 @@ do {
 	]);
 	foreach($res as $product){
 		echo insert_update_product($db, $product).PHP_EOL;
+	}
+} while(count($res) >= $page_size);
+
+// Collections
+echo "Updating collections".PHP_EOL;
+$page = 0;
+do {
+	$page++;
+	$res = $sc->get('/admin/api/2019-07/custom_collections.json', [
+		'updated_at_min' => $min_date,
+		'limit' => $page_size,
+		'page' => $page,
+	]);
+	foreach($res as $collection){
+		echo insert_update_collection($db, $collection, $sc).PHP_EOL;
 	}
 } while(count($res) >= $page_size);
 
@@ -134,6 +150,19 @@ if(
 		}
 	}
 
+	// Collections
+	echo "Updating all collections".PHP_EOL;
+	$page = 0;
+	do {
+		$page++;
+		$res = $sc->get('/admin/api/2019-07/custom_collections.json', [
+			'limit' => $page_size,
+			'page' => $page,
+		]);
+		foreach($res as $collection){
+			echo insert_update_collection($db, $collection, $sc).PHP_EOL;
+		}
+	} while(count($res) >= $page_size);
 
 	// Update all Metafields
 	echo "Updating all product metafields".PHP_EOL;

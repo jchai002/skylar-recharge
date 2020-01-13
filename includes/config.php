@@ -285,6 +285,53 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 	}
 	return $product_id;
 }
+$product_id_map = [];
+function insert_update_collection(PDO $db, $collection, ShopifyClient $sc, $products = []){
+	global $_stmt_cache, $product_id_map;
+	if(empty($_stmt_cache['iu_collection'])){
+		$_stmt_cache['iu_collection'] = $db->prepare("INSERT INTO collections (shopify_id, handle, title, collection_type, rules, disjunctive, sort_order, published_scope, updated_at, published_at, synced_at) VALUES (:shopify_id, :handle, :title, :collection_type, :rules, :disjunctive, :sort_order, :published_scope, :updated_at, :published_at, :synced_at) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, collection_type=:collection_type, rules=:rules, disjunctive=:disjunctive, sort_order=:sort_order, published_scope=:published_scope, updated_at=:updated_at, published_at=:published_at, synced_at=:synced_at");
+	}
+	$_stmt_cache['iu_collection']->execute([
+		'shopify_id' => $collection['id'],
+		'handle' => $collection['handle'],
+		'title' => $collection['title'],
+		'collection_type' => $collection['collection_type'] ?? 'custom',
+		'rules' => json_encode($collection['rules'] ?? null),
+		'disjunctive' => $collection['disjunctive'] ?? 0,
+		'sort_order' => $collection['sort_order'],
+		'published_scope' => $collection['published_scope'],
+		'updated_at' => $collection['updated_at'],
+		'published_at' => $collection['published_at'],
+		'synced_at' => date('Y-m-d H:i:s'),
+	]);
+	$collection_id = $db->lastInsertId();
+
+	$sync_start = date('Y-m-d H:i:s');
+	if(empty($_stmt_cache['iu_collection_product'])){
+		$_stmt_cache['iu_collection_product'] = $db->prepare("INSERT INTO collection_products (collection_id, product_id, position, synced_at) VALUES (:collection_id, :product_id, :position, :synced_at) ON DUPLICATE KEY UPDATE position=:position, synced_at=:synced_at");
+	}
+	if(empty($product_id_map)){
+		$product_id_map = $db->query("SELECT shopify_id, id FROM products")->fetchAll(PDO::FETCH_KEY_PAIR);
+	}
+	if(empty($products)){
+		// Load products in collection from shopify
+		$products = $sc->get('/admin/api/2020-01/collections/'.$collection['id'].'/products.json', [
+			'limit' => 250,
+		]);
+	}
+	foreach($products as $index => $product){
+		// Check if it's an internal product or shopify product
+		$_stmt_cache['iu_collection_product']->execute([
+			'collection_id' => $collection_id,
+			'product_id' => empty($product['shopify_product_id']) ? $product_id_map[$product['id']] : $product['id'],
+			'position' => $index+1,
+			'synced_at' => date('Y-m-d H:i:s'),
+		]);
+	}
+	$stmt = $db->prepare("DELETE FROM collection_products WHERE collection_id=? AND synced_at < '$sync_start'");
+	$stmt->execute([$collection_id]);
+	return $collection_id;
+}
 function insert_update_order(PDO $db, $shopify_order, ShopifyClient $sc){
 	global $_stmt_cache;
 	if(empty($_stmt_cache['iu_order'])){
@@ -805,11 +852,13 @@ function get_rc_subscription(PDO $db, $recharge_subscription_id, RechargeClient 
 }
 $product_cache = [];
 function get_product(PDO $db, $shopify_product_id){
-	global $product_cache;
+	global $product_cache, $_stmt_cache;
 	if(!array_key_exists($shopify_product_id, $product_cache)){
-		$stmt = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
-		$stmt->execute([$shopify_product_id]);
-		$product_cache[$shopify_product_id] = $stmt->fetch();
+		if(empty($_stmt_cache['get_product'])){
+			$_stmt_cache['get_product'] = $db->prepare("SELECT * FROM products WHERE shopify_id=?");
+		}
+		$_stmt_cache['get_product']->execute([$shopify_product_id]);
+		$product_cache[$shopify_product_id] = $_stmt_cache['get_product']->fetch();
 		$product_cache[$shopify_product_id]['tags'] = explode(', ', $product_cache[$shopify_product_id]['tags']);
 	}
 	return $product_cache[$shopify_product_id];
