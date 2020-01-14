@@ -34,7 +34,13 @@ WHERE c.handle IN (
 	'body-lotion',
 	'body-care',
 	'body-wash',
-	'hand-cream'
+	'hand-cream',
+	'isle',
+	'capri',
+	'coral',
+	'willow',
+	'meadow',
+	'arrow'
 )
 ORDER BY c.id, cp.position;")->fetchAll() as $row){
 	if(empty($collections[$row['handle']])){
