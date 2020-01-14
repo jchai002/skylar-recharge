@@ -4,7 +4,7 @@ require_once(__DIR__.'/../includes/config.php');
 $start_from = 0;
 $num_to_generate = 30;
 $discount_template_id = 22178881;
-$prefix = "PR-SC-10-";
+$prefix = "PR-SC-20-";
 
 $res = $rc->get('/discounts/'.$discount_template_id);
 print_r($res);

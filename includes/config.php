@@ -133,7 +133,13 @@ function log_event(PDO $db, $category='', $value='', $action='', $value2='', $no
 		'date_created' => date('Y-m-d H:i:s'),
 	]);
 }
+function log_echo(&$log, $line){
+	echo $line.PHP_EOL;
+	$log['lines'] .= $line.PHP_EOL;
+}
 function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $to_emails = ['tim@skylar.com'], $properties = []){
+
+	$to_emails = is_array($to_emails) ? $to_emails : [$to_emails];
 
 	$msg = is_array($msg) ? print_r($msg, true) : $msg;
 
