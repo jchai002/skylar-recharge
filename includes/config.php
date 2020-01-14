@@ -336,9 +336,9 @@ function insert_update_order(PDO $db, $shopify_order, ShopifyClient $sc){
 	global $_stmt_cache;
 	if(empty($_stmt_cache['iu_order'])){
 		$_stmt_cache['iu_order'] = $db->prepare("INSERT INTO orders
-(shopify_id, customer_id, app_id, cart_token, `number`, total_line_items_price, total_discounts, total_price, tags, created_at, updated_at, cancelled_at, closed_at, email, note, attributes, source_name, synced_at)
-VALUES (:shopify_id, :customer_id, :app_id, :cart_token, :number, :total_line_items_price, :total_discounts, :total_price, :tags, :created_at, :updated_at, :cancelled_at, :closed_at, :email, :note, :attributes, :source_name, :synced_at)
-ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=:app_id, cart_token=:cart_token, `number`=:number, updated_at=:updated_at, total_line_items_price=:total_line_items_price, total_discounts=:total_discounts, total_price=:total_price, tags=:tags, cancelled_at=:cancelled_at, closed_at=:closed_at, email=:email, note=:note, attributes=:attributes, source_name=:source_name, synced_at=:synced_at");
+(shopify_id, customer_id, app_id, cart_token, `number`, total_line_items_price, total_discounts, total_price, discount_code, tags, created_at, updated_at, cancelled_at, closed_at, email, note, attributes, source_name, synced_at)
+VALUES (:shopify_id, :customer_id, :app_id, :cart_token, :number, :total_line_items_price, :total_discounts, :total_price, :discount_code, :tags, :created_at, :updated_at, :cancelled_at, :closed_at, :email, :note, :attributes, :source_name, :synced_at)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=:app_id, cart_token=:cart_token, `number`=:number, updated_at=:updated_at, total_line_items_price=:total_line_items_price, total_discounts=:total_discounts, total_price=:total_price, discount_code=:discount_code, tags=:tags, cancelled_at=:cancelled_at, closed_at=:closed_at, email=:email, note=:note, attributes=:attributes, source_name=:source_name, synced_at=:synced_at");
 	}
 	$now = date('Y-m-d H:i:s');
 	if(!empty($shopify_order['customer'])){
@@ -357,6 +357,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=
 		'total_line_items_price' => $shopify_order['total_line_items_price'],
 		'total_discounts' => $shopify_order['total_discounts'],
 		'total_price' => $shopify_order['total_price'],
+		'discount_code' => $shopify_order['discount_codes'][0]['code'] ?? null,
 		'tags' => $shopify_order['tags'],
 		'created_at' => date("Y-m-d H:i:s", strtotime($shopify_order['created_at'])),
 		'updated_at' => date("Y-m-d H:i:s", strtotime($shopify_order['updated_at'])),

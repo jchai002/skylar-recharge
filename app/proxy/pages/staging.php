@@ -41,11 +41,8 @@ if($sc_next_month_scent['sc_live']){
 	$sc_next_month_scent = sc_get_monthly_scent($db, get_month_by_offset(2), true);
 }
 $discount_code = "ST-10-".$rc_customer_id;
-$stmt = $db->query("SELECT * FROM rc_discounts WHERE code='$discount_code'");
-if(empty($stmt)){
-    print_r($db->errorInfo());
-}
-$discount_save_available = $stmt->rowCount() == 0 || $stmt->fetch()['times_used'] == 0;
+$stmt = $db->query("SELECT 1 FROM orders WHERE discount_code='$discount_code'");
+$discount_save_available = $stmt->rowCount() == 0;
 
 // figure out when to put the add to box section
 $next_section_index = 0;
