@@ -8,38 +8,31 @@ $sc = new ShopifyPrivateClient();
 
 // Load blacklist
 $blacklist_emails = [];
-/*
-$f = fopen(__DIR__.'/email_blacklist.csv', 'r');
-$headers = fgetcsv($f);
-while($row = fgetcsv($f)){
-	$blacklist_emails[] = $row[0];
-}
-$blacklist_emails = array_values(array_unique($blacklist_emails));
-*/
-
-//$now = strtotime('tomorrow');
-
-/** Schedule:
- * Monday: Thursday
- * Tuesday: Friday
- * Wednesday: Sat, Sun, Mon
- * Thursday: Tuesday
- * Friday: Wednesday
- */
 
 $now = time();
+if(!is_business_day($now)){
+	die("Don't send emails on off days".PHP_EOL);
+}
 
-$day_of_week = date('N', $now);
-$start_date = date('Y-m-d', strtotime('+2 days', $now));
-if($day_of_week == 3){ // Wednesday
-	$end_date = date('Y-m-d', strtotime('+6 days', $now));
-} elseif($day_of_week == 4 || $day_of_week == 5) { // Thursday and Friday
-	$start_date = date('Y-m-d', strtotime('+4 days', $now));
-	$end_date = date('Y-m-d', strtotime('+6 days', $now));
-} elseif($day_of_week >= 6) {
-	die("No weekend emails");
-} else {
-	$end_date = date('Y-m-d', strtotime('+4 days', $now));
+// Need to get the range of dates to warn
+// Should be all orders from after the 2nd business day, on or before the 3rd business day
+// e.g. on Wednesdays we warn Sat, Sun, Mon orders
+$biz_days_counted = 0;
+$time_counter = $now;
+while($biz_days_counted < 3){
+	$time_counter = strtotime('tomorrow', $time_counter);
+	if(is_business_day($time_counter)){
+		$biz_days_counted++;
+		if($biz_days_counted == 2){
+			// Dates are exclusive for RC so start the day before
+			$start_date = date('Y-m-d', $time_counter);
+		}
+		if($biz_days_counted == 3){
+			// Dates are exclusive for RC so end the day after
+			$end_date = date('Y-m-d', strtotime('tomorrow', $time_counter));
+			break;
+		}
+	}
 }
 
 $page = 0;
