@@ -1137,9 +1137,9 @@ function sc_create_promo_sub(RechargeClient $rc, $address_id, $date, $months_to_
 		'shopify_variant_id' => 28003712663639,
 		'order_interval_unit' => 'month',
 		'order_interval_frequency' => 1,
-		'charge_interval_frequency' => $row['shipments'] ?? $months_to_charge,
+		'charge_interval_frequency' => 1,
 		'order_day_of_month' => $promo_day,
-		'expire_after_specific_number_of_charges' => 1,
+		'expire_after_specific_number_of_charges' => $months_to_charge,
 	]);
 }
 function sc_pull_profile_data(PDO $db, RechargeClient $rc, $rc_customer_id, $shopify_customer_id=false){
