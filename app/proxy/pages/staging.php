@@ -753,6 +753,11 @@ uasort($other_onetimes, function($a, $b){
                         <span>It's too expensive</span>
                     </label>
                     <label>
+                        <input type="radio" name="skip_reason" value="My order took too long to arrive">
+                        <span class="radio-visual"></span>
+                        <span>My order took too long to arrive</span>
+                    </label>
+                    <label>
                         <input type="radio" name="skip_reason" value="I just don't want a subscription">
                         <span class="radio-visual"></span>
                         <span>I just don't want a subscription</span>
