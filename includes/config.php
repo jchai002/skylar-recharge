@@ -175,40 +175,46 @@ function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $t
 		'date_created' => date('Y-m-d H:i:s'),
 	]);
 }
-function offset_date_skip_weekend($time){
-	// TODO: Need to fix this logic to iterate over itself repeatedly until valid
-	$day_month_year = date('Y-m-d', $time);
+function offset_date_skip_weekend($time, $reverse = false){
+	while(!is_business_day($time)){
+		$time += ($reverse ? -1 : 1)*24*60*60;
+	}
+	return $time;
+}
+function is_business_day($time){
+	// TODO: This logic will eventually need to be replaced for observed holidays. Use a library for that
 	$day_month = date('m-d', $time);
-	while(in_array(date('N', $time), [6,7])){ // While it's a weekend
-		$time += 24*60*60; //  Add a day
+	$day_month_year = date('Y-m-d', $time);
+	// Weekend
+	if(in_array(date('N', $time), [6,7])){
+		return false;
 	}
 	// Labor day
 	if(date('m', $time) == 9 && $time == strtotime('first monday '.date('Y-m', $time))){
-		$time += 24*60*60; //  Add a day
+		return false;
 	}
-	// Cyber Monday
 	$cyber_monday = date('Y-m-d', strtotime('last thursday of november '.date('Y', $time))+(4*24*60*60));
-	if(date('Y-m-d', $time) == $cyber_monday){
-		$time += 24*60*60; //  Add a day
+	if($day_month_year == $cyber_monday){
+		return false;
 	}
 	// Christmas Eve
-	if(date('m-d', $time) == '12-24'){
-		$time += 24*60*60*2; //  Add 2 days
+	if($day_month == '12-24'){
+		return false;
 	}
 	// Christmas
-	if(date('m-d', $time) == '12-25'){
-		$time += 24*60*60; //  Add a day
+	if($day_month == '12-25'){
+		return false;
 	}
 	// New years
-	if(date('m-d', $time) == '12-31'){
-		$time += 2*24*60*60; //  Add 2 days
+	if($day_month == '12-31'){
+		return false;
 	}
 	// New years
-	if(date('m-d', $time) == '01-01'){
-		$time += 24*60*60; //  Add a day
+	if($day_month == '01-01'){
+		return false;
 	}
 
-	return $time;
+	return true;
 }
 
 $_stmt_cache = [];
