@@ -183,37 +183,50 @@ function offset_date_skip_weekend($time, $reverse = false){
 }
 function is_business_day($time){
 	// TODO: This logic will eventually need to be replaced for observed holidays. Use a library for that
-	$day_month = date('m-d', $time);
-	$day_month_year = date('Y-m-d', $time);
+	$day = date('d', $time);
+	$month = date('m', $time);
+	$year = date('Y', $time);
 	// Weekend
 	if(in_array(date('N', $time), [6,7])){
 		return false;
 	}
-	// Labor day
-	if(date('m', $time) == 9 && $time == strtotime('first monday '.date('Y-m', $time))){
+	// Memorial day
+	if($month == 5 && $time == strtotime("last monday of $year-5")){
 		return false;
 	}
-	$cyber_monday = date('Y-m-d', strtotime('last thursday of november '.date('Y', $time))+(4*24*60*60));
-	if($day_month_year == $cyber_monday){
+	// Independence day, + observed 2020
+	if($month == 7 && ($day == 4 || $year == 2020 && $day == 3)){
+		return false;
+	}
+	// Labor day
+	if($month == 9 && $time == strtotime("first monday of $year-9")){
+		return false;
+	}
+	// Thanksgiving
+	if($month == 11 && $time = strtotime("last thursday of $year-11")){
+		return false;
+	}
+	// Cyber monday
+	$cyber_monday = date('Y-m-d', strtotime("last thursday of $year-11 + 4 days"));
+	if("$day-$month-$year" == $cyber_monday){
 		return false;
 	}
 	// Christmas Eve
-	if($day_month == '12-24'){
+	if($month == 12 && $day == 24){
 		return false;
 	}
 	// Christmas
-	if($day_month == '12-25'){
+	if($month == 12 && $day == 25){
 		return false;
 	}
 	// New years
-	if($day_month == '12-31'){
+	if($month == 12 && $day == 31){
 		return false;
 	}
 	// New years
-	if($day_month == '01-01'){
+	if($month == 1 && $day == 1){
 		return false;
 	}
-
 	return true;
 }
 
