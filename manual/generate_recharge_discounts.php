@@ -2,9 +2,9 @@
 require_once(__DIR__.'/../includes/config.php');
 
 $start_from = 0;
-$num_to_generate = 25;
-$discount_template_id = 21645629;
-$prefix = "RT-20-";
+$num_to_generate = 30;
+$discount_template_id = 22178881;
+$prefix = "PR-SC-10-";
 
 $res = $rc->get('/discounts/'.$discount_template_id);
 print_r($res);
