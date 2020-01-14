@@ -190,6 +190,18 @@ function is_business_day($time){
 	if(in_array(date('N', $time), [6,7])){
 		return false;
 	}
+	// MLK day
+	if($month == 1 && $time == strtotime("third monday of $year-1")){
+		return false;
+	}
+	// President's day
+	if($month == 2 && $time == strtotime("third monday of $year-2")){
+		return false;
+	}
+	// Good friday
+	if($time == easter_date($year)-2*24*60*60){
+		return false;
+	}
 	// Memorial day
 	if($month == 5 && $time == strtotime("last monday of $year-5")){
 		return false;
