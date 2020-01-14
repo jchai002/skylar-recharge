@@ -732,7 +732,7 @@ uasort($other_onetimes, function($a, $b){
     </div>
     <div id="sc-cancel-confirm-modal" class="sc-confirm-modal">
         <div>
-            <div class="sc-modal-title">Why would you like to cancel your subscription?</div>
+            <div class="portal-modal-title">Why would you like to cancel your subscription?</div>
             <form id="sc-cancel-reason-form" class="skip-reason-form">
                 <div class="skip-reason-list">
                     <label>
