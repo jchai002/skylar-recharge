@@ -17,7 +17,6 @@ $log = [
 	'lines' => '',
 	'error' => false,
 ];
-$has_error = false;
 log_echo($log, "Changing all promotions $start_date - $end_date to $new_sku");
 
 log_echo($log, "Updating subscriptions");

@@ -1,28 +1,32 @@
 <?php
-require_once(__DIR__.'/../includes/config.php');
+require_once(__DIR__ . '/../includes/config.php');
 
-//$rc->debug = true;
+$log = [
+	'lines' => '',
+	'error' => false,
+];
 
 $page = 0;
 $scent = null;
 
+// Offset code so that this can be run month-of in case of issues
 $offset = 0;
 if(time() <= offset_date_skip_weekend(strtotime(date('Y-m-01')))){
 	$offset = -1;
 }
-echo "offset: $offset".PHP_EOL;
+log_echo($log, "offset: $offset");
 
 $start_date = date('Y-m-t', get_month_by_offset($offset));
 $end_date = date('Y-m-01', get_month_by_offset(2+$offset));
-
-echo "$start_date - $end_date".PHP_EOL;
+log_echo($log, "$start_date - $end_date");
 
 $scent_info = sc_get_monthly_scent($db, get_month_by_offset($offset));
 if(empty($scent_info)){
+	send_alert($db, 7, 'Tried to release scent, but there was no active monthly scent for '.date('Y-m-d', get_month_by_offset($offset)));
 	die("No Live Monthly Scent!");
 }
 
-echo "Getting $start_date to $end_date".PHP_EOL;
+log_echo($log, "Getting $start_date to $end_date");
 
 $charges = [];
 
@@ -51,10 +55,10 @@ do {
 			}
 		}
 	}
-	echo "Adding ".count($res['charges'])." to array - total: ".count($charges).PHP_EOL;
-	echo "Rate: ".(count($charges) / (microtime(true) - $start_time))." charges/s".PHP_EOL;
+	log_echo($log, "Adding ".count($res['charges'])." to array - total: ".count($charges));
+	log_echo($log, "Rate: ".(count($charges) / (microtime(true) - $start_time))." charges/s");
 } while(count($res['charges']) == 250);
-echo "Total: ".count($charges).PHP_EOL;
+log_echo($log, "Total: ".count($charges));
 
 $starting_point = 0;
 $num_to_process = count($charges);
@@ -66,7 +70,7 @@ if(!empty($argv) && !empty($argv[1])){
 }
 
 $start_time = microtime(true);
-echo "Starting updates $starting_point - ".($starting_point+$num_to_process).PHP_EOL;
+log_echo($log, "Starting updates $starting_point - ".($starting_point+$num_to_process));
 foreach($charges as $index=>$charge){
 	if($index < $starting_point){
 		continue;
@@ -145,3 +149,9 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, ShopifyClient $s
 	insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
 	return $res['onetime'];
 }
+send_alert($db, 8,
+	"Finished releasing SC scent".($log['error'] ? ' with errors' : ''),
+	"SC Scent Release".($log['error'] ? ' ERROR' : ' Log'),
+	'tim@skylar.com',
+	['log' => $log]
+);
