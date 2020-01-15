@@ -26,7 +26,7 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 	'status' => 'ACTIVE',
 	'customer_id' => $charge['customer_id'],
 ]);
-$promo_sc = !empty($charge['discount_codes']) && strpos($charge['discount_codes'][0]['code'], 'PR-SC-10-') === 0;
+$promo_sc = !empty($charge['discount_codes']) && strpos($charge['discount_codes'][0]['code'], 'PR-SC-') === 0;
 //var_dump($main_sub);
 $day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
 if(empty($main_sub) && empty($promo_sc)){

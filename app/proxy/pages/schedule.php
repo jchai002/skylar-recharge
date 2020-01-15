@@ -271,14 +271,18 @@ print_r($schedule->get());
                                 <?php if($shipment_index == 0 && !$has_ac_followup){ ?>
                                     <div class="sc-box-discounts<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                         <?php foreach($upcoming_shipment['discounts'] as $discount){ ?>
-                                            <div class="sc-box-discount">
-                                                <div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
-                                                <?php if($discount['type'] == 'percentage'){ ?>
-                                                    <div class="sc-discount-value"><?=$discount['amount']?>% (-$<?=price_without_trailing_zeroes($discount['amount']*array_sum(array_column($upcoming_shipment['items'], 'price'))/100)?>)</div>
+                                                <div class="sc-box-discount">
+                                                <?php if(strpos($discount['code'], 'PR-SC-') === 0){ ?>
+                                                    <div class="sc-discount-title">Discount:</div>
                                                 <?php } else { ?>
-                                                    <div class="sc-discount-value">-$<?=price_without_trailing_zeroes($discount['amount']) ?></div>
+                                                    <div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
                                                 <?php } ?>
-                                            </div>
+													<?php if($discount['type'] == 'percentage'){ ?>
+                                                        <div class="sc-discount-value"><?=$discount['amount']?>% (-$<?=price_without_trailing_zeroes($discount['amount']*array_sum(array_column($upcoming_shipment['items'], 'price'))/100)?>)</div>
+													<?php } else { ?>
+                                                        <div class="sc-discount-value">-$<?=price_without_trailing_zeroes($discount['amount']) ?></div>
+													<?php } ?>
+                                                </div>
                                         <?php } ?>
                                         <div class="sc-discount-link" onclick="$('.sc-add-discount').show();$(this).hide();">Got a promo code?</div>
                                         <form class="sc-add-discount" style="display: none;">
