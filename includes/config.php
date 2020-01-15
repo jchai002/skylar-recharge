@@ -319,7 +319,30 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 			'updated_at' => $shopify_variant['updated_at'],
 			'synced_at' => $now,
 		]);
+		$last_variant_id = $db->lastInsertId();
 	}
+
+	// Import into SC product table
+	if(!empty($last_variant_id) && $shopify_product['product_type'] == 'Scent Club Month' && !empty($shopify_product['published_at'])){
+		$sc_time = strtotime(str_replace('scent-club-', '', $shopify_product['handle']));
+		if(!empty($sc_time) && time() <= $sc_time){
+			if(empty($_stmt_cache['iu_sc_variant'])){
+				$_stmt_cache['iu_sc_variant'] = $db->prepare("INSERT INTO sc_products
+					( date,  variant_id,  live,  ship_date,  public_launch,  member_launch) VALUES
+					(:date, :variant_id, :live, :ship_date, :public_launch, :member_launch)
+				ON DUPLICATE KEY UPDATE variant_id=:variant_id");
+			}
+			$_stmt_cache['iu_sc_variant']->execute([
+				'date' => date('Y-m-d', $sc_time),
+				'variant_id' => $last_variant_id,
+				'live' => time() >= ScentClubSchedule::calculate_public_launch($sc_time) ? 1 : 0,
+				'ship_date' => date('Y-m-d', ScentClubSchedule::calculate_ship_date($sc_time)),
+				'public_launch' => date('Y-m-d', ScentClubSchedule::calculate_public_launch($sc_time)),
+				'member_launch' => date('Y-m-d', ScentClubSchedule::calculate_member_launch($sc_time)),
+			]);
+		}
+	}
+
 	return $product_id;
 }
 $product_id_map = [];
