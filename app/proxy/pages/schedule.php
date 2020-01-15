@@ -272,7 +272,7 @@ print_r($schedule->get());
                                     <div class="sc-box-discounts<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                         <?php foreach($upcoming_shipment['discounts'] as $discount){ ?>
                                                 <div class="sc-box-discount">
-                                                <?php if(strpos($discount['code'], 'PR-SC-') === 0){ ?>
+                                                <?php if(strpos($discount['code'], 'ST-10-') === 0){ ?>
                                                     <div class="sc-discount-title">Discount:</div>
                                                 <?php } else { ?>
                                                     <div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
