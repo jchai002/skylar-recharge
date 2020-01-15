@@ -273,7 +273,7 @@ print_r($schedule->get());
                                         <?php foreach($upcoming_shipment['discounts'] as $discount){ ?>
                                                 <div class="sc-box-discount">
                                                 <?php if(strpos($discount['code'], 'ST-10-') === 0){ ?>
-                                                    <div class="sc-discount-title">Discount:</div>
+                                                    <div class="sc-discount-title">Discount</div>
                                                 <?php } else { ?>
                                                     <div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
                                                 <?php } ?>
