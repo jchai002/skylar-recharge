@@ -45,12 +45,24 @@ if(empty($row)){
 		'value_type' => 'json_string'
 	]]);
 	print_r($res);
+	send_alert($db, 8,
+		"Finished pushing SC metafield",
+		"SC Metafield Pushed",
+		'tim@skylar.com',
+		['log' => $res]
+	);
 } else if($row['value'] != json_encode($sc_info)) {
 	$res = $sc->put('/admin/api/2019-10/metafields/'.$row['shopify_id'].'.json', [ 'metafield' => [
 		'id' => $row['shopify_id'],
 		'value' => json_encode($sc_info),
 	]]);
 	print_r($res);
+	send_alert($db, 8,
+		"Finished pushing SC metafield",
+		"SC Metafield Pushed",
+		'tim@skylar.com',
+		['log' => $res]
+	);
 } else {
 	echo "No updated needed";
 }
