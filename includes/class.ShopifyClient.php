@@ -48,7 +48,7 @@ define('SHOPIFY_SCOPE',implode(',',[
 	'read_marketing_events',
 	'write_marketing_events',
 ]));
-class ShopifyClient {
+class ShopifyAppClient {
 	public $shop_domain;
 	public $token;
 	public $api_key;
@@ -60,11 +60,11 @@ class ShopifyClient {
     ];
 
 	public function __construct($shop_domain = '', $token = '', $api_key = SHOPIFY_APP_KEY, $secret = SHOPIFY_APP_SECRET){
-		$this->name = "ShopifyClient";
+		$this->name = "ShopifyAppClient";
 		$this->shop_domain = $shop_domain;
 		if(empty($this->shop_domain)){
-			if(!empty(ShopifyClient::$token_lookup)){
-				$this->shop_domain = array_keys(ShopifyClient::$token_lookup)[0];
+			if(!empty(self::$token_lookup)){
+				$this->shop_domain = array_keys(self::$token_lookup)[0];
 			}
 		}
 		$this->token = $token;
@@ -72,8 +72,8 @@ class ShopifyClient {
 			$this->token = SHOPIFY_APP_TOKEN;
 		}
 		if(empty($this->token)){
-			if(array_key_exists($this->shop_domain, ShopifyClient::$token_lookup)){
-				$this->token = ShopifyClient::$token_lookup[$this->shop_domain];
+			if(array_key_exists($this->shop_domain, self::$token_lookup)){
+				$this->token = self::$token_lookup[$this->shop_domain];
 			}
 		}
 		$this->api_key = $api_key;
@@ -269,7 +269,7 @@ class ShopifyClient {
 		return (int) $params[$index];
 	}
 }
-class ShopifyPrivateClient extends ShopifyClient {
+class ShopifyPrivateClient extends ShopifyAppClient {
 
 	public function __construct($shop_domain = 'maven-and-muse.myshopify.com', $token = '', $api_key = SHOPIFY_PRIVATE_APP_KEY, $secret = SHOPIFY_PRIVATE_APP_SECRET){
 		parent::__construct($shop_domain, $token, $api_key, $secret);
