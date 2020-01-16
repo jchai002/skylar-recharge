@@ -12,7 +12,6 @@ do {
 		'created_at_min' => '2019-11-28 18:00:00-08:00',
 		'created_at_max' => '2019-11-29 13:00:00-08:00',
 	]);
-	print_r($sc->last_response_headers);
 	foreach($res as $checkout){
 		$checkouts[] = $checkout;
 	}
