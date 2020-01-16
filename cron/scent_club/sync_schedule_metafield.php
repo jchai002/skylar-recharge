@@ -49,7 +49,7 @@ if(empty($row)){
 		"Finished pushing SC metafield",
 		"SC Metafield Pushed",
 		'tim@skylar.com',
-		['log' => $res]
+		['log' => $res, 'smother' => false]
 	);
 } else if($row['value'] != json_encode($sc_info)) {
 	$res = $sc->put('/admin/api/2019-10/metafields/'.$row['shopify_id'].'.json', [ 'metafield' => [
@@ -61,7 +61,7 @@ if(empty($row)){
 		"Finished pushing SC metafield",
 		"SC Metafield Pushed",
 		'tim@skylar.com',
-		['log' => $res]
+		['log' => $res, 'smother' => false]
 	);
 } else {
 	echo "No updated needed";

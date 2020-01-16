@@ -150,6 +150,9 @@ function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $t
 		'window' => date('Y-m-d H:i:s', time()-60*60),
 	]);
 	$smother_message = $stmt->rowCount() != 0;
+	if(array_key_exists('smother', $properties)){
+		$smother_message = $properties['smother'];
+	}
 
 	$properties = array_merge([
 		'message' => $msg,
