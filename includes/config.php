@@ -221,7 +221,7 @@ function is_business_day($time){
 		return false;
 	}
 	// Thanksgiving
-	if($month == 11 && $time = strtotime("last thursday of $year-11")){
+	if($month == 11 && $time == strtotime("last thursday of $year-11")){
 		return false;
 	}
 	// Cyber monday

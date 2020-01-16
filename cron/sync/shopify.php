@@ -77,6 +77,10 @@ do {
 } while(count($res) >= $page_size);
 
 // metafields
+echo "Updating shop metafields".PHP_EOL;
+$metafields = $sc->get('/admin/metafields.json');
+print_r(insert_update_metafields($db, $metafields));
+
 echo "Updating product metafields".PHP_EOL;
 $updated_product_ids = $db->query("SELECT shopify_id FROM products WHERE updated_at >= '$min_date'")->fetchAll(PDO::FETCH_COLUMN);
 foreach($updated_product_ids AS $product_id){
