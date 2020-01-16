@@ -9,6 +9,7 @@ $log = [
 $page = 0;
 $scent = null;
 
+// TODO: This code is essentially looking for what scent is shipping next, has to be a cleaner way to do this
 // Offset code so that this can be run month-of in case of issues
 $offset = 0;
 if(time() <= offset_date_skip_weekend(strtotime(date('Y-m-01')))){
@@ -20,10 +21,13 @@ $start_date = date('Y-m-t', get_month_by_offset($offset));
 $end_date = date('Y-m-01', get_month_by_offset(2+$offset));
 log_echo($log, "$start_date - $end_date");
 
-$scent_info = sc_get_monthly_scent($db, get_month_by_offset($offset));
+$scent_info = sc_get_monthly_scent($db, get_month_by_offset(1+$offset));
 if(empty($scent_info)){
-	send_alert($db, 7, 'Tried to release scent, but there was no active monthly scent for '.date('Y-m-d', get_month_by_offset($offset)));
+	//send_alert($db, 7, 'Tried to release scent, but there was no active monthly scent for '.date('Y-m-d', get_month_by_offset($offset)));
 	die("No Live Monthly Scent!");
+}
+if(date('Y-m-d') == $scent_info['ship_date']){
+	die("Today is the ship date, don't make any changes!");
 }
 
 log_echo($log, "Getting $start_date to $end_date");

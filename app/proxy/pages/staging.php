@@ -37,7 +37,7 @@ $sc_main_sub = sc_get_main_subscription($db, $rc, [
 	'status' => 'ACTIVE',
 ]);
 $sc_next_month_scent = sc_get_monthly_scent($db, get_next_month(), true);
-if($sc_next_month_scent['sc_live']){
+if(strtotime($sc_next_month_scent['member_launch']) <= time()){
 	$sc_next_month_scent = sc_get_monthly_scent($db, get_month_by_offset(2), true);
 }
 $discount_code = "ST-10-".$rc_customer_id;

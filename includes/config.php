@@ -1115,7 +1115,7 @@ function sc_get_monthly_scent(PDO $db, $time = null, $admin_preview = false){
 	if(array_key_exists($date, $monthly_scent_cache[($admin_preview ? 'admin' : 'live')])){
 		return $monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date];
 	}
-	$preview_clause = $admin_preview ? '' : 'AND sc_live = 1';
+	$preview_clause = $admin_preview ? '' : 'AND member_launch <= "'.date('Y-m-d H:i:s').'"';
 	$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sc_date=? $preview_clause");
 	$stmt->execute([$date]);
 	if($stmt->rowCount() < 1){
