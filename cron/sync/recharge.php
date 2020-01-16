@@ -1,9 +1,6 @@
 <?php
 require_once(__DIR__.'/../../includes/config.php');
 
-$rc = new RechargeClient();
-$sc = new ShopifyClient();
-
 $interval = 5;
 $page_size = 250;
 $min_date = date('Y-m-d H:i:00P', time()-60*6);

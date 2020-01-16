@@ -1,20 +1,9 @@
 <?php
 http_response_code(200);
 require_once('../includes/config.php');
-require_once('../includes/class.ShopifyClient.php');
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
-$headers = getallheaders();
-$shop_url = null;
-if(!empty($headers['X-Shopify-Shop-Domain'])){
-	$shop_url = $headers['X-Shopify-Shop-Domain'];
-}
-if(empty($shop_url)){
-	$shop_url = 'maven-and-muse.myshopify.com';
-}
-$sc = new ShopifyClient();
-$rc = new RechargeClient();
 
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');

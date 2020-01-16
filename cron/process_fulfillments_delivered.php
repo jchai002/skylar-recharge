@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$rc = new RechargeClient();
-$sc = new ShopifyClient();
 if(!empty($_REQUEST['id'])){
 	$stmt = $db->prepare("SELECT * FROM fulfillments WHERE shopify_id=?");
 	$stmt->execute([$_REQUEST['id']]);

@@ -1,9 +1,6 @@
 <?php
 
 require_once(__DIR__.'/../includes/config.php');
-require_once(__DIR__.'/../includes/class.ShopifyClient.php');
-
-$sc = new ShopifyClient();
 
 $page_size = 250;
 $page = 0;

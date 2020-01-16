@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$sc = new ShopifyClient();
-
 $stmt = $db->query("SELECT shopify_id as id, tags FROM orders WHERE tags LIKE '%HOLD: Scent%'");
 
 foreach($stmt->fetchAll() as $order){

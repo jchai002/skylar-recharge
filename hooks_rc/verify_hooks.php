@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
-require_once(__DIR__.'/../includes/class.RechargeClient.php');
 
-$rc = new RechargeClient();
 $hooks = $rc->get("/webhooks");
 $hooks = $hooks['webhooks'];
 var_dump($hooks);

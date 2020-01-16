@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$sc = new ShopifyClient();
-
 $order = $sc->get("/admin/orders/842038050903.json");
 
 // First determine if the order has the scent club product

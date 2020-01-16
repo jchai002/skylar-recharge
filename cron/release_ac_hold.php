@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$sc = new ShopifyClient();
-
 // Can't search shopify orders by tag, so use db
 $stmt = $db->query("SELECT shopify_id AS id, tags FROM orders WHERE tags LIKE '%HOLD: AC Followup%'");
 

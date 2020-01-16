@@ -1,8 +1,6 @@
 <?php
 
-global $db;
-$rc = new RechargeClient();
-$sc = new ShopifyClient();
+global $db, $sc, $rc;
 
 if(!empty($_REQUEST['parent_id'])){
 	$main_sub = get_rc_subscription($db, $_REQUEST['parent_id'], $rc, $sc);

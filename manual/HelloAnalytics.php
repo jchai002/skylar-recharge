@@ -3,7 +3,6 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 require_once(__DIR__.'/../includes/config.php');
 
-$sc = new ShopifyClient();
 $order = $sc->get('/admin/orders/'.($_REQUEST['id'] ?? 1695376343127).'.json');
 
 $views = [

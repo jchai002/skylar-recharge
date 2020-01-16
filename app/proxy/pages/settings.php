@@ -1,10 +1,9 @@
 <?php
-global $rc, $db;
+global $sc, $rc, $db;
 $main_sub = sc_get_main_subscription($db, $rc, [
 	'shopify_customer_id' => $_REQUEST['c'],
 ]);
 
-$sc = new ShopifyClient();
 $customer = $sc->get('/admin/customers/'.intval($_REQUEST['c']).'.json');
 
 sc_conditional_billing($rc, $_REQUEST['c']);

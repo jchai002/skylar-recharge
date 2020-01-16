@@ -1,8 +1,5 @@
 <?php
 require_once('../includes/config.php');
-require_once('../includes/class.ShopifyClient.php');
-
-$sc = new ShopifyClient();
 
 if(!empty($_REQUEST['id'])){
 	$product = $sc->call('GET', '/admin/products/'.intval($_REQUEST['id']).'.json');

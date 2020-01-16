@@ -1,6 +1,6 @@
 <?php
 
-global $db, $rc;
+global $sc, $db, $rc;
 
 if(empty($_REQUEST['charge_id'])){
 	$res = $rc->get('/customers', [
@@ -22,7 +22,6 @@ if(empty($_REQUEST['charge_id'])){
 	$charge = $res['charge'];
 }
 //var_dump($charge);
-$sc = new ShopifyClient();
 $variant = get_variant($db, $_REQUEST['variant_id']);
 $product = get_product($db, $variant['shopify_product_id']);
 

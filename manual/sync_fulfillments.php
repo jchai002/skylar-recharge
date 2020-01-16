@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$sc = new ShopifyClient();
-
 $page_size = 1000;
 $page = 0;
 

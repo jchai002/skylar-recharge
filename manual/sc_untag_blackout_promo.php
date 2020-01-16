@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$sc = new ShopifyClient();
-
 $fh = fopen(__DIR__."/result.csv", 'r');
 
 $titles = array_map('strtolower',fgetcsv($fh));

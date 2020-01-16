@@ -1,10 +1,8 @@
 <?php
 require_once('../includes/config.php');
-require_once('../includes/class.RechargeClient.php');
 
 // Remove sample discount from address if they have one
 
-$rc = new RechargeClient();
 // get $charge from webhook
 if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/charges/'.$_REQUEST['id']);

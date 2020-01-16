@@ -1,7 +1,6 @@
 <?php
 require_once('../includes/config.php');
 
-$rc = new RechargeClient();
 // get $charge from webhook
 if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/subscriptions/'.$_REQUEST['id']);
@@ -51,7 +50,6 @@ if(!empty($res['onetimes'])){
 $res = $rc->get('/customers/'.$subscription['customer_id']);
 $customer = $res['customer'];
 
-$sc = new ShopifyClient();
 $res = $sc->post('/admin/customers/'.$customer['shopify_customer_id'].'/metafields.json', ['metafield'=> [
 	'namespace' => 'scent_club',
 	'key' => 'active',

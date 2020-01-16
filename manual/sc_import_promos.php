@@ -1,10 +1,5 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
-require_once(__DIR__.'/../includes/class.ShopifyClient.php');
-require_once(__DIR__.'/../includes/class.RechargeClient.php');
-
-$rc = new RechargeClient();
-$sc = new ShopifyPrivateClient();
 
 $promo_day = 19;
 $months_to_charge = 10;

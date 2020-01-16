@@ -7,7 +7,6 @@ $titles = array_map('strtolower',fgetcsv($fh));
 
 $order = [];
 $order_id = 0;
-$sc = new ShopifyClient();
 
 while($row = fgetcsv($fh)){
 

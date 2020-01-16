@@ -1,8 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-global $rc, $db;
-$sc = new ShopifyClient();
+global $sc, $rc, $db;
 
 $token = $_REQUEST['token'];
 $res_all = [];

@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$sc = new ShopifyClient();
-$rc = new RechargeClient();
 // get $charge from webhook
 if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/customers/'.$_REQUEST['id']);

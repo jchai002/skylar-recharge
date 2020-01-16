@@ -1,7 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$sc = new ShopifyClient();
 $order = $sc->get('/admin/orders/1703030980695.json');
 
 $analytics = new TheIconic\Tracking\GoogleAnalytics\Analytics();

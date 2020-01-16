@@ -1,9 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$rc = new RechargeClient();
-$sc = new ShopifyClient();
-
 $variants = $db->query("
 SELECT v.shopify_id FROM variants v
 LEFT JOIN products p ON p.id=v.product_id

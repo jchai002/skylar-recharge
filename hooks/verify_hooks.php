@@ -55,8 +55,6 @@ $webhooks_required = [
 	],
 ];
 
-$sc = new ShopifyClient();
-
 print_r($sc->call("GET", "/admin/oauth/access_scopes.json"));
 
 

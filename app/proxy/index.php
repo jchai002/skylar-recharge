@@ -1,10 +1,6 @@
 <?php
 
 require_once dirname(__FILE__).'/../../includes/config.php';
-
-$sc = new ShopifyClient();
-$rc = new RechargeClient();
-
 require_once dirname(__FILE__).'/routes.php';
 $path = str_replace('/app/proxy/', '', parse_url($_SERVER['REQUEST_URI'])['path']);
 

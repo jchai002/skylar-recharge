@@ -1,6 +1,6 @@
 <?php
 
-$sc = new ShopifyClient();
+global $sc;
 
 try {
 	$res = $sc->put('/admin/customers/'.intval($_REQUEST['c']).'.json', [

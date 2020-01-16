@@ -2,8 +2,6 @@
 http_response_code(200);
 require_once('../includes/config.php');
 
-$sc = new ShopifyClient();
-
 if(!empty($_REQUEST['id'])){
 	$fulfillments = $sc->get('/admin/orders/'.intval($_REQUEST['id']).'/fulfillments.json');
 	var_dump($sc->last_error);

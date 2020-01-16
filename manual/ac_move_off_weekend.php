@@ -1,9 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$rc = new RechargeClient();
-$sc = new ShopifyClient();
-
 $date = '2020-01-02';
 /*
 $charges = [];

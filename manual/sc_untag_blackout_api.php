@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$sc = new ShopifyClient();
-
 do {
 	$orders = $sc->get('/admin/orders.json',['tags'=>'HOLD: Scent Club Blackout', 'limit'=>250]);
 	foreach($orders as $order){

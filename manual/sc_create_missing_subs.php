@@ -1,9 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$rc = new RechargeClient();
-$sc = new ShopifyClient();
-
 $f = fopen(__DIR__.'/missing_sc.csv', 'r');
 
 $headers = array_map('strtolower',fgetcsv($f));

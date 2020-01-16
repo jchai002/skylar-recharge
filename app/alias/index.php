@@ -1,8 +1,5 @@
 <?php
 require_once('../../includes/config.php');
-require_once('../../includes/class.ShopifyClient.php');
-
-$sc = new ShopifyClient();
 
 $type = $_REQUEST['type'] ?? 'customer';
 if($type == 'order'){

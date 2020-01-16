@@ -1,11 +1,6 @@
 <?php
 
 require_once('../includes/config.php');
-require_once('../includes/class.ShopifyClient.php');
-require_once('../includes/class.RechargeClient.php');
-
-$rc = new RechargeClient();
-$sc = new ShopifyPrivateClient();
 
 $rc_customer_ids = [14820280,14822974,14824390,14824747,14825911,14827699,14827975,14859163,14860054,14865220,14865556,14868133,14868223];
 

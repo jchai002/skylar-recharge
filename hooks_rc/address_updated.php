@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$rc = new RechargeClient();
-$sc = new ShopifyClient();
 if(!empty($_REQUEST['id'])){
 	$res = $rc->get('/addresses/'.$_REQUEST['id']);
 } else {

@@ -1,9 +1,6 @@
 <?php
 
 require_once(__DIR__.'/../includes/config.php');
-require_once(__DIR__.'/../includes/class.ShopifyClient.php');
-
-$sc = new ShopifyClient();
 
 $data = file_get_contents('php://input');
 $data = json_decode($data, true);

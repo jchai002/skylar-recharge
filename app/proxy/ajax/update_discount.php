@@ -1,6 +1,6 @@
 <?php
 
-$rc = new RechargeClient();
+global $rc;
 
 $discount_code = empty($_REQUEST['discount_code']) ? '' : $_REQUEST['discount_code'];
 $discount_code = strtoupper(trim($discount_code));

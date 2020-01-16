@@ -3,8 +3,6 @@ require_once(__DIR__.'/../../includes/config.php');
 
 $interval = 5;
 $page_size = 250;
-$sc = new ShopifyClient();
-$scp = new ShopifyPrivateClient();
 $min_date = date('Y-m-d H:i:00P', time()-60*6);
 $start_time = time();
 

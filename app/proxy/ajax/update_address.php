@@ -1,8 +1,8 @@
 <?php
 header('Content-Type: application/json');
 
-global $rc, $db;
-$sc = new ShopifyClient();
+global $sc, $rc, $db;
+
 $shopify_customer = $sc->get('/admin/customers/'.$_REQUEST['c'].'.json');
 
 $main_sub = sc_get_main_subscription($db, $rc, [

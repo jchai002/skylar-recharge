@@ -1,10 +1,5 @@
 <?php
 require_once('../includes/config.php');
-require_once('../includes/class.ShopifyClient.php');
-require_once('../includes/class.RechargeClient.php');
-
-$sc = new ShopifyPrivateClient();
-$rc = new RechargeClient();
 
 do {
 	$filters = [
