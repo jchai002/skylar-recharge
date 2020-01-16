@@ -1,12 +1,14 @@
 <?php
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 
 // Should either extend a guzzle client or wrap one
 // List desired functionality
 
-class ShopifyClient {
+class ShopifyClient extends Client {
 	/**
 	 * @var Client $client
 	 */
@@ -28,12 +30,22 @@ class ShopifyClient {
 	];
 
 	function __construct(){
-		$this->client = new GuzzleHttp\Client([
+		parent::__construct([
 			'base_uri' => "https://{$this->shop_domain}/{$this->api_version_string}/",
 			'headers' => [
 				'X-Shopify-Access-Token' => $_ENV['SHOPIFY_APP_TOKEN'],
 			],
 		]);
+		$handler = $this->getConfig('handler');
+		$handler->push(Middleware::mapResponse(function (ResponseInterface $response) {
+			return new ShopifyResponse(
+				$response->getStatusCode(),
+				$response->getHeaders(),
+				$response->getBody(),
+				$response->getProtocolVersion(),
+				$response->getReasonPhrase()
+			);
+		}), 'shopify_json_middleware');
 	}
 
 	// Replicate existing API
@@ -41,7 +53,7 @@ class ShopifyClient {
 		if(!empty($params)){
 			$options[$this->where_params_go[$method]] = $params;
 		}
-		$this->last_response = $response = $this->client->request($method, $path, $options);
+		$this->last_response = $response = $this->request($method, $path, $options);
 		$this->last_response_headers = $response->getHeaders();
 		$res_data = json_decode((string) $response->getBody(), true);
 		if($response->getStatusCode() != 200){
@@ -88,8 +100,8 @@ class ShopifyClient {
 		return $this->getRateInfo($this->last_response)['made'];
 	}
 
-	// Add ability to change api version at client level and on the fly
-	// Add async methods
-	// Add ability to rotate API keys
+	// Add ability to change api version at client level and on the fly - Use URLs for now
+	// Add async methods - Should these return json
 	// Add ability to make requests as private or public app on the fly
+	// Add ability to rotate API keys
 }
