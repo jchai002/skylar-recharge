@@ -60,11 +60,7 @@ $router->route('/staging$/i', function() {
 });
 $router->route('/subscriptions$/i', function() {
 	require_customer_id(function(){
-		if(!empty($_REQUEST['theme_id']) && in_array($_REQUEST['theme_id'], [73087418455, 78995652695])){
-			require('pages/staging.php');
-		} else {
-			require('pages/subscriptions.php');
-		}
+		require('pages/subscriptions.php');
 	});
 	return true;
 });
