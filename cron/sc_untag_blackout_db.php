@@ -42,7 +42,7 @@ echo "Starting untagging on ".count($orders)." orders".PHP_EOL;
 // Make our own custom pool
 $promises = [];
 $buffer = 10;
-while(!empty($orders)){
+while(!empty($orders) || !empty($promises)){
 	// Handle and empty
 	/** @var PromiseInterface $promise */
 	foreach($promises as $i=>$promise){
@@ -52,7 +52,7 @@ while(!empty($orders)){
 	}
 	$promises = array_filter($promises);
 	// Refill
-	while(count($promises) <= $sc->totalCallsLeft() - $buffer){
+	while(!empty($orders) && count($promises) <= $sc->totalCallsLeft() - $buffer){
 		$order = array_pop($orders);
 
 		$tags = explode(', ', $order['tags']);

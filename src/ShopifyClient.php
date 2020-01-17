@@ -1,6 +1,8 @@
 <?php
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\CurlMultiHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Psr7\Response;
@@ -22,8 +24,10 @@ class ShopifyClient extends Client {
 	public $last_response_headers;
 	public $last_error;
 	public $shop_domain = 'maven-and-muse.myshopify.com';
+	public $rate_buffer = 1;
 
 	private $credentials = [];
+	private $last_cred_index = -1;
 	private $api_version_string = '/admin/api/2020-01';
 	private $where_params_go = [
 		'GET' => 'query',
@@ -65,26 +69,18 @@ class ShopifyClient extends Client {
 
 	// Theoretically Credential should be a class/interface
 	private function getCredential($type = 'any'){
-		foreach($this->credentials as $key=>$cred){
-			if($type != 'any' && $cred['type'] != $type){
-				continue;
-			}
-			if($cred['calls_remaining'] > 10){
-				return $cred;
+
+		$this->last_cred_index++;
+		if($this->last_cred_index > count($this->credentials)-1){
+			$this->last_cred_index = 0;
+		}
+		$cred_array = array_values($this->credentials);
+		if($type == 'any' || $cred_array[$this->last_cred_index]['type'] == $type){
+			if($cred_array[$this->last_cred_index]['calls_remaining'] > 0){
+				return $cred_array[$this->last_cred_index];
 			}
 		}
-		foreach($this->credentials as $key=>$cred){
-			if($type != 'any' && $cred['type'] != $type){
-				continue;
-			}
-		}
-		foreach($this->credentials as $key=>$cred){
-			if($cred['calls_remaining'] > 10){
-				return $cred;
-			}
-		}
-		$key = array_keys($this->credentials)[0];
-		return $this->credentials[$key];
+		return $cred_array[0];
 	}
 
 	public function addToken($token){
@@ -100,7 +96,7 @@ class ShopifyClient extends Client {
 		$this->credentials[$key] = [
 			'type' => 'private',
 			'key' => $key,
-			'options' => ['auth' => ['username' => $key, 'password' => $secret], 'token_key' => $key],
+			'options' => ['auth' => [$key, $secret], 'token_key' => $key],
 			'calls_remaining' => 20,
 		];
 	}
@@ -144,12 +140,40 @@ class ShopifyClient extends Client {
 		return $this->call("DELETE", $path, $params, $options);
 	}
 
+	public function getAsync($path, $params = [], $options = []){
+		if(!empty($params)){
+			$options[$this->where_params_go["GET"]] = $params;
+		}
+		return parent::getAsync($path, $options);
+	}
+
+	public function postAsync($path, $params = [], $options = []){
+		if(!empty($params)){
+			$options[$this->where_params_go["POST"]] = $params;
+		}
+		return parent::postAsync($path, $options);
+	}
+
+	public function putAsync($path, $params = [], $options = []){
+		if(!empty($params)){
+			$options[$this->where_params_go["PUT"]] = $params;
+		}
+		return parent::putAsync($path, $options);
+	}
+
+	public function deleteAsync($path, $params = [], $options = []){
+		if(!empty($params)){
+			$options[$this->where_params_go["DELETE"]] = $params;
+		}
+		return parent::deleteAsync($path, $options);
+	}
+
 	private function getRateInfo(ResponseInterface $response){
 		$rate_info = explode('/', $response->getHeader('X-Shopify-Shop-Api-Call-Limit')[0]);
 		return [
 			'made' => $rate_info[0],
 			'limit' => $rate_info[1],
-			'left' => $rate_info[1]-$rate_info[0],
+			'left' => $rate_info[1]-$rate_info[0]-$this->rate_buffer,
 		];
 	}
 
