@@ -1,4 +1,8 @@
 <?php
+
+use GuzzleHttp\Promise\PromiseInterface;
+use Psr\Http\Message\ResponseInterface;
+
 require_once(__DIR__.'/../includes/config.php');
 
 $first_of_current_month = date('Y-m-01');
@@ -34,16 +38,46 @@ $stmt = $db->query("SELECT shopify_id as id, tags FROM orders WHERE tags LIKE '%
 $orders = $stmt->fetchAll();
 
 echo "Starting untagging on ".count($orders)." orders".PHP_EOL;
-foreach($orders as $order){
 
-	$tags = explode(', ', $order['tags']);
-
-	$key = array_search('HOLD: Scent Club Blackout',$tags);
-	if (false !== $key) {
-		unset($tags[$key]);
+// Make our own custom pool
+$promises = [];
+$buffer = 10;
+while(!empty($orders)){
+	// Handle and empty
+	/** @var PromiseInterface $promise */
+	foreach($promises as $i=>$promise){
+		if($promise->getState() != PromiseInterface::PENDING){
+			$promises[$i] = null;
+		}
 	}
+	$promises = array_filter($promises);
+	// Refill
+	while(count($promises) <= $sc->totalCallsLeft() - $buffer){
+		$order = array_pop($orders);
 
-	echo $order['id'];
+		$tags = explode(', ', $order['tags']);
+		$key = array_search('HOLD: Scent Club Blackout',$tags);
+		if (false !== $key) {
+			unset($tags[$key]);
+		}
+		// TODO: Add retrying for failed calls
+		$promises[] = $sc->putAsync('orders/'.$order['id'].'.json', ['order' => [
+			'id' => $order['id'],
+			'tags' => implode(', ', $tags),
+		]])->then(function(ShopifyResponse $response) use($db, $sc) {
+			$order = $response->getJson();
+			if(!empty($order)){
+				insert_update_order($db, $order, $sc);
+			}
+		});
+	}
+	sleep(100);
+}
+
+
+
+/*
+foreach($orders as $order){
 	$res = $sc->put('/admin/orders/'.$order['id'].'.json', ['order' => [
 		'id' => $order['id'],
 		'tags' => implode(', ', $tags),
