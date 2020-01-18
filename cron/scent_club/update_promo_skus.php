@@ -107,5 +107,5 @@ send_alert($db, 6,
 	"Finished updating SC Promo Skus".($log['error'] ? ' with errors' : ''),
 	"Promo SKU Update".($log['error'] ? ' ERROR' : ''),
 	['tim@skylar.com', 'julie@skylar.com'],
-	['log' => $log]
+	['log' => $log, 'smother' => false,]
 );
