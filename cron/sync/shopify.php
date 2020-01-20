@@ -103,6 +103,19 @@ foreach($updated_variant_ids AS $variant_id){
 	}
 	print_r(insert_update_metafields($db, $metafields));
 }
+echo "Updating customer metafields".PHP_EOL;
+$updated_customer_ids = $db->query("SELECT shopify_id FROM customers WHERE updated_at >= '$min_date'")->fetchAll(PDO::FETCH_COLUMN);
+foreach($updated_customer_ids AS $customer_id){
+	$metafields = $sc->get('/admin/customers/'.$customer_id.'/metafields.json');
+	if($metafields === false){
+		print_r($sc->last_error);
+		echo "Couldn't get metafields for $customer_id".PHP_EOL;
+		continue;
+	}
+	if(!empty($metafields)){
+		print_r(insert_update_metafields($db, $metafields));
+	}
+}
 
 // Daily syncs
 if(
@@ -180,7 +193,7 @@ if(
 		}
 		print_r(insert_update_metafields($db, $metafields));
 	}
-	echo "Updating variant metafields".PHP_EOL;
+	echo "Updating all variant metafields".PHP_EOL;
 	$updated_variant_ids = $db->query("SELECT shopify_id FROM variants WHERE deleted_at IS NULL")->fetchAll(PDO::FETCH_COLUMN);
 	foreach($updated_variant_ids AS $variant_id){
 		$metafields = $sc->get('/admin/variants/'.$variant_id.'/metafields.json');
@@ -190,6 +203,19 @@ if(
 			continue;
 		}
 		print_r(insert_update_metafields($db, $metafields));
+	}
+	echo "Updating all customer metafields".PHP_EOL;
+	$updated_customer_ids = $db->query("SELECT shopify_id FROM customers WHERE deleted_at IS NULL")->fetchAll(PDO::FETCH_COLUMN);
+	foreach($updated_customer_ids AS $customer_id){
+		$metafields = $sc->get('/admin/customers/'.$customer_id.'/metafields.json');
+		if($metafields === false){
+			print_r($sc->last_error);
+			echo "Couldn't get metafields for $customer_id".PHP_EOL;
+			continue;
+		}
+		if(!empty($metafields)){
+			print_r(insert_update_metafields($db, $metafields));
+		}
 	}
 
 	echo "Updating missing AC fulfillments".PHP_EOL;
