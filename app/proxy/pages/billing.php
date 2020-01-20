@@ -202,7 +202,7 @@ print_r($customer);
 					</div>
 					<div class="sc-input-group">
 						<label for="sc-address-phone">Phone</label>
-						<input id="sc-address-phone" name="address_phone" value="<?=empty($address) ? '' : $address['phone']?>" />
+						<input id="sc-address-phone" name="phone" value="<?=empty($address) ? '' : $address['phone']?>" />
 					</div>
 				</div>
 				<div class="sc-input-row">
