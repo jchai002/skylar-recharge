@@ -49,12 +49,25 @@ if(!empty($res['onetimes'])){
 }
 
 $res = $rc->get('/customers/'.$subscription['customer_id']);
-$customer = $res['customer'];
+$shopify_customer_id = $res['customer']['shopify_customer_id'];
+$shopify_customer = $sc->get('customers/'.$shopify_customer_id.'.json');
+$tags = explode(', ',$shopify_customer['tags']);
 
 $sc = new ShopifyClient();
-$res = $sc->post('/admin/customers/'.$customer['shopify_customer_id'].'/metafields.json', ['metafield'=> [
+$res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['metafield'=> [
 	'namespace' => 'scent_club',
 	'key' => 'active',
 	'value' => 0,
 	'value_type' => 'integer'
 ]]);
+
+if(in_array('Scent Club Member', $tags)){
+	$key = array_search('Scent Club Member', $tags);
+	if (false !== $key) {
+		unset($tags[$key]);
+	}
+	$shopify_customer = $sc->put('/admin/customers/'.$shopify_customer_id.'.json', ['customer' => [
+		'id' => $shopify_customer_id,
+		'tags' => implode(', ', $tags),
+	]]);
+}
