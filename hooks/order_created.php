@@ -44,11 +44,8 @@ if(empty($order['cancelled_at'])){
 
 echo insert_update_order($db, $order, $sc).PHP_EOL;
 
-// Check if order is in GA, add if not
-
-
-
-
+$update_order = false;
+$order_tags = explode(', ',$order['tags']);
 
 echo "Checking SC hold logic".PHP_EOL;
 $res = $sc->get('/admin/customers/search.json', [
@@ -58,7 +55,6 @@ if(!empty($res)){
 	$customer = $res[0];
 }
 $is_scent_club = false;
-$scent_club_hold = false;
 $stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sku=?");
 foreach($order['line_items'] as $line_item){
 	if(is_scent_club_promo(get_product($db, $line_item['product_id']))){
@@ -72,11 +68,16 @@ foreach($order['line_items'] as $line_item){
 		}
 		$sc_product = $stmt->fetch();
 		if(time() < offset_date_skip_weekend(strtotime($sc_product['sc_date'])) + 6*60*60){ // Hold until 6 am
-			$scent_club_hold = true;
+			$order_tags[] = 'HOLD: Scent Club Blackout';
+			$update_order = true;
+			echo 'Scent Club Hold'.PHP_EOL;
 		}
 	}
+	if(stripos($line_item['title'], 'Salt Air') !== false){
+		$order_tags[] = 'HOLD: Preorder';
+		$update_order = true;
+	}
 }
-echo $scent_club_hold ? 'Scent Club Hold'.PHP_EOL : '';
 echo "Check account activation".PHP_EOL;
 if(!empty($customer) && $customer['state'] != 'enabled'){
 	try {
@@ -119,8 +120,6 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 	}
 }
 
-$update_order = false;
-$order_tags = explode(', ',$order['tags']);
 
 // Checking $0
 if(
@@ -452,11 +451,6 @@ if($rc_order['type'] == "RECURRING"){
 	}
 } else {
 	echo $rc_order['type'].PHP_EOL;
-}
-
-if($scent_club_hold){
-	$order_tags[] = 'HOLD: Scent Club Blackout';
-	$update_order = true;
 }
 
 if($update_order){
