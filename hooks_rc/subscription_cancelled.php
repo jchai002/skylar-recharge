@@ -50,7 +50,7 @@ if(!empty($res['onetimes'])){
 
 $res = $rc->get('/customers/'.$subscription['customer_id']);
 $shopify_customer_id = $res['customer']['shopify_customer_id'];
-$shopify_customer = $sc->get('customers/'.$shopify_customer_id.'.json');
+$shopify_customer = $sc->get('/admin/customers/'.$shopify_customer_id.'.json');
 $tags = explode(', ',$shopify_customer['tags']);
 
 $sc = new ShopifyClient();
