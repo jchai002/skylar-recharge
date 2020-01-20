@@ -847,7 +847,9 @@ $rc_customer_cache = [];
 function get_rc_customer(PDO $db, $recharge_customer_id, RechargeClient $rc, ShopifyClient $sc){
 	global $rc_customer_cache;
 	if(!array_key_exists($recharge_customer_id, $rc_customer_cache)){
-		$stmt = $db->prepare("SELECT * FROM rc_customers WHERE recharge_id=?");
+		$stmt = $db->prepare("SELECT rcc.*, c.shopify_id AS shopify_customer_id FROM rc_customers rcc
+    LEFT JOIN customers c ON rcc.customer_id=c.id
+    WHERE rcc.recharge_id=?");
 		$stmt->execute([$recharge_customer_id]);
 		if($stmt->rowCount() > 0){
 			$rc_customer_cache[$recharge_customer_id] = $stmt->fetch();

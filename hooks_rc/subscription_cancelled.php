@@ -71,4 +71,5 @@ if(in_array('Scent Club Member', $tags)){
 		'id' => $shopify_customer_id,
 		'tags' => implode(', ', $tags),
 	]]);
+	insert_update_customer($db, $shopify_customer);
 }

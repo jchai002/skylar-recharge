@@ -49,6 +49,7 @@ try {
 			'id' => $shopify_customer_id,
 			'tags' => implode(', ', $tags),
 		]]);
+		insert_update_customer($db, $shopify_customer);
 	}
 } catch(ShopifyApiException $e){
 	log_event($db, 'API_ERROR', json_encode($e->getResponse()), 'POST customers/'.$shopify_customer_id.'/metafields.json', json_encode(['metafield'=> [
