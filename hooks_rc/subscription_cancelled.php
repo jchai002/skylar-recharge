@@ -28,7 +28,7 @@ if(empty($subscription['created_at'])){
 
 $product = get_product($db, $subscription['shopify_product_id']);
 if(!is_scent_club($product)){
-	die();
+	die("not sc");
 }
 
 // Remove any scent club onetimes
@@ -60,12 +60,13 @@ $res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['
 	'value' => 0,
 	'value_type' => 'integer'
 ]]);
-
+print_r($tags);
 if(in_array('Scent Club Member', $tags)){
 	$key = array_search('Scent Club Member', $tags);
 	if (false !== $key) {
 		unset($tags[$key]);
 	}
+	print_r($tags);
 	$shopify_customer = $sc->put('/admin/customers/'.$shopify_customer_id.'.json', ['customer' => [
 		'id' => $shopify_customer_id,
 		'tags' => implode(', ', $tags),
