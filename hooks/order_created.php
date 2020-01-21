@@ -75,6 +75,7 @@ foreach($order['line_items'] as $line_item){
 	}
 	if(stripos($line_item['title'], 'Salt Air') !== false){
 		$order_tags[] = 'HOLD: Preorder';
+		$order_tags[] = 'Preorder';
 		$update_order = true;
 	}
 }
