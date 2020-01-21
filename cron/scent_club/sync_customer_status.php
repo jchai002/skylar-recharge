@@ -2,66 +2,78 @@
 require_once(__DIR__ . '/../../includes/config.php');
 
 // Load all current subscribers
-// TODO - this script is pretty slow - how can we speed it up?
-$start_time = time();
-$page = 0;
-$page_size = 250;
-$customers_with_subs = [];
-do {
-	$page++;
-	$res = $rc->get('/subscriptions', [
-		'limit' => $page_size,
-		'page' => $page,
-		'shopify_variant_id' => 19787922014295,
-		'status' => 'ACTIVE',
-	]);
-	echo count($res['subscriptions'])." subscriptions on this page".PHP_EOL;
-	foreach($res['subscriptions'] as $subscription){
-		$rc_customer = get_rc_customer($db, $subscription['customer_id'], $rc, $sc);
-		$customer = $sc->get('/admin/customers/'.$rc_customer['shopify_customer_id'].'.json');
-		$customers_with_subs[$customer['id']] = $customer;
-	}
-} while(count($res['subscriptions']) >= $page_size);
+$active_customers = $db->query("
+SELECT c.shopify_id, c.shopify_id AS id, c.tags, m.value AS metafield_value
+FROM rc_subscriptions rcs
+LEFT JOIN rc_addresses rca ON rcs.address_id=rca.id
+LEFT JOIN rc_customers rcc ON rca.rc_customer_id=rcc.id
+LEFT JOIN customers c ON rcc.customer_id=c.id
+LEFT JOIN metafields m ON m.owner_id=c.shopify_id AND m.owner_resource='customer' AND m.namespace='scent_club' AND m.`key`='active'
+WHERE rcs.status = 'ACTIVE'
+AND rcs.variant_id = 6650
+AND rcs.deleted_at IS NULL;")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE);
+$cancelled_customers = $db->query("
+SELECT c.shopify_id, c.shopify_id AS id, c.tags, m.value AS metafield_value
+FROM rc_subscriptions rcs
+LEFT JOIN rc_addresses rca ON rcs.address_id=rca.id
+LEFT JOIN rc_customers rcc ON rca.rc_customer_id=rcc.id
+LEFT JOIN customers c ON rcc.customer_id=c.id
+LEFT JOIN metafields m ON m.owner_id=c.shopify_id AND m.owner_resource='customer' AND m.namespace='scent_club' AND m.`key`='active'
+WHERE rcs.status != 'ONETIME'
+AND rcs.variant_id = 6650
+AND (
+	rcs.deleted_at IS NOT NULL
+	OR rcs.cancelled_at IS NOT NULL
+);")->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE);
 
-foreach($customers_with_subs as $shopify_customer_id => $shopify_customer){
-	$res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['metafield'=> [
-		'namespace' => 'scent_club',
-		'key' => 'active',
-		'value' => 1,
-		'value_type' => 'integer'
-	]]);
-	print_r($res);
-	$tags = explode(', ',$shopify_customer['tags']);
+$cancelled_customers = array_filter($cancelled_customers, function($customer) use($active_customers) {
+	return !array_key_exists($customer['id'], $active_customers);
+});
+
+foreach($active_customers as $shopify_customer_id => $customer){
+	print_r($customer);
+	if(empty($customer['metafield_value'])){
+		$res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['metafield'=> [
+			'namespace' => 'scent_club',
+			'key' => 'active',
+			'value' => 1,
+			'value_type' => 'integer'
+		]]);
+		if(!empty($res)){
+			echo insert_update_metafield($db, $res);
+			print_r($res);
+		}
+		usleep(250*1000);
+	}
+	$tags = explode(', ',$customer['tags']);
 	if(!in_array('Scent Club Member', $tags)){
 		$tags[] = 'Scent Club Member';
 		$shopify_customer = $sc->put('/admin/customers/'.$shopify_customer_id.'.json', ['customer' => [
 			'id' => $shopify_customer_id,
 			'tags' => implode(', ', $tags),
 		]]);
-		insert_update_customer($db, $shopify_customer);
+		echo insert_update_customer($db, $shopify_customer).PHP_EOL;
+		usleep(250*1000);
 	}
 }
 
-$customer_ids = $db->query("SELECT shopify_id FROM customers WHERE tags LIKE '%Scent Club Member%' AND updated_at <= '".date('Y-m-d H:i:s', $start_time)."'")->fetchAll(PDO::FETCH_COLUMN);
-
-foreach($customer_ids as $shopify_customer_id){
-	$res = $rc->get('/subscrpitions', [
-		'shopify_customer_id' => $shopify_customer_id,
-		'shopify_variant_id' => 19787922014295,
-		'status' => 'ACTIVE',
-	]);
+foreach($cancelled_customers as $shopify_customer_id => $customer){
 	if(empty($res['subscriptions'])){
-		$shopify_customer = $sc->get('/admin/customers/'.$shopify_customer_id.'.json');
-		$tags = explode(', ',$shopify_customer['tags']);
-
-		$sc = new ShopifyClient();
-		$res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['metafield'=> [
-			'namespace' => 'scent_club',
-			'key' => 'active',
-			'value' => 0,
-			'value_type' => 'integer'
-		]]);
-		print_r($tags);
+		print_r($customer);
+		if(!empty($shopify_customer['metafield_value'])){
+			$res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['metafield'=> [
+				'namespace' => 'scent_club',
+				'key' => 'active',
+				'value' => 0,
+				'value_type' => 'integer'
+			]]);
+			if(!empty($res)){
+				echo insert_update_metafield($db, $res);
+				print_r($res);
+			}
+			usleep(250*1000);
+		}
+		$tags = explode(', ',$customer['tags']);
 		if(in_array('Scent Club Member', $tags)){
 			$key = array_search('Scent Club Member', $tags);
 			if (false !== $key) {
@@ -72,7 +84,8 @@ foreach($customer_ids as $shopify_customer_id){
 				'id' => $shopify_customer_id,
 				'tags' => implode(', ', $tags),
 			]]);
-			insert_update_customer($db, $shopify_customer);
+			echo insert_update_customer($db, $shopify_customer).PHP_EOL;
+			usleep(250*1000);
 		}
 	}
 }

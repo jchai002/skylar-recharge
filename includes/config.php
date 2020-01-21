@@ -252,6 +252,27 @@ function is_business_day($time){
 }
 
 $_stmt_cache = [];
+function insert_update_metafield(PDO $db, $metafield){
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_metafield'])){
+		$_stmt_cache['iu_metafield'] = $db->prepare("INSERT INTO metafields (shopify_id, owner_resource, owner_id, namespace, `key`, `value`, value_type, created_at, synced_at, deleted_at)
+VALUES (:shopify_id, :owner_resource, :owner_id, :namespace, :key, :value, :value_type, :created_at, :synced_at, NULL)
+ON DUPLICATE KEY UPDATE shopify_id=:shopify_id, owner_resource=:owner_resource, owner_id=:owner_id, namespace=:namespace, `key`=:key, `value`=:value, value_type=:value_type, synced_at=:synced_at, deleted_at=NULL");
+	}
+	$now = date('Y-m-d H:i:s');
+	$_stmt_cache['iu_metafield']->execute([
+		'shopify_id' => $metafield['id'],
+		'owner_resource' => $metafield['owner_resource'],
+		'owner_id' => $metafield['owner_id'],
+		'namespace' => $metafield['namespace'],
+		'key' => $metafield['key'],
+		'value' => $metafield['value'],
+		'value_type' => $metafield['value_type'],
+		'created_at' => $metafield['created_at'],
+		'synced_at' => $now,
+	]);
+	return $metafield['id'];
+}
 function insert_update_metafields(PDO $db, $metafields){
 	global $_stmt_cache;
 	if(empty($_stmt_cache['iu_metafield'])){

@@ -110,6 +110,7 @@ foreach($updated_customer_ids AS $customer_id){
 	if($metafields === false){
 		print_r($sc->last_error);
 		echo "Couldn't get metafields for $customer_id".PHP_EOL;
+		usleep(250*1000);
 		continue;
 	}
 	if(!empty($metafields)){
