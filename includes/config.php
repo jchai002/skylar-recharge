@@ -83,7 +83,7 @@ $test_emails = [
 	'linedhurdle@gmail.com',
 	'julie_hoang22@me.com',
 	'harperangela87@gmail.com',
-	'jimdalton@comcast.net ',
+	'jimdalton@comcast.net',
 	'jimskylar10801@gmail.com',
 	'jimtest3@gmail.com',
 	'jimskylar2019@outlook.com',
@@ -91,6 +91,7 @@ $test_emails = [
 	'lolagrace@gmail.com',
 	'hsherpa18@gmail.com',
 	'rachelH@gmail.com',
+	'skylarcard@skylar.com',
 ];
 
 if (!function_exists('getallheaders')){
