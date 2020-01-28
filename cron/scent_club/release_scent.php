@@ -30,6 +30,7 @@ if(date('Y-m-d') == $scent_info['ship_date']){
 	die("Today is the ship date, don't make any changes!");
 }
 
+log_echo($log, "Scent: ".print_r($scent_info, true));
 log_echo($log, "Getting $start_date to $end_date");
 
 $charges = [];
