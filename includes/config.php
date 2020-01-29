@@ -518,29 +518,30 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
 					'tracking_code' => $shopify_fulfillment['tracking_number'],
 					'carrier' => $shopify_fulfillment['tracking_company'],
 				]);
+				$tracker = \EasyPost\Tracker::create(['tracking_code' => 2282870413, 'carrier' => '',]);
 			} catch(\Throwable $e){
-				if($shopify_fulfillment['tracking_company'] == 'UPS'){
-					try {
+				try {
+					if($shopify_fulfillment['tracking_company'] == 'UPS'){
 						$tracker = \EasyPost\Tracker::create([
 							'tracking_code' => $shopify_fulfillment['tracking_number'],
 							'carrier' => 'UPS Mail Innovations',
 						]);
-					} catch(\Throwable $e){
-//						var_dump($e);
-						log_event($db, 'EXCEPTION', $shopify_fulfillment['tracking_number'], 'fulfillment_tracker_create', json_encode($shopify_fulfillment), json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'API');
-					}
-				} else if($shopify_fulfillment['tracking_company'] == 'Passport'){
-					try {
+					} else if($shopify_fulfillment['tracking_company'] == 'DHL'){
+						$tracker = \EasyPost\Tracker::create([
+							'tracking_code' => $shopify_fulfillment['tracking_number'],
+							'carrier' => 'DHL Express',
+						]);
+					} else if($shopify_fulfillment['tracking_company'] == 'Passport'){
 						$tracker = \EasyPost\Tracker::create([
 							'tracking_code' => $shopify_fulfillment['tracking_number'],
 							'carrier' => 'PassportGlobal',
 						]);
-					} catch(\Throwable $e){
-//						var_dump($e);
+					} else {
+	//					var_dump($e);
 						log_event($db, 'EXCEPTION', $shopify_fulfillment['tracking_number'], 'fulfillment_tracker_create', json_encode($shopify_fulfillment), json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'API');
 					}
-				} else {
-//					var_dump($e);
+				} catch(\Throwable $e){
+//						var_dump($e);
 					log_event($db, 'EXCEPTION', $shopify_fulfillment['tracking_number'], 'fulfillment_tracker_create', json_encode($shopify_fulfillment), json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'API');
 				}
 			}
