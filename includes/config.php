@@ -518,7 +518,6 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
 					'tracking_code' => $shopify_fulfillment['tracking_number'],
 					'carrier' => $shopify_fulfillment['tracking_company'],
 				]);
-				$tracker = \EasyPost\Tracker::create(['tracking_code' => 2282870413, 'carrier' => '',]);
 			} catch(\Throwable $e){
 				try {
 					if($shopify_fulfillment['tracking_company'] == 'UPS'){
