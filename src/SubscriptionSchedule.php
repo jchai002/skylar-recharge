@@ -89,7 +89,11 @@ class SubscriptionSchedule {
 				if(empty($sub['next_charge_scheduled_at'])){
 					continue;
 				}
-				if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $sub['shopify_product_id']))){
+				if(
+					!$this->is_alias
+					&& is_scent_club_gift(get_product($this->db, $sub['shopify_product_id']))
+					&& empty(get_oli_attribute($sub, '_show_in_account'))
+				){
 					continue;
 				}
 				$this->subscriptions[$sub['id']] = $this->normalize_subscription($sub);
@@ -475,7 +479,11 @@ class SubscriptionSchedule {
 		$order['next_charge_scheduled_at'] = $order['scheduled_at'];
 		$order['scheduled_at_time'] = strtotime($order['scheduled_at']);
 		foreach($order['line_items'] as $index => $item){
-			if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))){
+			if(
+				!$this->is_alias
+				&& is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))
+				&& empty(get_oli_attribute($item, '_show_in_account'))
+			){
 				continue;
 			}
 			$item['id'] = $item['subscription_id'];
@@ -493,7 +501,11 @@ class SubscriptionSchedule {
 		$charge['next_charge_scheduled_at'] = $charge['scheduled_at'];
 		$charge['scheduled_at_time'] = strtotime($charge['scheduled_at']);
 		foreach($charge['line_items'] as $index => $item){
-			if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))){
+			if(
+				!$this->is_alias
+				&& is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))
+				&& empty(get_oli_attribute($item, '_show_in_account'))
+			){
 				continue;
 			}
 			$item['id'] = $item['subscription_id'];
