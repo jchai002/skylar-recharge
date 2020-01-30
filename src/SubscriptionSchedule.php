@@ -531,7 +531,7 @@ class SubscriptionSchedule {
 		$subscription['scheduled_at'] = $subscription['next_charge_scheduled_at'];
 		$subscription['scheduled_at_time'] = strtotime($subscription['scheduled_at']);
 		$subscription['previous_charge_count'] = 0;
-		if($subscription['shopify_product_id'] == 4313965625431){ // Scent club ships now TODO has to be a better way to do this
+		if($subscription['shopify_product_id'] == 4313965625431 && $subscription['expire_after_specific_number_of_charges']%3 != 0){ // Scent club ships now TODO has to be a better way to do this
 			$subscription['previous_charge_count']++;
 			$subscription['expire_after_specific_number_of_charges']++;
 		}
