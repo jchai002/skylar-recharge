@@ -83,7 +83,7 @@ $test_emails = [
 	'linedhurdle@gmail.com',
 	'julie_hoang22@me.com',
 	'harperangela87@gmail.com',
-	'jimdalton@comcast.net ',
+	'jimdalton@comcast.net',
 	'jimskylar10801@gmail.com',
 	'jimtest3@gmail.com',
 	'jimskylar2019@outlook.com',
@@ -91,6 +91,7 @@ $test_emails = [
 	'lolagrace@gmail.com',
 	'hsherpa18@gmail.com',
 	'rachelH@gmail.com',
+	'skylarcard@skylar.com',
 ];
 
 if (!function_exists('getallheaders')){
@@ -252,6 +253,27 @@ function is_business_day($time){
 }
 
 $_stmt_cache = [];
+function insert_update_metafield(PDO $db, $metafield){
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_metafield'])){
+		$_stmt_cache['iu_metafield'] = $db->prepare("INSERT INTO metafields (shopify_id, owner_resource, owner_id, namespace, `key`, `value`, value_type, created_at, synced_at, deleted_at)
+VALUES (:shopify_id, :owner_resource, :owner_id, :namespace, :key, :value, :value_type, :created_at, :synced_at, NULL)
+ON DUPLICATE KEY UPDATE shopify_id=:shopify_id, owner_resource=:owner_resource, owner_id=:owner_id, namespace=:namespace, `key`=:key, `value`=:value, value_type=:value_type, synced_at=:synced_at, deleted_at=NULL");
+	}
+	$now = date('Y-m-d H:i:s');
+	$_stmt_cache['iu_metafield']->execute([
+		'shopify_id' => $metafield['id'],
+		'owner_resource' => $metafield['owner_resource'],
+		'owner_id' => $metafield['owner_id'],
+		'namespace' => $metafield['namespace'],
+		'key' => $metafield['key'],
+		'value' => $metafield['value'],
+		'value_type' => $metafield['value_type'],
+		'created_at' => $metafield['created_at'],
+		'synced_at' => $now,
+	]);
+	return $metafield['id'];
+}
 function insert_update_metafields(PDO $db, $metafields){
 	global $_stmt_cache;
 	if(empty($_stmt_cache['iu_metafield'])){
@@ -497,28 +519,28 @@ function insert_update_fulfillment(PDO $db, $shopify_fulfillment){
 					'carrier' => $shopify_fulfillment['tracking_company'],
 				]);
 			} catch(\Throwable $e){
-				if($shopify_fulfillment['tracking_company'] == 'UPS'){
-					try {
+				try {
+					if($shopify_fulfillment['tracking_company'] == 'UPS'){
 						$tracker = \EasyPost\Tracker::create([
 							'tracking_code' => $shopify_fulfillment['tracking_number'],
 							'carrier' => 'UPS Mail Innovations',
 						]);
-					} catch(\Throwable $e){
-//						var_dump($e);
-						log_event($db, 'EXCEPTION', $shopify_fulfillment['tracking_number'], 'fulfillment_tracker_create', json_encode($shopify_fulfillment), json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'API');
-					}
-				} else if($shopify_fulfillment['tracking_company'] == 'Passport'){
-					try {
+					} else if($shopify_fulfillment['tracking_company'] == 'DHL'){
+						$tracker = \EasyPost\Tracker::create([
+							'tracking_code' => $shopify_fulfillment['tracking_number'],
+							'carrier' => 'DHL Express',
+						]);
+					} else if($shopify_fulfillment['tracking_company'] == 'Passport'){
 						$tracker = \EasyPost\Tracker::create([
 							'tracking_code' => $shopify_fulfillment['tracking_number'],
 							'carrier' => 'PassportGlobal',
 						]);
-					} catch(\Throwable $e){
-//						var_dump($e);
+					} else {
+	//					var_dump($e);
 						log_event($db, 'EXCEPTION', $shopify_fulfillment['tracking_number'], 'fulfillment_tracker_create', json_encode($shopify_fulfillment), json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'API');
 					}
-				} else {
-//					var_dump($e);
+				} catch(\Throwable $e){
+//						var_dump($e);
 					log_event($db, 'EXCEPTION', $shopify_fulfillment['tracking_number'], 'fulfillment_tracker_create', json_encode($shopify_fulfillment), json_encode([$e->getLine(), $e->getFile(), $e->getCode(), $e->getMessage(), $e->getTraceAsString()]), 'API');
 				}
 			}
@@ -847,7 +869,9 @@ $rc_customer_cache = [];
 function get_rc_customer(PDO $db, $recharge_customer_id, RechargeClient $rc, ShopifyClient $sc){
 	global $rc_customer_cache;
 	if(!array_key_exists($recharge_customer_id, $rc_customer_cache)){
-		$stmt = $db->prepare("SELECT * FROM rc_customers WHERE recharge_id=?");
+		$stmt = $db->prepare("SELECT rcc.*, c.shopify_id AS shopify_customer_id FROM rc_customers rcc
+    LEFT JOIN customers c ON rcc.customer_id=c.id
+    WHERE rcc.recharge_id=?");
 		$stmt->execute([$recharge_customer_id]);
 		if($stmt->rowCount() > 0){
 			$rc_customer_cache[$recharge_customer_id] = $stmt->fetch();

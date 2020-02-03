@@ -89,7 +89,11 @@ class SubscriptionSchedule {
 				if(empty($sub['next_charge_scheduled_at'])){
 					continue;
 				}
-				if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $sub['shopify_product_id']))){
+				if(
+					!$this->is_alias
+					&& is_scent_club_gift(get_product($this->db, $sub['shopify_product_id']))
+					&& empty(get_oli_attribute($sub, '_show_in_account'))
+				){
 					continue;
 				}
 				$this->subscriptions[$sub['id']] = $this->normalize_subscription($sub);
@@ -475,7 +479,11 @@ class SubscriptionSchedule {
 		$order['next_charge_scheduled_at'] = $order['scheduled_at'];
 		$order['scheduled_at_time'] = strtotime($order['scheduled_at']);
 		foreach($order['line_items'] as $index => $item){
-			if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))){
+			if(
+				!$this->is_alias
+				&& is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))
+				&& empty(get_oli_attribute($item, '_show_in_account'))
+			){
 				continue;
 			}
 			$item['id'] = $item['subscription_id'];
@@ -493,7 +501,11 @@ class SubscriptionSchedule {
 		$charge['next_charge_scheduled_at'] = $charge['scheduled_at'];
 		$charge['scheduled_at_time'] = strtotime($charge['scheduled_at']);
 		foreach($charge['line_items'] as $index => $item){
-			if(!$this->is_alias && is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))){
+			if(
+				!$this->is_alias
+				&& is_scent_club_gift(get_product($this->db, $item['shopify_product_id']))
+				&& empty(get_oli_attribute($item, '_show_in_account'))
+			){
 				continue;
 			}
 			$item['id'] = $item['subscription_id'];
@@ -519,7 +531,7 @@ class SubscriptionSchedule {
 		$subscription['scheduled_at'] = $subscription['next_charge_scheduled_at'];
 		$subscription['scheduled_at_time'] = strtotime($subscription['scheduled_at']);
 		$subscription['previous_charge_count'] = 0;
-		if($subscription['shopify_product_id'] == 4313965625431){ // Scent club ships now TODO has to be a better way to do this
+		if($subscription['shopify_product_id'] == 4313965625431 && $subscription['expire_after_specific_number_of_charges']%3 != 0){ // Scent club ships now TODO has to be a better way to do this
 			$subscription['previous_charge_count']++;
 			$subscription['expire_after_specific_number_of_charges']++;
 		}

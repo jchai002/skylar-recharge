@@ -106,6 +106,6 @@ foreach($orders as $order){
 send_alert($db, 6,
 	"Finished updating SC Promo Skus".($log['error'] ? ' with errors' : ''),
 	"Promo SKU Update".($log['error'] ? ' ERROR' : ''),
-	'tim@skylar.com',
-	['log' => $log]
+	['tim@skylar.com', 'julie@skylar.com'],
+	['log' => $log, 'smother' => false,]
 );

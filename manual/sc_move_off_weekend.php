@@ -30,7 +30,10 @@ do {
 	]);
 	foreach($res['charges'] as $charge){
 		foreach($charge['line_items'] as $line_item){
-			if(is_scent_club_any(get_product($db, $line_item['shopify_product_id']))){
+			if(
+				is_scent_club(get_product($db, $line_item['shopify_product_id']))
+				|| is_scent_club_month(get_product($db, $line_item['shopify_product_id']))
+			){
 				$charges[] = $charge;
 				break;
 			}

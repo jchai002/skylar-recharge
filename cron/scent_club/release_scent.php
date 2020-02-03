@@ -30,6 +30,7 @@ if(date('Y-m-d') == $scent_info['ship_date']){
 	die("Today is the ship date, don't make any changes!");
 }
 
+log_echo($log, "Scent: ".print_r($scent_info, true));
 log_echo($log, "Getting $start_date to $end_date");
 
 $charges = [];
@@ -83,10 +84,15 @@ foreach($charges as $index=>$charge){
 		break;
 	}
 	echo "Swapping on address ".$charge['address_id']." ";
-	$main_sub = sc_get_main_subscription($db, $rc, [
-		'address_id' => $charge['address_id'],
-		'status' => 'ACTIVE',
-	]);
+	$main_sub = false;
+	foreach($charge['line_items'] as $line_item){
+		if(is_scent_club(get_product($db, $line_item['shopify_product_id']))){
+			$res = $rc->get('/subscriptions/'.$line_item['subscription_id']);
+			if(!empty($res['subscription'])){
+				$main_sub = $res['subscription'];
+			}
+		}
+	}
 	$res = sc_swap_to_monthly_custom($db, $rc, $sc, $charge['address_id'], strtotime($charge['scheduled_at']), $main_sub);
 	if($res == 'cancel'){
 	    echo "Done.".PHP_EOL;

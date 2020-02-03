@@ -7,6 +7,37 @@ class OrderCreatedControllerTest extends TestCase{
 	public function test_are_gwps_valid(){
 		include_once(__DIR__.'/../includes/config.php');
 
+		// salt air valid
+		$this->assertTrue(
+			OrderCreatedController::are_gwps_valid($order = [
+				'line_items' => [
+					[
+						'product_id' => 4396952223831,
+						'final_price' => 0,
+						'product' => ['tags' => []]
+					],
+					[
+						'product_id' => 4391067418711,
+						'final_price' => 70,
+						'product' => ['tags' => []]
+					],
+				],
+				'total_line_items_price' => 70,
+			])
+		);
+		// salt air invalid
+		$this->assertFalse(
+			OrderCreatedController::are_gwps_valid($order = [
+				'line_items' => [
+					[
+						'product_id' => 4396952223831,
+						'final_price' => 0,
+						'product' => ['tags' => []]
+					],
+				],
+				'total_line_items_price' => 30,
+			])
+		);
 		// Coral valid
 		$this->assertTrue(
 			OrderCreatedController::are_gwps_valid($order = [
