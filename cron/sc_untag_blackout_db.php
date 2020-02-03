@@ -94,6 +94,12 @@ while(!empty($orders) || !empty($promises)){
 //				insert_update_order($db, $order, $sc);
 			}
 		}, function(Exception $e){
+			if($e->getCode() == 429){
+				echo "Got 429 error, sleeping".PHP_EOL;
+				sleep(4);
+				return;
+			}
+			print_r($e->getCode());
 			print_r($e->getMessage());
 			die();
 		});
