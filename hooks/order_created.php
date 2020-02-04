@@ -135,7 +135,7 @@ if(!OrderCreatedController::are_gwps_valid($order)){
 	send_alert($db, 3, 'Order '.$order['name'].' has been placed on hold for having an invalid GWP. https://skylar.com/admin/orders/'.$order['id'], 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com']);
 	echo "Sent alert - GWP invalid".PHP_EOL;
 } else if(!OrderCreatedController::has_valid_gwp_quantity($order['line_items'])){
-	$order_tags[] = 'Invalid GWP Quantity';
+	$order_tags[] = 'HOLD: Invalid GWP Quantity';
 	$update_order = true;
 	send_alert($db, 3, 'Order '.$order['name'].' was has an invalid GWP quantity, likely in error. Please check it. https://skylar.com/admin/orders/'.$order['id'], 'Skylar Alert', ['tim@skylar.com', 'jazlyn@skylar.com', 'julie@skylar.com']);
 	echo "Sent alert - invalid GWP quantity".PHP_EOL;
