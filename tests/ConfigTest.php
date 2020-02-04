@@ -14,6 +14,7 @@ class ConfigTest extends TestCase {
 		// Test disallowed prefixes
 		$this->assertFalse(is_discount_allowed_in_account('RS-20-ABCD'));
 		$this->assertFalse(is_discount_allowed_in_account('GS-50-ABCD'));
+		$this->assertFalse(is_discount_allowed_in_account('50KATHLEEN'));
 	}
 
 	public function test_match_email(){
