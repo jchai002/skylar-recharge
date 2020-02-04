@@ -113,4 +113,23 @@ class OrderCreatedControllerTest extends TestCase{
 		$this->assertTrue(OrderCreatedController::shipping_looks_wrong($order));
 	}
 
+	public function test_has_valid_gwp_quantity(){
+		// Coral valid
+		$this->assertTrue(
+			OrderCreatedController::has_valid_gwp_quantity([[
+				'product_id' => 4312664113239,
+				'quantity' => '1',
+				'product' => ['type' => 'GWP']
+			]])
+		);
+		// Coral invalid
+		$this->assertFalse(
+			OrderCreatedController::has_valid_gwp_quantity([[
+				'product_id' => 4312664113239,
+				'quantity' => '2',
+				'product' => ['type' => 'GWP']
+			]])
+		);
+	}
+
 }

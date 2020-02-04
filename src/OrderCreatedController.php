@@ -55,6 +55,15 @@ class OrderCreatedController {
 		return true;
 	}
 
+	public static function has_valid_gwp_quantity($line_items){
+		foreach($line_items as $line_item){
+			if($line_item['product']['type'] == 'GWP' && $line_item['quantity'] > 1){
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public static function shipping_looks_wrong($order){
 		if(empty($order['discount_codes'])){
 			return false;
