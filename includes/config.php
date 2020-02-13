@@ -1433,6 +1433,7 @@ function is_discount_allowed_in_account($discount_code){
 		'MY2020',
 		'MYSCENT50',
 		'BUMO50',
+		'PRES15',
 	])){
 		return false;
 	}
