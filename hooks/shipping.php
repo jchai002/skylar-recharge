@@ -202,7 +202,7 @@ switch($rate['destination']['country']){
 		*/
 		break;
 }
-/*
+
 if($is_test){
 	$_RATES[] = [
 		'service_name' => 'Scent Club Shipping (3-7 business days)',
@@ -212,7 +212,7 @@ if($is_test){
 		'currency' => 'USD',
 	];
 }
-*/
+
 if($free_override){
 	foreach($_RATES as $index=>$v){
 		$_RATES[$index]['total_price'] = 0;
