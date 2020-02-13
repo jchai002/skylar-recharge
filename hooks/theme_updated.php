@@ -75,6 +75,7 @@ $themes = $sc->get('/admin/api/2020-01/themes.json', [
 ]);
 
 echo count($themes);
+print_r($themes);
 
 if(count($themes) > 90){
 	// filter out non-pr themes
