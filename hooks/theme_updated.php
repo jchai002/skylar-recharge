@@ -12,7 +12,7 @@ if(empty($theme)){
 	die('no data');
 }
 
-echo insert_update_theme($db, $theme);
+echo insert_update_theme($db, $theme).PHP_EOL;
 
 // Check if pullme theme
 if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST['force'])){
@@ -73,6 +73,8 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 $themes = $sc->get('/admin/api/2020-01/themes.json', [
 	'limit' => 250,
 ]);
+
+echo count($themes);
 
 if(count($themes) > 90){
 	// filter out non-pr themes
