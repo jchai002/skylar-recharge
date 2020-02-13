@@ -33,6 +33,7 @@ $cancelled_customers = array_filter($cancelled_customers, function($customer) us
 foreach($active_customers as $shopify_customer_id => $customer){
 	print_r($customer);
 	if(empty($customer['metafield_value'])){
+		echo "Updating metafield ".PHP_EOL;
 		$res = $sc->post('/admin/customers/'.$shopify_customer_id.'/metafields.json', ['metafield'=> [
 			'namespace' => 'scent_club',
 			'key' => 'active',
@@ -47,6 +48,7 @@ foreach($active_customers as $shopify_customer_id => $customer){
 	}
 	$tags = explode(', ',$customer['tags']);
 	if(!in_array('Scent Club Member', $tags)){
+		echo "Updating customer tags ".PHP_EOL;
 		$tags[] = 'Scent Club Member';
 		$shopify_customer = $sc->put('/admin/customers/'.$shopify_customer_id.'.json', ['customer' => [
 			'id' => $shopify_customer_id,
