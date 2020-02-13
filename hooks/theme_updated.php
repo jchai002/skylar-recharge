@@ -82,11 +82,13 @@ if(count($themes) > 90){
 	$themes = array_filter($themes, function($theme){
 		return strpos($theme['name'], 'PR#') === 0;
 	});
+	print_r($themes);
 	foreach($themes as $index=>$theme){
 		$matches = [];
 		preg_match('/PR#(\d+)/', $theme['name'], $matches);
 		$themes[$index]['pr_id'] = $matches[1];
 	}
+	print_r($themes);
 	$themes = usort($themes, function($a, $b){
 		return ($a['pr_id'] > $b['pr_id']) ? 1 : -1;
 	});
