@@ -205,7 +205,7 @@ switch($rate['destination']['country']){
 
 if($is_test){
 	$_RATES[] = [
-		'service_name' => 'Standard Shipping (3-7 business days)',
+		'service_name' => 'Scent Club Shipping (3-7 business days)',
 		'service_code' => 'Standard Scent Club',
 		'total_price' => 0,
 		'description' => 'Test',
