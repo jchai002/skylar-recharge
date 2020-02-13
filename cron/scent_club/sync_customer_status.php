@@ -53,6 +53,7 @@ foreach($active_customers as $shopify_customer_id => $customer){
 			'tags' => implode(', ', $tags),
 		]]);
 		echo insert_update_customer($db, $shopify_customer).PHP_EOL;
+		print_r($shopify_customer['tags']);
 		usleep(250*1000);
 	}
 }
