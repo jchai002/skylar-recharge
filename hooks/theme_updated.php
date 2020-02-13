@@ -91,7 +91,6 @@ if($num_to_remove > 0){
 		return ($a['pr_id'] > $b['pr_id']) ? 1 : -1;
 	});
 	$themes = array_values($themes);
-	print_r($themes);
 	for($i = 0; $i < $num_to_remove; $i++){
 		echo "Delete Theme ".$themes[$i]['name'].PHP_EOL;
 	}
