@@ -75,14 +75,12 @@ $themes = $sc->get('/admin/api/2020-01/themes.json', [
 ]);
 
 echo count($themes);
-print_r($themes);
 
 if(count($themes) > 90){
 	// filter out non-pr themes
 	$themes = array_filter($themes, function($theme){
 		return strpos($theme['name'], 'PR#') === 0;
 	});
-	print_r($themes);
 	foreach($themes as $index=>$theme){
 		$matches = [];
 		preg_match('/PR#(\d+)/', $theme['name'], $matches);
