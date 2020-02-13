@@ -12,6 +12,7 @@ $scent = null;
 // TODO: This code is essentially looking for what scent is shipping next, has to be a cleaner way to do this
 // Offset code so that this can be run month-of in case of issues
 $offset = 0;
+// If the current time is before the first non-weekend of the month, then use this month, otherwise use next month
 if(time() <= offset_date_skip_weekend(strtotime(date('Y-m-01')))){
 	$offset = -1;
 }

@@ -28,7 +28,7 @@ class ShopifyClient extends Client {
 
 	private $credentials = [];
 	private $last_cred_index = -1;
-	private $api_version_string = '/admin/api/2020-01';
+	private $api_version_string = 'admin/api/2020-01';
 	private $where_params_go = [
 		'GET' => 'query',
 		'DELETE' => 'query',
