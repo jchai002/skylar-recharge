@@ -14,6 +14,7 @@ if(empty($theme)){
 
 echo insert_update_theme($db, $theme);
 
+// Check if pullme theme
 if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST['force'])){
 	$dir = ENV_TYPE == 'LIVE' ? 'production' : 'staging';
 
@@ -66,4 +67,25 @@ if(strpos(strtolower($theme['name']), '[pullme]') !== false || !empty($_REQUEST[
 	]);
 	echo $theme['name'].PHP_EOL;
 	echo insert_update_theme($db, $theme);
+}
+
+// Check if over 90 themes, delete old ones if so
+$themes = $sc->get('/admin/api/2020-01/themes.json', [
+	'limit' => 250,
+]);
+
+if(count($themes) > 90){
+	// filter out non-pr themes
+	$themes = array_filter($themes, function($theme){
+		return strpos($theme['name'], 'PR#') === 0;
+	});
+	foreach($themes as $index=>$theme){
+		$matches = [];
+		preg_match('/PR#(\d+)/', $theme['name'], $matches);
+		$themes[$index]['pr_id'] = $matches[1];
+	}
+	$themes = usort($themes, function($a, $b){
+		return ($a['pr_id'] > $b['pr_id']) ? 1 : -1;
+	});
+	print_r($themes);
 }
