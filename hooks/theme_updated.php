@@ -87,7 +87,7 @@ if(count($themes) > 90){
 		$themes[$index]['pr_id'] = $matches[1];
 	}
 	print_r($themes);
-	$themes = usort($themes, function($a, $b){
+	usort($themes, function($a, $b){
 		return ($a['pr_id'] > $b['pr_id']) ? 1 : -1;
 	});
 	print_r($themes);
