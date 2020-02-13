@@ -76,7 +76,8 @@ $themes = $sc->get('/admin/api/2020-01/themes.json', [
 
 echo count($themes);
 
-if(count($themes) > 90){
+$num_to_remove = count($themes) - 90;
+if($num_to_remove > 0){
 	// filter out non-pr themes
 	$themes = array_filter($themes, function($theme){
 		return strpos($theme['name'], 'PR#') === 0;
@@ -86,9 +87,12 @@ if(count($themes) > 90){
 		preg_match('/PR#(\d+)/', $theme['name'], $matches);
 		$themes[$index]['pr_id'] = $matches[1];
 	}
-	print_r($themes);
 	usort($themes, function($a, $b){
 		return ($a['pr_id'] > $b['pr_id']) ? 1 : -1;
 	});
+	$themes = array_values($themes);
 	print_r($themes);
+	for($i = 0; $i < $num_to_remove; $i++){
+		echo "Delete Theme ".$themes[$i]['name'].PHP_EOL;
+	}
 }
