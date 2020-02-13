@@ -74,7 +74,7 @@ $themes = $sc->get('/admin/api/2020-01/themes.json', [
 	'limit' => 250,
 ]);
 
-echo count($themes);
+echo "Got ".count($themes)." themes".PHP_EOL;
 
 $num_to_remove = count($themes) - 90;
 if($num_to_remove > 0){
@@ -91,7 +91,8 @@ if($num_to_remove > 0){
 		return ($a['pr_id'] > $b['pr_id']) ? 1 : -1;
 	});
 	$themes = array_values($themes);
-	for($i = 0; $i < $num_to_remove; $i++){
-		echo "Delete Theme ".$themes[$i]['name'].PHP_EOL;
+	for($i = 0; $i <= $num_to_remove; $i++){
+		echo "Deleting Theme ".$themes[$i]['name'].PHP_EOL;
+		$sc->delete("/admin/api/2020-01/themes/".$themes[$i]['id'].".json");
 	}
 }
