@@ -10,13 +10,30 @@ if(empty($new_sku)){
 	die("No sku!");
 }
 
-$start_date = date('Y-m-d');
-$end_date = date('Y-m-d', get_next_month());
-
 $log = [
 	'lines' => '',
 	'error' => false,
 ];
+
+// Update promo products
+echo "Updating promo sku products to $new_sku".PHP_EOL;
+$variant_ids = $db->query("SELECT v.shopify_id FROM products p
+LEFT JOIN variants v ON v.product_id=p.id
+WHERE p.type LIKE 'Scent Club Promo'
+AND p.deleted_at IS NULL
+AND v.deleted_at IS NULL
+;")->fetchAll(PDO::FETCH_COLUMN);
+
+foreach($variant_ids as $variant_id){
+	$res = $sc->put('variants/'.$variant_id.'.json', ['variant' => [
+		"id" => $variant_id,
+		"sku" => $new_sku,
+	]]);
+	log_echo($log, "$variant_id, ".$res['sku']);
+}
+
+$start_date = date('Y-m-d');
+$end_date = date('Y-m-d', get_next_month());
 log_echo($log, "Changing all promotions $start_date - $end_date to $new_sku");
 
 log_echo($log, "Updating subscriptions");
