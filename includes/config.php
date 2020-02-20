@@ -803,7 +803,7 @@ function get_subscription_price($product, $variant){
 		return 40;
 	}
 	if(strpos($product['type'], 'Body') !== false){
-		return round($variant['price']*.9);
+		return floor($variant['price']*.9);
 	}
 	return round($variant['price']*.9, 2);
 }
