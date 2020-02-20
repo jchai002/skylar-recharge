@@ -19,7 +19,7 @@ $log = [
 echo "Updating promo sku products to $new_sku".PHP_EOL;
 $variant_ids = $db->query("SELECT v.shopify_id FROM products p
 LEFT JOIN variants v ON v.product_id=p.id
-WHERE p.type LIKE 'Scent Club Promo'
+WHERE p.type = 'Scent Club Promo'
 AND p.deleted_at IS NULL
 AND v.deleted_at IS NULL
 ;")->fetchAll(PDO::FETCH_COLUMN);

@@ -19,6 +19,7 @@ if($stmt->rowCount() == 0){
 	die("No Live Monthly Scent!");
 }
 $scent_info = $stmt->fetch();
+$new_sku = $scent_info['sku'];
 log_echo($log, "Scent: ".print_r($scent_info, true));
 
 // Get metafields
@@ -49,16 +50,65 @@ $base_file_url = "https://cdn.shopify.com/s/files/1/1445/2216/files/";
 echo $base_file_url.$image.PHP_EOL;
 
 // Get products we need to update
-$res = $sc->post('/admin/api/2020-01/products/')
 
-// Get sku and images from monthly product, and update:
-//Skylar Scent Club
-//Skylar Scent Club Auto renew
-//Skylar Scent Club RC
-//Skylar Scent Club RC
+$products_to_update = $db->query("SELECT v.shopify_id AS variant_id, p.shopify_id AS product_id FROM products p
+LEFT JOIN variants v ON v.product_id=p.id
+WHERE p.type = 'Scent Club'
+AND p.deleted_at IS NULL
+AND v.deleted_at IS NULL
+;")->fetchAll();
 
-// Get SC gift ships now sku and update:
-//Scent Club Gift - Ships Now (3 months)
-//Scent Club Gift - Ships Now (6 months)
-//Scent Club Gift - Ships Now (12 months)
-//Scent Club Gift - Ships Now RC
+foreach($products_to_update as $product){
+	// Update sku
+	$variant_id = $product['variant_id'];
+	$product_id = $product['product_id'];
+	$res = $sc->put("variants/$variant_id.json", ['variant' => [
+		"id" => $variant_id,
+		"sku" => $new_sku,
+	]]);
+	log_echo($log, "$product_id $variant_id, ".$res['sku']);
+
+	$old_images = $sc->get("products/$product_id/images.json");
+
+	$res = $sc->post("products/$product_id/images.json", ["image" => [
+		'position' => 1,
+		'src' => $base_file_url.$image,
+	]]);
+
+	foreach($old_images as $old_image){
+		$image_id = $old_image['id'];
+		$sc->delete("products/$product_id/images/$image_id.json");
+	}
+}
+
+$products_to_update = $db->query("SELECT v.shopify_id AS variant_id, p.shopify_id AS product_id, v.title FROM products p
+LEFT JOIN variants v ON v.product_id=p.id
+WHERE p.type = 'Scent Club Gift'
+AND p.title LIKE '%Ships Now%'
+AND p.deleted_at IS NULL
+AND v.deleted_at IS NULL
+;")->fetchAll();
+
+foreach($products_to_update as $product){
+	// Update sku
+	$variant_id = $product['variant_id'];
+	$product_id = $product['product_id'];
+	$months = strtok($product['title'], ' ');
+	if(empty($gift_skus[$months])){
+		$log['error'] = true;
+		log_echo($log, "No gift sku for $months, product: $product_id variant: $variant_id, skipping");
+		continue;
+	}
+	$res = $sc->put("variants/$variant_id.json", ['variant' => [
+		"id" => $variant_id,
+		"sku" => $gift_skus[$months],
+	]]);
+	log_echo($log, "$product_id $variant_id, ".$res['sku']);
+}
+
+send_alert($db, 8,
+	"Finished releasing SC Public Scent".($log['error'] ? ' with errors' : ''),
+	"SC Public Scent Release".($log['error'] ? ' ERROR' : ' Log'),
+	['tim@skylar.com', 'julie@skylar.com'],
+	['log' => $log]
+);

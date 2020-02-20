@@ -161,8 +161,8 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, ShopifyClient $s
 	return $res['onetime'];
 }
 send_alert($db, 8,
-	"Finished releasing SC scent".($log['error'] ? ' with errors' : ''),
-	"SC Scent Release".($log['error'] ? ' ERROR' : ' Log'),
-	'tim@skylar.com',
+	"Finished releasing SC Member Scent".($log['error'] ? ' with errors' : ''),
+	"SC Member Scent Release".($log['error'] ? ' ERROR' : ' Log'),
+	['tim@skylar.com', 'julie@skylar.com'],
 	['log' => $log]
 );
