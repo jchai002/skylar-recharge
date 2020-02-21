@@ -15,7 +15,7 @@ do {
 		$addresses[] = $address;
 		echo insert_update_rc_address($db, $address, $rc, $sc).PHP_EOL;
 	}
-} while(count($res) >= $page_size);
+} while(count($res['addresses']) >= $page_size);
 
 die();
 
