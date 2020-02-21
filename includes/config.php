@@ -657,7 +657,7 @@ function insert_update_rc_address(PDO $db, $recharge_address, RechargeClient $rc
 		'phone' => $recharge_address['phone'],
 		'note' => $recharge_address['cart_note'],
 		'attributes' => json_encode($recharge_address['note_attributes']),
-		'shipping_lines' => $recharge_address['shipping_lines_override'] ?? null,
+		'shipping_lines' => empty($recharge_address['shipping_lines_override']) ? null : json_encode($recharge_address['shipping_lines_override']),
 		'updated_at' => $recharge_address['updated_at'],
 		'synced_at' => date('Y-m-d H:i:s'),
 	]);
