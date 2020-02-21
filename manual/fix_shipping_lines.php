@@ -3,11 +3,11 @@ require_once(__DIR__.'/../includes/config.php');
 
 echo "Updating Addresses".PHP_EOL;
 $page = 0;
+$page_size = 250;
 $addresses = [];
 do {
 	$page++;
 	$res = $rc->get('/addresses', [
-		'updated_at_min' => $min_date,
 		'limit' => $page_size,
 		'page' => $page,
 	]);
