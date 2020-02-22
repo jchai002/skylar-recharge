@@ -142,6 +142,7 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, ShopifyClient $s
 		'variant_title' => $scent_info['variant_title'],
 	]);
 	if(!empty($res['errors'])){
+		// TODO: Need to check if charge error is card related
 	    if(!empty($res['errors']['general']) && $res['errors']['general'] == 'Must remove/fix existing error charges first'){
 	        echo "Invalid card - canceling main sub... ";
 	        $res = $rc->post('/subscriptions/'.$main_sub['id'].'/cancel', [
