@@ -1553,3 +1553,12 @@ function generate_discount_string($seed = null, $rand_chars = 5){
 	}
 	return $code;
 }
+function regenerate_charge($charge_id){
+	$cookie_session = '.eJw1j8FqwzAQRH-l7LkHW_Glhl6KTFFhZSKcmt1LaBvXsmSF4CTYVsi_Vy2UOQxzGObNDfbfU3e2UF6ma_cI--EA5Q0ePqEElpijHEeWL46isfp1u6Crch12Gx3MWEsz1LJfKWBOjlZuVabbamFpPEqfcWMHdrhQW80ov2Zs_AYbKnT7lroq14I9xd2c8kDBDBjZajl6cgeXNi0JtWLsCxQqcSSPv-ozat69Fqrghn3dassBn-Ge2E_dFD6O3fHy_-Z67qa_RyCeCiHg_gMUDU8G.ERXzlw.h7lppIZOi5JWxTujHGMNSPgo3Mw';
+	$ch = curl_init("https://maven-and-muse.shopifysubscriptions.com/charge/$charge_id/regenerate_charge/");
+	curl_setopt_array($ch, [
+		CURLOPT_RETURNTRANSFER =>  true,
+		CURLOPT_HTTPHEADER => ["cookie: session=$cookie_session"],
+	]);
+	return curl_exec($ch);
+}

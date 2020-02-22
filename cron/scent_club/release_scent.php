@@ -99,6 +99,10 @@ foreach($charges as $index=>$charge){
 	    echo "Done.".PHP_EOL;
 	    continue;
     }
+	if(empty($res)){
+		echo "Unable to swap to monthly on address id ".$charge['address_id'].PHP_EOL;
+		continue;
+	}
 	echo sc_calculate_next_charge_date($db, $rc, $charge['address_id'], $main_sub, 2).PHP_EOL;
 	if($index > 0 && $index % 20 == 0){
 		$num_processed = $index - $starting_point;
@@ -142,15 +146,31 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, ShopifyClient $s
 		'variant_title' => $scent_info['variant_title'],
 	]);
 	if(!empty($res['errors'])){
-		// TODO: Need to check if charge error is card related
-	    if(!empty($res['errors']['general']) && $res['errors']['general'] == 'Must remove/fix existing error charges first'){
-	        echo "Invalid card - canceling main sub... ";
-	        $res = $rc->post('/subscriptions/'.$main_sub['id'].'/cancel', [
-	            'cancellation_reason' => 'Auto-cancelled - Invalid Payment Method Not Fixed',
-                'send_email' => true,
-            ]);
-	        return "cancel";
-        }
+		// Need to check if charge error is card related, try to regenerate and retry if so
+		if(!empty($res['errors']['general']) && $res['errors']['general'] == 'Must remove/fix existing error charges first'){
+			$res = $rc->get('/charges', ['status' => 'error', 'address_id' => $address_id,]);
+			// If no error charges with type "CLOSED_MAX_RETRIES_REACHED", reactivate
+			foreach($res['charges'] as $error_charge){
+				if($error_charge['error_type'] == 'CLOSED_MAX_RETRIES_REACHED'){
+					echo "Invalid card - canceling main sub... ";
+					$res = $rc->post('/subscriptions/' . $main_sub['id'] . '/cancel', [
+						'cancellation_reason' => 'Auto-cancelled - Invalid Payment Method Not Fixed',
+						'send_email' => true,
+					]);
+					return "cancel";
+				}
+				print_r(regenerate_charge($error_charge['id']));
+			}
+			$res = $rc->post('/addresses/'.$address_id.'/onetimes', [
+				'next_charge_scheduled_at' => date('Y-m-d H:i:s', $time),
+				'shopify_variant_id' => $scent_info['shopify_variant_id'],
+				'properties' => $properties,
+				'price' => $main_sub['price'],
+				'quantity' => 1,
+				'product_title' => 'Skylar Scent Club',
+				'variant_title' => $scent_info['variant_title'],
+			]);
+		}
     }
 	//print_r($res);
 	if(empty($res['onetime'])){
