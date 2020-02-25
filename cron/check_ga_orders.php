@@ -8,7 +8,7 @@ LEFT JOIN order_transaction_sources ots ON o.id=ots.order_id
 WHERE o.created_at < '$start_time' AND o.created_at >= '$end_time'
 AND o.ga_hit_sent_at IS NULL
 AND ots.id IS NULL");
-$stmt_get_historical_sources = $db->prepare("SELECT source, medium, campaign FROM order_transaction_sources ots
+$stmt_get_historical_sources = $db->prepare("SELECT source, medium, campaign, content FROM order_transaction_sources ots
 LEFT JOIN orders o ON ots.order_id=o.id
 LEFT JOIN customers c ON o.customer_id=c.id
 WHERE c.shopify_id=:customer_id
@@ -35,14 +35,14 @@ foreach($stmt->fetchAll() as $row){
 	}
 	$response = send_ga_transaction_hit($shopify_order, $sources, [], true);
 	if(empty($response->getDebugResponse()['hitParsingResult'][0]['valid'])){
-		echo "ERROR IN HIT!"; // TODO: Log and alert
+		echo "ERROR IN HIT!";
+		send_alert($db, 10, 'GA Hit Error on order number '.$shopify_order['order_number'], 'Skylar Alert - GA Hit Error');
 		log_event($db, 'ANALYTICS', $shopify_order['order_number'], 'HIT_ERROR', $response->getDebugResponse(), '', 'CRON');
 		continue;
 	}
 	print_r($response->getDebugResponse());
 	send_ga_transaction_hit($shopify_order, $sources);
 	log_event($db, 'ANALYTICS', $shopify_order['order_number'], 'HIT_SENT', $response->getDebugResponse(), '', 'CRON');
-	// TODO: Log hits better
 	$stmt_update_hit->execute([
 		'now' => date('Y-m-d H:i:s'),
 		'id' => $row['id'],
@@ -91,6 +91,9 @@ function send_ga_transaction_hit($shopify_order, $sources = [], $original_order 
 			->setCampaignSource($sources['source'])
 			->setCampaignMedium($sources['medium'])
 			->setCampaignName($sources['campaign']);
+		if(!empty($sources['content'])){
+			$analytics->setCampaignContent($sources['content']);
+		}
 	}
 
 	$time_diff = time()-strtotime($shopify_order['created_at']);

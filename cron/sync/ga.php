@@ -14,7 +14,7 @@ $analytics = new Google_Service_AnalyticsReporting($client);
 
 $datetime = !empty($argv) && !empty($argv[1]) ? strtotime($argv[1]) : time();
 $stmt_get_order_id = $db->prepare("SELECT id FROM orders WHERE number = ?");
-$stmt_insert_update_source = $db->prepare("INSERT INTO order_transaction_sources (order_id, ga_transaction_id, source, medium, campaign, page, ga_date) VALUES (:order_id, :ga_transaction_id, :source, :medium, :campaign, :page, :ga_date) ON DUPLICATE KEY UPDATE order_id=:order_id");
+$stmt_insert_update_source = $db->prepare("INSERT INTO order_transaction_sources (order_id, ga_transaction_id, source, medium, campaign, content, page, ga_date) VALUES (:order_id, :ga_transaction_id, :source, :medium, :campaign, :content, :page, :ga_date) ON DUPLICATE KEY UPDATE order_id=:order_id");
 
 // Get orders are known ok
 $stmt = $db->query("SELECT ga_transaction_id FROM order_transaction_sources
@@ -35,10 +35,12 @@ do {
 
 	// Create the Metrics object.
 	$sessions = new Google_Service_AnalyticsReporting_Metric();
-	$sessions->setExpression("ga:users");
+	$sessions->setExpression("ga:uniquePurchases");
+//	$sessions->setExpression("ga:users");
 
 	//Create the Dimensions object.
 	$dimensions = [
+		new Google_Service_AnalyticsReporting_Dimension(),
 		new Google_Service_AnalyticsReporting_Dimension(),
 		new Google_Service_AnalyticsReporting_Dimension(),
 		new Google_Service_AnalyticsReporting_Dimension(),
@@ -50,6 +52,7 @@ do {
 	$dimensions[2]->setName("ga:medium");
 	$dimensions[3]->setName("ga:campaign");
 	$dimensions[4]->setName("ga:pagePath");
+	$dimensions[5]->setName("ga:adContent");
 
 	// Create the ReportRequest object.
 	$request = new Google_Service_AnalyticsReporting_ReportRequest();
@@ -96,10 +99,11 @@ do {
 			'source' => $row_data['ga:source'],
 			'medium' => $row_data['ga:medium'],
 			'campaign' => $row_data['ga:campaign'],
+			'content' => $row_data['ga:adContent'] ?? null,
 			'page' => $row_data['ga:pagePath'],
 			'ga_date' => $date,
 		]);
-		echo "Stored ".$row_data['ga:transactionId']." as $order_id [".$row_data['ga:source']."/".$row_data['ga:medium']."]".PHP_EOL;
+		echo "Stored ".$row_data['ga:transactionId']." as $order_id [".$row_data['ga:source']."/".$row_data['ga:medium']."/".$row_data['ga:campaign']."/".($row_data['ga:adContent'] ?? 'null')."]".PHP_EOL;
 	}
 	$datetime = strtotime('yesterday', $datetime);
 	if($datetime < strtotime('2017-07-28')){
