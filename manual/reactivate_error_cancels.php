@@ -17,10 +17,13 @@ foreach($rows as $row){
 	// If no error charges with type "CLOSED_MAX_RETRIES_REACHED", reactivate
 	foreach($res['charges'] as $error_charge){
 		if($error_charge['error_type'] == 'CLOSED_MAX_RETRIES_REACHED'){
-			echo "Skipping, ".$error_charge['id']." type ".$error_charge['error_type'].PHP_EOL;
+//			echo $error_charge['error'].PHP_EOL;
+			echo "Skipping, ".$error_charge['id']." (".$error_charge['scheduled_at'].") type ".$error_charge['error_type'].PHP_EOL;
 			continue 2;
 		}
 	}
+	echo PHP_EOL;
+	continue;
 	echo "Activating ".$row['rc_subscription_id']."... ";
 	$res = $rc->post('/subscriptions/'.$row['rc_subscription_id']."/activate");
 	if(empty($res['subscription'])){
