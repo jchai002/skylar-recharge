@@ -36,8 +36,8 @@ class ShopifyClient extends Client {
 		'PUT' => 'json',
 	];
 
-	function __construct($config = []){
-		$this->addToken($_ENV['SHOPIFY_APP_TOKEN']);
+	function __construct($config = [], $default_token = null){
+		$this->addToken($default_token ?? $_ENV['SHOPIFY_APP_TOKEN']);
 		parent::__construct(array_merge([
 			'base_uri' => "https://{$this->shop_domain}/{$this->api_version_string}/",
 		], $config));
