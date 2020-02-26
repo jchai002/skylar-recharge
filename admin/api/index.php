@@ -6,9 +6,7 @@ $path = $_REQUEST['path'] ?? str_replace('/admin/api/', '', parse_url($_SERVER['
 
 header('Content-Type: application/json');
 try {
-	print_r($path);
-	print_r($_REQUEST);
-	echo json_encode($sc->call($_SERVER['REQUEST_METHOD'], $path, $_REQUEST['data'] ?? []));
+	echo json_encode(['response' => $sc->call($_SERVER['REQUEST_METHOD'], $path, $_REQUEST['data'] ?? [])]);
 } catch (Exception $e) {
 	echo json_encode([
 		'success' => false,
