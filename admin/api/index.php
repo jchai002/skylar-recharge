@@ -13,6 +13,7 @@ try {
 		'error' => $e->getMessage(),
 		'code' => $e->getCode(),
 		'response' => json_decode($e->getResponse()->getBody()->getContents()),
+		'object' => $_REQUEST['object'], 'path' => $path,
 	]);
 } catch (\GuzzleHttp\Exception\ServerException $e) {
 	echo json_encode([
@@ -20,11 +21,13 @@ try {
 		'error' => $e->getMessage(),
 		'code' => $e->getCode(),
 		'response' => json_decode($e->getResponse()->getBody()->getContents()),
+		'object' => $_REQUEST['object'], 'path' => $path,
 	]);
 } catch (Exception $e) {
 	echo json_encode([
 		'success' => false,
 		'error' => $e->getMessage(),
 		'code' => $e->getCode(),
+		'object' => $_REQUEST['object'], 'path' => $path,
 	]);
 }
