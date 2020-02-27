@@ -111,6 +111,7 @@ class ShopifyClient extends Client {
 
 	// Replicate existing API
 	public function call($method, $path, $params = [], $options = []){
+		$method = strtoupper($method);
 		if(!empty($params)){
 			$options[$this->where_params_go[$method]] = $params;
 		}
