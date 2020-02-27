@@ -1,18 +1,23 @@
 <?php
 global $db, $sc, $rc;
 
-$month = empty($_REQUEST['month']) ? date('Y-m',strtotime('+1 months')) : date('Y-m', strtotime($_REQUEST['month']));
+if(!empty($_REQUEST['month'])){
+	$month = date('Y-m', strtotime($_REQUEST['month']));
 
-$ts1 = time();
-$ts2 = strtotime($month.'-01');
+	// Calc number of months from then to now
+	$ts1 = time();
+	$ts2 = strtotime($month.'-01');
 
-$year1 = date('Y', $ts1);
-$year2 = date('Y', $ts2);
+	$year1 = date('Y', $ts1);
+	$year2 = date('Y', $ts2);
 
-$month1 = date('m', $ts1);
-$month2 = date('m', $ts2);
-
-$months = (($year2 - $year1) * 12) + ($month2 - $month1);
+	$month1 = date('m', $ts1);
+	$month2 = date('m', $ts2);
+	$months = (($year2 - $year1) * 12) + ($month2 - $month1);
+	$months = $months > 6 ? $months : 6;
+} else {
+	$months = 6;
+}
 
 
 $customer = get_customer($db, $_REQUEST['c'], $sc);
@@ -44,6 +49,9 @@ if(empty($rc_customer_id) || empty($schedule->get())){
 foreach($schedule->get() as $shipment_list){
 	foreach($shipment_list['addresses'] as $upcoming_shipment){
 		foreach($upcoming_shipment['items'] as $item){
+			if(!empty($_REQUEST['month']) && !empty($item['skipped'])){
+				continue;
+			}
 			if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
 				$return_box = $upcoming_shipment;
 				$return_box['sc_product'] = get_product($db, $item['shopify_product_id']);
