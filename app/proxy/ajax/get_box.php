@@ -49,7 +49,7 @@ if(empty($rc_customer_id) || empty($schedule->get())){
 foreach($schedule->get() as $shipment_list){
 	foreach($shipment_list['addresses'] as $upcoming_shipment){
 		foreach($upcoming_shipment['items'] as $item){
-			if(!empty($_REQUEST['month']) && !empty($item['skipped'])){
+			if(empty($_REQUEST['month']) && !empty($item['skipped'])){
 				continue;
 			}
 			if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
