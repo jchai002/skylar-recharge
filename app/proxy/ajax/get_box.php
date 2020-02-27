@@ -55,6 +55,7 @@ foreach($schedule->get() as $shipment_list){
 			if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
 				$return_box = $upcoming_shipment;
 				$return_box['sc_product'] = get_product($db, $item['shopify_product_id']);
+				$month = date('Y-m', $return_box['ship_date_time']);
 				break 2;
 			}
 		}
