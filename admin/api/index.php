@@ -6,7 +6,7 @@ $path = $_REQUEST['path'] ?? str_replace('/admin/api/', '', parse_url($_SERVER['
 
 header('Content-Type: application/json');
 try {
-	echo json_encode(['response' => $sc->call($_REQUEST['method'] ?? $_SERVER['REQUEST_METHOD'], $path, $_REQUEST['object'] ?? []), 'object' => $_REQUEST['object'], 'path' => $path]);
+	echo json_encode(['response' => $sc->call($_REQUEST['meth'] ?? $_SERVER['REQUEST_METHOD'], $path, $_REQUEST['object'] ?? []), 'object' => $_REQUEST['object'], 'path' => $path]);
 } catch (\GuzzleHttp\Exception\ServerException $e) {
 	echo json_encode([
 		'success' => false,
