@@ -56,7 +56,7 @@ foreach($schedule->get() as $shipment_list){
 				$return_box = $upcoming_shipment;
 				$return_box['sc_product'] = get_product($db, $item['shopify_product_id']);
 				$month = date('Y-m', $return_box['ship_date_time']);
-				break 2;
+				break 3;
 			}
 		}
 	}
