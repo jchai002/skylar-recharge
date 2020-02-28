@@ -83,6 +83,11 @@ class ShopifyClient extends Client {
 		return $cred_array[0];
 	}
 
+	public function resetCreds(){
+		$this->credentials = [];
+		$this->last_cred_index = -1;
+	}
+
 	public function addToken($token){
 		$this->credentials[$token] = [
 			'type' => 'public',

@@ -11,7 +11,7 @@ if(json_last_error() === JSON_ERROR_NONE){
 }
 try {
 	echo json_encode(['response' => $sc->call($_REQUEST['method'] ?? $_SERVER['REQUEST_METHOD'], $path, $_REQUEST['payload'] ?? []), 'payload' => $_REQUEST['payload'], 'path' => $path]);
-} catch (\GuzzleHttp\Exception\ClientException$e) {
+} catch (\GuzzleHttp\Exception\ClientException $e) {
 	echo json_encode([
 		'success' => false,
 		'error' => $e->getMessage(),
