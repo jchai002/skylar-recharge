@@ -1270,9 +1270,9 @@ do {
 		$cc_order['logisticsStatus'] = 1;
 //		$cc_order['branchId'] = calc_branch_id($cc_order);
 		$updates[] = $cc_order;
-		echo "Added to update queue [".count($updates)."]".PHP_EOL;
+		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
 		if(count($updates) == $page_size){
-			echo "! Queue hit $page_size, sending w/ branch id ".$cc_order['branchId']."... ";
+			echo "! Queue hit $page_size, sending... ";
 			$res = send_cc_updates($cc, $updates);
 			$updates = [];
 			echo "Done".PHP_EOL;
