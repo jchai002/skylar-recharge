@@ -159,7 +159,7 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, ShopifyClient $s
 					]);
 					return "cancel";
 				}
-				print_r(regenerate_charge($error_charge['id']));
+				regenerate_charge($error_charge['id']);
 			}
 			$res = $rc->post('/addresses/'.$address_id.'/onetimes', [
 				'next_charge_scheduled_at' => date('Y-m-d H:i:s', $time),

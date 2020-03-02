@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$date = '2020-01-02';
+$date = '2020-03-02';
 /*
 $charges = [];
 $page = 0;

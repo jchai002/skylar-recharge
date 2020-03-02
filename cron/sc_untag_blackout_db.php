@@ -96,6 +96,7 @@ while(!empty($orders) || !empty($promises)){
 		}, function(Exception $e){
 			if($e->getCode() == 429){
 				echo "Got 429 error, sleeping".PHP_EOL;
+				// TODO: Re-add request
 				sleep(4);
 				return;
 			}
