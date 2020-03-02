@@ -258,7 +258,7 @@ class SubscriptionSchedule {
 			while($next_charge_time >= $this->min_time){
 				// If today, skip
 				if(date('Y-m-d') == date('Y-m-d', $next_charge_time)){
-					continue;
+//					continue;
 				}
 
 				// Check if other scent club is in this month already
