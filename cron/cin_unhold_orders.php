@@ -1228,7 +1228,7 @@ do {
 	/* @var $res JsonAwareResponse */
 	$res = $cc->get('SalesOrders', [
 		'query' => [
-			'fields' => implode(',', ['id', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode']),
+			'fields' => implode(',', ['id', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'lineItems']),
 			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date'",
 			'order' => 'CreatedDate ASC',
 			'rows' => $page_size,
@@ -1305,5 +1305,17 @@ function calc_branch_id($cc_order){
 		die();
 	}
 	$zip_prefix = substr($cc_order['deliveryPostalCode'], 0, 3);
-	return in_array($zip_prefix, $east_zip_prefixes) ? 23755 : 3;
+	if(!in_array($zip_prefix, $east_zip_prefixes)){
+		return 3;
+	}
+	if(count($cc_order['lineItems']) > 1){
+		return 3;
+	}
+	if($cc_order['lineItems'][0]['code'] != '10450506-101'){
+		return 3;
+	}
+	if($cc_order['lineItems'][0]['qty'] != 1){
+		return 3;
+	}
+	return 23755;
 }
