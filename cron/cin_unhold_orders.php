@@ -1222,6 +1222,7 @@ $cut_on_date = '2019-12-16T08:00:00Z';
 $page_size = 250;
 $page = 0;
 $updates = [];
+$last_send_time = time();
 do {
 	$page++;
 	// Get held orders
@@ -1271,12 +1272,14 @@ do {
 		$cc_order['branchId'] = calc_branch_id($cc_order);
 		$updates[] = $cc_order;
 		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
-		if(count($updates) == $page_size){
-			echo "! Queue hit $page_size, sending... ";
+		if(count($updates) == $page_size
+		|| count($updates) > 0 && $last_send_time-time() > 60){
+			echo "Sending updates... ";
 			$res = send_cc_updates($cc, $updates);
 			$updates = [];
 			echo "Done".PHP_EOL;
 			sleep(1);
+			$last_send_time = time();
 		}
 	}
 } while(count($cc_orders) >= $page_size);
@@ -1308,13 +1311,18 @@ function calc_branch_id($cc_order){
 	if(!in_array($zip_prefix, $east_zip_prefixes)){
 		return 3;
 	}
-	if(count($cc_order['lineItems']) > 1){
+	$line_items = array_filter($cc_order['lineItems'], function($item){
+		return !in_array($item['code'], ['98131802-100', '70450506-101']);
+	});
+	echo "Filtered line items: ";
+	print_r($line_items);
+	if(count($line_items) > 1){
 		return 3;
 	}
-	if($cc_order['lineItems'][0]['code'] != '10450506-101'){
+	if($line_items[0]['code'] != '10450506-101'){
 		return 3;
 	}
-	if($cc_order['lineItems'][0]['qty'] != 1){
+	if($line_items[0]['qty'] != 1){
 		return 3;
 	}
 	return 23755;
