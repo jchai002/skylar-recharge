@@ -1272,8 +1272,16 @@ do {
 		$cc_order['branchId'] = calc_branch_id($cc_order);
 		$updates[] = $cc_order;
 		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
-		if(count($updates) == $page_size
-		|| count($updates) > 0 && $last_send_time-time() > 60){
+		$send_updates = false;
+		if(count($updates) == $page_size){
+			echo "Updates hit $page_size, ";
+			$send_updates = true;
+		}
+		if(count($updates) > 0 && time()-$last_send_time > 60){
+			echo "It's been ".$last_send_time-time()."s since last update, ";
+			$send_updates = true;
+		}
+		if($send_updates){
 			echo "Sending updates... ";
 			$res = send_cc_updates($cc, $updates);
 			$updates = [];
