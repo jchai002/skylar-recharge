@@ -1230,7 +1230,7 @@ do {
 		'query' => [
 			'fields' => implode(',', ['id', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'lineItems']),
 			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date'",
-			'order' => 'CreatedDate ASC',
+			'order' => 'CreatedDate DESC',
 			'rows' => $page_size,
 			'page' => $page,
 		],
