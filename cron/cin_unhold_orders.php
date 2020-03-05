@@ -1218,6 +1218,8 @@ $east_zip_prefixes = [
 	'777',
 ];
 
+// TODO: Alert for high volume of orders not shipped
+
 $cut_on_date = '2019-12-16T08:00:00Z';
 $page_size = 250;
 $page = 0;

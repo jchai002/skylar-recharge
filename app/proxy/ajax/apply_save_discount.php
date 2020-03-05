@@ -21,11 +21,17 @@ if($stmt->rowCount() == 0){
 	}
 }
 
-// apply it to the next charge on the subscription id
-$res_all[] = $res = $rc->get('/charges/', ['status' => 'QUEUED', 'subscription_id' => intval($_REQUEST['subscription_id'])]);
-if(!empty($res['charges'])){
-	$charge_id = $res['charges'][0]['id'];
+// apply it to the next SC charge on the address id
+$res_all[] = $res = $rc->get('/charges/', ['status' => 'QUEUED', 'address_id' => $db_address['recharge_id']]);
+foreach($res['charges'] as $charge){
+	foreach($charge['line_items'] as $line_item){
+		if(is_scent_club_any(get_product($db, $line_item['shopify_product_id']))){
+			$charge_id = $charge['id'];
+			break 2;
+		}
+	}
 }
+
 $res_all[] = $res = $rc->post('/addresses/'.$db_address['recharge_id'].'/remove_discount');
 $res_all[] = $res = $rc->post('/charges/'.$charge_id.'/apply_discount', [
 	'discount_code' => $discount_code,
