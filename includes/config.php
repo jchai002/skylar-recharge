@@ -1435,7 +1435,7 @@ function is_discount_allowed_in_account($discount_code){
 		'MYSCENT50',
 		'BUMO50',
 		'PRES15',
-		'AARMY',
+		'AARMY25',
 	])){
 		return false;
 	}
