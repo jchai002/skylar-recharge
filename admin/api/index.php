@@ -1,6 +1,10 @@
 <?php
 require_once(__DIR__.'/../../includes/config.php');
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Origin: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range');
+
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	$data = file_get_contents('php://input');
 	$data = json_decode($data, true);
