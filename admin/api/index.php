@@ -15,8 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 	}
 	exit;
 }
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, origin');
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	$data = file_get_contents('php://input');
