@@ -21,7 +21,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	$data = json_decode($data, true);
 	if(!empty($data['path'])){
 		$_REQUEST['path'] = $data['path'];
+	}
+	if(!empty($data['method'])){
 		$_REQUEST['method'] = $data['method'];
+	}
+	if(!empty($data['payload'])){
 		$_REQUEST['payload'] = $data['payload'];
 	}
 }
