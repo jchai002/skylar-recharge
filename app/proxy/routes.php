@@ -40,6 +40,14 @@ $router->route('',function() use($db, $rc, $sc){
 	});
 	return true;
 });
+$router->route('/tracking\/(\d+)$/i', function($shopify_order_id) {
+	require('pages/tracking.php');
+	return true;
+});
+$router->route('/tracking\/(\d+)\/(\d+)$/i', function($shopify_order_id, $shopify_line_item_id) {
+	require('pages/tracking.php');
+	return true;
+});
 $router->route('/members$/i', function() {
 	require_customer_id(function(){
 		require('pages/members.php');
