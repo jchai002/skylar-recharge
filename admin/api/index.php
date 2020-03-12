@@ -1,6 +1,16 @@
 <?php
 require_once(__DIR__.'/../../includes/config.php');
 
+if($_SERVER['REQUEST_METHOD'] == 'POST'){
+	$data = file_get_contents('php://input');
+	$data = json_decode($data, true);
+	if(!empty($data['path'])){
+		$_REQUEST['path'] = $data['path'];
+		$_REQUEST['method'] = $data['method'];
+		$_REQUEST['payload'] = $data['payload'];
+	}
+}
+
 $sc = new ShopifyClient([], $_ENV['SHOPIFY_UTILS_APP_TOKEN']);
 $path = $_REQUEST['path'] ?? str_replace('/admin/api/', '', parse_url($_SERVER['REQUEST_URI'])['path']);
 
