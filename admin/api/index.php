@@ -1,7 +1,10 @@
 <?php
 require_once(__DIR__.'/../../includes/config.php');
 
-header('Access-Control-Allow-Origin: *');
+
+if($_SERVER['REQUEST_METHOD'] == 'OPTIONS'){
+	header('Access-Control-Allow-Origin: *');
+}
 
 if($_SERVER['REQUEST_METHOD'] == 'POST'){
 	$data = file_get_contents('php://input');
