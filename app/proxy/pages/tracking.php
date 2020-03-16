@@ -49,15 +49,15 @@ if(!empty($order)){
 	$query_values['order_date'] = $order['created_at'];
 	$query_values['dzip'] = $order['shipping_address']['zip'];
 //	$query_values['ozip'] = $order['shipping_address']['zip']; // TODO: Set to origin zip once cin7 integration makes it available
-	$query_values['service'] = $narvar_codes[$order['shipping_methods'][0]['code']]['service'] ?? 'unknown';
-	$tracking_code = $narvar_codes[$order['shipping_methods'][0]['code']]['carrier'] ?? 'carrier';
-	print_r($order['shipping_methods']);
+	$query_values['service'] = $narvar_codes[$order['shipping_lines'][0]['code']]['service'] ?? 'unknown';
+	$tracking_code = $narvar_codes[$order['shipping_lines'][0]['code']]['carrier'] ?? 'carrier';
+	print_r($order['shipping_lines']);
 }
 if(!empty($fulfillments)){
 	$fulfillment = $fulfillments[0];
 	$query_values['tracking_numbers'] = $fulfillment['tracking_number'];
 	$query_values['ship_date'] = $fulfillment['created_at'];
-	if($order['shipping_methods'][0]['code'] == 'PriorityDdpDelcon'){
+	if($order['shipping_lines'][0]['code'] == 'PriorityDdpDelcon'){
 		echo $fulfillment['tracking_urls'][0];
 		exit;
 	}
