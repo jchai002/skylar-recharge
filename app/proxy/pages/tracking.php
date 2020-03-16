@@ -18,6 +18,7 @@ $narvar_codes = [
 	'UPS Standard to Canada' => ['service' => 'UG', 'carrier' => 'UPS'],
 	'Standard Scent Club' => ['service' => 'MI', 'carrier' => 'UPS'],
 	'Standard Weight-based' => ['service' => 'MI', 'carrier' => 'UPS'],
+	'Standard shipping' => ['service' => 'MI', 'carrier' => 'UPS'],
 	'Free Standard Shipping (3-7 business days)' => ['service' => 'MI', 'carrier' => 'UPS'],
 	'Standard Shipping (3-7 business days)' => ['service' => 'MI', 'carrier' => 'UPS'],
 	'US Next Day' => ['service' => 'E1', 'carrier' => 'UPS'],
