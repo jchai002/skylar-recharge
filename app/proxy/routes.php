@@ -40,6 +40,14 @@ $router->route('',function() use($db, $rc, $sc){
 	});
 	return true;
 });
+$router->route('/tracking$/i', function() {
+	if(!empty($_REQUEST['id'])){
+		$shopify_order_id = intval($_REQUEST['id']);
+		require('pages/tracking.php');
+		return true;
+	}
+	return false;
+});
 $router->route('/tracking\/(\d+)$/i', function($shopify_order_id) {
 	require('pages/tracking.php');
 	return true;
