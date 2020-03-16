@@ -13,6 +13,7 @@ $query_values = [
 ];
 $narvar_codes = [
 	'PriorityDdpDelcon' => ['service' => '', 'carrier' => ''],
+	'PASDDP' => ['service' => '', 'carrier' => ''],
 	'DHL WW Express' => ['service' => '', 'carrier' => 'DHL'],
 	'UPS Standard to Canada' => ['service' => 'UG', 'carrier' => 'UPS'],
 	'Standard Scent Club' => ['service' => 'MI', 'carrier' => 'UPS'],
@@ -56,7 +57,7 @@ if(!empty($fulfillments)){
 	$fulfillment = $fulfillments[0];
 	$query_values['tracking_numbers'] = $fulfillment['tracking_number'];
 	$query_values['ship_date'] = $fulfillment['created_at'];
-	if($order['shipping_lines'][0]['code'] == 'PriorityDdpDelcon'){
+	if(in_array($order['shipping_lines'][0]['code'], ['PriorityDdpDelcon', 'PASDDP'])){
 		header("Location: ".$fulfillment['tracking_urls'][0]);
 		exit;
 	}
