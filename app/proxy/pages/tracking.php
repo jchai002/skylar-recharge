@@ -51,20 +51,19 @@ if(!empty($order)){
 //	$query_values['ozip'] = $order['shipping_address']['zip']; // TODO: Set to origin zip once cin7 integration makes it available
 	$query_values['service'] = $narvar_codes[$order['shipping_lines'][0]['code']]['service'] ?? 'unknown';
 	$tracking_code = $narvar_codes[$order['shipping_lines'][0]['code']]['carrier'] ?? 'carrier';
-	print_r($order['shipping_lines']);
 }
 if(!empty($fulfillments)){
 	$fulfillment = $fulfillments[0];
 	$query_values['tracking_numbers'] = $fulfillment['tracking_number'];
 	$query_values['ship_date'] = $fulfillment['created_at'];
 	if($order['shipping_lines'][0]['code'] == 'PriorityDdpDelcon'){
-		echo $fulfillment['tracking_urls'][0];
+		header("Location: ".$fulfillment['tracking_urls'][0]);
 		exit;
 	}
 }
 
-$redirect = "https://skylar.narvar.com/skylar/tracking/{{ fulfillment_tracking_code }}?tracking_numbers={{ fulfillment.tracking_number }}&order_number={{ order.order_name | remove: '#' }}&service={{ shipping_method_code }}{%- comment,&ozip=92704{%- endcomment,&dzip={{ order.shipping_address.zip }}&order_date={{ order.created_at}}&ship_date={{ fulfillment.created_at }}";
-
 $redirect = $base_url.$tracking_code."?".http_build_query($query_values);
+
+header("Location: ".$redirect);
 
 echo $redirect;
