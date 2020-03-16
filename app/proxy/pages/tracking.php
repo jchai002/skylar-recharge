@@ -60,6 +60,7 @@ if(!empty($fulfillments)){
 		echo $fulfillment['tracking_urls'][0];
 		exit;
 	}
+	print_r($fulfillment);
 }
 
 $redirect = "https://skylar.narvar.com/skylar/tracking/{{ fulfillment_tracking_code }}?tracking_numbers={{ fulfillment.tracking_number }}&order_number={{ order.order_name | remove: '#' }}&service={{ shipping_method_code }}{%- comment,&ozip=92704{%- endcomment,&dzip={{ order.shipping_address.zip }}&order_date={{ order.created_at}}&ship_date={{ fulfillment.created_at }}";
