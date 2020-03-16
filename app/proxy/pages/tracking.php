@@ -51,6 +51,7 @@ if(!empty($order)){
 //	$query_values['ozip'] = $order['shipping_address']['zip']; // TODO: Set to origin zip once cin7 integration makes it available
 	$query_values['service'] = $narvar_codes[$order['shipping_methods'][0]['code']]['service'] ?? 'unknown';
 	$tracking_code = $narvar_codes[$order['shipping_methods'][0]['code']]['carrier'] ?? 'carrier';
+	print_r($order['shipping_methods']);
 }
 if(!empty($fulfillments)){
 	$fulfillment = $fulfillments[0];
@@ -60,7 +61,6 @@ if(!empty($fulfillments)){
 		echo $fulfillment['tracking_urls'][0];
 		exit;
 	}
-	print_r($fulfillment);
 }
 
 $redirect = "https://skylar.narvar.com/skylar/tracking/{{ fulfillment_tracking_code }}?tracking_numbers={{ fulfillment.tracking_number }}&order_number={{ order.order_name | remove: '#' }}&service={{ shipping_method_code }}{%- comment,&ozip=92704{%- endcomment,&dzip={{ order.shipping_address.zip }}&order_date={{ order.created_at}}&ship_date={{ fulfillment.created_at }}";
