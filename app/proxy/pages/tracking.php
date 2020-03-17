@@ -15,6 +15,7 @@ $narvar_codes = [
 	'PriorityDdpDelcon' => ['service' => '', 'carrier' => ''],
 	'PASDDP' => ['service' => '', 'carrier' => ''],
 	'DHL WW Express' => ['service' => '', 'carrier' => 'DHL'],
+	'DHLWP' => ['service' => '', 'carrier' => 'DHL'],
 	'UPS Standard to Canada' => ['service' => 'UG', 'carrier' => 'UPS'],
 	'Standard Scent Club' => ['service' => 'MI', 'carrier' => 'UPS'],
 	'Standard Weight-based' => ['service' => 'MI', 'carrier' => 'UPS'],
