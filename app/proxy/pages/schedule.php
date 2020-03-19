@@ -218,7 +218,7 @@ print_r($schedule->get());
                                                 <div>
                                                     <div class="sc-item-detail-label">Delivery</div>
                                                     <div class="sc-item-detail-value">
-                                                        <?php if(empty($item['order_interval_frequency'])){ ?>
+                                                        <?php if(empty($item['order_interval_frequency']) || $item['status'] == 'ONETIME'){ ?>
                                                             Once
                                                         <?php } else if($item['order_interval_frequency'] == '1'){ ?>
                                                             Every <?=$item['order_interval_unit']?>
