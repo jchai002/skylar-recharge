@@ -109,9 +109,12 @@ uasort($other_onetimes, function($a, $b){
 				$stmt_scent_change_options = $db->prepare("SELECT s.code, s.title, v.shopify_id as shopify_variant_id FROM variant_attributes va
                 LEFT JOIN scents s ON va.scent_id=s.id
                 LEFT JOIN variants v ON va.variant_id=v.id
+                LEFT JOIN products p ON v.product_id=p.id
                 WHERE va.format_id=:format_id
                 AND va.product_type_id=:product_type_id
                 AND v.deleted_at IS NULL
+                AND p.deleted_at IS NULL
+                AND p.published_at IS NOT NULL
                 ;");
 				foreach($subscriptions_by_date as $item){
 					echo "<!--";
