@@ -2,8 +2,8 @@
 require_once(__DIR__.'/../includes/config.php');
 require_once(__DIR__.'/../includes/class.ShopifyClient.php');
 
-$count = 20;
-$value = 29;
+$count = 13;
+$value = 50;
 
 $sc->resetCreds();
 $sc->addSecret($_ENV['SHOPIFY_PRIVATE_APP_KEY'], $_ENV['SHOPIFY_PRIVATE_APP_SECRET']);
