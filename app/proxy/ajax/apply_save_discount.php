@@ -23,7 +23,14 @@ if($stmt->rowCount() == 0){
 
 // apply it to the next SC charge on the address id
 $res_all[] = $res = $rc->get('/charges/', ['status' => 'QUEUED', 'address_id' => $db_address['recharge_id']]);
-foreach($res['charges'] as $charge){
+$charges = $res['charges'];
+usort($charges, function($a, $b){
+	if(strtotime($a['scheduled_at']) == strtotime($b['scheduled_at'])){
+		return 0;
+	}
+	return strtotime($a['scheduled_at']) < strtotime($b['scheduled_at']) ? -1 : 1;
+});
+foreach($charges as $charge){
 	foreach($charge['line_items'] as $line_item){
 		if(is_scent_club_any(get_product($db, $line_item['shopify_product_id']))){
 			$charge_id = $charge['id'];
