@@ -48,7 +48,7 @@ if(empty($row)){
 	send_alert($db, 8,
 		"Finished pushing SC metafield",
 		"SC Metafield Pushed",
-		'tim@skylar.com',
+		['tim@skylar.com', 'adrian@skylar.com'],
 		['log' => $res, 'smother' => false]
 	);
 } else if($row['value'] != json_encode($sc_info)) {
@@ -60,7 +60,7 @@ if(empty($row)){
 	send_alert($db, 8,
 		"Finished pushing SC metafield",
 		"SC Metafield Pushed",
-		'tim@skylar.com',
+		['tim@skylar.com', 'adrian@skylar.com'],
 		['log' => $res, 'smother' => false]
 	);
 } else {
