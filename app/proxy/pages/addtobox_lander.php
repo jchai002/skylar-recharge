@@ -39,14 +39,16 @@ $confirm_url_params = [
 	'v' => $_REQUEST['v'],
 	'confirm' => 1,
 ];
-
+print_r($_REQUEST);
 if(!empty($_REQUEST['discount'])){
     $stmt = $db->prepare("SELECT * FROM rc_discounts WHERE code=:code AND status='enabled'");
     $stmt->execute([
         $_REQUEST['discount'],
     ]);
+    print_r($stmt);
     if($stmt->rowCount() > 0){
         $discount = $stmt->fetch();
+        print_r($discount);
 		$confirm_url_params['discount'] = $_REQUEST['discount'];
     }
 }
