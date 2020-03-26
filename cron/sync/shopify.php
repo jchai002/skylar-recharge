@@ -22,19 +22,30 @@ do {
 } while(count($res) >= $page_size);
 
 // Collections
-echo "Updating collections".PHP_EOL;
-$page = 0;
+echo "Updating custom collections".PHP_EOL;
+$url = '/admin/api/2020-01/custom_collections.json';
 do {
-	$page++;
-	$res = $sc->get('/admin/api/2019-07/custom_collections.json', [
+	$res = $sc->get($url, [
 		'updated_at_min' => $min_date,
 		'limit' => $page_size,
-		'page' => $page,
 	]);
 	foreach($res as $collection){
 		echo insert_update_collection($db, $collection, $sc).PHP_EOL;
 	}
-} while(count($res) >= $page_size);
+	$url = $sc->last_response_links['next'] ?? false;
+} while(!empty($url));
+echo "Updating smart collections".PHP_EOL;
+$url = '/admin/api/2020-01/smart_collections.json';
+do {
+	$res = $sc->get($url, [
+		'updated_at_min' => $min_date,
+		'limit' => $page_size,
+	]);
+	foreach($res as $collection){
+		echo insert_update_collection($db, $collection, $sc).PHP_EOL;
+	}
+	$url = $sc->last_response_links['next'] ?? false;
+} while(!empty($url));
 
 // Customers
 echo "Updating customers".PHP_EOL;
@@ -167,18 +178,28 @@ if(
 	}
 
 	// Collections
-	echo "Updating all collections".PHP_EOL;
-	$page = 0;
+	echo "Updating all custom collections".PHP_EOL;
+	$url = '/admin/api/2020-01/custom_collections.json';
 	do {
-		$page++;
-		$res = $sc->get('/admin/api/2019-07/custom_collections.json', [
+		$res = $sc->get($url, [
 			'limit' => $page_size,
-			'page' => $page,
 		]);
 		foreach($res as $collection){
 			echo insert_update_collection($db, $collection, $sc).PHP_EOL;
 		}
-	} while(count($res) >= $page_size);
+		$url = $sc->last_response_links['next'] ?? false;
+	} while(!empty($url));
+	echo "Updating all smart collections".PHP_EOL;
+	$url = '/admin/api/2020-01/smart_collections.json';
+	do {
+		$res = $sc->get($url, [
+			'limit' => $page_size,
+		]);
+		foreach($res as $collection){
+			echo insert_update_collection($db, $collection, $sc).PHP_EOL;
+		}
+		$url = $sc->last_response_links['next'] ?? false;
+	} while(!empty($url));
 
 	// Update all Metafields
 	echo "Updating all product metafields".PHP_EOL;

@@ -22,6 +22,7 @@ class ShopifyClient extends Client {
 	 */
 	public $last_response;
 	public $last_response_headers;
+	public $last_response_links = [];
 	public $last_error;
 	public $shop_domain = 'maven-and-muse.myshopify.com';
 	public $rate_buffer = 1;
@@ -126,6 +127,13 @@ class ShopifyClient extends Client {
 		if($response->getStatusCode() != 200){
 			$this->last_error = $response->getJson();
 			return false;
+		}
+		$this->last_response_links = [];
+		if(!empty($response->getHeader('Link'))){
+			$parsed = GuzzleHttp\Psr7\parse_header($response->getHeader('Link'));
+			foreach($parsed as $link){
+				$this->last_response_links[$link['rel']] = trim($link[0], '<>');
+			}
 		}
 		return $response->getJson();
 	}
