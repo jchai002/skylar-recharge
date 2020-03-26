@@ -529,7 +529,7 @@ class SubscriptionSchedule {
 
 			$charge['line_items'][$index] = $this->normalize_item($item);
 		}
-		// RC doesn't give us applied value, so we need to calculate it :(
+		// RC doesn't give us applied discount value, so we need to calculate it :(
 		if(!empty($charge['discount_codes'])){
 			foreach($charge['discount_codes'] as $index => $discount){
 				// Load all info on the discount
@@ -559,6 +559,7 @@ class SubscriptionSchedule {
 						$applies_to_lines = array_filter($charge['line_items'], function($item) use($db_discount) {
 							return $item['shopify_product_id'] == $db_discount['applies_to_id'];
 						});
+						$discount['applies_to_ids'] = [$db_discount['applies_to_id']];
 					} else if($db_discount['applies_to_resource'] == 'shopify_collection_id'){
 						// If if applies to a collection, filter lines to the products in that collection
 						$stmt = $this->db->prepare("SELECT c.*, p.shopify_id FROM collections c
@@ -569,6 +570,7 @@ class SubscriptionSchedule {
 							$db_discount['applies_to_id'],
 						]);
 						$applies_to_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+						$discount['applies_to_ids'] = $applies_to_ids;
 						$applies_to_lines = array_filter($charge['line_items'], function($item) use($applies_to_ids) {
 							return in_array($item['shopify_product_id'], $applies_to_ids);
 						});
