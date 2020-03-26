@@ -1,7 +1,6 @@
 <?php
 global $db, $sc, $rc;
 
-// Actually add to box
 if(strpos($_REQUEST['c'], '@') !== false){
 	$res = $rc->get('/customers', [
 		'email' => $_REQUEST['c'],
@@ -11,8 +10,6 @@ if(strpos($_REQUEST['c'], '@') !== false){
 		'shopify_customer_id' => $_REQUEST['c'],
 	]);
 }
-
-
 
 if(!empty($res['customers'])){
 	$customer = $res['customers'][0];
@@ -37,20 +34,41 @@ if(!empty($res['customers'])){
 	}
 }
 
-$confirm_url = "/tools/skylar/quick-add?".http_build_query([
-		'c' => $_REQUEST['c'],
-		'v' => $_REQUEST['v'],
-		'confirm' => 1,
-]);
+$confirm_url_params = [
+	'c' => $_REQUEST['c'],
+	'v' => $_REQUEST['v'],
+	'confirm' => 1,
+];
+
+if(!empty($_REQUEST['discount'])){
+    $stmt = $db->prepare("SELECT * FROM rc_discounts WHERE code=:code AND status='enabled'");
+    $stmt->execute([
+        $_REQUEST['discount'],
+    ]);
+    if(!empty($stmt->rowCount())){
+        $discount = $stmt->fetch();
+		$confirm_url_params['discount'] = $_REQUEST['discount'];
+    }
+}
+
+$confirm_url = "/tools/skylar/quick-add?".http_build_query($confirm_url_params);
 
 if(!empty($add_to_charge)){
 	$variant = get_variant($db, $_REQUEST['v']);
 	$product = get_product($db, $variant['shopify_product_id']);
-	$price = get_subscription_price($product, $variant);
+	$price_with_discount = $price = get_subscription_price($product, $variant);
 	$subscription_price = get_subscription_price($product, $variant);
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
+	if(!empty($discount)){
+	    if($discount['type'] == 'percentage'){
+	        $price_with_discount *= 1-($value/100);
+        } else if($discount['type'] == 'fixed_amount') {
+	        $price_with_discount -= $value;
+        }
+    }
 }
-
+$res_all = [];
+// Actually add to box
 if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
 
     // Check if they already have this product in a sub
@@ -70,10 +88,10 @@ if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
 		'variant_id' => $variant['id'],
 	]);
 	if($stmt->rowCount() > 0){
-	    $res = ['subscription'=>$stmt->fetch()];
+		$res_all[] = $res = ['subscription'=>$stmt->fetch()];
     } else {
 	    if($product['type'] == 'Body Bundle'){
-			$res = $rc->post('/subscriptions', [
+			$res_all[] = $res = $rc->post('/subscriptions', [
 				'address_id' => $add_to_charge['address_id'],
 				'next_charge_scheduled_at' => $add_to_charge['scheduled_at'],
 				'price' => $price,
@@ -89,7 +107,7 @@ if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
 				insert_update_rc_subscription($db, $res['subscription'], $rc, $sc);
 			}
         } else {
-			$res = $rc->post('/addresses/'.$add_to_charge['address_id'].'/onetimes', [
+			$res_all[] = $res = $rc->post('/addresses/'.$add_to_charge['address_id'].'/onetimes', [
 				'next_charge_scheduled_at' => $add_to_charge['scheduled_at'],
 				'price' => $price,
 				'quantity' => 1,
@@ -101,11 +119,17 @@ if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
 				insert_update_rc_subscription($db, $res['onetime'], $rc, $sc);
 			}
         }
-		log_event($db, 'SUBSCRIPTION', $_REQUEST['c'], 'QUICK_ADDED', $res, [$_REQUEST, getallheaders()], 'customer');
+	    if(!empty($discount)){
+			$res_all[] = $res = $rc->post('/addresses/'.$add_to_charge['address_id'].'/remove_discount');
+			$res_all[] = $res = $rc->post('/charges/'.$add_to_charge['id'].'/apply_discount', [
+				'discount_code' => $discount['code'],
+			]);
+        }
+		log_event($db, 'SUBSCRIPTION', $_REQUEST['c'], 'QUICK_ADDED', $res_all, [$_REQUEST, getallheaders()], 'customer');
     }
 }
 header('Content-Type: application/liquid');
-echo "<!-- ".print_r($res, true)." -->";
+echo "<!-- ".print_r($res_all, true)." -->";
 echo "<!-- ".print_r($variant, true)." -->";
 ?>
 
@@ -116,7 +140,12 @@ echo "<!-- ".print_r($variant, true)." -->";
         <div class="sc-lander-title"><?=$product['title']?></div>
 		<?php if($product['type'] == 'Body Bundle'){ ?>
             <div class="sc-lander-price">
-                <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save over 22%!</span>
+                <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price_with_discount,2)?></span>
+                <?php if($price != $price_with_discount){ ?>
+                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save over <span class="was_price">22%</span> <span class="price"><?= floor($price_with_discount/56) ?></span>!</span>
+                <?php } else { ?>
+                    <span class="sc-lander-savings">*You save over 22%!</span>
+                <?php } ?>
             </div>
             <div class="sc-lander-image">
                 {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
@@ -136,7 +165,12 @@ echo "<!-- ".print_r($variant, true)." -->";
             </div>
 		<?php } else { ?>
             <div class="sc-lander-price">
-                <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span>
+                <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price_with_discount,2)?></span>
+				<?php if($price != $price_with_discount){ ?>
+                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save <span class="was_price">10%</span> <span class="price"><?= round($price_with_discount/$variant['price']) ?></span>!</span>
+				<?php } else { ?>
+                    <span class="sc-lander-savings">*You save 10%!</span>
+				<?php } ?>
             </div>
             <div class="sc-lander-image">
                 {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
@@ -155,41 +189,51 @@ echo "<!-- ".print_r($variant, true)." -->";
 	<?php } else if(!empty($add_to_charge) && empty($res['error']) && !empty($variant['id'])){ ?>
         <div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
         <?php if($product['type'] == 'Body Bundle'){ ?>
-                <div class="sc-lander-price">
-                    <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save over 22%!</span>
-                </div>
-                <div class="sc-lander-image">
-                    <div class="sc-lander-check">{% include 'svg-definitions' with 'svg-circle-check-green' %}</div>
-                    {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
-                    {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
-                        {% if variant.image != nil %}
-                            <img class="lazyload" data-srcset="{{ variant.image | img_url: 'x280' }} 1x, {{ variant.image | img_url: 'x280', scale: 2 }} 2x" />
-                        {% else %}
-                            <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="sc-lander-note">
-                    This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
-                </div>
+            <div class="sc-lander-price">
+                <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price_with_discount,2)?></span>
+				<?php if($price != $price_with_discount){ ?>
+                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save over <span class="was_price">22%</span> <span class="price"><?= floor($price_with_discount/56) ?></span>!</span>
+				<?php } else { ?>
+                    <span class="sc-lander-savings">*You save over 22%!</span>
+				<?php } ?>
+            </div>
+            <div class="sc-lander-image">
+                <div class="sc-lander-check">{% include 'svg-definitions' with 'svg-circle-check-green' %}</div>
+                {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
+                {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
+                    {% if variant.image != nil %}
+                        <img class="lazyload" data-srcset="{{ variant.image | img_url: 'x280' }} 1x, {{ variant.image | img_url: 'x280', scale: 2 }} 2x" />
+                    {% else %}
+                        <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="sc-lander-note">
+                This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+            </div>
         <?php } else { ?>
-                <div class="sc-lander-price">
-                    <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price,2)?></span> <span class="sc-lander-savings">*You save 10%!</span>
-                </div>
-                <div class="sc-lander-image">
-                    <div class="sc-lander-check">{% include 'svg-definitions' with 'svg-circle-check-green' %}</div>
-                    {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
-                    {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
-                        {% if variant.image != nil %}
-                            <img class="lazyload" data-srcset="{{ variant.image | img_url: 'x280' }} 1x, {{ variant.image | img_url: 'x280', scale: 2 }} 2x" />
-                        {% else %}
-                            <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="sc-lander-note">
-                    This item will ship in your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
-                </div>
+            <div class="sc-lander-price">
+                <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price_with_discount,2)?></span>
+				<?php if($price != $price_with_discount){ ?>
+                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save <span class="was_price">10%</span> <span class="price"><?= round($price_with_discount/$variant['price']) ?></span>!</span>
+				<?php } else { ?>
+                    <span class="sc-lander-savings">*You save 10%!</span>
+				<?php } ?>
+            </div>
+            <div class="sc-lander-image">
+                <div class="sc-lander-check">{% include 'svg-definitions' with 'svg-circle-check-green' %}</div>
+                {% for variant in all_products['<?= $product['handle'] ?>'].variants %}
+                {% if variant.id != <?=$variant['shopify_id']?> %}{% continue %}{% endif %}
+                    {% if variant.image != nil %}
+                        <img class="lazyload" data-srcset="{{ variant.image | img_url: 'x280' }} 1x, {{ variant.image | img_url: 'x280', scale: 2 }} 2x" />
+                    {% else %}
+                        <img class="lazyload" data-srcset="{{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280' }} 1x, {{ all_products['<?= $product['handle'] ?>'].featured_image | img_url: 'x280', scale: 2 }} 2x" />
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="sc-lander-note">
+                This item will ship in your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+            </div>
         <?php } ?>
         <div class="sc-lander-button">
             <a href="/tools/skylar/schedule" class="action_button">Login to My Account</a>
