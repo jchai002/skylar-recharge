@@ -36,6 +36,7 @@ foreach($sc_info as $index => $sc_info_row){
 	$sc_info[$index] = $sc_info_row;
 }
 
+echo "Checking shop metafield... ";
 $row = $db->query("SELECT shopify_id, value FROM metafields WHERE owner_resource='shop' AND namespace='scent_club' AND `key`='products' AND deleted_at IS NULL")->fetch();
 if(empty($row)){
 	$res = $sc->post('/admin/metafields.json', ['metafield'=> [
@@ -64,5 +65,45 @@ if(empty($row)){
 		['log' => $res, 'smother' => false]
 	);
 } else {
-	echo "No updated needed";
+	echo "No updated needed".PHP_EOL;
+}
+
+// Update schedule metafield for individual products
+
+$stmt_check_metafield = $db->prepare("SELECT shopify_id, value FROM metafields WHERE owner_resource='product' AND owner_id=:owner_id AND namespace='scent_club' AND `key`='schedule' AND deleted_at IS NULL");
+foreach($sc_info as $index => $sc_info_row){
+	echo "Updating product ".$sc_info_row['product_title']." ".$sc_info_row['product_id']."... ";
+	$metafield_value = [
+		'ship_date' => $sc_info_row['ship_date'],
+		'public_launch' => $sc_info_row['public_launch'],
+		'member_launch' => $sc_info_row['member_launch'],
+		'public_launch_time' => $sc_info_row['public_launch_time'],
+		'member_launch_time' => $sc_info_row['member_launch_time'],
+		'public_launch_end_time' => $sc_info_row['public_launch_end_time'],
+		'member_launch_end_time' => $sc_info_row['member_launch_end_time'],
+	];
+	$stmt_check_metafield->execute([
+		'owner_id' => $sc_info_row['product_id'],
+	]);
+	if($stmt_check_metafield->rowCount() == 0){
+		$res = $sc->post('/admin/products/'.$sc_info_row['product_id'].'/metafields.json', ['metafield'=> [
+			'namespace' => 'scent_club',
+			'key' => 'schedule',
+			'value' => json_encode($metafield_value),
+			'value_type' => 'json_string'
+		]]);
+		echo "Created metafield".PHP_EOL;
+		continue;
+	}
+	$row = $stmt_check_metafield->fetch();
+	if($row['value'] != json_encode($metafield_value)) {
+		$res = $sc->post('/admin/products/'.$sc_info_row['product_id'].'/metafields.json', ['metafield'=> [
+			'namespace' => 'scent_club',
+			'key' => 'schedule',
+			'value' => json_encode($metafield_value),
+			'value_type' => 'json_string'
+		]]);
+		echo "Updated metafield".PHP_EOL;
+	}
+	echo "No update needed".PHP_EOL;
 }
