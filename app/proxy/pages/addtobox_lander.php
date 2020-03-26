@@ -45,7 +45,7 @@ if(!empty($_REQUEST['discount'])){
     $stmt->execute([
         $_REQUEST['discount'],
     ]);
-    if(!empty($stmt->rowCount())){
+    if($stmt->rowCount() > 0){
         $discount = $stmt->fetch();
 		$confirm_url_params['discount'] = $_REQUEST['discount'];
     }
