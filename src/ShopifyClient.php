@@ -175,6 +175,9 @@ class ShopifyClient extends Client {
 	}
 
 	private function getRateInfo(ResponseInterface $response){
+		if(empty($response->getHeader('X-Shopify-Shop-Api-Call-Limit'))){
+			return ['made' => 0, 'limit' => 20, 'left' => 20];
+		}
 		$rate_info = explode('/', $response->getHeader('X-Shopify-Shop-Api-Call-Limit')[0]);
 		return [
 			'made' => $rate_info[0],
