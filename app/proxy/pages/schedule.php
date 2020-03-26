@@ -282,9 +282,9 @@ print_r($schedule->get());
                                                     <div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
                                                 <?php } ?>
 													<?php if($discount['type'] == 'percentage'){ ?>
-                                                        <div class="sc-discount-value"><?=$discount['amount']?>% (-$<?=price_without_trailing_zeroes($discount['amount']*array_sum(array_column($upcoming_shipment['items'], 'price'))/100)?>)</div>
+                                                        <div class="sc-discount-value"><?=$discount['amount']?>% (-$<?=price_without_trailing_zeroes($discount['applied_amount'])?>)</div>
 													<?php } else { ?>
-                                                        <div class="sc-discount-value">-$<?=price_without_trailing_zeroes($discount['amount']) ?></div>
+                                                        <div class="sc-discount-value">-$<?=price_without_trailing_zeroes($discount['applied_amount']) ?></div>
 													<?php } ?>
                                                 </div>
                                         <?php } ?>
