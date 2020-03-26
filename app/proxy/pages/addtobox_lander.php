@@ -59,6 +59,7 @@ if(!empty($add_to_charge)){
 	$subscription_price = get_subscription_price($product, $variant);
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
 	if(!empty($discount)){
+		echo "<!-- ".print_r($discount, true)." -->";
 	    if($discount['type'] == 'percentage'){
 	        $price_with_discount *= 1-($value/100);
         } else if($discount['type'] == 'fixed_amount') {
@@ -130,7 +131,6 @@ if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
 header('Content-Type: application/liquid');
 echo "<!-- ".print_r($res_all, true)." -->";
 echo "<!-- ".print_r($variant, true)." -->";
-echo "<!-- ".print_r($discount, true)." -->";
 echo "<!-- $price : $price_with_discount -->";
 ?>
 
