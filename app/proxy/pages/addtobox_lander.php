@@ -37,7 +37,6 @@ if(!empty($res['customers'])){
 $confirm_url_params = [
 	'c' => $_REQUEST['c'],
 	'v' => $_REQUEST['v'],
-	'confirm' => 1,
 ];
 if(!empty($_REQUEST['discount'])){
     $stmt = $db->prepare("SELECT * FROM rc_discounts WHERE code=:code AND status='enabled'");
@@ -50,6 +49,7 @@ if(!empty($_REQUEST['discount'])){
     }
 }
 
+$confirm_url_params['confirm'] = 1;
 $confirm_url = "/tools/skylar/quick-add?".http_build_query($confirm_url_params);
 
 if(!empty($add_to_charge)){
