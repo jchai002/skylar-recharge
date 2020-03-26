@@ -562,7 +562,7 @@ class SubscriptionSchedule {
 						$discount['applies_to_ids'] = [$db_discount['applies_to_id']];
 					} else if($db_discount['applies_to_resource'] == 'shopify_collection_id'){
 						// If if applies to a collection, filter lines to the products in that collection
-						$stmt = $this->db->prepare("SELECT c.*, p.shopify_id FROM collections c
+						$stmt = $this->db->prepare("SELECT p.shopify_id FROM collections c
 							LEFT JOIN collection_products cp ON c.id=cp.collection_id
 							LEFT JOIN products p ON cp.product_id=p.id
 							WHERE c.shopify_id=?");
