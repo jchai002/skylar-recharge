@@ -62,12 +62,11 @@ if(!empty($add_to_charge)){
 	    $value = $discount['value'];
 	    if($discount['type'] == 'percentage'){
 			echo "<!-- ".print_r($discount, true)." -->";
-	        $price_with_discount *= 1-($value/100);
-	        $price_with_discount = $price * (1-($value/100));
-			echo "<!-- ".(1-($value/100))." -->";
-			echo "<!-- $price : $price_with_discount : $value -->";
+	        $price_with_discount *= 1-($discount['value']/100);
+	        $price_with_discount = $price * (1-($discount['value']/100));
+			echo "<!-- ".(1-($discount['value']/100))." -->";
         } else if($discount['type'] == 'fixed_amount') {
-	        $price_with_discount -= $value;
+	        $price_with_discount -= $discount['value'];
         }
     }
 }
