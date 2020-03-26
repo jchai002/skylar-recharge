@@ -169,7 +169,7 @@ echo "<!-- $price : $price_with_discount -->";
             <div class="sc-lander-price">
                 <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price_with_discount,2)?></span>
 				<?php if($price != $price_with_discount){ ?>
-                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save <span class="was_price">10%</span> <span class="price"><?= round(100*$price_with_discount/$variant['price']) ?></span>!</span>
+                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save <span class="was_price">10%</span> <span class="price"><?= round(100*$price_with_discount/$variant['price']) ?>%</span>!</span>
 				<?php } else { ?>
                     <span class="sc-lander-savings">*You save 10%!</span>
 				<?php } ?>
@@ -217,7 +217,7 @@ echo "<!-- $price : $price_with_discount -->";
             <div class="sc-lander-price">
                 <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price_with_discount,2)?></span>
 				<?php if($price != $price_with_discount){ ?>
-                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save <span class="was_price">10%</span> <span class="price"><?= round(100*$price_with_discount/$variant['price']) ?></span>!</span>
+                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save <span class="was_price">10%</span> <span class="price"><?= round(100*$price_with_discount/$variant['price']) ?>%</span>!</span>
 				<?php } else { ?>
                     <span class="sc-lander-savings">*You save 10%!</span>
 				<?php } ?>
