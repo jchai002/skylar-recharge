@@ -130,6 +130,7 @@ if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
 header('Content-Type: application/liquid');
 echo "<!-- ".print_r($res_all, true)." -->";
 echo "<!-- ".print_r($variant, true)." -->";
+echo "<!-- ".print_r($discount, true)." -->";
 echo "<!-- $price : $price_with_discount -->";
 ?>
 
