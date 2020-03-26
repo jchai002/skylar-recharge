@@ -154,13 +154,17 @@ if(
 	$stmt_delete_product = $db->prepare("UPDATE products SET deleted_at='$sync_start' WHERE id=?");
 	$stmt_delete_product_variants = $db->prepare("UPDATE variants SET deleted_at='$sync_start' WHERE product_id=?");
 	foreach($stmt->fetchAll() as $row){
-		$res = $sc->get('/admin/products/'.$row['shopify_id'].'.json');
-		if(empty($res) && $sc->last_response->getStatusCode() == '404'){
-			echo "Deleting ".$row['shopify_id'].PHP_EOL;
-			$stmt_delete_product->execute([$row['id']]);
-			$stmt_delete_product_variants->execute([$row['id']]);
-		} elseif(!empty($res)) {
-			echo insert_update_product($db, $res);
+		try {
+			$res = $sc->get('/admin/products/'.$row['shopify_id'].'.json');
+			if(!empty($res)) {
+				echo insert_update_product($db, $res);
+			}
+		} catch(\GuzzleHttp\Exception\ClientException $e){
+			if($e->getResponse()->getStatusCode() == '404'){
+				echo "Deleting ".$row['shopify_id'].PHP_EOL;
+				$stmt_delete_product->execute([$row['id']]);
+				$stmt_delete_product_variants->execute([$row['id']]);
+			}
 		}
 	}
 
@@ -170,10 +174,13 @@ if(
 		WHERE (synced_at < '$sync_start' OR synced_at IS NULL) AND deleted_at IS NULL");
 	$stmt_delete_variant = $db->prepare("UPDATE variants SET deleted_at='$sync_start' WHERE id=?");
 	foreach($stmt->fetchAll() as $row){
-		$res = $sc->get('/admin/variants/'.$row['shopify_id'].'.json');
-		if(empty($res) && $sc->last_response->getStatusCode() == '404'){
-			echo "Deleting ".$row['shopify_id'].PHP_EOL;
-			$stmt_delete_product->execute([$row['id']]);
+		try {
+			$res = $sc->get('/admin/variants/'.$row['shopify_id'].'.json');
+		} catch(\GuzzleHttp\Exception\ClientException $e){
+			if($e->getResponse()->getStatusCode() == '404'){
+				echo "Deleting ".$row['shopify_id'].PHP_EOL;
+				$stmt_delete_variant->execute([$row['id']]);
+			}
 		}
 	}
 
