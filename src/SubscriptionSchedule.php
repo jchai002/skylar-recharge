@@ -529,6 +529,65 @@ class SubscriptionSchedule {
 
 			$charge['line_items'][$index] = $this->normalize_item($item);
 		}
+		// RC doesn't give us applied value, so we need to calculate it :(
+		if(!empty($charge['discount_codes'])){
+			foreach($charge['discount_codes'] as $index => $discount){
+				// Load all info on the discount
+				$stmt = $this->db->prepare("SELECT * FROM rc_discounts WHERE recharge_id=?");
+				$stmt->execute([
+					$discount['recharge_discount_id'],
+				]);
+				if($stmt->rowCount() != 0){
+					$db_discount = $stmt->fetch();
+				} else {
+					$res = $this->rc->get('/discounts/'.$discount['recharge_discount_id']);
+					if(!empty($res['discount'])){
+						$db_discount = $res['discount'];
+						insert_update_rc_discount($this->db, $db_discount);
+					}
+				}
+				if(empty($db_discount)){
+					continue;
+				}
+				$discount['details'] = $db_discount;
+				// If no applies to resource, just leave as is
+				if(empty($db_discount['applies_to_resource'])){
+					$discount['applied_amount'] = $discount['amount'];
+				} else {
+					// If applies to product, filter lines to the product it applies to
+					if($db_discount['applies_to_resource'] == 'shopify_product'){
+						$applies_to_lines = array_filter($charge['line_items'], function($item) use($db_discount) {
+							return $item['shopify_product_id'] == $db_discount['applies_to_id'];
+						});
+					} else if($db_discount['applies_to_resource'] == 'shopify_collection_id'){
+						// If if applies to a collection, filter lines to the products in that collection
+						$stmt = $this->db->prepare("SELECT c.*, p.shopify_id FROM collections c
+							LEFT JOIN collection_products cp ON c.id=cp.collection_id
+							LEFT JOIN products p ON cp.product_id=p.id
+							WHERE c.shopify_id=?");
+						$stmt->execute([
+							$db_discount['applies_to_id'],
+						]);
+						$applies_to_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
+						$applies_to_lines = array_filter($charge['line_items'], function($item) use($applies_to_ids) {
+							return in_array($item['shopify_product_id'], $applies_to_ids);
+						});
+					}
+					if(empty($applies_to_lines)){
+						$discount['applied_amount'] = 0;
+					} else {
+						// Now that we have the lines that the discount applies to, calculate the amount of the discount
+						$total_lines_price = array_sum(array_column($applies_to_lines, 'price'));
+						if($db_discount['type'] == 'fixed_amount'){
+							$discount['applied_amount'] = $total_lines_price < $discount['amount'] ? $total_lines_price : $discount['amount'];
+						} else if($db_discount['type'] == 'percentage'){
+							$discount['applied_amount'] = $total_lines_price * ($discount['amount']*100);
+						}
+					}
+				}
+				$charge['discount_codes'][$index] = $discount;
+			}
+		}
 		return $charge;
 	}
 
