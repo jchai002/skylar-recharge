@@ -59,6 +59,7 @@ if(!empty($add_to_charge)){
 	$subscription_price = get_subscription_price($product, $variant);
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
 	if(!empty($discount)){
+	    $value = $discount['value'];
 	    if($discount['type'] == 'percentage'){
 			echo "<!-- ".print_r($discount, true)." -->";
 	        $price_with_discount *= 1-($value/100);
