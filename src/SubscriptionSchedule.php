@@ -584,7 +584,7 @@ class SubscriptionSchedule {
 						if($db_discount['type'] == 'fixed_amount'){
 							$discount['applied_amount'] = $total_lines_price < $discount['amount'] ? $total_lines_price : $discount['amount'];
 						} else if($db_discount['type'] == 'percentage'){
-							$discount['applied_amount'] = $total_lines_price * ($discount['amount']*100);
+							$discount['applied_amount'] = $total_lines_price * ($discount['amount']/100);
 						}
 					}
 				}
