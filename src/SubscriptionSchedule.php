@@ -573,6 +573,7 @@ class SubscriptionSchedule {
 							return in_array($item['shopify_product_id'], $applies_to_ids);
 						});
 					}
+					$discount['applies_to_lines'] = $applies_to_lines ?? [];
 					if(empty($applies_to_lines)){
 						$discount['applied_amount'] = 0;
 					} else {
