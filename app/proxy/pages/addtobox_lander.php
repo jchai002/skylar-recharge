@@ -62,6 +62,8 @@ if(!empty($add_to_charge)){
 	    if($discount['type'] == 'percentage'){
 			echo "<!-- ".print_r($discount, true)." -->";
 	        $price_with_discount *= 1-($value/100);
+	        $price_with_discount = $price * (1-($value/100));
+			echo "<!-- $price : $price_with_discount -->";
         } else if($discount['type'] == 'fixed_amount') {
 	        $price_with_discount -= $value;
         }
