@@ -59,12 +59,13 @@ if(!empty($add_to_charge)){
 	$subscription_price = get_subscription_price($product, $variant);
 	$month = date('F', strtotime($add_to_charge['scheduled_at']));
 	if(!empty($discount)){
-	    $value = $discount['value'];
 	    if($discount['type'] == 'percentage'){
 	        $price_with_discount *= 1-($discount['value']/100);
 	        $price_with_discount = $price * (1-($discount['value']/100));
+	        $discount['applied_percent'] = 10+$discount['value'];
         } else if($discount['type'] == 'fixed_amount') {
-	        $price_with_discount -= $discount['value'];
+	        $price_with_discount = $price < $discount['value'] ? 0 : $price - $discount['value'];
+			$discount['applied_percent'] = round(100*(1-($price_with_discount/$variant['price'])));
         }
     }
 }
@@ -171,7 +172,7 @@ echo "<!-- $price : $price_with_discount -->";
                 <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price_with_discount,2)?></span>
 				<?php if($price != $price_with_discount){ ?>
                     <br />
-                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save <span class="was_price">10%</span> <span class="price"><?= floor(100*(1-($price_with_discount/$variant['price']))) ?>%</span>!</span>
+                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save <span class="was_price">10%</span> <span class="price"><?= $discount['applied_percent'] ?>%</span>!</span>
 				<?php } else { ?>
                     <span class="sc-lander-savings">*You save 10%!</span>
 				<?php } ?>
@@ -221,7 +222,7 @@ echo "<!-- $price : $price_with_discount -->";
                 <span>Total:</span> <span class="was_price">$<?=$variant['price']?></span> <span class="price">$<?=number_format($price_with_discount,2)?></span>
 				<?php if($price != $price_with_discount){ ?>
                     <br />
-                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save <span class="was_price">10%</span> <span class="price"><?= floor(100*(1-($price_with_discount/$variant['price']))) ?>%</span>!</span>
+                    <span class="sc-lander-savings">*<?=$discount['code']?> applied! You save <span class="was_price">10%</span> <span class="price"><?= $discount['applied_percent'] ?>%</span>!</span>
 				<?php } else { ?>
                     <span class="sc-lander-savings">*You save 10%!</span>
 				<?php } ?>
