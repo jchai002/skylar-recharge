@@ -165,7 +165,7 @@ echo "<!-- $price : $price_with_discount -->";
                 <a href="<?=$confirm_url?>" class="action_button confirm-button">Add This Item To My <?=$month?> Box</a>
             </div>
             <div class="sc-lander-note">
-                This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+                This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />{% if customer %}Go to{% else %}Log into{% endif %} your account now.
             </div>
 		<?php } else { ?>
             <div class="sc-lander-price">
@@ -215,7 +215,7 @@ echo "<!-- $price : $price_with_discount -->";
                 {% endfor %}
             </div>
             <div class="sc-lander-note">
-                This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+                This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />{% if customer %}Go to{% else %}Log into{% endif %} your account now.
             </div>
         <?php } else { ?>
             <div class="sc-lander-price">
@@ -239,11 +239,15 @@ echo "<!-- $price : $price_with_discount -->";
                 {% endfor %}
             </div>
             <div class="sc-lander-note">
-                This item will ship in your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />Log into your account now.
+                This item will ship in your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />{% if customer %}Go to{% else %}Log into{% endif %} your account now.
             </div>
         <?php } ?>
         <div class="sc-lander-button">
+            {% if customer %}
+            <a href="/tools/skylar/schedule" class="action_button">Go To My Account</a>
+            {% else %}
             <a href="/tools/skylar/schedule" class="action_button">Login to My Account</a>
+            {% endif %}
         </div>
 	<?php } else {
 		log_event($db, 'SUBSCRIPTION', $res, 'QUICK_ADDED', $_REQUEST, 'Failed and saw error', 'customer');
