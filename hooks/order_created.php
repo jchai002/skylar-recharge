@@ -54,7 +54,7 @@ foreach($order['line_items'] as $line_item){
 			continue;
 		}
 		$sc_product = $stmt->fetch();
-		if(time() < offset_date_skip_weekend(strtotime($sc_product['sc_date'])) + 6*60*60){ // Hold until 6 am
+		if(time() < offset_date_skip_weekend(strtotime($sc_product['sc_date'])) - 7*60*60){ // Hold until 5 pm the day before
 			$order_tags[] = 'HOLD: Scent Club Blackout';
 			$update_order = true;
 			echo 'Scent Club Hold'.PHP_EOL;
