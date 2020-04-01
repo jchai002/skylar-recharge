@@ -28,6 +28,15 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 $promo_sc = !empty($charge['discount_codes']) && strpos($charge['discount_codes'][0]['code'], 'PR-SC-') === 0;
 //var_dump($main_sub);
 $day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
+$has_sc = false;
+foreach($charge['line_items'] as $line_item){
+	if(is_scent_club(get_product($db, $line_item['shopify_product_id']))){
+		$has_sc = true;
+	}
+}
+if(!empty($main_sub) && $has_sc){
+	send_alert($db, 11, 'Customer '.$charge['email'].' just checked out with Scent Club even though they already have a subscription. Order: https://skylar.com/admin/orders/'.$charge['shopify_order_id'], 'Skylar Alert - Duplicate SC Checkout', ['tim@skylar.com', 'stacy@skylar.com'], ['charge'=>$charge, 'main_sub'=>$main_sub]);
+}
 if(empty($main_sub) && empty($promo_sc)){
 	echo "no main sub".PHP_EOL;
 	foreach($charge['line_items'] as $line_item){
