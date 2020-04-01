@@ -10,13 +10,17 @@ $scent = null;
 
 
 $cookie_token = '29422|7cbe63b01b7aec3588970e96fec94d101db71f8b0f72623bd7d3d2b87095ca3fcc767803605372a39b2ec76d62438ca4fa918f7b2ee735e6af4efb3505169b49';
-$cookie_session = '.eJw1j8FqwzAQRH-l7LkHW_Glhl6KTFFhZSKcmt1LaBvXsmSF4CTYVsi_Vy2UOQxzGObNDfbfU3e2UF6ma_cI--EA5Q0ePqEElpijHEeWL46isfp1u6Crch12Gx3MWEsz1LJfKWBOjlZuVabbamFpPEqfcWMHdrhQW80ov2Zs_AYbKnT7lroq14I9xd2c8kDBDBjZajl6cgeXNi0JtWLsCxQqcSSPv-ozat69Fqrghn3dassBn-Ge2E_dFD6O3fHy_-Z67qa_RyCeCiHg_gMUDU8G.ERXzlw.h7lppIZOi5JWxTujHGMNSPgo3Mw';
+$cookie_session = '.eJw1j8FqwzAQBX-l6NxDItuHGnoQyDUu7JqGTc3qElqqRpHlUJwEuQr596qFHt_hDTNXsfuc7cmJ-jxf7L3YHT5EfRV376IWTFBh2xVGm4DeOKNVBf45sHeOyU3QNhHIBSYVzcDfLF9HnLoCW66QVP6akfNmjx7TJoAe15i6ZKaXZIbt0pM7wIAeqFnAqxL0xoPsIspmQa0i0lPoaf_LXmeGQ9qu2MMqMyJ4SKD3Ra-5ZGoexS27f9l5ejva4_m_5nKy81-RkA-llOL2A-vuTpA.EWXPYg.t-PJt-SpdJ6VTy4hihc3OTizgkE';
 
 $start_date = date('Y-m-d', strtotime('-1 day'));
 $end_date = date('Y-m-d', strtotime('+1 day'));
 $charge_ids = [];
 $charges = [];
 $start_time = microtime(true);
+$total_charges = 0;
+$starttime = microtime(true);
+$rownum=0;
+$retry = false;
 do {
 	$page++;
 	// Load month's upcoming queued charges
@@ -25,64 +29,37 @@ do {
 		'date_max' => $end_date,
 		'status' => 'QUEUED',
 		'limit' => 250,
-		'page' => $page,
+//		'page' => $page,
 //        'address_id' => '29806558',
 	]);
 	if(empty($res['charges'])){
+		if($retry){
+			die("Empty charge response, must be done!".PHP_EOL);
+		}
 		print_r($res);
 		sleep(5);
+		$retry = true;
 		$page--;
 	}
+	$retry = false;
 	foreach($res['charges'] as $charge){
 		if(strtotime($charge['scheduled_at']) != strtotime(date('Y-m-d'))){
 			echo "Skipping charge ".$charge['id'].", scheduled for ".$charge['scheduled_at'].PHP_EOL;
 			continue;
 		}
 		$charges[] = $charge;
+		$total_charges++;
 	}
-	echo "Adding ".count($res['charges'])." to array - total: ".count($charges).PHP_EOL;
-	echo "Rate: ".(count($charges) / (microtime(true) - $start_time))." charges/s".PHP_EOL;
+	echo "Adding ".count($res['charges'])." to array - total: $total_charges".PHP_EOL;
+	echo "Rate: ".($total_charges / (microtime(true) - $start_time))." charges/s".PHP_EOL;
+	do_rolling_curl($charges, $cookie_session);
+	$charges = [];
 } while(count($res['charges']) == 250);
 echo "Total: ".count($charges).PHP_EOL;
 $charges = array_reverse($charges);
 
-$rolling_curl = new RollingCurl();
+//do_rolling_curl($charges, $cookie_session);
 
-foreach($charges as $charge){
-	$charge_id = $charge['id'];
-	$rolling_curl->get("https://maven-and-muse.shopifysubscriptions.com/charge/$charge_id/pay");
-}
-
-$starttime = microtime(true);
-$rownum=0;
-$rolling_curl
-	->addOptions([
-		CURLOPT_RETURNTRANSFER =>  true,
-		CURLOPT_HTTPHEADER => [
-			"cookie: session=$cookie_session",
-			"user_type: STORE_ADMIN",
-			"sec-fetch-mode: cors",
-			"sec-fetch-site: same-origin",
-		],
-	])
-	->setCallback(function(Request $request){
-		global $starttime, $rownum;
-		$rownum++;
-		echo $request->getUrl().": ";
-		$res_parse = json_decode($request->getResponseText(), true);
-		if(empty($res_parse['msg'])){
-			echo $request->getResponseText();
-		} else {
-			echo $res_parse['msg'].PHP_EOL;
-		}
-
-		if($rownum % 20 == 0 && $rownum > 0){
-			echo "Row: $rownum. Time: ".(microtime(true)-$starttime)." seconds | ";
-			echo "Pace: ".($rownum / (microtime(true)-$starttime))." rows/sec".PHP_EOL;
-		}
-	})
-	->setSimultaneousLimit(5)
-	->execute();
 die();
 
 foreach($charges as $rownum => $charge){
@@ -111,4 +88,42 @@ foreach($charges as $rownum => $charge){
 		echo "Row: $rownum. Time: ".(microtime(true)-$starttime)." seconds | ";
 		echo "Pace: ".($rownum / (microtime(true)-$starttime))." rows/sec".PHP_EOL;
 	}
+}
+
+function do_rolling_curl($charges, $cookie_session) {
+	$rolling_curl = new RollingCurl();
+
+	foreach($charges as $charge){
+		$charge_id = $charge['id'];
+		$rolling_curl->get("https://maven-and-muse.shopifysubscriptions.com/charge/$charge_id/pay");
+	}
+
+	$rolling_curl
+		->addOptions([
+			CURLOPT_RETURNTRANSFER =>  true,
+			CURLOPT_HTTPHEADER => [
+				"cookie: session=$cookie_session",
+				"user_type: STORE_ADMIN",
+				"sec-fetch-mode: cors",
+				"sec-fetch-site: same-origin",
+			],
+		])
+		->setCallback(function(Request $request){
+			global $starttime, $rownum;
+			$rownum++;
+			echo $request->getUrl().": ";
+			$res_parse = json_decode($request->getResponseText(), true);
+			if(empty($res_parse['msg'])){
+				echo $request->getResponseText();
+			} else {
+				echo $res_parse['msg'].PHP_EOL;
+			}
+
+			if($rownum % 20 == 0 && $rownum > 0){
+				echo "Row: $rownum. Time: ".(microtime(true)-$starttime)." seconds | ";
+				echo "Pace: ".($rownum / (microtime(true)-$starttime))." rows/sec".PHP_EOL;
+			}
+		})
+		->setSimultaneousLimit(5)
+		->execute();
 }
