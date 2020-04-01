@@ -39,6 +39,11 @@ $stmt = $db->query("SELECT shopify_id as id, tags FROM orders WHERE tags LIKE '%
 
 $orders = $stmt->fetchAll();
 
+if(empty($orders)){
+	echo "No orders to untag!".PHP_EOL;
+	exit;
+}
+
 echo "Starting untagging on ".count($orders)." orders".PHP_EOL;
 
 $curl = new CurlMultiHandler();
