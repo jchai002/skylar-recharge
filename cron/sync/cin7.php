@@ -4,17 +4,20 @@ require_once(__DIR__.'/../../includes/config.php');
 $page_size = 250;
 // Sync product options
 
+$since = gmdate('Y-m-d\Th:i:', time()-60).'00Z';
+
+echo "Pulling since UTC ".$since.PHP_EOL;
+
 $page = 0;
-echo "Pulling inventory from Cin7".PHP_EOL;
+echo "Pulling Product Options from Cin7".PHP_EOL;
 do {
-	break;
 	$page++;
-/* @var $res JsonAwareResponse */
+	/* @var $res JsonAwareResponse */
 	$res = $cc->get('ProductOptions', [
 		'query' => [
 			'fields' => implode(',', ['id', 'CreatedDate', 'ModifiedDate', 'Status', 'ProductId', 'Code', 'Barcode', 'StockAvailable', 'StockOnHand']),
-	//		'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date'",
-			'order' => 'CreatedDate DESC',
+			'where' => "ModifiedDate >= '$since'",
+			'order' => 'ModifiedDate DESC',
 			'rows' => $page_size,
 			'page' => $page,
 		],
@@ -24,8 +27,49 @@ do {
 		echo insert_update_cin_product_option($db, $cc_variant).PHP_EOL;
 	}
 } while(count($cc_variants) >= $page_size);
+sleep(1);
 
-// Update shopify inventory levels
+$page = 0;
+echo "Pulling Branches from Cin7".PHP_EOL;
+do {
+	$page++;
+	/* @var $res JsonAwareResponse */
+	$res = $cc->get('Branches', [
+		'query' => [
+			'fields' => implode(',', ['id', 'CreatedDate', 'ModifiedDate', 'BranchType', 'Company']),
+			'where' => "ModifiedDate >= '$since'",
+			'order' => 'ModifiedDate DESC',
+			'rows' => $page_size,
+			'page' => $page,
+		],
+	]);
+	$cc_branches = $res->getJson();
+	foreach($cc_branches as $cc_branch){
+		echo insert_update_cin_branch($db, $cc_branch).PHP_EOL;
+	}
+} while(count($cc_branches) >= $page_size);
+sleep(1);
+
+$page = 0;
+echo "Pulling inventory from Cin7".PHP_EOL;
+do {
+	$page++;
+	/* @var $res JsonAwareResponse */
+	$res = $cc->get('Stock', [
+		'query' => [
+			'fields' => implode(',', ['ProductOptionId', 'BranchId', 'ModifiedDate', 'Available', 'StockOnHand', 'OpenSales', 'Incoming', 'Virtual', 'Holding']),
+			'where' => "ModifiedDate >= '$since'",
+			'order' => 'ModifiedDate DESC',
+			'rows' => $page_size,
+			'page' => $page,
+		],
+	]);
+	$cc_stock_units = $res->getJson();
+	foreach($cc_stock_units as $cc_stock_unit){
+		echo implode('-',insert_update_cin_stock_unit($db, $cc_stock_unit)).PHP_EOL;
+	}
+} while(count($cc_stock_units) >= $page_size);
+sleep(1);
 
 // pull updated post-hold inventory levels
 $inventory_levels = $db->query("SELECT v.inventory_item_id, v.sku, v.inventory_quantity, v.title, ROUND(cpo.stock_available) AS stock_available, COUNT(rcs.id) AS reserved_inventory, ROUND(cpo.stock_available - COUNT(*)) AS stock_available_unreserved
@@ -47,7 +91,7 @@ echo "Syncing calculated inventory to shopify".PHP_EOL;
 foreach($inventory_items as $inventory_item){
 	$inventory_level = $inventory_levels[$inventory_item['id']];
 	if($inventory_level['inventory_quantity'] == $inventory_level['stock_available_unreserved']){
-		echo "Would skip ".$inventory_level['title'].", inventory already ".$inventory_level['stock_available_unreserved'].PHP_EOL;
+		echo "Skip ".$inventory_level['title'].", inventory already ".$inventory_level['stock_available_unreserved'].PHP_EOL;
 		continue;
 	}
 	echo "Setting ".$inventory_level['title']." to ".$inventory_levels[$inventory_item['id']]['stock_available_unreserved'].PHP_EOL;
@@ -78,4 +122,36 @@ function insert_update_cin_product_option(PDO $db, $cin_product_option){
 		'stock_on_hand' => $cin_product_option['stockOnHand'],
 	]);
 	return $cin_product_option['id'];
+}
+function insert_update_cin_branch(PDO $db, $cin_branch){
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_cin_branch'])){
+		$_stmt_cache['iu_cin_branch'] = $db->prepare("INSERT INTO cin_branches (id, created_at, modified_at, type, company) VALUES (:id, :created_at, :modified_at, :type, :company) ON DUPLICATE KEY UPDATE created_at=:created_at, modified_at=:modified_at, type=:type, company=:company");
+	}
+	$_stmt_cache['iu_cin_branch']->execute([
+		'id' => $cin_branch['id'],
+		'created_at' => $cin_branch['createdDate'],
+		'modified_at' => $cin_branch['modifiedDate'],
+		'type' => $cin_branch['branchType'],
+		'company' => $cin_branch['company'],
+	]);
+	return $cin_branch['id'];
+}
+function insert_update_cin_stock_unit(PDO $db, $cin_stock_unit){
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_cin_stock_unit'])){
+		$_stmt_cache['iu_cin_stock_unit'] = $db->prepare("INSERT INTO cin_stock_units (cin_product_option_id, cin_branch_id, modified_at, available, on_hand, open_sales, incoming, virtual, holding) VALUES (:cin_product_option_id, :cin_branch_id, :modified_at, :available, :on_hand, :open_sales, :incoming, :virtual, :holding) ON DUPLICATE KEY UPDATE modified_at=:modified_at, available=:available, on_hand=:on_hand, open_sales=:open_sales, incoming=:incoming, virtual=:virtual, holding=:holding");
+	}
+	$_stmt_cache['iu_cin_stock_unit']->execute([
+		'cin_product_option_id' => $cin_stock_unit['productOptionId'],
+		'cin_branch_id' => $cin_stock_unit['branchId'],
+		'modified_at' => $cin_stock_unit['modifiedDate'],
+		'available' => $cin_stock_unit['available'],
+		'on_hand' => $cin_stock_unit['stockOnHand'],
+		'open_sales' => $cin_stock_unit['openSales'],
+		'incoming' => $cin_stock_unit['incoming'],
+		'virtual' => $cin_stock_unit['virtual'],
+		'holding' => $cin_stock_unit['holding'],
+	]);
+	return [$cin_stock_unit['productOptionId'], $cin_stock_unit['branchId']];
 }

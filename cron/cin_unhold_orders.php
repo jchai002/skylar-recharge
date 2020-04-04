@@ -1337,3 +1337,6 @@ function calc_branch_id($cc_order){
 	}
 	return 23755;
 }
+// TODO: calculate based on inventory instead of hardcoded sku
+// TODO: Change so zip determines preferred warehouse then checks inventory
+// Also figure out what to do if nowhere can ship
