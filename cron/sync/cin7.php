@@ -1,6 +1,8 @@
 <?php
 require_once(__DIR__.'/../../includes/config.php');
 
+die();
+
 $page_size = 250;
 // Sync product options
 
