@@ -60,11 +60,11 @@ foreach($order['line_items'] as $line_item){
 			echo 'Scent Club Hold'.PHP_EOL;
 		}
 	}
-//	if(stripos($line_item['title'], 'Salt Air') !== false){
-//		$order_tags[] = 'HOLD: Preorder';
-//		$order_tags[] = 'Preorder';
-//		$update_order = true;
-//	}
+	if(in_array('Hand Sanitizer', get_product($db, $line_item['product_id'])['tags'])){
+		$order_tags[] = 'HOLD: Preorder';
+		$order_tags[] = 'Preorder';
+		$update_order = true;
+	}
 }
 echo "Check account activation".PHP_EOL;
 if(!empty($customer) && $customer['state'] != 'enabled'){
