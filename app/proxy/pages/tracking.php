@@ -36,14 +36,18 @@ $narvar_carrier_codes = [
 $base_url = "https://skylar.narvar.com/skylar/tracking/";
 
 if(!empty($shopify_order_id)){
-	$order = $sc->get('orders/'.intval($shopify_order_id).'.json');
-	//$fulfillments = $sc->get('orders/'.intval($shopify_order_id).'/fulfillments.json');
-	$fulfillments = $order['fulfillments'];
+	try {
+		$order = $sc->get('orders/'.intval($shopify_order_id).'.json');
+		//$fulfillments = $sc->get('orders/'.intval($shopify_order_id).'/fulfillments.json');
+		$fulfillments = $order['fulfillments'];
 
-	if(!empty($shopify_line_item_id)){
-		$fulfillments = array_filter($fulfillments, function($fulfillment) use($shopify_line_item_id) {
-			return in_array($shopify_line_item_id, array_column($fulfillment['line_items'], 'id'));
-		});
+		if(!empty($shopify_line_item_id)){
+			$fulfillments = array_filter($fulfillments, function($fulfillment) use($shopify_line_item_id) {
+				return in_array($shopify_line_item_id, array_column($fulfillment['line_items'], 'id'));
+			});
+		}
+	} catch(\GuzzleHttp\Exception\ClientException $e){
+		die("Order not found, please contact support@skylar.com");
 	}
 }
 
