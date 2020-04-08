@@ -43,6 +43,7 @@ if(!empty($res)){
 }
 $is_scent_club = false;
 $stmt = $db->prepare("SELECT * FROM sc_product_info WHERE sku=?");
+$hand_sanitizer_qty = 0;
 foreach($order['line_items'] as $line_item){
 	if(is_scent_club_promo(get_product($db, $line_item['product_id']))){
 		continue;
@@ -61,10 +62,17 @@ foreach($order['line_items'] as $line_item){
 		}
 	}
 	if(in_array('Hand Sanitizer', get_product($db, $line_item['product_id'])['tags'])){
+		$hand_sanitizer_qty += $line_item['quantity'];
 		$order_tags[] = 'HOLD: Preorder';
 		$order_tags[] = 'Preorder';
 		$update_order = true;
 	}
+}
+if($hand_sanitizer_qty > 10){
+	$order_tags[] = 'HOLD: Processing';
+	$order_tags[] = 'High Quantity Hand Sanitizer';
+	send_alert($db, 12, "Order with $hand_sanitizer_qty hand sanitizers has been held. https://skylar.com/admin/orders/".$order['id'], 'Skylar Alert: High Qty Hand Sanitizer', ['tim@skylar.com', 'stacy@skylar.com']);
+	$update_order = true;
 }
 echo "Check account activation".PHP_EOL;
 if(!empty($customer) && $customer['state'] != 'enabled'){
