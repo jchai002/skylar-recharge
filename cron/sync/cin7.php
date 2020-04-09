@@ -1,14 +1,34 @@
 <?php
 require_once(__DIR__.'/../../includes/config.php');
 
-die();
-
 $page_size = 250;
 // Sync product options
 
-$since = gmdate('Y-m-d\Th:i:', time()-60).'00Z';
+$since = gmdate('Y-m-d\Th:i:', ((!empty($argv) && !empty($argv[1]) && $argv[1] == 'all') ? time() - 365*24*60*60 : time()-60)).'00Z';
 
 echo "Pulling since UTC ".$since.PHP_EOL;
+
+$page = 0;
+echo "Pulling Products from Cin7".PHP_EOL;
+do {
+	$page++;
+	/* @var $res JsonAwareResponse */
+	$res = $cc->get('Products', [
+		'query' => [
+			'fields' => implode(',', ['id', 'CreatedDate', 'ModifiedDate', 'Name']),
+			'where' => "ModifiedDate >= '$since'",
+			'order' => 'ModifiedDate DESC',
+			'rows' => $page_size,
+			'page' => $page,
+		],
+	]);
+	$cc_products = $res->getJson();
+	foreach($cc_products as $cc_product){
+		print_r($cc_product);
+		echo insert_update_cin_product($db, $cc_product).PHP_EOL;
+	}
+} while(count($cc_products) >= $page_size);
+sleep(1);
 
 $page = 0;
 echo "Pulling Product Options from Cin7".PHP_EOL;
@@ -107,6 +127,19 @@ foreach($inventory_items as $inventory_item){
 
 
 
+function insert_update_cin_product(PDO $db, $cin_product){
+	global $_stmt_cache;
+	if(empty($_stmt_cache['iu_cin_product'])){
+		$_stmt_cache['iu_cin_product'] = $db->prepare("INSERT INTO cin_products (id, created_at, modified_at, name) VALUES (:id, :created_at, :modified_at, :name) ON DUPLICATE KEY UPDATE id=:id, created_at=:created_at, modified_at=:modified_at, name=:name");
+	}
+	$_stmt_cache['iu_cin_product']->execute([
+		'id' => $cin_product['id'],
+		'created_at' => $cin_product['createdDate'],
+		'modified_at' => $cin_product['modifiedDate'],
+		'name' => $cin_product['name'],
+	]);
+	return $cin_product['id'];
+}
 function insert_update_cin_product_option(PDO $db, $cin_product_option){
 	global $_stmt_cache;
 	if(empty($_stmt_cache['iu_cin_product_option'])){
