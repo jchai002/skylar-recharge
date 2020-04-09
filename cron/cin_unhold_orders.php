@@ -1288,7 +1288,11 @@ do {
 			continue;
 		}
 		$cc_order['logisticsStatus'] = 1;
-		$cc_order['branchId'] = calc_branch_id($cc_order);
+		$cc_order['branchId'] = calc_branch_id($db, $cc_order);
+		if(empty($cc_order['branchId'])){
+			echo "Skipping, no zip code".PHP_EOL;
+			continue;
+		}
 		$updates[] = $cc_order;
 		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
 	}
@@ -1311,32 +1315,55 @@ function send_cc_updates(GuzzleHttp\Client $cc, $updates){
 	}
 	return $res;
 }
-function calc_branch_id($cc_order){
+function calc_branch_id(PDO $db, $cc_order){
 	global $east_zip_prefixes;
 	if(empty($cc_order['deliveryPostalCode'])){
-		print_r($cc_order);
-		die();
+		return false;
 	}
+
+	$line_items = $cc_order['lineItems'];
+
+	// Shipper logic
+	if(array_sum(array_column($line_items, 'qty')) > 1){
+		return 3;
+	}
+
 	$zip_prefix = substr($cc_order['deliveryPostalCode'], 0, 3);
-	if(!in_array($zip_prefix, $east_zip_prefixes)){
-		return 3;
+	$preferred_location_id = in_array($zip_prefix, $east_zip_prefixes) ? 23755 : 3;
+
+	// Check if preferred location can fulfill order
+	$can_fill = true;
+	foreach($line_items as $line_item){
+		if(!branch_can_fill_sku($db, $preferred_location_id, $line_item['code'], $line_item['qty'])){
+			$can_fill = false;
+			break;
+		}
 	}
-	$line_items = array_filter($cc_order['lineItems'], function($item){
-		return !in_array($item['code'], ['98131802-100', '70450506-101']);
-	});
-	echo "Filtered line items: ";
-	print_r($line_items);
-	if(count($line_items) > 1){
-		return 3;
+
+	if($can_fill){
+		return $preferred_location_id;
 	}
-	if($line_items[0]['code'] != '10450506-101'){
-		return 3;
-	}
-	if($line_items[0]['qty'] != 1){
-		return 3;
-	}
-	return 23755;
+	// What to do if nowhere could ship?
+	return 3;
 }
-// TODO: calculate based on inventory instead of hardcoded sku
-// TODO: Change so zip determines preferred warehouse then checks inventory
-// Also figure out what to do if nowhere can ship
+
+function branch_can_fill_sku(PDO $db, $branch, $sku, $quantity = 1){
+	global $_stmt_cache;
+	if(empty($_stmt_cache['cin_branch_stock_check'])){
+		$_stmt_cache['cin_branch_stock_check'] = $db->prepare("
+SELECT csu.available FROM cin_stock_units csu
+LEFT JOIN cin_product_options cpo ON cpo.id=csu.cin_product_option_id
+LEFT JOIN cin_products cp ON cp.id=cpo.cin_product_id
+LEFT JOIN cin_branches cb ON cb.id=csu.cin_branch_id
+WHERE cpo.sku = :sku
+AND cin_branch_id = :branch_id;");
+	}
+	$_stmt_cache['cin_branch_stock_check']->execute([
+		'sku' => $sku,
+		'branch_id' => $branch,
+	]);
+	if($_stmt_cache['cin_branch_stock_check']->rowCount() == 0 || $_stmt_cache['cin_branch_stock_check']->fetchColumn() < $quantity){
+		return false;
+	}
+	return true;
+}

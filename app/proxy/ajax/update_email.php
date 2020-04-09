@@ -2,6 +2,8 @@
 
 global $sc;
 
+// Probably need to check if updating is possible in both RC and SC first
+
 try {
 	$res = $sc->put('/admin/customers/'.intval($_REQUEST['c']).'.json', [
 		'customer' => [
@@ -9,6 +11,8 @@ try {
 			'email' => $_REQUEST['email'],
 		]
 	]);
+
+	// TODO: also update email address in recharge
 
 	if($res['email'] == $_REQUEST['email']){
 		echo json_encode([
