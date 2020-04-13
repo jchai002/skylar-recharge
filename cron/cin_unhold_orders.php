@@ -1,6 +1,8 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
+die();
+
 $east_zip_prefixes = [
 	'004',
 	'005',
