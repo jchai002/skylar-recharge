@@ -3,8 +3,6 @@ require_once(__DIR__.'/../../includes/config.php');
 
 $page_size = 250;
 
-die();
-
 // Sync product options
 $since = gmdate('Y-m-d\Th:i:', ((!empty($argv) && !empty($argv[1]) && $argv[1] == 'all') ? time() - 365*24*60*60 : time()-60)).'00Z';
 
