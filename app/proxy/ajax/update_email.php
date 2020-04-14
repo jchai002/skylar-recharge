@@ -43,7 +43,7 @@ if($can_update){
 
 			$res = $rc->get('/customers', ['shopify_customer_id' => $_REQUEST['c']]);
 
-			$res = $rc->put('/customers/'.intval($res['customers'][0]['id']).'.json', [
+			$res = $rc->put('/customers/'.intval($res['customers'][0]['id']), [
 				'email' => $_REQUEST['email'],
 			]);
 
