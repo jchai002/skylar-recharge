@@ -21,7 +21,7 @@ if(!empty($res)){
 }
 
 $res = $rc->get('customers', ['email' => $_REQUEST['email']]);
-if(!empty($res)){
+if(!empty($res['customers'])){
 	$can_update = false;
 	echo json_encode([
 		'success' => false,
@@ -45,7 +45,7 @@ if($can_update){
 				'email' => $_REQUEST['email'],
 			]);
 
-			if($res['email'] == $_REQUEST['email']){
+			if($res['customer']['email'] == $_REQUEST['email']){
 				echo json_encode([
 					'success' => true,
 					'res' => $res,
@@ -57,7 +57,7 @@ if($can_update){
 					'error' => 'Unable to use that email address. Please check that it is valid.',
 				]);
 			}
-			
+
 		} else {
 			echo json_encode([
 				'success' => false,
