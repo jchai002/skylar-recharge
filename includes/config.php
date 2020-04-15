@@ -468,7 +468,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=
 	}
 	$order_id = $db->lastInsertId();
 	if(empty($_stmt_cache['iu_order_line_item'])){
-		$_stmt_cache['iu_order_line_item'] = $db->prepare("INSERT INTO order_line_items (shopify_id, order_id, variant_id, total_discount, price, sku, product_title, variant_title, properties) VALUES (:shopify_id, :order_id, :variant_id, :total_discount, :price, :sku, :product_title, :variant_title, :properties) ON DUPLICATE KEY UPDATE order_id=:order_id, variant_id=:variant_id, total_discount=:total_discount, price=:price, sku=:sku, product_title=:product_title, variant_title=:variant_title, properties=:properties");
+		$_stmt_cache['iu_order_line_item'] = $db->prepare("INSERT INTO order_line_items (shopify_id, order_id, variant_id, total_discount, price, quantity, sku, product_title, variant_title, properties) VALUES (:shopify_id, :order_id, :variant_id, :total_discount, :price, :quantity, :sku, :product_title, :variant_title, :properties) ON DUPLICATE KEY UPDATE order_id=:order_id, variant_id=:variant_id, total_discount=:total_discount, price=:price, quantity=:quantity, sku=:sku, product_title=:product_title, variant_title=:variant_title, properties=:properties");
 	}
 	foreach($shopify_order['line_items'] as $line_item){
 		$variant = get_variant($db, $line_item['variant_id']);
@@ -478,6 +478,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), customer_id=:customer_id, app_id=
 			'variant_id' => $variant['id'],
 			'total_discount' => $line_item['total_discount'],
 			'price' => $line_item['price'],
+			'quantity' => $line_item['quantity'],
 			'sku' => $line_item['sku'],
 			'product_title' => $line_item['title'],
 			'variant_title' => $line_item['variant_title'],
