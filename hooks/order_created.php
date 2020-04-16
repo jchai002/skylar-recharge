@@ -111,7 +111,7 @@ if(!empty($customer) && $customer['state'] != 'enabled'){
 				'res' => $res,
 			]);
 		}
-	} catch(ShopifyApiException $e){
+	} catch(\GuzzleHttp\Exception\ClientException $e){
 		log_event($db, 'EXCEPTION', 'SHOPIFY_API', json_encode($e), '', '', 'order_created webhook');
 	}
 }
