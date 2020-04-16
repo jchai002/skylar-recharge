@@ -1225,7 +1225,8 @@ $page_size = 250;
 $page = 0;
 $updates = [];
 $last_send_time = time();
-$buffer_date = date('Y-m-d\TH:i:s\Z', strtotime('-5 minutes'));
+$buffer_date = gmdate('Y-m-d\TH:i:s\Z', strtotime('-5 minutes'));
+
 do {
 	$page++;
 	// Get held orders
