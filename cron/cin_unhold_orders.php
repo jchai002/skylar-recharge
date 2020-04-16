@@ -1233,8 +1233,8 @@ do {
 	/* @var $res JsonAwareResponse */
 	$res = $cc->get('SalesOrders', [
 		'query' => [
-			'fields' => implode(',', ['id', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'lineItems']),
-			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date'",
+			'fields' => implode(',', ['id', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems']),
+			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED'",
 			'order' => 'CreatedDate DESC',
 			'rows' => $page_size,
 			'page' => $page,
@@ -1291,9 +1291,19 @@ do {
 		}
 		$cc_order['logisticsStatus'] = 1;
 		$cc_order['branchId'] = calc_branch_id($db, $cc_order);
-		if(empty($cc_order['branchId'])){
-			echo "Skipping, no zip code".PHP_EOL;
-			continue;
+
+		switch($cc_order['branchId']){
+			default: break;
+			case -1:
+				echo "Order doesn't have zip code, skipping and alerting".PHP_EOL;
+				send_alert($db, 13, "Order is being held because it doesn't have a shipping address zip: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=206888", 'Skylar Alert - No Zip on Order', ['tim@skylar.com', 'kristin@skylar.com']);
+				continue;
+				break;
+			case -2:
+				echo "No branch can fulfill this order, skipping and alerting".PHP_EOL;
+				send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=206888", 'Skylar Alert - No Stock Available', ['tim@skylar.com', 'kristin@skylar.com']);
+				continue;
+				break;
 		}
 		$updates[] = $cc_order;
 		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
@@ -1320,7 +1330,7 @@ function send_cc_updates(GuzzleHttp\Client $cc, $updates){
 function calc_branch_id(PDO $db, $cc_order){
 	global $east_zip_prefixes;
 	if(empty($cc_order['deliveryPostalCode'])){
-		return false;
+		return -1;
 	}
 
 	$line_items = $cc_order['lineItems'];
@@ -1330,26 +1340,37 @@ function calc_branch_id(PDO $db, $cc_order){
 		return 3;
 	}
 
-	$zip_prefix = substr($cc_order['deliveryPostalCode'], 0, 3);
-	$preferred_location_id = in_array($zip_prefix, $east_zip_prefixes) ? 23755 : 3;
+	if(empty($cc_order['deliveryCountry']) || !in_array(strtoupper($cc_order['deliveryCountry']), ['UNITED STATES', 'US', 'USA'])){
+		$preferred_location_id = 3;
+	} else {
+		$zip_prefix = substr($cc_order['deliveryPostalCode'], 0, 3);
+		$preferred_location_id = in_array($zip_prefix, $east_zip_prefixes) ? 23755 : 3;
+	}
 
 	// Check if preferred location can fulfill order
-	$can_fill = true;
-	foreach($line_items as $line_item){
-		if(!branch_can_fill_sku($db, $preferred_location_id, $line_item['code'], $line_item['qty'])){
-			$can_fill = false;
-			break;
-		}
-	}
-
-	if($can_fill){
+	if(branch_can_fill_items($db, $preferred_location_id, $line_items)){
 		return $preferred_location_id;
 	}
-	// What to do if nowhere could ship?
-	return 3;
+
+	// Check if backup location can fulfill order
+	$backup_location_id = $preferred_location_id == 3 ? 23755 : 3;
+	if(branch_can_fill_items($db, $backup_location_id, $line_items)){
+		return $backup_location_id;
+	}
+
+	return -2;
 }
 
-function branch_can_fill_sku(PDO $db, $branch, $sku, $quantity = 1){
+function branch_can_fill_items(PDO $db, $branch_id, $line_items){
+	foreach($line_items as $line_item){
+		if(!branch_can_fill_sku($db, $branch_id, $line_item['code'], $line_item['qty'])){
+			return false;
+		}
+	}
+	return true;
+}
+
+function branch_can_fill_sku(PDO $db, $branch_id, $sku, $quantity = 1){
 	global $_stmt_cache;
 	if(empty($_stmt_cache['cin_branch_stock_check'])){
 		$_stmt_cache['cin_branch_stock_check'] = $db->prepare("
@@ -1362,7 +1383,7 @@ AND cin_branch_id = :branch_id;");
 	}
 	$_stmt_cache['cin_branch_stock_check']->execute([
 		'sku' => $sku,
-		'branch_id' => $branch,
+		'branch_id' => $branch_id,
 	]);
 	if($_stmt_cache['cin_branch_stock_check']->rowCount() == 0 || $_stmt_cache['cin_branch_stock_check']->fetchColumn() < $quantity){
 		return false;
