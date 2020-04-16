@@ -11,9 +11,9 @@ do {
 	$orders = $sc->get("/admin/orders.json", [
 		'limit' => $page_size,
 		'page' => $page,
-		'order' => 'created_at asc',
+		'order' => 'created_at desc',
 		'status' => 'any',
-		'created_at_min' => '2019-05-22',
+		'created_at_min' => '2020-04-14',
 	]);
 	if($orders === false){
 		if($retry >= 3){
