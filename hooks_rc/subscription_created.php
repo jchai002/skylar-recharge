@@ -51,7 +51,7 @@ try {
 		]]);
 		insert_update_customer($db, $shopify_customer);
 	}
-} catch(ShopifyApiException $e){
+} catch(\GuzzleHttp\Exception\ClientException $e){
 	log_event($db, 'API_ERROR', json_encode($e->getResponse()), 'POST customers/'.$shopify_customer_id.'/metafields.json', json_encode(['metafield'=> [
 		'namespace' => 'scent_club',
 		'key' => 'active',

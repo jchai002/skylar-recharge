@@ -12,7 +12,7 @@ try {
 	if($json_output){
 		header('Content-Type: application/json');
 	}
-} catch (ShopifyApiException $e){
+} catch (\GuzzleHttp\Exception\ClientException $e){
 	ob_end_clean();
 	if($json_output){
 		header('Content-Type: application/json');

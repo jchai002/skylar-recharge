@@ -20,7 +20,7 @@ if($customer['state'] != 'active' && $customer['state'] != 'enabled'){
 	]);
 	try {
 		$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
-	} catch(ShopifyApiException $e){
+	} catch(\GuzzleHttp\Exception\ClientException $e){
 		// It's ok
 	}
 	if(empty($res)){

@@ -14,7 +14,7 @@ try {
 	echo json_encode([
 		'success' => true,
 	]);
-} catch(ShopifyApiException $e){
+} catch(\GuzzleHttp\Exception\ClientException $e){
 	$errors = $e->getResponse()['errors'];
 	$error_string = '';
 	foreach($errors as $error){

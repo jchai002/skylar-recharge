@@ -67,7 +67,7 @@ if($can_update){
 				'error' => 'Unable to use that email address. Please check that it is valid.',
 			]);
 		}
-	} catch(ShopifyApiException $e){
+	} catch(\GuzzleHttp\Exception\ClientException $e){
 		$errors = $e->getResponse()['errors'];
 		$error_string = '';
 		foreach($errors as $error){
