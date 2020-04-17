@@ -1297,13 +1297,11 @@ do {
 			case -1:
 				echo "Order doesn't have zip code, skipping and alerting".PHP_EOL;
 				send_alert($db, 13, "Order is being held because it doesn't have a shipping address zip: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=206888", 'Skylar Alert - No Zip on Order', ['tim@skylar.com', 'kristin@skylar.com']);
-				continue;
-				break;
+				continue 2; // Switch statements are treated as loops
 			case -2:
 				echo "No branch can fulfill this order, skipping and alerting".PHP_EOL;
 				send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=206888", 'Skylar Alert - No Stock Available', ['tim@skylar.com', 'kristin@skylar.com']);
-				continue;
-				break;
+				continue 2; // Switch statements are treated as loops
 		}
 		$updates[] = $cc_order;
 		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
