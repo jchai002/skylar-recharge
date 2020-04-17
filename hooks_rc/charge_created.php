@@ -36,6 +36,7 @@ foreach($charge['line_items'] as $line_item){
 }
 if(!empty($main_sub) && $has_sc){
 	send_alert($db, 11, 'Customer '.$charge['email'].' just checked out with Scent Club even though they already have a subscription. Order: https://skylar.com/admin/orders/'.$charge['shopify_order_id'], 'Skylar Alert - Duplicate SC Checkout', ['tim@skylar.com', 'stacy@skylar.com'], ['charge'=>$charge, 'main_sub'=>$main_sub]);
+	klaviyo_send_transactional_email($db, $charge['email'], 'duplicate_sc_checkout', ['charge' => $charge]);
 }
 if(empty($main_sub) && empty($promo_sc)){
 	echo "no main sub".PHP_EOL;
