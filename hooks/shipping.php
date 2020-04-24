@@ -80,7 +80,7 @@ switch($rate['destination']['country']){
 						'service_name' => 'Free Standard Shipping (3-7 business days)',
 						'service_code' => 'Standard Weight-based',
 						'total_price' => 0,
-						'description' => '',
+						'description' => 'Due to recent events surrounding Covid-19, your order may be experience transit delays',
 						'currency' => 'USD',
 					];
 				} else {
@@ -88,7 +88,7 @@ switch($rate['destination']['country']){
 						'service_name' => 'Standard Shipping (3-7 business days)',
 						'service_code' => 'Standard Weight-based',
 						'total_price' => 499,
-						'description' => '',
+						'description' => 'Due to recent events surrounding Covid-19, your order may be experience transit delays',
 						'currency' => 'USD',
 					];
 				}
