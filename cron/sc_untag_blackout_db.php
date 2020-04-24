@@ -19,21 +19,21 @@ $page = 0;
 $page_size = 250;
 $total_orders = 0;
 $start_time = time();
+$url = 'orders.json';
 do {
-	$page++;
-	$orders = $sc->get('/admin/orders.json', [
+	$orders = $sc->get($url, [
 		'created_at_min' => $today,
 		'limit' => $page_size,
-		'page' => $page,
 		'order' => 'created_at asc',
 	]);
+	$url = $sc->last_response_links['next'] ?? false;
 	foreach($orders as $order){
 		$total_orders++;
 		echo insert_update_order($db, $order, $sc).PHP_EOL;
 	}
 	$elapsed_time = (time()-$start_time)/60;
 	echo "Synced $total_orders in ".round($elapsed_time, 2)."m ".round($total_orders/($elapsed_time), 2)." orders/min".PHP_EOL;
-} while(count($orders) >= $page_size);
+} while(!empty($url));
 
 $stmt = $db->query("SELECT shopify_id as id, tags FROM orders WHERE tags LIKE '%HOLD: Scent Club Blackout%'");
 

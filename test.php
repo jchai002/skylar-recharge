@@ -9,17 +9,15 @@ $tag = "TEST TAG";
 
 $today = date('Y-m-d', strtotime('-3 months'));
 // First, make sure we are fully synced
-$page = 0;
 $page_size = 250;
 $start_time = time();
 $all_orders = [];
+$url = 'orders.json';
 do {
-	$page++;
 	echo "getting orders...";
-	$orders = $sc->get('/admin/orders.json', [
+	$orders = $sc->get($url, [
 		'created_at_max' => $today,
 		'limit' => $page_size,
-		'page' => $page,
 		'order' => 'created_at desc',
 	]);
 	echo "got orders".PHP_EOL;
@@ -29,7 +27,8 @@ do {
 	$total_orders = count($all_orders);
 	$elapsed_time = (time()-$start_time)/60;
 	echo "Synced $total_orders in ".round($elapsed_time, 2)."m ".round($total_orders/($elapsed_time), 2)." orders/min".PHP_EOL;
-} while($total_orders < 1000);
+	$url = $sc->last_response_links['next'] ?? false;
+} while(!empty($url) && $total_orders < 1000);
 
 $orders = $all_orders;
 

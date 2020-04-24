@@ -3,15 +3,14 @@
 require_once(__DIR__.'/../includes/config.php');
 
 $page_size = 250;
-$page = 0;
+$url = 'customers.json';
 do {
-	$page++;
-	$customers = $sc->get("/admin/customers.json", [
-		'page' => $page,
+	$customers = $sc->get($url, [
 		'limit' => $page_size,
 	]);
 
 	foreach($customers as $customer){
 		echo insert_update_customer($db, $customer)." ".$customer['email'].PHP_EOL;
 	}
-} while(count($customers) >= $page_size);
+	$url = $sc->last_response_links['next'] ?? false;
+} while(!empty($url));

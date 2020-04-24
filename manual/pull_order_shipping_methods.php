@@ -10,14 +10,14 @@ $start_time = time();
 $orders_by_shipping_method = [];
 $count_by_method = [];
 $empty_orders = [];
+$url = 'orders.json';
 do {
-	$page++;
-	$orders = $sc->get('/admin/orders.json', [
+	$orders = $sc->get($url, [
 		'created_at_min' => $today,
 		'limit' => $page_size,
-		'page' => $page,
 		'order' => 'created_at asc',
 	]);
+	$url = $sc->last_response_links['next'] ?? false;
 	foreach($orders as $order){
 		$total_orders++;
 		if(empty($order['shipping_lines']) || empty($order['shipping_lines'][0]['code'])){
@@ -36,7 +36,7 @@ do {
 	$elapsed_time = (time()-$start_time)/60;
 	echo "Pulled $total_orders in ".round($elapsed_time, 2)."m ".round($total_orders/($elapsed_time), 2)." orders/min".PHP_EOL;
 	echo print_r($count_by_method, true).PHP_EOL;
-} while(count($orders) >= $page_size);
+} while(!empty($url));
 unset($orders_by_shipping_method['Standard Weight-based']);
 unset($orders_by_shipping_method['PASDDP']);
 unset($orders_by_shipping_method['US Next Day']);

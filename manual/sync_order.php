@@ -3,14 +3,12 @@
 require_once(__DIR__.'/../includes/config.php');
 
 $page_size = 250;
-$page = 0;
 
 $retry = 0;
+$url = 'orders.json';
 do {
-	$page++;
-	$orders = $sc->get("/admin/orders.json", [
+	$orders = $sc->get($url, [
 		'limit' => $page_size,
-		'page' => $page,
 		'order' => 'created_at desc',
 		'status' => 'any',
 		'created_at_min' => '2020-04-14',
@@ -36,4 +34,5 @@ do {
 		}
 		echo insert_update_order($db, $order, $sc)." ".$order['created_at'].PHP_EOL;
 	}
-} while(!empty($orders));
+	$url = $sc->last_response_links['next'] ?? false;
+} while(!empty($url));

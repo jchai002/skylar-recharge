@@ -3,21 +3,20 @@ require_once(__DIR__.'/../includes/config.php');
 
 $checkouts = [];
 $page_size = 250;
-$page = 0;
+$url = 'checkouts.json';
 do {
-	$page++;
-	$res = $sc->get('/admin/checkouts.json', [
+	$res = $sc->get($url, [
 		'limit' => $page_size,
-		'page' => $page,
 		'created_at_min' => '2019-11-28 18:00:00-08:00',
 		'created_at_max' => '2019-11-29 13:00:00-08:00',
 	]);
+	$url = $sc->last_response_links['next'] ?? false;
 	foreach($res as $checkout){
 		$checkouts[] = $checkout;
 	}
 
-	echo "Adding ".count($res)." to array - total: ".count($checkouts).PHP_EOL;
-} while(count($res) >= $page_size);
+	echo "Adding " . count($res) . " to array - total: " . count($checkouts) . PHP_EOL;
+} while(!empty($url));
 
 
 $outstream = fopen("checkouts.csv", 'w');

@@ -8,18 +8,17 @@ $start_time = time();
 
 // Products
 echo "Updating products".PHP_EOL;
-$page = 0;
+$url = "products.json";
 do {
-	$page++;
-	$res = $sc->get('/admin/products.json', [
+	$res = $sc->get($url, [
 		'updated_at_min' => $min_date,
 		'limit' => $page_size,
-		'page' => $page,
 	]);
 	foreach($res as $product){
 		echo insert_update_product($db, $product).PHP_EOL;
 	}
-} while(count($res) >= $page_size);
+	$url = $sc->last_response_links['next'] ?? false;
+} while(!empty($url));
 
 // Collections
 echo "Updating custom collections".PHP_EOL;
@@ -49,41 +48,39 @@ do {
 
 // Customers
 echo "Updating customers".PHP_EOL;
-$page = 0;
+$url = "customers.json";
 do {
-	$page++;
-	$res = $sc->get('/admin/customers.json', [
+	$res = $sc->get($url, [
 		'updated_at_min' => $min_date,
 		'limit' => $page_size,
-		'page' => $page,
 	]);
 	foreach($res as $customer){
 		echo insert_update_customer($db, $customer).PHP_EOL;
 	}
-} while(count($res) >= $page_size);
+	$url = $sc->last_response_links['next'] ?? false;
+} while(!empty($url));
 
 // Orders
 echo "Updating orders and fulfillments".PHP_EOL;
-$page = 0;
+$url = "orders.json";
 do {
-	$page++;
-	$res = $sc->get('/admin/orders.json', [
+	$res = $sc->get($url, [
 		'updated_at_min' => $min_date,
 		'limit' => $page_size,
-		'page' => $page,
 	]);
+	$url = $sc->last_response_links['next'] ?? false;
+
 	foreach($res as $order){
 		echo insert_update_order($db, $order, $sc).PHP_EOL;
 		$fulfillment_res = $sc->get('/admin/orders/'.$order['id'].'/fulfillments.json', [
 			'updated_at_min' => $min_date,
 			'limit' => $page_size,
-			'page' => $page,
 		]);
 		foreach($fulfillment_res as $fulfillment){
 			echo " - ".insert_update_fulfillment($db, $fulfillment).PHP_EOL;
 		}
 	}
-} while(count($res) >= $page_size);
+} while(!empty($url));
 
 // metafields
 echo "Updating shop metafields".PHP_EOL;
@@ -135,17 +132,17 @@ if(
 
 	echo "Pull all products".PHP_EOL;
 	$sync_start = date('Y-m-d H:m:s');
-	$page = 0;
+	$url = 'products.json';
 	do {
-		$page++;
-		$res = $sc->get('/admin/products.json', [
+		$res = $sc->get($url, [
 			'limit' => $page_size,
-			'page' => $page,
 		]);
+		$url = $sc->last_response_links['next'] ?? false;
+
 		foreach($res as $product){
 			echo insert_update_product($db, $product).PHP_EOL;
 		}
-	} while(count($res) >= $page_size);
+	} while(!empty($url));
 
 	echo "Check unsynced products".PHP_EOL;
 	$stmt = $db->query("SELECT id, shopify_id

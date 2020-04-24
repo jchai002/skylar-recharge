@@ -10,13 +10,13 @@ $max_page = 0;
 $orders = [];
 $min_date = date('Y-m-d H:00:00', strtotime('-10 hours'));
 $stmt = $db->prepare("SELECT * FROM orders WHERE shopify_id=?");
+$url = 'orders.json';
 do {
-	$page++;
-	$res = $sc->get('/admin/orders.json', [
+	$res = $sc->get($url, [
 		'created_at_min' => $min_date,
 		'limit' => $page_size,
-		'page' => $page,
 	]);
+	$url = $sc->last_response_links['next'] ?? false;
 	if(empty($res)){
 		print_r($sc->last_error);
 		die();
@@ -41,4 +41,4 @@ do {
 	if($max_page > 0 && $page >= $max_page){
 		break;
 	}
-} while(count($res) >= $page_size);
+} while(!empty($url));
