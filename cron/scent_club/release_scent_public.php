@@ -4,21 +4,29 @@ require_once(__DIR__ . '/../../includes/config.php');
 $log = [
 	'lines' => '',
 	'error' => false,
+	'test' => false,
 ];
 
 // Load live scent info
+$today = date('Y-m-d');
+$tomorrow = date('Y-m-d', strtotime('tomorrow'));
 if(!empty($argv) && !empty($argv[1]) && $argv[1] == 'force'){
-	$today = date('Y-m-d');
 	$stmt = $db->query("SELECT * FROM sc_product_info WHERE public_launch <= '$today' ORDER BY member_launch DESC LIMIT 1");
 } else {
 	$sc_date = date('Y-m-', get_next_month())."01";
-	$today = date('Y-m-d');
-	$stmt = $db->query("SELECT * FROM sc_product_info WHERE sc_date='$sc_date' AND public_launch = '$today'");
+	$stmt = $db->query("SELECT * FROM sc_product_info WHERE sc_date='$sc_date' AND public_launch IN ('$today', '$tomorrow')");
 }
 if($stmt->rowCount() == 0){
 	die("No Live Monthly Scent!");
 }
 $scent_info = $stmt->fetch();
+
+$test_run = $scent_info['public_launch'] != $today;
+if($test_run){
+	echo "Running in test mode!".PHP_EOL;
+}
+$log['test'] = $test_run;
+
 $new_sku = $scent_info['sku'];
 log_echo($log, "Scent: ".print_r($scent_info, true));
 
@@ -37,9 +45,21 @@ $stmt->execute(['gift_kit_skus']);
 $gift_skus = json_decode($stmt->fetchColumn(), true);
 
 if(empty($image)){
+	print_r(send_alert($db, 8,
+		($log['test'] ? '[TEST] ' : '')."Error releasing public scent",
+		"SC Public Scent Release was not able to be completed due to missing metafield, 'collection_tile_image'. The script will need to be manually run again once the error is corrected!",
+		['tim@skylar.com', 'julie@skylar.com'],
+		['smother' => false]
+	));
 	die("No image!");
 }
 if(empty($gift_skus)){
+	print_r(send_alert($db, 8,
+		($log['test'] ? '[TEST] ' : '')."Error releasing public scent",
+		"SC Public Scent Release was not able to be completed due to missing metafield, 'gift_kit_skus'. The script will need to be manually run again once the error is corrected!",
+		['tim@skylar.com', 'julie@skylar.com'],
+		['smother' => false]
+	));
 	die("No gift skus!");
 }
 print_r($image);
@@ -62,22 +82,26 @@ foreach($products_to_update as $product){
 	// Update sku
 	$variant_id = $product['variant_id'];
 	$product_id = $product['product_id'];
-	$res = $sc->put("variants/$variant_id.json", ['variant' => [
-		"id" => $variant_id,
-		"sku" => $new_sku,
-	]]);
-	log_echo($log, "$product_id $variant_id, ".$res['sku']);
+	if(!$test_run){
+		$res = $sc->put("variants/$variant_id.json", ['variant' => [
+			"id" => $variant_id,
+			"sku" => $new_sku,
+		]]);
+		log_echo($log, "$product_id $variant_id, ".$res['sku']);
+	}
 
 	$old_images = $sc->get("products/$product_id/images.json");
 
-	$res = $sc->post("products/$product_id/images.json", ["image" => [
-		'position' => 1,
-		'src' => $base_file_url.$image,
-	]]);
+	if(!$test_run){
+		$res = $sc->post("products/$product_id/images.json", ["image" => [
+			'position' => 1,
+			'src' => $base_file_url . $image,
+		]]);
 
-	foreach($old_images as $old_image){
-		$image_id = $old_image['id'];
-		$sc->delete("products/$product_id/images/$image_id.json");
+		foreach($old_images as $old_image){
+			$image_id = $old_image['id'];
+			$sc->delete("products/$product_id/images/$image_id.json");
+		}
 	}
 }
 
@@ -99,16 +123,19 @@ foreach($products_to_update as $product){
 		log_echo($log, "No gift sku for $months, product: $product_id variant: $variant_id, skipping");
 		continue;
 	}
-	$res = $sc->put("variants/$variant_id.json", ['variant' => [
-		"id" => $variant_id,
-		"sku" => $gift_skus[$months],
-	]]);
-	log_echo($log, "$product_id $variant_id, ".$res['sku']);
+	if(!$test_run){
+		$res = $sc->put("variants/$variant_id.json", ['variant' => [
+			"id" => $variant_id,
+			"sku" => $gift_skus[$months],
+		]]);
+		log_echo($log, "$product_id $variant_id, ".$res['sku']);
+	}
 }
 
-send_alert($db, 8,
-	"Finished releasing SC Public Scent".($log['error'] ? ' with errors' : ''),
-	"SC Public Scent Release".($log['error'] ? ' ERROR' : ' Log'),
+
+print_r(send_alert($db, 8,
+	($log['test'] ? '[TEST] ' : '')."Finished releasing SC Public Scent" . ($log['error'] ? ' with errors' : ''),
+	"SC Public Scent Release" . ($log['error'] ? ' ERROR' : ' Log'),
 	['tim@skylar.com', 'julie@skylar.com'],
-	['log' => $log]
-);
+	['smother' => false]
+));

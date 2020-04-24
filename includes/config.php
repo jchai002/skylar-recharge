@@ -184,6 +184,7 @@ function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $t
 		'message_smothered' => $smother_message ? 1 : 0,
 		'date_created' => date('Y-m-d H:i:s'),
 	]);
+	return $res ?? false;
 }
 function offset_date_skip_weekend($time, $reverse = false){
 	while(!is_business_day($time)){
