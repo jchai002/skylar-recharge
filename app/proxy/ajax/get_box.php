@@ -36,32 +36,31 @@ if($stmt->rowCount() > 1){
 
 if(!empty($rc_customer_id)){
 	$schedule = new SubscriptionSchedule($db, $rc, $rc_customer_id, strtotime(date('Y-m-t',strtotime("+$months months"))));
-}
-if(empty($rc_customer_id) || empty($schedule->get())){
-	echo json_encode([
-		'success' => false,
-		'res' => $schedule->get(),
-		'month' => $month,
-		'res_all' => [$schedule->subscriptions(), $schedule->charges(), $schedule->orders()],
-	]);
-	exit;
-}
-foreach($schedule->get() as $shipment_list){
-	foreach($shipment_list['addresses'] as $upcoming_shipment){
-		foreach($upcoming_shipment['items'] as $item){
-			if(empty($_REQUEST['month']) && !empty($item['skipped'])){
-				continue;
-			}
-			if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
-				$return_box = $upcoming_shipment;
-				$return_box['sc_product'] = get_product($db, $item['shopify_product_id']);
-				$month = date('Y-m', $return_box['ship_date_time']);
-				break 3;
+	if(empty($rc_customer_id) || empty($schedule->get())){
+		echo json_encode([
+			'success' => false,
+			'res' => $schedule->get(),
+			'month' => $month,
+			'res_all' => [$schedule->subscriptions(), $schedule->charges(), $schedule->orders()],
+		]);
+		exit;
+	}
+	foreach($schedule->get() as $shipment_list){
+		foreach($shipment_list['addresses'] as $upcoming_shipment){
+			foreach($upcoming_shipment['items'] as $item){
+				if(empty($_REQUEST['month']) && !empty($item['skipped'])){
+					continue;
+				}
+				if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
+					$return_box = $upcoming_shipment;
+					$return_box['sc_product'] = get_product($db, $item['shopify_product_id']);
+					$month = date('Y-m', $return_box['ship_date_time']);
+					break 3;
+				}
 			}
 		}
 	}
 }
-
 if(empty($return_box)){
 	echo json_encode([
 		'success' => false,
