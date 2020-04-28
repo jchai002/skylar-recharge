@@ -1227,13 +1227,17 @@ $updates = [];
 $last_send_time = time();
 $buffer_date = gmdate('Y-m-d\TH:i:s\Z', strtotime('-5 minutes'));
 
+$stmt_get_prev_order = $db->prepare("SELECT 1 FROM orders WHERE email = :email AND id != :id LIMIT 1");
+
+echo "Pulling $buffer_date to $cut_on_date".PHP_EOL;
+
 do {
 	$page++;
 	// Get held orders
 	/* @var $res JsonAwareResponse */
 	$res = $cc->get('SalesOrders', [
 		'query' => [
-			'fields' => implode(',', ['id', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems']),
+			'fields' => implode(',', ['id', 'email', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems']),
 			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED'",
 			'order' => 'CreatedDate DESC',
 			'rows' => $page_size,
@@ -1303,7 +1307,15 @@ do {
 				send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=206888", 'Skylar Alert - No Stock Available', ['tim@skylar.com', 'kristin@skylar.com']);
 				continue 2; // Switch statements are treated as loops
 		}
-		unset($cc_order['lineItems']);
+		$stmt_get_prev_order->execute([
+			'email' => $cc_order['email'],
+			'id' => $row['id'],
+		]);
+		if($stmt_get_prev_order->rowCount() == 0){
+			echo "Adding salt air to order... ";
+			add_salt_air_sample($cc_order);
+		}
+		unset($cc_order['lineItems']); // TODO: Remove for salt air
 		$updates[] = $cc_order;
 		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
 	}
@@ -1388,4 +1400,23 @@ AND cin_branch_id = :branch_id;");
 		return false;
 	}
 	return true;
+}
+
+function add_salt_air_sample(&$cc_order){
+	$sort = array_reduce($cc_order['lineItems'], function($carry, $item){
+		return $item['sort'] > $carry ? $item['sort'] : $carry;
+	}, 1);
+	$sort++;
+	$cc_order['lineItems'][] = [
+		'transactionId' => $cc_order['id'],
+		'productId' => 1494,
+		'productOptionId' => 1495,
+		'sort' => $sort,
+		'code' => '99238701-112',
+		'name' => 'Scent Peel Back Salt Air',
+		'qty' => 1,
+		'styleCode' => '99238701-112',
+		'lineComments' => 'Auto-added by API',
+	];
+	return $cc_order;
 }
