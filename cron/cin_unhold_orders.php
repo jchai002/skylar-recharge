@@ -1238,7 +1238,7 @@ do {
 	$res = $cc->get('SalesOrders', [
 		'query' => [
 			'fields' => implode(',', ['id', 'email', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems']),
-			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND stage = 'APPROVED' AND stage = 'New'",
+			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND stage = 'New'",
 			'order' => 'CreatedDate DESC',
 			'rows' => $page_size,
 			'page' => $page,
