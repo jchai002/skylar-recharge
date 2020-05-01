@@ -1261,7 +1261,7 @@ do {
 		}
 		if($send_updates){
 			echo "Sending updates... ";
-//			$res = send_cc_updates($cc, $updates);
+			$res = send_cc_updates($cc, $updates);
 			$updates = [];
 			echo "Done".PHP_EOL;
 			sleep(1);
