@@ -11,9 +11,16 @@ do {
 		'status' => 'QUEUED',
 		'limit' => $page_size,
 		'page' => $page,
-		'date' => '2020-03-02',
+		'date' => '2020-05-01',
 	]);
 	foreach($res['charges'] as $charge){
+		if(empty($charge['shipping_lines'])){
+			if(empty($shipping_codes['missing shipping_lines'])){
+				$shipping_codes['missing shipping_lines'] = [];
+			}
+			$shipping_codes['missing shipping_lines'][] = $charge['address_id'];
+			continue;
+		}
 		if(empty($shipping_codes[$charge['shipping_lines'][0]['code']])){
 			$shipping_codes[$charge['shipping_lines'][0]['code']] = 0;
 		}
