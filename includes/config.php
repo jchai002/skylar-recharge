@@ -51,7 +51,7 @@ $rc = new RechargeClient();
 $cc = new GuzzleHttp\Client([
 	'base_uri' => 'https://api.cin7.com/api/v1/',
 	'auth' =>  [$_ENV['CIN7_API_USER'], $_ENV['CIN7_API_SECRET']],
-	'timeout' => '1800',
+	'timeout' => '180',
 ]);
 
 /** @var GuzzleHttp\HandlerStack $handler */

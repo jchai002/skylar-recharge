@@ -1228,6 +1228,7 @@ $last_send_time = time();
 $buffer_date = gmdate('Y-m-d\TH:i:s\Z', strtotime('-5 minutes'));
 
 $stmt_get_prev_order = $db->prepare("SELECT 1 FROM orders WHERE email = :email AND id != :id LIMIT 1");
+$stmt_get_order_skus = $db->prepare("SELECT sku FROM order_line_items WHERE order_id=?");
 
 echo "Pulling $buffer_date to $cut_on_date".PHP_EOL;
 
@@ -1267,9 +1268,16 @@ do {
 			sleep(1);
 			$last_send_time = time();
 		}
+		$order_number = str_ireplace('#sb','',$cc_order['reference']);
+		$stmt->execute([$order_number]);
+		if($stmt->rowCount() == 0){
+			echo "Couldn't find order in DB, must not be Shopify";
+			continue;
+		}
+		$db_order = $stmt->fetch();
 		echo "Checking order ".$cc_order['reference']."... ";
 		if($cc_order['logisticsStatus'] != 9){
-			if(!empty($row['cancelled_at'])){
+			if(!empty($db_order['cancelled_at'])){
 				echo "logisticsStatus is ".$cc_order['logisticsStatus'].", skipping cin7 id: ".$cc_order['id'].PHP_EOL;
 				continue;
 			}
@@ -1279,18 +1287,11 @@ do {
 			print_r(send_alert($db, 15, "Order is being held because it doesn't have a freight description: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Freight Description on Order', ['tim@skylar.com', 'kristin@skylar.com']));
 			continue;
 		}
-		$order_number = str_ireplace('#sb','',$cc_order['reference']);
-		$stmt->execute([$order_number]);
-		if($stmt->rowCount() == 0){
-			echo "Couldn't find order in DB, must not be Shopify";
-			continue;
-		}
-		$row = $stmt->fetch();
-		if(!empty($row['cancelled_at'])){
+		if(!empty($db_order['cancelled_at'])){
 			echo "Order cancelled in Shopify, skipping cin7 id: ".$cc_order['id'].PHP_EOL;
 			continue;
 		}
-		if(strpos($row['tags'], 'HOLD:') !== false){
+		if(strpos($db_order['tags'], 'HOLD:') !== false){
 			echo "Order held in Shopify, skipping".PHP_EOL;
 			continue;
 		}
@@ -1310,13 +1311,30 @@ do {
 		}
 		$stmt_get_prev_order->execute([
 			'email' => $cc_order['email'],
-			'id' => $row['id'],
+			'id' => $db_order['id'],
 		]);
 		if($stmt_get_prev_order->rowCount() == 0){
+			$stmt_get_order_skus->execute([
+				$db_order['id'],
+			]);
+			$order_skus = $stmt_get_order_skus->fetchAll(PDO::FETCH_COLUMN);
+			foreach($order_skus as $sku){
+				// Make sure all shopify line items are present in cc line items
+				if(!in_array($sku, array_column($cc_order['lineItems'], 'code'))){
+					print_r(send_alert($db, 16, "Order is being held because it is missing line items that are in shopify ($sku): https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id']." , https://skylar.com/admin/orders/".$db_order['shopify_id'], 'Skylar Alert - Missing Line Items'));
+					continue 2;
+				}
+			}
+			/*
 			echo "Adding salt air to order... ";
 			add_salt_air_sample($cc_order);
+			$tags = explode(', ', $db_order['tags']);
+			$tags[] = 'Added Salt Air Sample';
+			$res = $sc->put('orders/'.$db_order['shopify_id'].'.json', ['order' => ['tags' => implode(', ', array_unique($tags))]]);
+			*/
+		} else {
+			unset($cc_order['lineItems']);
 		}
-		unset($cc_order['lineItems']); // TODO: Remove for salt air
 		$updates[] = $cc_order;
 		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
 	}
