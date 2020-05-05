@@ -1227,14 +1227,19 @@ $updates = [];
 $last_send_time = time();
 $buffer_date = gmdate('Y-m-d\TH:i:s\Z', strtotime('-5 minutes'));
 
+$stmt_get_prev_order = $db->prepare("SELECT 1 FROM orders WHERE email = :email AND id != :id LIMIT 1");
+$stmt_get_order_skus = $db->prepare("SELECT sku FROM order_line_items WHERE order_id=?");
+
+echo "Pulling $buffer_date to $cut_on_date".PHP_EOL;
+
 do {
 	$page++;
 	// Get held orders
 	/* @var $res JsonAwareResponse */
 	$res = $cc->get('SalesOrders', [
 		'query' => [
-			'fields' => implode(',', ['id', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems']),
-			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED'",
+			'fields' => implode(',', ['id', 'email', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems']),
+			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND stage = 'New'",
 			'order' => 'CreatedDate DESC',
 			'rows' => $page_size,
 			'page' => $page,
@@ -1263,29 +1268,30 @@ do {
 			sleep(1);
 			$last_send_time = time();
 		}
-		echo "Checking order ".$cc_order['reference']."... ";
-		if($cc_order['logisticsStatus'] != 9){
-			if(!empty($row['cancelled_at'])){
-				echo "logisticsStatus is ".$cc_order['logisticsStatus'].", skipping cin7 id: ".$cc_order['id'].PHP_EOL;
-				continue;
-			}
-		}
-		if(empty($cc_order['freightDescription'])){
-			echo "Skipping, empty freight description".PHP_EOL;
-			continue;
-		}
 		$order_number = str_ireplace('#sb','',$cc_order['reference']);
 		$stmt->execute([$order_number]);
 		if($stmt->rowCount() == 0){
 			echo "Couldn't find order in DB, must not be Shopify";
 			continue;
 		}
-		$row = $stmt->fetch();
-		if(!empty($row['cancelled_at'])){
+		$db_order = $stmt->fetch();
+		echo "Checking order ".$cc_order['reference']."... ";
+		if($cc_order['logisticsStatus'] != 9){
+			if(!empty($db_order['cancelled_at'])){
+				echo "logisticsStatus is ".$cc_order['logisticsStatus'].", skipping cin7 id: ".$cc_order['id'].PHP_EOL;
+				continue;
+			}
+		}
+		if(empty($cc_order['freightDescription'])){
+			echo "Order doesn't have freight description, skipping and alerting".PHP_EOL;
+			print_r(send_alert($db, 15, "Order is being held because it doesn't have a freight description: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Freight Description on Order', ['tim@skylar.com', 'kristin@skylar.com']));
+			continue;
+		}
+		if(!empty($db_order['cancelled_at'])){
 			echo "Order cancelled in Shopify, skipping cin7 id: ".$cc_order['id'].PHP_EOL;
 			continue;
 		}
-		if(strpos($row['tags'], 'HOLD:') !== false){
+		if(strpos($db_order['tags'], 'HOLD:') !== false){
 			echo "Order held in Shopify, skipping".PHP_EOL;
 			continue;
 		}
@@ -1296,14 +1302,39 @@ do {
 			default: break;
 			case -1:
 				echo "Order doesn't have zip code, skipping and alerting".PHP_EOL;
-				send_alert($db, 13, "Order is being held because it doesn't have a shipping address zip: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=206888", 'Skylar Alert - No Zip on Order', ['tim@skylar.com', 'kristin@skylar.com']);
+				print_r(send_alert($db, 13, "Order is being held because it doesn't have a shipping address zip: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Zip on Order', ['tim@skylar.com', 'kristin@skylar.com']));
 				continue 2; // Switch statements are treated as loops
 			case -2:
 				echo "No branch can fulfill this order, skipping and alerting".PHP_EOL;
-				send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=206888", 'Skylar Alert - No Stock Available', ['tim@skylar.com', 'kristin@skylar.com']);
+				print_r(send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com', 'kristin@skylar.com']));
 				continue 2; // Switch statements are treated as loops
 		}
-		unset($cc_order['lineItems']);
+		$stmt_get_prev_order->execute([
+			'email' => $cc_order['email'],
+			'id' => $db_order['id'],
+		]);
+		if($stmt_get_prev_order->rowCount() == 0){
+			$stmt_get_order_skus->execute([
+				$db_order['id'],
+			]);
+			$order_skus = $stmt_get_order_skus->fetchAll(PDO::FETCH_COLUMN);
+			foreach($order_skus as $sku){
+				// Make sure all shopify line items are present in cc line items
+				if(!in_array($sku, array_column($cc_order['lineItems'], 'code'))){
+					print_r(send_alert($db, 16, "Order is being held because it is missing line items that are in shopify ($sku): https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id']." , https://skylar.com/admin/orders/".$db_order['shopify_id'], 'Skylar Alert - Missing Line Items'));
+					continue 2;
+				}
+			}
+			/*
+			echo "Adding salt air to order... ";
+			add_salt_air_sample($cc_order);
+			$tags = explode(', ', $db_order['tags']);
+			$tags[] = 'Added Salt Air Sample';
+			$res = $sc->put('orders/'.$db_order['shopify_id'].'.json', ['order' => ['tags' => implode(', ', array_unique($tags))]]);
+			*/
+		} else {
+			unset($cc_order['lineItems']);
+		}
 		$updates[] = $cc_order;
 		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
 	}
@@ -1316,6 +1347,7 @@ if(count($updates) > 0){
 }
 
 function send_cc_updates(GuzzleHttp\Client $cc, $updates){
+//	return;
 	$res = $cc->put('SalesOrders',[
 		'http_errors' => false,
 		'json' => $updates,
@@ -1388,4 +1420,23 @@ AND cin_branch_id = :branch_id;");
 		return false;
 	}
 	return true;
+}
+
+function add_salt_air_sample(&$cc_order){
+	$sort = array_reduce($cc_order['lineItems'], function($carry, $item){
+		return $item['sort'] > $carry ? $item['sort'] : $carry;
+	}, 1);
+	$sort++;
+	$cc_order['lineItems'][] = [
+		'transactionId' => $cc_order['id'],
+		'productId' => 1494,
+		'productOptionId' => 1495,
+		'sort' => $sort,
+		'code' => '99238701-112',
+		'name' => 'Scent Peel Back Salt Air',
+		'qty' => 1,
+		'styleCode' => '99238701-112',
+		'lineComments' => 'Auto-added by API',
+	];
+	return $cc_order;
 }

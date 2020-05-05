@@ -51,6 +51,7 @@ $rc = new RechargeClient();
 $cc = new GuzzleHttp\Client([
 	'base_uri' => 'https://api.cin7.com/api/v1/',
 	'auth' =>  [$_ENV['CIN7_API_USER'], $_ENV['CIN7_API_SECRET']],
+	'timeout' => '180',
 ]);
 
 /** @var GuzzleHttp\HandlerStack $handler */
@@ -144,11 +145,11 @@ function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $t
 
 	$msg = is_array($msg) ? print_r($msg, true) : $msg;
 
-	$stmt = $db->prepare("SELECT 1 FROM alert_logs WHERE alert_id=:alert_id AND message=:message AND message_sent=1 AND date_created <= :window");
+	$stmt = $db->prepare("SELECT 1 FROM alert_logs WHERE alert_id=:alert_id AND message=:message AND message_sent=1 AND date_created >= :window LIMIT 1");
 	$stmt->execute([
 		'alert_id' => $alert_id,
 		'message' => $msg,
-		'window' => date('Y-m-d H:i:s', time()-60*60),
+		'window' => date('Y-m-d 00:00:00'),
 	]);
 	$smother_message = $stmt->rowCount() != 0;
 	if(array_key_exists('smother', $properties)){
@@ -1154,6 +1155,16 @@ function sc_get_monthly_scent(PDO $db, $time = null, $admin_preview = false){
 	$monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date] = $stmt->fetch();
 	return $monthly_scent_cache[($admin_preview ? 'admin' : 'live')][$date];
 }
+function sc_get_monthly_scent_public(PDO $db, $time = null){
+	if(empty($time)){
+		$time = time();
+	}
+	$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE public_launch <= ? ORDER BY public_launch DESC LIMIT 1;");
+	$stmt->execute([
+		date('Y-m-d', $time),
+	]);
+	return $stmt->fetch();
+}
 function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $main_sub = []){
 	if(empty($main_sub)){
 		$main_sub = sc_get_main_subscription($db, $rc, [
@@ -1559,7 +1570,7 @@ function generate_discount_string($seed = null, $rand_chars = 5){
 	return $code;
 }
 function regenerate_charge($charge_id){
-	$cookie_session = '.eJw1j8FqwzAQRH-l7LkHW_Glhl6KTFFhZSKcmt1LaBvXsmSF4CTYVsi_Vy2UOQxzGObNDfbfU3e2UF6ma_cI--EA5Q0ePqEElpijHEeWL46isfp1u6Crch12Gx3MWEsz1LJfKWBOjlZuVabbamFpPEqfcWMHdrhQW80ov2Zs_AYbKnT7lroq14I9xd2c8kDBDBjZajl6cgeXNi0JtWLsCxQqcSSPv-ozat69Fqrghn3dassBn-Ge2E_dFD6O3fHy_-Z67qa_RyCeCiHg_gMUDU8G.ERXzlw.h7lppIZOi5JWxTujHGMNSPgo3Mw';
+	$cookie_session = '.eJw9j19rgzAUxb_KyPMeZto-TOhDITNscG9waEPyInbG2RtThlo2U_rdZwvb6zmcP78Lq9rBjR1Lp-HsHll1bFh6YQ8HljKlkbAoEyTgKDBAsYsg0QPlGwjvHqNfgcyCoR1Xwvwgfc5Klivgi0_WY_HyhLHrlc5nIL9RGiKE1zWKpkeJZEWZWGGXvn1ntYk2wDfItwAi88sax2JRQuYhNkFpkyiZkSWY4dbLIVrxsTJ8T0bDll2X719uCPXJnaY_mnGq27Y6j26oXKiP_T8a5Nt75G7dkBl_XnPOrr-O_1jM.EYzwFg.4OcQWXQKoIpWEgLeuVuh58acvXQ';
 	$ch = curl_init("https://maven-and-muse.shopifysubscriptions.com/charge/$charge_id/regenerate_charge/");
 	curl_setopt_array($ch, [
 		CURLOPT_RETURNTRANSFER =>  true,
