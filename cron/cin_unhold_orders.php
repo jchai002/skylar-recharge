@@ -1285,7 +1285,9 @@ do {
 		}
 		if(empty($cc_order['freightDescription'])){
 			echo "Order doesn't have freight description, skipping and alerting".PHP_EOL;
-			print_r(send_alert($db, 15, "Order is being held because it doesn't have a freight description: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Freight Description on Order', ['tim@skylar.com', 'kristin@skylar.com']));
+			print_r(send_alert($db, 15, "Order is being held because it doesn't have a freight description: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Freight Description on Order', ['tim@skylar.com', 'kristin@skylar.com'], [
+				'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
+			]));
 			continue;
 		}
 		if(!empty($db_order['cancelled_at'])){
@@ -1303,11 +1305,15 @@ do {
 			default: break;
 			case -1:
 				echo "Order doesn't have zip code, skipping and alerting".PHP_EOL;
-				print_r(send_alert($db, 13, "Order is being held because it doesn't have a shipping address zip: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Zip on Order', ['tim@skylar.com', 'kristin@skylar.com']));
+				print_r(send_alert($db, 13, "Order is being held because it doesn't have a shipping address zip: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Zip on Order', ['tim@skylar.com', 'kristin@skylar.com'], [
+					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
+				]));
 				continue 2; // Switch statements are treated as loops
 			case -2:
 				echo "No branch can fulfill this order, skipping and alerting".PHP_EOL;
-				print_r(send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com', 'kristin@skylar.com']));
+				print_r(send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com', 'kristin@skylar.com'], [
+					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
+				]));
 				continue 2; // Switch statements are treated as loops
 		}
 		$stmt_get_prev_order->execute([

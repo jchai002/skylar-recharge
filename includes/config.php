@@ -145,11 +145,13 @@ function send_alert(PDO $db, $alert_id, $msg = '', $subject = 'Skylar Alert', $t
 
 	$msg = is_array($msg) ? print_r($msg, true) : $msg;
 
+	$properties['smother_window'] = $properties['smother_window'] ?? date('Y-m-d 00:00:00');
+
 	$stmt = $db->prepare("SELECT 1 FROM alert_logs WHERE alert_id=:alert_id AND message=:message AND message_sent=1 AND date_created >= :window LIMIT 1");
 	$stmt->execute([
 		'alert_id' => $alert_id,
 		'message' => $msg,
-		'window' => date('Y-m-d 00:00:00'),
+		'window' => $properties['smother_window'],
 	]);
 	$smother_message = $stmt->rowCount() != 0;
 	if(array_key_exists('smother', $properties)){
