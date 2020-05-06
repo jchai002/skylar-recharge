@@ -1240,6 +1240,7 @@ do {
 		'query' => [
 			'fields' => implode(',', ['id', 'email', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems']),
 			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND stage = 'New'",
+//			'where' => "id = 219878 AND LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND stage = 'New'",
 			'order' => 'CreatedDate DESC',
 			'rows' => $page_size,
 			'page' => $page,
@@ -1347,7 +1348,6 @@ if(count($updates) > 0){
 }
 
 function send_cc_updates(GuzzleHttp\Client $cc, $updates){
-//	return;
 	$res = $cc->put('SalesOrders',[
 		'http_errors' => false,
 		'json' => $updates,
