@@ -535,12 +535,12 @@ class SubscriptionSchedule {
 				// Load all info on the discount
 				$stmt = $this->db->prepare("SELECT * FROM rc_discounts WHERE recharge_id=?");
 				$stmt->execute([
-					$discount['recharge_discount_id'],
+					$discount['id'],
 				]);
 				if($stmt->rowCount() != 0){
 					$db_discount = $stmt->fetch();
 				} else {
-					$res = $this->rc->get('/discounts/'.$discount['recharge_discount_id']);
+					$res = $this->rc->get('/discounts/'.$discount['id']);
 					if(!empty($res['discount'])){
 						$db_discount = $res['discount'];
 						insert_update_rc_discount($this->db, $db_discount);
