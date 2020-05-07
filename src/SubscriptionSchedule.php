@@ -532,7 +532,6 @@ class SubscriptionSchedule {
 		// RC doesn't give us applied discount value, so we need to calculate it :(
 		if(!empty($charge['discount_codes'])){
 			foreach($charge['discount_codes'] as $index => $discount){
-				echo "<!-- DISCOUNT: ".print_r($discount, true)." -->";
 				// Load all info on the discount
 				$stmt = $this->db->prepare("SELECT * FROM rc_discounts WHERE code=?");
 				$stmt->execute([
