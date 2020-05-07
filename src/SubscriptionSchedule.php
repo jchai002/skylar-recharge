@@ -534,16 +534,16 @@ class SubscriptionSchedule {
 			foreach($charge['discount_codes'] as $index => $discount){
 				echo "<!-- DISCOUNT: ".print_r($discount, true)." -->";
 				// Load all info on the discount
-				$stmt = $this->db->prepare("SELECT * FROM rc_discounts WHERE recharge_id=?");
+				$stmt = $this->db->prepare("SELECT * FROM rc_discounts WHERE code=?");
 				$stmt->execute([
-					$discount['id'],
+					$discount['code'],
 				]);
 				if($stmt->rowCount() != 0){
 					$db_discount = $stmt->fetch();
 				} else {
-					$res = $this->rc->get('/discounts/'.$discount['id']);
-					if(!empty($res['discount'])){
-						$db_discount = $res['discount'];
+					$res = $this->rc->get('/discounts', ['discount_code' => $discount['code']]);
+					if(!empty($res[0]['discount'])){
+						$db_discount = $res[0]['discount'];
 						insert_update_rc_discount($this->db, $db_discount);
 					}
 				}
