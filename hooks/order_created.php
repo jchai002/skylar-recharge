@@ -26,11 +26,11 @@ foreach($order['discount_applications'] as $discount){
 	if($discount['code'] != 'TESTORDER'){
 		continue;
 	}
-	echo "Canceling order, test".PHP_EOL;
 	$is_test = true;
 	if(!empty($order['cancelled_at'])){
 		continue;
 	}
+	echo "Canceling order, test".PHP_EOL;
 	cancel_and_refund_order($order, $sc, $rc);
 	break;
 }
@@ -189,7 +189,7 @@ if($scent_experience_quantity > 0 && $is_test){
 		$codes[] = strtoupper($gift_card['code']);
 		$order_tags[] = 'Scent Experience Code: '.$gift_card['code'];
 	}
-	klaviyo_send_transactional_email($db, $order['email'], 'scent_experience_gift_codes', ['codes'=>$codes, 'value' => $value]);
+	klaviyo_send_transactional_email($db, $order['email'], 'scent_experience_gift_codes', ['codes'=>$codes, 'value' => $value, 'smother' => false]);
 	$order_tags[] = 'Scent Experience Codes Emailed';
 	$update_order = true;
 }

@@ -1476,14 +1476,18 @@ function match_email($email, $test_emails){
 // Klaviyo
 function klaviyo_send_transactional_email(PDO $db, $to_email, $email_type, $properties=[]){
     $properties['email_type'] = $email_type;
-    $stmt = $db->prepare("SELECT 1 FROM transactional_emails_sent WHERE email_type=:email_type AND to_address=:to_email AND DATE(date_created) = '".date('Y-m-d')."'");
-    $stmt->execute([
-        'email_type' => $email_type,
-        'to_email' => $to_email,
-    ]);
-    if($stmt->rowCount() > 0){
-        return false;
-    }
+    if(!array_key_exists('smother', $properties)){
+		$stmt = $db->prepare("SELECT 1 FROM transactional_emails_sent WHERE email_type=:email_type AND to_address=:to_email AND DATE(date_created) = '".date('Y-m-d')."'");
+		$stmt->execute([
+			'email_type' => $email_type,
+			'to_email' => $to_email,
+		]);
+		if($stmt->rowCount() > 0){
+			return false;
+		}
+	} else if($properties['smother']){
+    	return false;
+	}
     $res = klaviyo_send_event([
         'token' => "KvQM7Q",
         'event' => 'Sent Transactional Email',
