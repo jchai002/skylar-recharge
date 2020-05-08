@@ -5,7 +5,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-//$scp = new ShopifyPrivateClient();
+require_once(__DIR__.'/../includes/class.ShopifyClient.php');
+$scp = new ShopifyPrivateClient();
 
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
@@ -172,7 +173,7 @@ if(match_email($order['email'], $test_emails)){
 	$order_tags[] = 'HOLD: Test Order';
 	$update_order = true;
 }
-/*
+
 // Scent experience digital codes
 $scent_experience_quantity = array_sum(array_column(array_filter($order['line_items'], function($line_item){
 	return $line_item['sku'] == '70804122-100'; // digital scent experience
@@ -194,7 +195,7 @@ if($scent_experience_quantity > 0 && $is_test){
 	$order_tags[] = 'Scent Experience Codes Emailed';
 	$update_order = true;
 }
-*/
+
 // Get recharge version of order
 $rc_order = $rc->get('/orders',['shopify_order_id'=>$order['id']]);
 //print_r($rc_order);
