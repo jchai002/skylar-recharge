@@ -1,8 +1,41 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-// Scent Duo
+// Load all BOMs from cin7 into cache
+$page = 0;
+$page_size = 250;
+$all_boms = [];
+do {
+	$page++;
+	// Get held orders
+	/* @var $res JsonAwareResponse */
+	$res = $cc->get('SalesOrders', [
+		'query' => [
+			'rows' => $page_size,
+			'page' => $page,
+		],
+	]);
+	sleep(1);
+	$cc_boms = $res->getJson();
+	foreach($cc_boms as $bom){
+		$all_boms[] = $bom;
+	}
+} while(count($cc_boms) >= $page_size);
 
+// Load shopify variants that are not parents
+
+
+
+
+
+
+
+
+
+
+
+die();
+// Scent Duo
 $fullsize_by_option = ['Arrow' => 31022048003,'Capri' => 5541512970271,'Coral' => 26812012355,'Isle' => 31022109635,'Meadow' => 26812085955,'Willow' => 8328726413399, 'Salt Air' => 31146959568983];
 $rollies_by_option = ['Arrow' => 30258959482967,'Capri' => 30258951389271,'Coral' => 30258952175703,'Isle' => 30258950996055,'Meadow' => 30258958958679,'Willow' => 30258961973335, 'Salt Air' => 31146997448791];
 $wash_by_option = ['Capri' => 29452417695831,'Coral' => 29452435914839,'Isle' => 29452443615319,'Meadow' => 29452444401751];

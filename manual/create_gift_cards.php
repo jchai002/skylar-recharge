@@ -2,8 +2,8 @@
 require_once(__DIR__.'/../includes/config.php');
 require_once(__DIR__.'/../includes/class.ShopifyClient.php');
 
-$count = 1000;
-$value = 78;
+$count = 1;
+$value = 1;
 
 $sc->resetCreds();
 $sc->addSecret($_ENV['SHOPIFY_PRIVATE_APP_KEY'], $_ENV['SHOPIFY_PRIVATE_APP_SECRET']);
@@ -14,7 +14,7 @@ $outstream = fopen("giftcards.csv", 'w');
 for($i = 0; $i < $count; $i++){
 	try {
 		$gift_card = $sc->post('/admin/api/2019-10/gift_cards.json', ['gift_card' => [
-			'note' => 'Scent Experience Insert',
+			'note' => '',
 			'initial_value' => $value,
 		]]);
 	} catch(Exception $e){

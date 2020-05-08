@@ -1,6 +1,8 @@
 <?php
 require_once('../includes/config.php');
 
+$scp = new ShopifyPrivateClient();
+
 if(!empty($_REQUEST['id'])){
 	$order = $sc->call('GET', '/admin/orders/'.intval($_REQUEST['id']).'.json');
 } else {
@@ -15,6 +17,7 @@ if(empty($order)){
 //print_r($order);
 
 // Cancel and refund test orders
+$is_test = false;
 if(empty($order['cancelled_at'])){
 	foreach($order['discount_applications'] as $discount){
 		if($discount['type'] != 'discount_code'){
@@ -24,6 +27,7 @@ if(empty($order['cancelled_at'])){
 			continue;
 		}
 		echo "Canceling order, test".PHP_EOL;
+		$is_test = true;
 		cancel_and_refund_order($order, $sc, $rc);
 		break;
 	}
@@ -162,6 +166,28 @@ if(OrderCreatedController::shipping_looks_wrong($order)){
 
 if(match_email($order['email'], $test_emails)){
 	$order_tags[] = 'HOLD: Test Order';
+	$update_order = true;
+}
+
+// Scent experience digital codes
+$scent_experience_quantity = array_sum(array_column(array_filter($order['line_items'], function($line_item){
+	return $line_item['sku'] == '70804122-100'; // digital scent experience
+}), 'quantity'));
+if($scent_experience_quantity > 0 && $is_test){
+	$codes = [];
+	$value = 78;
+	while(count($codes) < $scent_experience_quantity){
+		// Generate code
+
+		$gift_card = $scp->post('/admin/api/2019-10/gift_cards.json', ['gift_card' => [
+			'note' => 'Digital Scent Experience for order '.$order['id'],
+			'initial_value' => $value,
+		]]);
+		$codes[] = strtoupper($gift_card['code']);
+		$order_tags[] = 'Scent Experience Code: '.$gift_card['code'];
+	}
+	klaviyo_send_transactional_email($db, $order['email'], 'scent_experience_gift_codes', ['codes'=>$codes, 'value' => $value]);
+	$order_tags[] = 'Scent Experience Codes Emailed';
 	$update_order = true;
 }
 
