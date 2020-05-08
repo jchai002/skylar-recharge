@@ -19,19 +19,20 @@ if(empty($order)){
 
 // Cancel and refund test orders
 $is_test = false;
-if(empty($order['cancelled_at'])){
-	foreach($order['discount_applications'] as $discount){
-		if($discount['type'] != 'discount_code'){
-			continue;
-		}
-		if($discount['code'] != 'TESTORDER'){
-			continue;
-		}
-		echo "Canceling order, test".PHP_EOL;
-		$is_test = true;
-		cancel_and_refund_order($order, $sc, $rc);
-		break;
+foreach($order['discount_applications'] as $discount){
+	if($discount['type'] != 'discount_code'){
+		continue;
 	}
+	if($discount['code'] != 'TESTORDER'){
+		continue;
+	}
+	echo "Canceling order, test".PHP_EOL;
+	$is_test = true;
+	if(!empty($order['cancelled_at'])){
+		continue;
+	}
+	cancel_and_refund_order($order, $sc, $rc);
+	break;
 }
 
 echo insert_update_order($db, $order, $sc).PHP_EOL;
