@@ -176,7 +176,7 @@ $scent_experience_quantity = array_sum(array_column(array_filter($order['line_it
 	return $line_item['sku'] == '70804122-100'; // digital scent experience
 }), 'quantity'));
 echo "Digital scent experience quantity: $scent_experience_quantity".PHP_EOL;
-if($scent_experience_quantity > 0 && $is_test){
+if($scent_experience_quantity > 0){
 	$codes = [];
 	$value = 78;
 	while(count($codes) < $scent_experience_quantity){
