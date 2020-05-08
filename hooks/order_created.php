@@ -174,6 +174,7 @@ if(match_email($order['email'], $test_emails)){
 $scent_experience_quantity = array_sum(array_column(array_filter($order['line_items'], function($line_item){
 	return $line_item['sku'] == '70804122-100'; // digital scent experience
 }), 'quantity'));
+echo "Digital scent experience quantity: $scent_experience_quantity".PHP_EOL;
 if($scent_experience_quantity > 0 && $is_test){
 	$codes = [];
 	$value = 78;
