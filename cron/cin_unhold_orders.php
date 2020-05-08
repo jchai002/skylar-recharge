@@ -1328,6 +1328,8 @@ do {
 			foreach($order_skus as $sku){
 				// Make sure all shopify line items are present in cc line items
 				if(!in_array($sku, array_column($cc_order['lineItems'], 'code'))){
+					echo "Missing sku $sku, sending alert".PHP_EOL;
+					print_r($cc_order['lineItems']);
 					print_r(send_alert($db, 16, "Order is being held because it is missing line items that are in shopify ($sku): https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id']." , https://skylar.com/admin/orders/".$db_order['shopify_id'], 'Skylar Alert - Missing Line Items'));
 					continue 2;
 				}
