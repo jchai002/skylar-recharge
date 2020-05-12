@@ -1218,6 +1218,7 @@ $east_zip_prefixes = [
 	'777',
 ];
 
+$inventory_pulls = [];
 // TODO: Alert for high volume of orders not shipped
 
 $cut_on_date = '2019-12-16T08:00:00Z';
@@ -1313,6 +1314,7 @@ do {
 				echo "No branch can fulfill this order, skipping and alerting".PHP_EOL;
 				print_r(send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com', 'kristin@skylar.com'], [
 					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
+					'inventory_pulls' => $inventory_pulls,
 				]));
 				continue 2; // Switch statements are treated as loops
 		}
@@ -1406,9 +1408,8 @@ function branch_can_fill_items(PDO $db, $branch_id, $line_items){
 	}
 	return true;
 }
-
 function branch_can_fill_sku(PDO $db, $branch_id, $sku, $quantity = 1){
-	global $_stmt_cache;
+	global $_stmt_cache, $inventory_pulls;
 	if(empty($_stmt_cache['cin_branch_stock_check'])){
 		$_stmt_cache['cin_branch_stock_check'] = $db->prepare("
 SELECT csu.available FROM cin_stock_units csu
@@ -1422,10 +1423,20 @@ AND cin_branch_id = :branch_id;");
 		'sku' => $sku,
 		'branch_id' => $branch_id,
 	]);
-	if($_stmt_cache['cin_branch_stock_check']->rowCount() == 0 || $_stmt_cache['cin_branch_stock_check']->fetchColumn() < $quantity){
+	if($_stmt_cache['cin_branch_stock_check']->rowCount() == 0){
+		$inventory_pulls["$branch_id.$sku"] = [
+			'rowcount' => $_stmt_cache['cin_branch_stock_check']->rowCount(),
+			'errorinfo' => $db->errorInfo(),
+		];
 		return false;
 	}
-	return true;
+	$res = $_stmt_cache['cin_branch_stock_check']->fetchColumn();
+	$inventory_pulls["$branch_id.$sku"] = [
+		'res' => $res,
+		'rowcount' => $_stmt_cache['cin_branch_stock_check']->rowCount(),
+		'errorinfo' => $db->errorInfo(),
+	];
+	return $res >= $quantity;
 }
 
 function add_salt_air_sample(&$cc_order){
