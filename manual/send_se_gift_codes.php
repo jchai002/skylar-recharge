@@ -4,11 +4,27 @@ require_once(__DIR__.'/../includes/config.php');
 require_once(__DIR__.'/../includes/class.ShopifyClient.php');
 $scp = new ShopifyPrivateClient();
 
-$orders = [];
+$orders = [
+	2245973868631,
+];
 
 foreach($orders as $order){
 	echo "$order ";
-	$order = $sc->get('orders.json?name='.$order)[0];
+	/*
+	$res = $sc->get('orders.json?name='.$order);
+	if(empty($res)){
+		print_r($res);
+		die();
+	}
+	$order = res[0];
+	*/
+	$order = $sc->get("orders/$order.json");
+	if(empty($order)){
+		print_r($order);
+		die();
+	}
+
+	$order_tags = explode(', ',$order['tags']);
 
 	$scent_experience_quantity = array_sum(array_column(array_filter($order['line_items'], function($line_item){
 		return $line_item['sku'] == '70221408-100'; // digital scent experience
