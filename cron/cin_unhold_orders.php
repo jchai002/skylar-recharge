@@ -1312,7 +1312,7 @@ do {
 				continue 2; // Switch statements are treated as loops
 			case -2:
 				echo "No branch can fulfill this order, skipping and alerting".PHP_EOL;
-				print_r(send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com', 'kristin@skylar.com'], [
+				print_r(send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com'], [
 					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
 					'inventory_pulls' => $inventory_pulls,
 				]));
