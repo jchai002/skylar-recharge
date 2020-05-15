@@ -1318,23 +1318,33 @@ do {
 				]));
 				continue 2; // Switch statements are treated as loops
 		}
-		$stmt_get_prev_order->execute([
-			'email' => $cc_order['email'],
-			'id' => $db_order['id'],
-		]);
-		if($stmt_get_prev_order->rowCount() == 0){
+		// Salt air sample add
+		$add_salt_air = false;
+		if(count(array_intersect([
+			'70221408-100', // Scent experience
+			'10450506-101', // Sample Palette
+		], array_column($cc_order['lineItems'], 'code'))) > 0){
+			$add_salt_air = true;
+		} else{
+			$stmt_get_prev_order->execute([
+				'email' => $cc_order['email'],
+				'id' => $db_order['id'],
+			]);
+			if($stmt_get_prev_order->rowCount() == 0){
+				$add_salt_air = true;
+			}
+		}
+		if($add_salt_air){
 			$stmt_get_order_skus->execute([
 				$db_order['id'],
 			]);
 			$order_skus = $stmt_get_order_skus->fetchAll(PDO::FETCH_COLUMN);
-			foreach($order_skus as $sku){
-				// Make sure all shopify line items are present in cc line items
-				if(!in_array($sku, array_column($cc_order['lineItems'], 'code'))){
-					echo "Missing sku $sku, sending alert".PHP_EOL;
-					print_r($cc_order['lineItems']);
-					print_r(send_alert($db, 16, "Order is being held because it is missing line items that are in shopify ($sku): https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id']." , https://skylar.com/admin/orders/".$db_order['shopify_id'], 'Skylar Alert - Missing Line Items'));
-					continue 2;
-				}
+			$missing_skus = array_diff($order_skus, array_column($cc_order['lineItems'], 'code'));
+			if(count($missing_skus) > 0){
+				echo "Missing sku ".implode(',', $missing_skus).", sending alert" . PHP_EOL;
+				print_r($cc_order['lineItems']);
+				print_r(send_alert($db, 16, "Order is being held because it is missing line items that are in shopify (".implode(',', $missing_skus)."): https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=" . $cc_order['id'] . " , https://skylar.com/admin/orders/" . $db_order['shopify_id'], 'Skylar Alert - Missing Line Items'));
+				continue;
 			}
 			echo "Adding salt air to order... ";
 			add_salt_air_sample($cc_order);
@@ -1440,6 +1450,11 @@ AND cin_branch_id = :branch_id;");
 }
 
 function add_salt_air_sample(&$cc_order){
+	// Make sure it doesn't already have salt air
+	if(in_array('99238701-112', array_column($cc_order['lineItems'], 'code'))){
+		return $cc_order;
+	}
+
 	$sort = array_reduce($cc_order['lineItems'], function($carry, $item){
 		return $item['sort'] > $carry ? $item['sort'] : $carry;
 	}, 1);
