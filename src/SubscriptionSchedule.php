@@ -452,6 +452,25 @@ class SubscriptionSchedule {
 				$item['variant_title'] = $swap['variant_title'];
 			}
 		}
+		// Check if we should swap in container
+		if(!is_admin_address($item['address_id']) && is_scent_club_month(get_product($this->db, $item['shopify_product_id']))){
+			$variant = get_variant($this->db, $item['shopify_variant_id']);
+			$stmt = $this->db->prepare("SELECT * FROM sc_product_info WHERE variant_id=?");
+			$stmt->execute([
+				$variant['id'],
+			]);
+			$row = $stmt->fetch();
+			if(strtotime($row['member_launch']) > time()){
+				$item['swap'] = $item;
+				if(!empty($swap)){
+					$item['handle'] = 'scent-club';
+					$item['shopify_product_id'] = 2005573795927;
+					$item['shopify_variant_id'] = 19787922014295;
+					$item['product_title'] = 'Skylar Scent Club';
+					$item['variant_title'] = '';
+				}
+			}
+		}
 
 		$this->schedule[$date]['addresses'][$address_id]['items'][] = $item;
 		return true;
