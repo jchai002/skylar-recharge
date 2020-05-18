@@ -464,15 +464,14 @@ class SubscriptionSchedule {
 			]);
 			$row = $stmt->fetch();
 			$item['notes']['row'] = $row;
+			$item['notes']['swap'] = strtotime($row['member_launch']) > time();
 			if(strtotime($row['member_launch']) > time()){
 				$item['swap'] = $item;
-				if(!empty($swap)){
-					$item['handle'] = 'scent-club';
-					$item['shopify_product_id'] = 2005573795927;
-					$item['shopify_variant_id'] = 19787922014295;
-					$item['product_title'] = 'Skylar Scent Club';
-					$item['variant_title'] = '';
-				}
+				$item['handle'] = 'scent-club';
+				$item['shopify_product_id'] = 2005573795927;
+				$item['shopify_variant_id'] = 19787922014295;
+				$item['product_title'] = 'Skylar Scent Club';
+				$item['variant_title'] = '';
 			}
 		}
 
