@@ -218,7 +218,7 @@ function is_business_day($time){
 	}
 	// Memorial day
 	if($month == 5 && $time == strtotime("last monday of $year-5")){
-		return false;
+//		return false;
 	}
 	// Independence day, + observed 2020
 	if($month == 7 && ($day == 4 || $year == 2020 && $day == 3)){
