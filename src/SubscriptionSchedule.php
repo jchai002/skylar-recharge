@@ -459,6 +459,7 @@ class SubscriptionSchedule {
 		];
 		if(!is_admin_address($item['address_id']) && is_scent_club_month(get_product($this->db, $item['shopify_product_id']))){
 			$variant = get_variant($this->db, $item['shopify_variant_id']);
+			$item['notes']['variant'] = $variant;
 			$stmt = $this->db->prepare("SELECT * FROM sc_product_info WHERE variant_id=?");
 			$stmt->execute([
 				$variant['id'],
