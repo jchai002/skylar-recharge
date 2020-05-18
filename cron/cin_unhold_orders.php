@@ -1,6 +1,6 @@
 <?php
 
-die();
+//die();
 
 require_once(__DIR__.'/../includes/config.php');
 
@@ -1261,12 +1261,13 @@ do {
 			echo "Updates hit $page_size, ";
 			$send_updates = true;
 		}
-		if(count($updates) > 0 && time()-$last_send_time > 30){
+		if(count($updates) > 0 && time()-$last_send_time > 10){
 			echo "It's been ".(time()-$last_send_time)."s since last update, ";
 			$send_updates = true;
 		}
 		if($send_updates){
 			echo "Sending updates... ";
+			print_r($inventory_pulls);
 			$res = send_cc_updates($cc, $updates);
 			$updates = [];
 			echo "Done".PHP_EOL;
@@ -1302,7 +1303,6 @@ do {
 			echo "Order held in Shopify, skipping".PHP_EOL;
 			continue;
 		}
-		$cc_order['logisticsStatus'] = 1;
 		$cc_order['branchId'] = calc_branch_id($db, $cc_order);
 
 		switch($cc_order['branchId']){
@@ -1364,6 +1364,8 @@ do {
 		} else {
 			unset($cc_order['lineItems']);
 		}
+
+//		$cc_order['logisticsStatus'] = 1;
 		$updates[] = $cc_order;
 		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
 	}
@@ -1429,6 +1431,7 @@ function branch_can_fill_items(PDO $db, $branch_id, $line_items){
 	return true;
 }
 function branch_can_fill_sku(PDO $db, $branch_id, $sku, $quantity = 1){
+	$buffer = 25;
 	global $_stmt_cache, $inventory_pulls;
 	if(empty($_stmt_cache['cin_branch_stock_check'])){
 		$_stmt_cache['cin_branch_stock_check'] = $db->prepare("
@@ -1444,19 +1447,30 @@ AND cin_branch_id = :branch_id;");
 		'branch_id' => $branch_id,
 	]);
 	if($_stmt_cache['cin_branch_stock_check']->rowCount() == 0){
-		$inventory_pulls["$branch_id.$sku"] = [
+		$inventory_pulls[] = [
+			'branch_id' => $branch_id,
+			'sku' => $sku,
 			'rowcount' => $_stmt_cache['cin_branch_stock_check']->rowCount(),
 			'errorinfo' => $db->errorInfo(),
 		];
+		echo PHP_EOL."Branch $branch_id cannot fill sku $sku ".PHP_EOL;
 		return false;
 	}
 	$res = $_stmt_cache['cin_branch_stock_check']->fetchColumn();
-	$inventory_pulls["$branch_id.$sku"] = [
+	$inventory_pulls[] = [
+		'branch_id' => $branch_id,
+		'sku' => $sku,
 		'res' => $res,
 		'rowcount' => $_stmt_cache['cin_branch_stock_check']->rowCount(),
 		'errorinfo' => $db->errorInfo(),
+		'buffer' => $buffer,
 	];
-	return $res >= $quantity;
+	if($res-$buffer >= $quantity){
+		echo PHP_EOL."Branch $branch_id cannot fill sku $sku ".PHP_EOL;
+		return true;
+	} else {
+		return false;
+	}
 }
 
 function add_salt_air_sample(&$cc_order){
