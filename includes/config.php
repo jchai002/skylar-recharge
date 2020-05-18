@@ -354,6 +354,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 	}
 
 	// Import into SC product table
+	/*
 	if(!empty($last_variant_id) && $shopify_product['product_type'] == 'Scent Club Month' && !empty($shopify_product['published_at'])){
 		$sc_time = strtotime(str_replace('scent-club-', '', $shopify_product['handle']));
 		if(!empty($sc_time) && time() <= $sc_time){
@@ -373,6 +374,7 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 			]);
 		}
 	}
+	*/
 
 	return $product_id;
 }
