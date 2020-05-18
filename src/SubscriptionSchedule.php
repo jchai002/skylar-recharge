@@ -453,6 +453,10 @@ class SubscriptionSchedule {
 			}
 		}
 		// Check if we should swap in container
+		$item['notes'] = [
+			'admin_address' => is_admin_address($item['address_id']),
+			'sc_monthly' => is_scent_club_month(get_product($this->db, $item['shopify_product_id'])),
+		];
 		if(!is_admin_address($item['address_id']) && is_scent_club_month(get_product($this->db, $item['shopify_product_id']))){
 			$variant = get_variant($this->db, $item['shopify_variant_id']);
 			$stmt = $this->db->prepare("SELECT * FROM sc_product_info WHERE variant_id=?");
@@ -460,6 +464,7 @@ class SubscriptionSchedule {
 				$variant['id'],
 			]);
 			$row = $stmt->fetch();
+			$item['notes']['row'] = $row;
 			if(strtotime($row['member_launch']) > time()){
 				$item['swap'] = $item;
 				if(!empty($swap)){
