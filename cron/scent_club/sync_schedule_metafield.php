@@ -9,15 +9,16 @@ $sc_info = $stmt = $db->query("SELECT sc_date, ship_date, public_launch, member_
 foreach($sc_info as $index => $sc_info_row){
 	if($sc_info_row['sc_date'] == '2020-06-01'){
 		$sc_info_row['member_launch'] = '2020-05-22';
+		$sc_info_row['public_launch'] = '2020-05-25';
 	}
 	if(empty($sc_info_row['ship_date'])){
 		$sc_info_row['ship_date'] = ScentClubSchedule::calculate_ship_date($sc_info_row['sc_date']);
 	}
-	if(empty($sc_info_row['ship_date'])){
-		$sc_info_row['ship_date'] = ScentClubSchedule::calculate_ship_date($sc_info_row['sc_date']);
+	if(empty($sc_info_row['public_launch'])){
+		$sc_info_row['public_launch'] = ScentClubSchedule::calculate_public_launch($sc_info_row['public_launch']);
 	}
-	if(empty($sc_info_row['ship_date'])){
-		$sc_info_row['ship_date'] = ScentClubSchedule::calculate_ship_date($sc_info_row['sc_date']);
+	if(empty($sc_info_row['member_launch'])){
+		$sc_info_row['member_launch'] = ScentClubSchedule::calculate_member_launch($sc_info_row['member_launch']);
 	}
 	$sc_info[$index] = $sc_info_row;
 }
