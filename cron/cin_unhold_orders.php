@@ -1334,6 +1334,13 @@ do {
 				$add_salt_air = true;
 			}
 		}
+		if($add_salt_air && !empty(array_intersect(array_column($cc_order['lineItems'], 'code'), [
+			'99238701-112', // Peel
+			'10450504-112', // full size
+			'10450505-112', // rollie
+		]))){
+			$add_salt_air = false;
+		}
 		if($add_salt_air){
 			$stmt_get_order_skus->execute([
 				$db_order['id'],
@@ -1451,10 +1458,6 @@ AND cin_branch_id = :branch_id;");
 
 function add_salt_air_sample(&$cc_order){
 	// Make sure it doesn't already have salt air
-	if(in_array('99238701-112', array_column($cc_order['lineItems'], 'code'))){
-		return $cc_order;
-	}
-
 	$sort = array_reduce($cc_order['lineItems'], function($carry, $item){
 		return $item['sort'] > $carry ? $item['sort'] : $carry;
 	}, 1);
