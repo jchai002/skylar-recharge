@@ -7,6 +7,9 @@ $last_month_sc_date = date('Y-m-01', get_last_month());
 $sc_info = $stmt = $db->query("SELECT sc_date, ship_date, public_launch, member_launch, shopify_variant_id AS variant_id, variant_title, sku, shopify_product_id AS product_id, handle, product_title, tags FROM sc_product_info ORDER BY sc_date")->fetchAll();
 
 foreach($sc_info as $index => $sc_info_row){
+	if($sc_info_row['sc_date'] == '2020-06-01'){
+		$sc_info_row['member_launch'] = '2020-05-22';
+	}
 	if(empty($sc_info_row['ship_date'])){
 		$sc_info_row['ship_date'] = ScentClubSchedule::calculate_ship_date($sc_info_row['sc_date']);
 	}
