@@ -85,6 +85,8 @@ do {
 			'page' => $page,
 		],
 	]);
+
+	// TODO: DETECT INVALID 0s
 	$cc_stock_units = $res->getJson();
 	log_event($db, 'API_RESPONSE', json_encode($cc_stock_units), 'CIN7_STOCK', 'COUNT: '.count($cc_stock_units)." SUM: ".array_sum(array_column($cc_stock_units, 'available')));
 	if(count($cc_stock_units) > 1 && array_sum(array_column($cc_stock_units, 'available')) == 0){

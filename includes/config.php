@@ -1447,6 +1447,7 @@ function is_discount_allowed_in_account($discount_code){
 		'BUMO50',
 		'PRES15',
 		'AARMY25',
+		'MEMORIAL15',
 	])){
 		return false;
 	}
