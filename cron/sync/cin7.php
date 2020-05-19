@@ -7,7 +7,6 @@ $page_size = 250;
 $since = gmdate('Y-m-d\Th:i:', ((!empty($argv) && !empty($argv[1]) && $argv[1] == 'all') ? time() - 365*24*60*60 : time()-60)).'00Z';
 
 echo "Pulling since UTC ".$since.PHP_EOL;
-
 $page = 0;
 echo "Pulling Products from Cin7".PHP_EOL;
 do {
@@ -79,7 +78,7 @@ do {
 	/* @var $res JsonAwareResponse */
 	$res = $cc->get('Stock', [
 		'query' => [
-			'fields' => implode(',', ['ProductOptionId', 'BranchId', 'ModifiedDate', 'Available', 'StockOnHand', 'OpenSales', 'Incoming', 'Virtual', 'Holding']),
+			'fields' => implode(',', ['ProductOptionId', 'BranchId', 'ModifiedDate', 'Available', 'StockOnHand', 'OpenSales', 'Incoming', 'Virtual', 'Holding', 'Code']),
 			'where' => "ModifiedDate >= '$since'",
 			'order' => 'ModifiedDate DESC',
 			'rows' => $page_size,
@@ -87,13 +86,17 @@ do {
 		],
 	]);
 	$cc_stock_units = $res->getJson();
+	log_event($db, 'API_RESPONSE', json_encode($cc_stock_units), 'CIN7_STOCK', 'COUNT: '.count($cc_stock_units)." SUM: ".array_sum(array_column($cc_stock_units, 'available')));
 	if(count($cc_stock_units) > 1 && array_sum(array_column($cc_stock_units, 'available')) == 0){
 		echo "Got all zeros back from cin7 on stock, alerting";
 		send_alert($db, 18, "Got all zeros back from cin7 on stock, response: ".print_r($cc_stock_units, true), 'Skylar Alert: Bad CC Stock Unit Response');
 		die();
 	}
+	if(empty($cc_stock_units)){
+		break;
+	}
 	foreach($cc_stock_units as $cc_stock_unit){
-		echo implode('-',insert_update_cin_stock_unit($db, $cc_stock_unit)).": ".$cc_stock_unit['available'].PHP_EOL;
+		echo implode('-',insert_update_cin_stock_unit($db, $cc_stock_unit)).": ".($cc_stock_unit['available']+$cc_stock_unit['virtual']).PHP_EOL;
 	}
 	sleep(1);
 } while(count($cc_stock_units) >= $page_size);
@@ -193,5 +196,5 @@ function insert_update_cin_stock_unit(PDO $db, $cin_stock_unit){
 		'virtual' => $cin_stock_unit['virtual'],
 		'holding' => $cin_stock_unit['holding'],
 	]);
-	return [$cin_stock_unit['productOptionId'], $cin_stock_unit['branchId']];
+	return [$cin_stock_unit['productOptionId'], $cin_stock_unit['code'], $cin_stock_unit['branchId']];
 }
