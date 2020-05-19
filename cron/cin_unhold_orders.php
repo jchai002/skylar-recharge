@@ -1,7 +1,5 @@
 <?php
 
-//die();
-
 require_once(__DIR__.'/../includes/config.php');
 
 $east_zip_prefixes = [
@@ -1261,13 +1259,12 @@ do {
 			echo "Updates hit $page_size, ";
 			$send_updates = true;
 		}
-		if(count($updates) > 0 && time()-$last_send_time > 10){
+		if(count($updates) > 0 && time()-$last_send_time > 30){
 			echo "It's been ".(time()-$last_send_time)."s since last update, ";
 			$send_updates = true;
 		}
 		if($send_updates){
 			echo "Sending updates... ";
-			print_r($inventory_pulls);
 			$res = send_cc_updates($cc, $updates);
 			$updates = [];
 			echo "Done".PHP_EOL;
@@ -1277,30 +1274,34 @@ do {
 		$order_number = str_ireplace('#sb','',$cc_order['reference']);
 		$stmt->execute([$order_number]);
 		if($stmt->rowCount() == 0){
-			echo "Couldn't find order in DB, must not be Shopify";
+			echo " - Couldn't find order in DB, must not be Shopify";
 			continue;
 		}
 		$db_order = $stmt->fetch();
-		echo "Checking order ".$cc_order['reference']."... ";
+		log_echo_multi("Checking order ".$cc_order['reference']."... ");
+		log_echo_multi(" - Line Items:");
+		foreach($cc_order['lineItems'] as $lineItem){
+			log_echo_multi("   - ".$lineItem['code']." x".$lineItem['qty']." [".$lineItem['name']."]");
+		}
 		if($cc_order['logisticsStatus'] != 9){
 			if(!empty($db_order['cancelled_at'])){
-				echo "logisticsStatus is ".$cc_order['logisticsStatus'].", skipping cin7 id: ".$cc_order['id'].PHP_EOL;
+				log_echo_multi(" - logisticsStatus is ".$cc_order['logisticsStatus'].", skipping cin7 id: ".$cc_order['id']);
 				continue;
 			}
 		}
 		if(empty($cc_order['freightDescription'])){
-			echo "Order doesn't have freight description, skipping and alerting".PHP_EOL;
+			log_echo_multi(" - Order doesn't have freight description, skipping and alerting");
 			print_r(send_alert($db, 15, "Order is being held because it doesn't have a freight description: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Freight Description on Order', ['tim@skylar.com', 'kristin@skylar.com'], [
 				'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
 			]));
 			continue;
 		}
 		if(!empty($db_order['cancelled_at'])){
-			echo "Order cancelled in Shopify, skipping cin7 id: ".$cc_order['id'].PHP_EOL;
+			log_echo_multi("Order cancelled in Shopify, skipping cin7 id: ".$cc_order['id']);
 			continue;
 		}
 		if(strpos($db_order['tags'], 'HOLD:') !== false){
-			echo "Order held in Shopify, skipping".PHP_EOL;
+			log_echo_multi("Order held in Shopify, skipping");
 			continue;
 		}
 		$cc_order['branchId'] = calc_branch_id($db, $cc_order);
@@ -1308,16 +1309,26 @@ do {
 		switch($cc_order['branchId']){
 			default: break;
 			case -1:
-				echo "Order doesn't have zip code, skipping and alerting".PHP_EOL;
+				log_echo_multi(" - Order doesn't have zip code, skipping and alerting");
 				print_r(send_alert($db, 13, "Order is being held because it doesn't have a shipping address zip: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Zip on Order', ['tim@skylar.com', 'kristin@skylar.com'], [
 					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
+					'last_log' => end($log),
 				]));
 				continue 2; // Switch statements are treated as loops
 			case -2:
-				echo "No branch can fulfill this order, skipping and alerting".PHP_EOL;
+				log_echo_multi(" - No branch can fulfill this order, skipping and alerting");
 				print_r(send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com'], [
 					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
 					'inventory_pulls' => $inventory_pulls,
+					'last_log' => end($log),
+				]));
+				continue 2; // Switch statements are treated as loops
+			case -3:
+				log_echo_multi(" - No branch can fulfill this order, skipping and alerting");
+				print_r(send_alert($db, 17, "Order is being held because no branch is available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com'], [
+					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
+//					'inventory_pulls' => $inventory_pulls,
+					'last_log' => end($log),
 				]));
 				continue 2; // Switch statements are treated as loops
 		}
@@ -1351,15 +1362,15 @@ do {
 			$order_skus = $stmt_get_order_skus->fetchAll(PDO::FETCH_COLUMN);
 			$missing_skus = array_diff($order_skus, array_column($cc_order['lineItems'], 'code'));
 			if(count($missing_skus) > 0){
-				echo "Missing sku ".implode(',', $missing_skus).", sending alert" . PHP_EOL;
+				log_echo_multi("Missing sku ".implode(',', $missing_skus).", sending alert");
 				print_r($cc_order['lineItems']);
 				print_r(send_alert($db, 16, "Order is being held because it is missing line items that are in shopify (".implode(',', $missing_skus)."): https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=" . $cc_order['id'] . " , https://skylar.com/admin/orders/" . $db_order['shopify_id'], 'Skylar Alert - Missing Line Items'));
 				continue;
 			}
-			echo "Adding salt air to order... ";
+			log_echo_multi(" - Adding salt air to order...");
 			add_salt_air_sample($cc_order);
 			$tags = explode(', ', $db_order['tags']);
-			$tags[] = 'Added Salt Air Sample';
+			$tags[] = ' - Added Salt Air Sample';
 			$res = $sc->put('orders/'.$db_order['shopify_id'].'.json', ['order' => ['tags' => implode(', ', array_unique($tags))]]);
 		} else {
 			unset($cc_order['lineItems']);
@@ -1367,7 +1378,7 @@ do {
 
 //		$cc_order['logisticsStatus'] = 1;
 		$updates[] = $cc_order;
-		echo "Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]".PHP_EOL;
+		log_echo_multi(" - Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]");
 	}
 } while(count($cc_orders) >= $page_size);
 
@@ -1394,32 +1405,53 @@ function calc_branch_id(PDO $db, $cc_order){
 		return -1;
 	}
 
-	$line_items = $cc_order['lineItems'];
-
-	// Shipper logic
-	if(array_sum(array_column($line_items, 'qty')) > 1){
-		return 3;
-	}
-
+	// First determine the location preference (based on zip)
 	if(empty($cc_order['deliveryCountry']) || !in_array(strtoupper($cc_order['deliveryCountry']), ['UNITED STATES', 'US', 'USA'])){
-		$preferred_location_id = 3;
+		log_echo_multi(" - Non-US order, east cannot fulfill");
+		$locations_available = [
+			3 => true,
+			23755 => false,
+		];
 	} else {
 		$zip_prefix = substr($cc_order['deliveryPostalCode'], 0, 3);
-		$preferred_location_id = in_array($zip_prefix, $east_zip_prefixes) ? 23755 : 3;
+		if(in_array($zip_prefix, $east_zip_prefixes)){
+			log_echo_multi(" - Matches east zip, prefer east");
+			$locations_available = [
+				23755 => true,
+				3 => true,
+			];
+		} else {
+			log_echo_multi(" - Does not match east zip, prefer west");
+			$locations_available = [
+				3 => true,
+				23755 => true,
+			];
+		}
 	}
 
-	// Check if preferred location can fulfill order
-	if(branch_can_fill_items($db, $preferred_location_id, $line_items)){
-		return $preferred_location_id;
+	$line_items = $cc_order['lineItems'];
+	// Shipper logic
+	if(array_sum(array_column(array_filter($line_items, function($item){
+		return !in_array($item['code'], ['99238701-112']); // Don't count salt air sample as an item
+	}), 'qty')) > 1){
+		log_echo_multi(" - Total quantity > 1, east cannot fulfill");
+		$locations_available[23755] = false;
 	}
 
-	// Check if backup location can fulfill order
-	$backup_location_id = $preferred_location_id == 3 ? 23755 : 3;
-	if(branch_can_fill_items($db, $backup_location_id, $line_items)){
-		return $backup_location_id;
+	foreach($locations_available as $branch_id => $available){
+		if(!$available){
+			log_echo_multi(" - Branch $branch_id not available, skipping");
+			continue;
+		}
+		// Check if location can fulfill order
+		if(branch_can_fill_items($db, $branch_id, $line_items)){
+			return $branch_id;
+		} else {
+			$locations_available[$branch_id] = false;
+		}
 	}
 
-	return -2;
+	return -3;
 }
 
 function branch_can_fill_items(PDO $db, $branch_id, $line_items){
@@ -1435,7 +1467,7 @@ function branch_can_fill_sku(PDO $db, $branch_id, $sku, $quantity = 1){
 	global $_stmt_cache, $inventory_pulls;
 	if(empty($_stmt_cache['cin_branch_stock_check'])){
 		$_stmt_cache['cin_branch_stock_check'] = $db->prepare("
-SELECT csu.available FROM cin_stock_units csu
+SELECT csu.available+csu.virtual AS available FROM cin_stock_units csu
 LEFT JOIN cin_product_options cpo ON cpo.id=csu.cin_product_option_id
 LEFT JOIN cin_products cp ON cp.id=cpo.cin_product_id
 LEFT JOIN cin_branches cb ON cb.id=csu.cin_branch_id
@@ -1453,7 +1485,7 @@ AND cin_branch_id = :branch_id;");
 			'rowcount' => $_stmt_cache['cin_branch_stock_check']->rowCount(),
 			'errorinfo' => $db->errorInfo(),
 		];
-		echo PHP_EOL."Branch $branch_id cannot fill sku $sku ".PHP_EOL;
+		log_echo_multi(" - Branch $branch_id cannot fill sku $sku ");
 		return false;
 	}
 	$res = $_stmt_cache['cin_branch_stock_check']->fetchColumn();
@@ -1466,9 +1498,10 @@ AND cin_branch_id = :branch_id;");
 		'buffer' => $buffer,
 	];
 	if($res-$buffer >= $quantity){
-		echo PHP_EOL."Branch $branch_id cannot fill sku $sku ".PHP_EOL;
+		log_echo_multi(" - Branch $branch_id can fill sku $sku ");
 		return true;
 	} else {
+		log_echo_multi(" - Branch $branch_id cannot fill sku $sku ");
 		return false;
 	}
 }
@@ -1491,4 +1524,17 @@ function add_salt_air_sample(&$cc_order){
 		'lineComments' => 'Auto-added by API',
 	];
 	return $cc_order;
+}
+
+function log_echo_multi($line){
+	global $log;
+	if(empty($log)){
+		$log = [];
+	}
+	// If it's not indented, create new non-sub line
+	if($line[0] != ' '){
+		$log[] = [];
+	}
+	$log[count($log)-1][] = $line;
+	echo $line.PHP_EOL;
 }
