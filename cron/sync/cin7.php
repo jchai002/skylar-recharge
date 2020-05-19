@@ -27,8 +27,8 @@ do {
 		print_r($cc_product);
 		echo insert_update_cin_product($db, $cc_product).PHP_EOL;
 	}
+	sleep(1);
 } while(count($cc_products) >= $page_size);
-sleep(1);
 
 $page = 0;
 echo "Pulling Product Options from Cin7".PHP_EOL;
@@ -48,8 +48,8 @@ do {
 	foreach($cc_variants as $cc_variant){
 		echo insert_update_cin_product_option($db, $cc_variant).PHP_EOL;
 	}
+	sleep(1);
 } while(count($cc_variants) >= $page_size);
-sleep(1);
 
 $page = 0;
 echo "Pulling Branches from Cin7".PHP_EOL;
@@ -69,8 +69,8 @@ do {
 	foreach($cc_branches as $cc_branch){
 		echo insert_update_cin_branch($db, $cc_branch).PHP_EOL;
 	}
+	sleep(1);
 } while(count($cc_branches) >= $page_size);
-sleep(1);
 
 $page = 0;
 echo "Pulling inventory from Cin7".PHP_EOL;
@@ -87,11 +87,16 @@ do {
 		],
 	]);
 	$cc_stock_units = $res->getJson();
-	foreach($cc_stock_units as $cc_stock_unit){
-		echo implode('-',insert_update_cin_stock_unit($db, $cc_stock_unit)).PHP_EOL;
+	if(count($cc_stock_units) > 1 && array_sum(array_column($cc_stock_units, 'available')) == 0){
+		echo "Got all zeros back from cin7 on stock, alerting";
+		send_alert($db, 18, "Got all zeros back from cin7 on stock, response: ".print_r($cc_stock_units, true), 'Skylar Alert: Bad CC Stock Unit Response');
+		die();
 	}
+	foreach($cc_stock_units as $cc_stock_unit){
+		echo implode('-',insert_update_cin_stock_unit($db, $cc_stock_unit)).": ".$cc_stock_unit['available'].PHP_EOL;
+	}
+	sleep(1);
 } while(count($cc_stock_units) >= $page_size);
-sleep(1);
 
 // pull updated post-hold inventory levels
 $inventory_levels = $db->query("SELECT v.inventory_item_id, v.sku, v.inventory_quantity, v.title, ROUND(cpo.stock_available) AS stock_available, COUNT(rcs.id) AS reserved_inventory, ROUND(cpo.stock_available - COUNT(*)) AS stock_available_unreserved
