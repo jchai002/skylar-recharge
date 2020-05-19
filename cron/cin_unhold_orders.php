@@ -1289,6 +1289,7 @@ do {
 				continue;
 			}
 		}
+		// TODO: If it's only scent club default to SKCLUB
 		if(empty($cc_order['freightDescription'])){
 			log_echo_multi(" - Order doesn't have freight description, skipping and alerting");
 			print_r(send_alert($db, 15, "Order is being held because it doesn't have a freight description: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Freight Description on Order', ['tim@skylar.com', 'kristin@skylar.com'], [
@@ -1376,7 +1377,7 @@ do {
 			unset($cc_order['lineItems']);
 		}
 
-//		$cc_order['logisticsStatus'] = 1;
+		$cc_order['logisticsStatus'] = 1;
 		$updates[] = $cc_order;
 		log_echo_multi(" - Added to update queue w/ branch id ".$cc_order['branchId']." [".count($updates)."]");
 	}
@@ -1432,7 +1433,9 @@ function calc_branch_id(PDO $db, $cc_order){
 	$line_items = $cc_order['lineItems'];
 	// Shipper logic
 	if(array_sum(array_column(array_filter($line_items, function($item){
-		return !in_array($item['code'], ['99238701-112']); // Don't count salt air sample as an item
+		return !in_array($item['code'], [
+			'99238701-112' // Don't count salt air sample as an item
+		]);
 	}), 'qty')) > 1){
 		log_echo_multi(" - Total quantity > 1, east cannot fulfill");
 		$locations_available[23755] = false;
