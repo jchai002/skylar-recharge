@@ -1,6 +1,6 @@
 <?php
 
-die();
+//die();
 
 require_once(__DIR__.'/../includes/config.php');
 
@@ -1244,7 +1244,7 @@ do {
 		'query' => [
 			'fields' => implode(',', ['id', 'email', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems']),
 			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND stage = 'New'",
-//			'where' => "id = 219878 AND LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND stage = 'New'",
+//			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND stage = 'New' AND id = 205465 ",
 			'order' => 'CreatedDate DESC',
 			'rows' => $page_size,
 			'page' => $page,
@@ -1257,8 +1257,8 @@ do {
 	$stmt = $db->prepare("SELECT * FROM orders WHERE number=?");
 	foreach($cc_orders as $index=>$cc_order){
 		$send_updates = false;
-		if(count($updates) == $page_size){
-			echo "Updates hit $page_size, ";
+		if(count($updates) > 5){
+			echo "Updates hit ".count($updates).", ";
 			$send_updates = true;
 		}
 		if(count($updates) > 0 && time()-$last_send_time > 30){
@@ -1271,6 +1271,8 @@ do {
 			$updates = [];
 			echo "Done".PHP_EOL;
 			sleep(1);
+		}
+		if(empty($updates)){
 			$last_send_time = time();
 		}
 		$order_number = str_ireplace('#sb','',$cc_order['reference']);
@@ -1328,7 +1330,7 @@ do {
 				continue 2; // Switch statements are treated as loops
 			case -3:
 				log_echo_multi(" - No branch can fulfill this order, skipping and alerting");
-				print_r(send_alert($db, 17, "Order is being held because no branch is available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com'], [
+				print_r(send_alert($db, 17, "Order is being held because no branch is available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - Cannot Fulfill Order', ['tim@skylar.com'], [
 					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
 //					'inventory_pulls' => $inventory_pulls,
 					'last_log' => end($log),
@@ -1461,6 +1463,17 @@ function calc_branch_id(PDO $db, $cc_order){
 
 function branch_can_fill_items(PDO $db, $branch_id, $line_items){
 	foreach($line_items as $line_item){
+/*
+		if($line_item['code'] == '13200311-121'){
+			if($branch_id == 3){
+				log_echo_multi(" - Branch $branch_id can fulfill ".$line_item['code']);
+				continue;
+			} else {
+				log_echo_multi(" - Branch $branch_id cannot fulfill ".$line_item['code']);
+				return false;
+			}
+		}
+*/
 		if(!branch_can_fill_sku($db, $branch_id, $line_item['code'], $line_item['qty'])){
 			return false;
 		}
