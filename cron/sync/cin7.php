@@ -73,6 +73,7 @@ do {
 
 $page = 0;
 echo "Pulling inventory from Cin7".PHP_EOL;
+$stmt_existing_stock = $db->prepare("SELECT * FROM cin_stock_units WHERE cin_branch_id=:branch_id AND cin_product_option_id=:product_option_id");
 do {
 	$page++;
 	/* @var $res JsonAwareResponse */
@@ -98,6 +99,21 @@ do {
 		break;
 	}
 	foreach($cc_stock_units as $cc_stock_unit){
+		$stmt_existing_stock->execute([
+			'branch_id' => $cc_stock_unit['branchId'],
+			'product_option_id' => $cc_stock_unit['productOptionId'],
+		]);
+		$existing_stock = $stmt_existing_stock->fetch();
+		if(empty($cc_stock_unit['available']) && $existing_stock['available'] > 50){
+			echo "Got suspicious zero back from cin7 on stock, alerting";
+			send_alert($db, 18, "Got suspicious zero back from cin7 on stock, response: ".print_r($cc_stock_units, true), 'Skylar Alert: Bad CC Stock Unit Response');
+			continue;
+		}
+		if(empty($cc_stock_unit['virtual']) && $existing_stock['virtual'] > 50){
+			echo "Got suspicious zero back from cin7 on stock, alerting";
+			send_alert($db, 18, "Got suspicious zero back from cin7 on stock, response: ".print_r($cc_stock_units, true), 'Skylar Alert: Bad CC Stock Unit Response');
+			continue;
+		}
 		echo implode('-',insert_update_cin_stock_unit($db, $cc_stock_unit)).": ".($cc_stock_unit['available']+$cc_stock_unit['virtual']).PHP_EOL;
 	}
 	sleep(1);
