@@ -18,6 +18,9 @@ $time = strtotime($_REQUEST['date']);
 if(empty($variant_id)){
 	sc_swap_to_monthly($db, $rc, $address_id, $time);
 } else {
+	if(!empty($_REQUEST['subscription_id'])){
+		$rc->delete('/onetimes/'.intval($_REQUEST['subscription_id']));
+	}
 	sc_swap_to_signature($db, $rc, $address_id, $time, $variant_id);
 }
 
