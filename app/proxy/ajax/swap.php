@@ -13,15 +13,12 @@ if(empty($_REQUEST['address_id']) || empty($_REQUEST['date']) || !array_key_exis
 $address_id = intval($_REQUEST['address_id']);
 $variant_id = intval($_REQUEST['variant_id']);
 $time = strtotime($_REQUEST['date']);
-
+$subscription_id = $_REQUEST['subscription_id'] ?? null;
 
 if(empty($variant_id)){
-	sc_swap_to_monthly($db, $rc, $address_id, $time);
+	sc_swap_to_monthly($db, $rc, $address_id, $time, [], $subscription_id);
 } else {
-	if(!empty($_REQUEST['subscription_id'])){
-		$rc->delete('/onetimes/'.intval($_REQUEST['subscription_id']));
-	}
-	sc_swap_to_signature($db, $rc, $address_id, $time, $variant_id);
+	sc_swap_to_signature($db, $rc, $address_id, $time, $variant_id, $subscription_id);
 }
 
 echo json_encode([

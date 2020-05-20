@@ -1161,7 +1161,7 @@ function sc_get_monthly_scent_public(PDO $db, $time = null){
 	]);
 	return $stmt->fetch();
 }
-function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $main_sub = []){
+function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $main_sub = [], $swap_from_id = null){
 	if(empty($main_sub)){
 		$main_sub = sc_get_main_subscription($db, $rc, [
 			'address_id' => $address_id,
@@ -1171,6 +1171,9 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $ma
 	if(empty($main_sub)){
 //		echo "No Main Sub";
 		return false;
+	}
+	if(!empty($swap_from_id) && $swap_from_id != $main_sub['id']){
+		$rc->delete('onetimes/'.$swap_from_id);
 	}
 	sc_delete_month_onetime($db, $rc, $address_id, $time);
 	// Look up monthly scent
@@ -1196,7 +1199,7 @@ function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $ma
 	sc_calculate_next_charge_date($db, $rc, $address_id);
 	return $res['onetime'];
 }
-function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $shopify_variant_id){
+function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $shopify_variant_id, $swap_from_id = null){
 	$main_sub = sc_get_main_subscription($db, $rc, [
 		'address_id' => $address_id,
 		'status' => 'ACTIVE',
@@ -1212,6 +1215,9 @@ function sc_swap_to_signature(PDO $db, RechargeClient $rc, $address_id, $time, $
 		return false;
 	}
 	$variant_title = $stmt->fetchColumn();
+	if(!empty($swap_from_id) && $swap_from_id != $main_sub['id']){
+		$rc->delete('onetimes/'.$swap_from_id);
+	}
 	sc_delete_month_onetime($db, $rc, $address_id, $time);
 	$properties = $main_sub['properties'];
 	$properties['_swap'] = $main_sub['id'];
