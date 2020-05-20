@@ -1,6 +1,6 @@
 <?php
 
-die();
+//die();
 
 require_once(__DIR__.'/../includes/config.php');
 
@@ -1463,7 +1463,7 @@ function calc_branch_id(PDO $db, $cc_order){
 
 function branch_can_fill_items(PDO $db, $branch_id, $line_items){
 	foreach($line_items as $line_item){
-/*
+
 		if($line_item['code'] == '13200311-121'){
 			if($branch_id == 3){
 				log_echo_multi(" - Branch $branch_id can fulfill ".$line_item['code']);
@@ -1473,7 +1473,7 @@ function branch_can_fill_items(PDO $db, $branch_id, $line_items){
 				return false;
 			}
 		}
-*/
+
 		if(!branch_can_fill_sku($db, $branch_id, $line_item['code'], $line_item['qty'])){
 			return false;
 		}
