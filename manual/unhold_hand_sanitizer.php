@@ -23,11 +23,15 @@ $csv_labels = [
 ];
 fputcsv($outstream, $csv_labels);
 do {
-	$orders = $sc->get($url, [
-		'created_at_min' => '2020-04-14',
-		'limit' => $page_size,
-		'order' => 'created_at asc',
-	]);
+	if($url == 'orders.json'){
+		$orders = $sc->get($url, [
+			'created_at_min' => '2020-04-14',
+			'limit' => $page_size,
+			'order' => 'created_at asc',
+		]);
+	} else {
+		$orders = $sc->get($url);
+	}
 	$url = $sc->last_response_links['next'] ?? false;
 	foreach($orders as $order){
 		$order_quantity = array_reduce($order['line_items'], function($carry, $line_item) use($db) {
@@ -105,6 +109,8 @@ while(!empty($orders) || !empty($promises)){
 		$key = array_search('HOLD: Preorder',$tags);
 		if (false !== $key) {
 			unset($tags[$key]);
+		} else {
+			continue;
 		}
 		echo "Sending request for ".$order['id'].PHP_EOL;
 		$promises[] = $sc->putAsync('orders/'.$order['id'].'.json', ['order' => [
