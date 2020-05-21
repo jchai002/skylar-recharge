@@ -134,13 +134,14 @@ header('Content-Type: application/liquid');
 echo "<!-- ".print_r($res_all, true)." -->";
 echo "<!-- ".print_r($variant, true)." -->";
 echo "<!-- $price : $price_with_discount -->";
+$title = is_scent_club_month($product) ? $variant['title'] : $product['title'];
 ?>
 
 {% assign portal_page = 'lander-addtobox' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container sc-portal-lander">
 	<?php if(!empty($add_to_charge) && empty($_REQUEST['confirm']) && !empty($variant['id'])){ ?>
-        <div class="sc-lander-title"><?=$product['title']?></div>
+        <div class="sc-lander-title"><?=$title?></div>
 		<?php if($product['type'] == 'Body Bundle'){ ?>
             <div class="sc-lander-price">
                 <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price_with_discount,2)?></span>
@@ -192,7 +193,7 @@ echo "<!-- $price : $price_with_discount -->";
             </div>
 		<?php } ?>
 	<?php } else if(!empty($add_to_charge) && empty($res['error']) && !empty($variant['id'])){ ?>
-        <div class="sc-lander-title">You added <?=$product['title']?> to your Skylar Box.</div>
+        <div class="sc-lander-title">You added <?=$title?> to your Skylar Box.</div>
         <?php if($product['type'] == 'Body Bundle'){ ?>
             <div class="sc-lander-price">
                 <span>Total:</span> <span class="was_price">$56.00</span> <span class="price">$<?=number_format($price_with_discount,2)?></span>
