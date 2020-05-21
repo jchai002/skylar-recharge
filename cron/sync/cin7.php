@@ -135,7 +135,8 @@ $inventory_items = $sc->get('inventory_items.json?ids=', [
 	'ids' => implode(',', array_keys($inventory_levels))
 ]);
 
-echo "Syncing calculated inventory to shopify".PHP_EOL;
+$buffer = 20;
+echo "Syncing calculated inventory to shopify with buffer $buffer".PHP_EOL;
 foreach($inventory_items as $inventory_item){
 	$inventory_level = $inventory_levels[$inventory_item['id']];
 	if($inventory_level['inventory_quantity'] == $inventory_level['stock_available_unreserved']){
@@ -146,7 +147,7 @@ foreach($inventory_items as $inventory_item){
 	$res = $sc->post('inventory_levels/set.json', [
 		'inventory_item_id' => $inventory_item['id'],
 		'location_id' => 36244366, // AMS location ID
-		'available' => $inventory_levels[$inventory_item['id']]['stock_available_unreserved'],
+		'available' => $inventory_levels[$inventory_item['id']]['stock_available_unreserved']+$buffer,
 	]);
 }
 
