@@ -69,6 +69,9 @@ if(!empty($add_to_charge)){
         }
     }
 }
+if(!empty($variant) && $variant['inventory_quantity'] < 1){
+    $_REQUEST['confirm'] = false;
+}
 $res_all = [];
 // Actually add to box
 if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
@@ -163,7 +166,11 @@ $title = is_scent_club_month($product) ? $variant['title'] : $product['title'];
                 {% endfor %}
             </div>
             <div class="sc-lander-button">
-                <a href="<?=$confirm_url?>" class="action_button confirm-button">Add This Item To My <?=$month?> Box</a>
+                <?php if($variant['inventory_quantity'] < 1){ ?>
+                    <a href="#" class="action_button confirm-button">Sold Out!</a>
+				<?php } else { ?>
+                    <a href="<?=$confirm_url?>" class="action_button confirm-button">Add This Item To My <?=$month?> Box</a>
+                <?php } ?>
             </div>
             <div class="sc-lander-note">
                 This item will ship every other month, starting with your <?=$month?> box. <br />Change, skip, swap, or cancel any time. <br />Need to make more changes to your box? <br class="sc-mobile" />{% if customer %}Go to{% else %}Log into{% endif %} your account now.
@@ -189,7 +196,11 @@ $title = is_scent_club_month($product) ? $variant['title'] : $product['title'];
                 {% endfor %}
             </div>
             <div class="sc-lander-button">
-                <a href="<?=$confirm_url?>" class="action_button confirm-button">Add This Item To My <?=$month?> Box</a>
+				<?php if($variant['inventory_quantity'] < 1){ ?>
+                    <a href="#" class="action_button confirm-button">Sold Out!</a>
+				<?php } else { ?>
+                    <a href="<?=$confirm_url?>" class="action_button confirm-button">Add This Item To My <?=$month?> Box</a>
+				<?php } ?>
             </div>
 		<?php } ?>
 	<?php } else if(!empty($add_to_charge) && empty($res['error']) && !empty($variant['id'])){ ?>
