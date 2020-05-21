@@ -53,7 +53,7 @@ $confirm_url_params['confirm'] = 1;
 $confirm_url = "/tools/skylar/quick-add?".http_build_query($confirm_url_params);
 
 if(!empty($add_to_charge)){
-	$variant = get_variant($db, $_REQUEST['v']);
+	$variant = get_variant($db, intval(trim($_REQUEST['v'])));
 	$product = get_product($db, $variant['shopify_product_id']);
 	$price_with_discount = $price = get_subscription_price($product, $variant);
 	$subscription_price = get_subscription_price($product, $variant);
