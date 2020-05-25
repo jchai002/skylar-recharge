@@ -120,16 +120,23 @@ do {
 } while(count($cc_stock_units) >= $page_size);
 
 // pull updated post-hold inventory levels
-$inventory_levels = $db->query("SELECT v.inventory_item_id, v.sku, v.inventory_quantity, v.title, ROUND(cpo.stock_available) AS stock_available, COUNT(rcs.id) AS reserved_inventory, ROUND(cpo.stock_available - COUNT(*)) AS stock_available_unreserved
+$inventory_levels = $db->query("SELECT v.inventory_item_id, v.sku, SUM(csu.available+csu.virtual) AS inventory_quantity, v.title, IFNULL(held_quantity,0) AS held_quantity, SUM(csu.available+csu.virtual)-(IFNULL(held_quantity,0)) AS stock_available_unreserved
 FROM sc_products scp
 LEFT JOIN variants v ON scp.variant_id=v.id
 LEFT JOIN products p ON v.product_id = p.id
 LEFT JOIN cin_product_options cpo ON v.sku=cpo.sku
-LEFT JOIN rc_subscriptions rcs ON rcs.variant_id=scp.variant_id
-AND rcs.status IN ('ACTIVE', 'ONETIME')
-AND rcs.deleted_at IS NULL
-AND rcs.next_charge_scheduled_at >= '".date('Y-m-d')."'
-GROUP BY v.sku")->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE);
+LEFT JOIN (
+	SELECT scp.variant_id, SUM(quantity) AS held_quantity
+	FROM sc_products scp
+	LEFT JOIN rc_subscriptions rcs ON rcs.variant_id=scp.variant_id
+	WHERE rcs.status IN ('ACTIVE', 'ONETIME')
+	AND rcs.deleted_at IS NULL
+	AND rcs.next_charge_scheduled_at >= '".date('Y-m-d')."'
+	GROUP BY scp.variant_id
+) rq ON rq.variant_id=scp.variant_id
+LEFT JOIN cin_stock_units csu ON cpo.id=csu.cin_product_option_id AND csu.cin_branch_id IN(3, 23755)
+GROUP BY scp.variant_id
+;")->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE);
 
 $inventory_items = $sc->get('inventory_items.json?ids=', [
 	'ids' => implode(',', array_keys($inventory_levels))
