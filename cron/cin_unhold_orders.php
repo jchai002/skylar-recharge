@@ -1481,7 +1481,7 @@ function branch_can_fill_items(PDO $db, $branch_id, $line_items){
 	return true;
 }
 function branch_can_fill_sku(PDO $db, $branch_id, $sku, $quantity = 1){
-	$buffer = 25;
+	$buffer = 20;
 	global $_stmt_cache, $inventory_pulls;
 	if(empty($_stmt_cache['cin_branch_stock_check'])){
 		$_stmt_cache['cin_branch_stock_check'] = $db->prepare("

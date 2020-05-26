@@ -9,7 +9,7 @@ do {
 	$page++;
 	// Get held orders
 	/* @var $res JsonAwareResponse */
-	$res = $cc->get('SalesOrders', [
+	$res = $cc->get('BomMasters', [
 		'query' => [
 			'rows' => $page_size,
 			'page' => $page,
@@ -18,15 +18,68 @@ do {
 	sleep(1);
 	$cc_boms = $res->getJson();
 	foreach($cc_boms as $bom){
-		$all_boms[] = $bom;
+		$all_boms[$bom['product']['code']] = $bom['product']['components'];
 	}
 } while(count($cc_boms) >= $page_size);
 
 // Load shopify variants that are not parents
 
+$rows = $db->query("SELECT v.id as parent_id, v.sku FROM variants v
+LEFT JOIN products p ON v.product_id=p.id
+LEFT JOIN variant_kits vk ON vk.parent_variant=v.id
+WHERE vk.id IS NULL
+AND v.sku LIKE '7%'
+AND v.sku NOT IN ('70221408-100')
+AND v.deleted_at IS NULL
+AND p.published_at IS NOT NULL
+AND p.type != 'Scent Club Gift'")->fetchAll();
 
-
-
+$stmt_get_variant = $db->prepare("
+SELECT v.id FROM variants v
+LEFT JOIN products p ON v.product_id=p.id
+WHERE v.sku=?
+AND v.deleted_at IS NULL
+AND p.published_at IS NOT NULL
+AND p.type NOT IN ('Scent Club Swap')
+");
+$stmt_get_title = $db->prepare("
+SELECT CONCAT(CONCAT(p.title, ': '), v.title) as title
+FROM variants v
+LEFT JOIN products p ON v.product_id=p.id
+WHERE v.id=?
+");
+$stmt_insert_kit = $db->prepare("INSERT INTO variant_kits (parent_variant, child_variant) VALUES (:parent_variant, :child_variant)");
+foreach($rows as $row){
+	if(empty($all_boms[$row['sku']])){
+		echo "No bom exists for sku ".$row['sku'].PHP_EOL;
+		continue;
+	}
+	$child_ids = [];
+	$child_titles = [];
+	foreach($all_boms[$row['sku']] as $component){
+		$stmt_get_variant->execute([$component['code']]);
+		if($stmt_get_variant->rowCount() < 1){
+			echo "No child variant exists for sku ".$component['code'].PHP_EOL;
+			continue 2;
+		}
+		if($stmt_get_variant->rowCount() > 1){
+			echo "Multiple child variants exists for sku ".$component['code'].": ".print_r($stmt_get_variant->fetchAll(PDO::FETCH_COLUMN), true).PHP_EOL;
+			continue 2;
+		}
+		$child_ids[] = $stmt_get_variant->fetchColumn();
+		$stmt_get_title->execute([end($child_ids)]);
+		$child_titles[] = $stmt_get_title->fetchColumn();
+	}
+	$stmt_get_title->execute([$row['parent_id']]);
+	echo "Adding children ".implode(',', $child_ids)." to ".$row['parent_id'].PHP_EOL;
+	echo "Adding children ".implode(',', $child_titles)." to ".$stmt_get_title->fetchColumn().PHP_EOL;
+	foreach($child_ids as $child_id){
+		$stmt_insert_kit->execute([
+			'parent_variant' => $row['parent_id'],
+			'child_variant' => $child_id,
+		]);
+	}
+}
 
 
 
