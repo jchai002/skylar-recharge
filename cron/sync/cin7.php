@@ -150,11 +150,11 @@ foreach($inventory_items as $inventory_item){
 		echo "Skip ".$inventory_level['title'].", inventory already ".$inventory_level['stock_available_unreserved'].PHP_EOL;
 		continue;
 	}
-	echo "Setting ".$inventory_level['title']." to ".$inventory_levels[$inventory_item['id']]['stock_available_unreserved'].PHP_EOL;
+	echo "Setting ".$inventory_level['title']." to ".$inventory_level['stock_available_unreserved'].PHP_EOL;
 	$res = $sc->post('inventory_levels/set.json', [
 		'inventory_item_id' => $inventory_item['id'],
 		'location_id' => 36244366, // AMS location ID
-		'available' => $inventory_levels[$inventory_item['id']]['stock_available_unreserved'],
+		'available' => $inventory_level['stock_available_unreserved'],
 	]);
 }
 
