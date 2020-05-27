@@ -1437,8 +1437,12 @@ function calc_branch_id(PDO $db, $cc_order){
 	$line_items = $cc_order['lineItems'];
 	// Shipper logic
 	if(array_sum(array_column(array_filter($line_items, function($item){
+		if(substr($item['code'], 0, 2) == '60' || substr($item['code'], 0, 2) == '70'){
+			log_echo_multi(" - Skipping ".$item['code']." in total quantity calc because it's a kit");
+			return false;
+		}
 		return !in_array($item['code'], [
-			'99238701-112' // Don't count salt air sample as an item
+			'99238701-112', // Don't count salt air sample as an item
 		]);
 	}), 'qty')) > 1){
 		log_echo_multi(" - Total quantity > 1, east cannot fulfill");
@@ -1463,7 +1467,6 @@ function calc_branch_id(PDO $db, $cc_order){
 
 function branch_can_fill_items(PDO $db, $branch_id, $line_items){
 	foreach($line_items as $line_item){
-
 		if($line_item['code'] == '13200311-121'){
 			if($branch_id == 3){
 				log_echo_multi(" - Branch $branch_id can fulfill ".$line_item['code']);
@@ -1481,6 +1484,10 @@ function branch_can_fill_items(PDO $db, $branch_id, $line_items){
 	return true;
 }
 function branch_can_fill_sku(PDO $db, $branch_id, $sku, $quantity = 1){
+	if(substr($sku, 0, 2) == '60' || substr($sku, 0, 2) == '70'){
+		log_echo_multi(" - Branch $branch_id can fill sku $sku (Kit)");
+		return true; // Ignore kit skus
+	}
 	$buffer = 20;
 	global $_stmt_cache, $inventory_pulls;
 	if(empty($_stmt_cache['cin_branch_stock_check'])){
