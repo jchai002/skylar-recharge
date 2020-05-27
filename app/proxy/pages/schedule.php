@@ -277,6 +277,8 @@ print_r($schedule->get());
                                                 <div class="sc-box-discount">
                                                 <?php if(strpos($discount['code'], 'ST-10-') === 0){ ?>
                                                     <div class="sc-discount-title">Discount</div>
+                                                <?php } else if($discount['code'] === 'CSVOS'){ ?>
+                                                    <div class="sc-discount-title">Discount</div>
                                                 <?php } else { ?>
                                                     <div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
                                                 <?php } ?>
