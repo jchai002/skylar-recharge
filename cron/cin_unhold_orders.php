@@ -1243,7 +1243,7 @@ do {
 	$res = $cc->get('SalesOrders', [
 		'query' => [
 			'fields' => implode(',', ['id', 'email', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems']),
-			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND stage = 'New'",
+			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND (stage = 'New' OR stage = 'Fraud Warning')",
 //			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND stage = 'New' AND id = 220380",
 			'order' => 'CreatedDate DESC',
 			'rows' => $page_size,

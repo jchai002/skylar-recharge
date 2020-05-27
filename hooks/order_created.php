@@ -80,6 +80,17 @@ if($hand_sanitizer_qty > 10){
 	send_alert($db, 12, "Order with $hand_sanitizer_qty hand sanitizers has been held. https://skylar.com/admin/orders/".$order['id'], 'Skylar Alert: High Qty Hand Sanitizer', ['tim@skylar.com', 'stacy@skylar.com']);
 	$update_order = true;
 }
+
+$fraud_risks = $sc->get('orders/'.$order['id'].'/risks.json');
+foreach($fraud_risks as $risk){
+	if($risk['recommendation'] == 'cancel'){
+		$order_tags[] = 'HOLD: Fraud Risk';
+		$update_order = true;
+		send_alert($db, 20, "Order high fraud risk has been held. Remove tag to unhold. https://skylar.com/admin/orders/".$order['id'], 'Skylar Alert: High Fraud Risk', ['tim@skylar.com', 'stacy@skylar.com']);
+		break;
+	}
+}
+
 echo "Check account activation".PHP_EOL;
 if(!empty($customer) && $customer['state'] != 'enabled'){
 	try {
