@@ -30,7 +30,7 @@ if($qty_change > 0){
 			echo json_encode([
 				'success' => true,
 				'res' => $res,
-				'id' => $res_id,
+				'id' => $res[$subscription_uri]['id'],
 			]);
 		}
 	} else {
