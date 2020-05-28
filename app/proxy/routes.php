@@ -326,7 +326,7 @@ $router->route('/subscriptions\/(\d+)\/edit-quantity$/i', function($subscription
 	if(empty($_REQUEST['quantity'])){
 		echo json_encode([
 			'success' => false,
-			'error' => 'Missing new quantity. Please refresh.',
+			'error' => 'Missing new quantity',
 		]);
 		return true;
 	}
