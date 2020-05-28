@@ -36,7 +36,7 @@ if(!empty($res['error'])){
 	echo json_encode([
 		'success' => true,
 		'res' => $res,
-		'id' => $res[$subscription_uri]['id'],
+		'quantity' => $res[$subscription_uri]['quantity'],
 	]);
 }
 
