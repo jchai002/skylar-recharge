@@ -11,35 +11,33 @@ $subscription_uri = $subscription['status'] == 'ONETIME' ? 'onetime' : 'subscrip
 
 $qty_change = $quantity - $subscription['quantity'];
 if($qty_change > 0){
-	if(is_inventory_available($db, $subscription['shopify_variant_id'], $qty_change)){
-
-		$res = $rc->put($subscription_uri.'s/'.intval($subscription_id), [
-			'quantity' => $quantity,
-		]);
-
-		if(!empty($res[$subscription_uri])){
-			insert_update_rc_subscription($db, $res[$subscription_uri], $rc, $sc);
-		}
-		if(!empty($res['error'])){
-			echo json_encode([
-				'success' => false,
-				'error' => $res['error'],
-				'res' => $res,
-			]);
-		} else {
-			echo json_encode([
-				'success' => true,
-				'res' => $res,
-				'id' => $res[$subscription_uri]['id'],
-			]);
-		}
-	} else {
-		echo json_encode([
+	if(!is_inventory_available($db, $subscription['shopify_variant_id'], $qty_change)){
+		die(json_encode([
 			'success' => false,
 			'error' => "Not enough inventory available",
 			'res' => [],
-		]);
+		]));
 	}
+}
+$res = $rc->put($subscription_uri.'s/'.intval($subscription_id), [
+	'quantity' => $quantity,
+]);
+
+if(!empty($res[$subscription_uri])){
+	insert_update_rc_subscription($db, $res[$subscription_uri], $rc, $sc);
+}
+if(!empty($res['error'])){
+	echo json_encode([
+		'success' => false,
+		'error' => $res['error'],
+		'res' => $res,
+	]);
+} else {
+	echo json_encode([
+		'success' => true,
+		'res' => $res,
+		'id' => $res[$subscription_uri]['id'],
+	]);
 }
 
 function is_inventory_available(PDO $db, $shopify_variant_id, $quantity = 1){
