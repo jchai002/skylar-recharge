@@ -313,6 +313,26 @@ $router->route('/subscriptions\/add-to-box$/i', function() use(&$json_output) {
 	require('ajax/add_to_box.php');
 	return true;
 });
+
+$router->route('/subscriptions\/(\d+)\/edit-quantity$/i', function($subscription_id) use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	if(empty($_REQUEST['quantity'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing new quantity. Please refresh.',
+		]);
+		return true;
+	}
+	require('ajax/edit_quantity.php');
+	return true;
+});
 $router->route('/subscriptions\/get-box$/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){
