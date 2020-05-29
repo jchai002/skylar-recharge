@@ -1,6 +1,6 @@
 <?php
 
-die();
+//die();
 
 require_once(__DIR__.'/../includes/config.php');
 
@@ -1375,7 +1375,7 @@ do {
 			log_echo_multi(" - Adding salt air to order...");
 			add_salt_air_sample($cc_order);
 			$tags = explode(', ', $db_order['tags']);
-			$tags[] = ' - Added Salt Air Sample';
+			$tags[] = 'Added Salt Air Sample';
 			$res = $sc->put('orders/'.$db_order['shopify_id'].'.json', ['order' => ['tags' => implode(', ', array_unique($tags))]]);
 		} else {
 			unset($cc_order['lineItems']);
