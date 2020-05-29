@@ -6,7 +6,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 
 require_once(__DIR__.'/../includes/config.php');
 
-$number_to_unhold = 3900;
+$number_to_unhold = 1500;
 
 $total_quantity = 0;
 $page = 0;
@@ -20,6 +20,8 @@ $csv_labels = [
 	'id' => 'id',
 	'created_at' => 'created_at',
 	'name' => 'name',
+	'hand_sanitizer_quantity' => 'hand_sanitizer_quantity',
+	'cumulative_quantity' => 'cumulative_quantity',
 ];
 fputcsv($outstream, $csv_labels);
 do {
@@ -34,6 +36,10 @@ do {
 	}
 	$url = $sc->last_response_links['next'] ?? false;
 	foreach($orders as $order){
+		$tags = explode(', ', $order['tags']);
+		if(!in_array('HOLD: Preorder', $tags)){
+			continue;
+		}
 		$order_quantity = array_reduce($order['line_items'], function($carry, $line_item) use($db) {
 			$hand_sani = in_array('Hand Sanitizer', get_product($db, $line_item['product_id'])['tags']);
 			return $carry + ($hand_sani ? $line_item['quantity'] : 0);
@@ -43,10 +49,13 @@ do {
 			continue;
 		}
 		if($total_quantity + $order_quantity > $number_to_unhold){
+			echo "Stopping on ".$order['name']." as it has $order_quantity, bringing us to ".($total_quantity+$order_quantity).PHP_EOL;
 			break 2;
 		}
 		$total_quantity += $order_quantity;
 		$all_orders[] = $order;
+		$order['hand_sanitizer_quantity'] = $order_quantity;
+		$order['cumulative_quantity'] = $total_quantity;
 		fputcsv($outstream, array_intersect_key($order, $csv_labels));
 		echo $order['name']." - ".$total_quantity.PHP_EOL;
 		if($total_quantity >= $number_to_unhold){
