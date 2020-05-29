@@ -1315,14 +1315,14 @@ do {
 			default: break;
 			case -1:
 				log_echo_multi(" - Order doesn't have zip code, skipping and alerting");
-				print_r(send_alert($db, 13, "Order is being held because it doesn't have a shipping address zip: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Zip on Order', ['tim@skylar.com', 'kristin@skylar.com'], [
+				print_r(send_alert($db, 13, "Order is being held because it doesn't have a shipping address zip: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Zip on Order', ['kristin@skylar.com'], [
 					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
 					'last_log' => end($log),
 				]));
 				continue 2; // Switch statements are treated as loops
 			case -2:
 				log_echo_multi(" - No branch can fulfill this order, skipping and alerting");
-				print_r(send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com'], [
+				print_r(send_alert($db, 14, "Order is being held because it doesn't have stock available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - No Stock Available', ['tim@skylar.com', 'kristin@skylar.com'], [
 					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
 					'inventory_pulls' => $inventory_pulls,
 					'last_log' => end($log),
@@ -1330,7 +1330,7 @@ do {
 				continue 2; // Switch statements are treated as loops
 			case -3:
 				log_echo_multi(" - No branch can fulfill this order, skipping and alerting");
-				print_r(send_alert($db, 17, "Order is being held because no branch is available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - Cannot Fulfill Order', ['tim@skylar.com'], [
+				print_r(send_alert($db, 17, "Order is being held because no branch is available: https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=".$cc_order['id'], 'Skylar Alert - Cannot Fulfill Order', ['tim@skylar.com', 'kristin@skylar.com'], [
 					'smother_window' => date('Y-m-d H:i:s', strtotime('-48 hours')),
 //					'inventory_pulls' => $inventory_pulls,
 					'last_log' => end($log),
