@@ -231,6 +231,10 @@ print_r($schedule->get());
                                                     </div>
                                                 </div>
                                                 <div>
+                                                    <div class="sc-item-detail-label">Quantity</div>
+                                                    <div class="sc-item-detail-value"><?=$item['quantity'] ?> </div>
+                                                </div>
+                                                <div>
                                                     <div class="sc-item-detail-label">Total</div>
                                                     <div class="sc-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
                                                 </div>
