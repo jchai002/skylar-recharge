@@ -161,6 +161,8 @@ function sc_swap_to_monthly_custom(PDO $db, RechargeClient $rc, ShopifyClient $s
 				}
 				regenerate_charge($error_charge['id']);
 			}
+			echo "Fixing error charges on $address_id...".PHP_EOL;
+			fix_error_charges($rc, $address_id);
 			$res = $rc->post('/addresses/'.$address_id.'/onetimes', [
 				'next_charge_scheduled_at' => date('Y-m-d H:i:s', $time),
 				'shopify_variant_id' => $scent_info['shopify_variant_id'],

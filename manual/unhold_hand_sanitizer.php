@@ -6,7 +6,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 
 require_once(__DIR__.'/../includes/config.php');
 
-$number_to_unhold = 1500;
+$number_to_unhold = 362;
 
 $total_quantity = 0;
 $page = 0;
@@ -92,7 +92,7 @@ if(!empty($_ENV['SHOPIFY_UNTAG_KEYS'])){
 }
 
 $promises = [];
-$max_concurrent = 10;
+$max_concurrent = 5;
 $start_time = time();
 $orders_processed = 0;
 $last_output_at = 0;

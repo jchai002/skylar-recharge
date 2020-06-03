@@ -1360,6 +1360,42 @@ function sc_get_profile_products($profile_data){
 	return $products;
 }
 
+function fix_error_charges(RechargeClient $rc, $address_id){
+	$res = $rc->get('charges',[
+		'address_id' => $address_id,
+		'status' => 'error',
+	]);
+	if(empty($res['charges'])){
+		return true;
+	}
+	$fix_date = date('Y-m-d', strtotime('+1 year'));
+	foreach($res['charges'] as $charge){
+		if(strtotime($charge['scheduled_at']) < time()){
+			// Old charge, just delete it
+			// Can't delete directly, have to remove items
+			$res = $rc->post('charges/'.$charge['id'].'/change_next_charge_date', [
+				'next_charge_date' => $fix_date,
+			]);
+			foreach($charge['line_items'] as $line_item){
+				$res = $rc->get('subscriptions/'.$line_item['subscription_id']);
+				if($res['subscription']['status'] == 'ONETIME'){
+					$rc->delete('onetimes/'.$line_item['subscription_id']);
+				} else {
+					$rc->post('charges/'.$charge['id'].'/skip', [
+						'subscription_id' => $line_item['subscription_id'],
+					]);
+				}
+			}
+		} else {
+			// Not old, just regenerate it
+			$res = $rc->post('charges/'.$charge['id'].'/change_next_charge_date', [
+				'next_charge_date' => $charge['scheduled_at'],
+			]);
+		}
+	}
+	return true;
+}
+
 function price_without_trailing_zeroes($price = 0){
 	if(floatval($price) == intval($price)){
 		return number_format($price);

@@ -10,7 +10,7 @@ $scent = null;
 
 
 $cookie_token = '29422|7cbe63b01b7aec3588970e96fec94d101db71f8b0f72623bd7d3d2b87095ca3fcc767803605372a39b2ec76d62438ca4fa918f7b2ee735e6af4efb3505169b49';
-$cookie_session = '.eJw1j8FqwzAQBX-l6NxDItuHGnoQyDUu7JqGTc3qElqqRpHlUJwEuQr596qFHt_hDTNXsfuc7cmJ-jxf7L3YHT5EfRV376IWTFBh2xVGm4DeOKNVBf45sHeOyU3QNhHIBSYVzcDfLF9HnLoCW66QVP6akfNmjx7TJoAe15i6ZKaXZIbt0pM7wIAeqFnAqxL0xoPsIspmQa0i0lPoaf_LXmeGQ9qu2MMqMyJ4SKD3Ra-5ZGoexS27f9l5ejva4_m_5nKy81-RkA-llOL2A-vuTpA.EWXPYg.t-PJt-SpdJ6VTy4hihc3OTizgkE';
+$cookie_session = '.eJw9j0FrgzAYhv_KyHkHzXKZ0IMjKjt8CZVY-XIRu8bFYMpQS2dK__uywnZ74eV5eZ8b6YbZLJZk63wxz6QbTyS7kacjyYjkuAEtXtC9OQzCi6p2Oiap8ivQwwTtwQveJMAnC7T0ItQe1H4Ddxol_2SC50y7_Bs9Bs2txVAksWfaA4XQpIJ_pLKNjEeGAa9xNwCHBGkTWW11VTqpMJXqPZFVPWoFDB2mghYbhnJEJawIEKAtduQev3-Z2fdnc17_bJa1H4buspi5M74fp3812O8eyKP6VSb0lVFK7j-KF1hw.EbY8Qg.hHL0lva-PNmOrswY_yrQMgoOHPg';
 
 $start_date = date('Y-m-d', strtotime('-1 day'));
 $end_date = date('Y-m-d', strtotime('+1 day'));
@@ -54,7 +54,13 @@ do {
 	echo "Rate: ".($total_charges / (microtime(true) - $start_time))." charges/s".PHP_EOL;
 	do_rolling_curl($charges, $cookie_session);
 	$charges = [];
+	// Pause and wait to see if recharge is now releasing charges themselves
+	sleep(60);
+	//	break;
 } while(count($res['charges']) == 250);
+
+die();
+
 echo "Total: ".count($charges).PHP_EOL;
 $charges = array_reverse($charges);
 
