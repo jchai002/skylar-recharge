@@ -41,9 +41,12 @@ if((!empty($_REQUEST['c']) && ($_REQUEST['c'] == 644696211543 || $_REQUEST['c'] 
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 }
-
-$db = new PDO("mysql:host=".$_ENV['DB_HOST'].";dbname=".$_ENV['DB_NAME'].";charset=UTF8", $_ENV['DB_USER'], $_ENV['DB_PASS']);
-$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+try {
+	$db = new PDO("mysql:host=".$_ENV['DB_HOST'].";dbname=".$_ENV['DB_NAME'].";charset=UTF8", $_ENV['DB_USER'], $_ENV['DB_PASS']);
+	$db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+	throw new Exception($e->getMessage());
+}
 
 $sc = new ShopifyClient();
 $rc = new RechargeClient();
