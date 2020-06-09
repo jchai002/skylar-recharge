@@ -1494,6 +1494,8 @@ function is_discount_allowed_in_account($discount_code){
 		'AARMY25',
 		'MEMORIAL15',
 		'SELFCARE25',
+		'WELCOME10',
+		'WELCOME50',
 	])){
 		return false;
 	}
