@@ -69,12 +69,15 @@ foreach($order['line_items'] as $line_item){
 	}
 	if(in_array('Hand Sanitizer', get_product($db, $line_item['product_id'])['tags'])){
 		$hand_sanitizer_qty += $line_item['quantity'];
+		if(get_variant($db, $line_item['variant_id'])['inventory_quantity'] < $hand_sanitizer_qty){
+			continue;
+		}
 		$order_tags[] = 'HOLD: Preorder';
 		$order_tags[] = 'Preorder';
 		$update_order = true;
 	}
 }
-if($hand_sanitizer_qty > 10){
+if($hand_sanitizer_qty > 50){
 	$order_tags[] = 'HOLD: Processing';
 	$order_tags[] = 'High Quantity Hand Sanitizer';
 	send_alert($db, 12, "Order with $hand_sanitizer_qty hand sanitizers has been held. https://skylar.com/admin/orders/".$order['id'], 'Skylar Alert: High Qty Hand Sanitizer', ['tim@skylar.com', 'stacy@skylar.com']);

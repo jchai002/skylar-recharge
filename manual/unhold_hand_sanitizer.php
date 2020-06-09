@@ -6,7 +6,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 
 require_once(__DIR__.'/../includes/config.php');
 
-$number_to_unhold = 362;
+$number_to_unhold = 200;
 
 $total_quantity = 0;
 $page = 0;
