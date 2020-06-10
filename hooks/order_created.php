@@ -69,7 +69,7 @@ foreach($order['line_items'] as $line_item){
 	}
 	if(in_array('Hand Sanitizer', get_product($db, $line_item['product_id'])['tags'])){
 		$hand_sanitizer_qty += $line_item['quantity'];
-		if(get_variant($db, $line_item['variant_id'])['inventory_quantity'] < $hand_sanitizer_qty){
+		if(get_variant($db, $line_item['variant_id'])['inventory_quantity'] >= $hand_sanitizer_qty){
 			continue;
 		}
 		$order_tags[] = 'HOLD: Preorder';
