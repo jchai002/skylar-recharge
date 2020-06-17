@@ -337,9 +337,9 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), handle=:handle, title=:title, typ
 	$product_id = $db->lastInsertId();
 	if(empty($_stmt_cache['iu_variant'])){
 		$_stmt_cache['iu_variant'] = $db->prepare("INSERT INTO variants
-(product_id, shopify_id, title, price, sku, inventory_item_id, inventory_quantity, updated_at, synced_at)
-VALUES (:product_id, :shopify_id, :title, :price, :sku, :inventory_item_id, :inventory_quantity, :updated_at, :synced_at)
-ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:sku, inventory_item_id=:inventory_item_id, inventory_quantity=:inventory_quantity, updated_at=:updated_at, synced_at=:synced_at");
+(product_id, shopify_id, title, price, sku, inventory_item_id, inventory_quantity, inventory_policy, inventory_management, updated_at, synced_at)
+VALUES (:product_id, :shopify_id, :title, :price, :sku, :inventory_item_id, :inventory_quantity, :inventory_policy, :inventory_management, :updated_at, :synced_at)
+ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:sku, inventory_item_id=:inventory_item_id, inventory_quantity=:inventory_quantity,  inventory_policy=:inventory_policy, inventory_management=:inventory_management, updated_at=:updated_at, synced_at=:synced_at");
 	}
 	foreach($shopify_product['variants'] as $shopify_variant){
 		$_stmt_cache['iu_variant']->execute([
@@ -350,6 +350,8 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 			'price' => $shopify_variant['price'],
 			'inventory_item_id' => $shopify_variant['inventory_item_id'],
 			'inventory_quantity' => $shopify_variant['inventory_quantity'],
+			'inventory_policy' => $shopify_variant['inventory_policy'],
+			'inventory_management' => $shopify_variant['inventory_management'],
 			'updated_at' => $shopify_variant['updated_at'],
 			'synced_at' => $now,
 		]);
