@@ -77,6 +77,7 @@ $variant_available = !empty($variant) && (
 if(!$variant_available){
     $_REQUEST['confirm'] = false;
 }
+$variant['available'] = $variant_available;
 $res_all = [];
 // Actually add to box
 if(!empty($_REQUEST['confirm']) && !empty($add_to_charge)){
