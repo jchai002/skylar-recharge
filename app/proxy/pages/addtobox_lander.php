@@ -69,7 +69,12 @@ if(!empty($add_to_charge)){
         }
     }
 }
-if(!empty($variant) && $variant['inventory_quantity'] < 1){
+$variant_available = !empty($variant) && (
+    $variant['inventory_policy'] == 'continue'
+    || empty($variant['inventory_management'])
+    || $variant['inventory_quantity'] > 1
+);
+if(!$variant_available){
     $_REQUEST['confirm'] = false;
 }
 $res_all = [];
@@ -166,7 +171,7 @@ $title = is_scent_club_month($product) ? $variant['title'] : $product['title'];
                 {% endfor %}
             </div>
             <div class="sc-lander-button">
-                <?php if($variant['inventory_quantity'] < 1){ ?>
+                <?php if(!$variant_available){ ?>
                     <a href="#" class="action_button confirm-button">Sold Out!</a>
 				<?php } else { ?>
                     <a href="<?=$confirm_url?>" class="action_button confirm-button">Add This Item To My <?=$month?> Box</a>
@@ -196,7 +201,7 @@ $title = is_scent_club_month($product) ? $variant['title'] : $product['title'];
                 {% endfor %}
             </div>
             <div class="sc-lander-button">
-				<?php if($variant['inventory_quantity'] < 1){ ?>
+				<?php if($variant_available){ ?>
                     <a href="#" class="action_button confirm-button">Sold Out!</a>
 				<?php } else { ?>
                     <a href="<?=$confirm_url?>" class="action_button confirm-button">Add This Item To My <?=$month?> Box</a>
