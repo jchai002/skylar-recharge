@@ -202,7 +202,7 @@ $title = is_scent_club_month($product) ? $variant['title'] : $product['title'];
                 {% endfor %}
             </div>
             <div class="sc-lander-button">
-				<?php if($variant_available){ ?>
+				<?php if(!$variant_available){ ?>
                     <a href="#" class="action_button confirm-button">Sold Out!</a>
 				<?php } else { ?>
                     <a href="<?=$confirm_url?>" class="action_button confirm-button">Add This Item To My <?=$month?> Box</a>
