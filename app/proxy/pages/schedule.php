@@ -71,17 +71,13 @@ print_r($schedule->get());
                     $shipment_index = -1;
                     $sc_shipment_index = -1;
                     foreach($schedule->get() as $shipment_list){
-						$shipping_line = false;
-						$total_tax = false;
+				        $last_unskipped_charge = false;
                         $shipment_index++;
                         foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
 
-							if($shipping_line === false && !empty($upcoming_shipment['charge_id'])){
-								$shipping_line = $schedule->charges()[$upcoming_shipment['charge_id']]['shipping_lines'][0] ?? [];
-							}
-							if($total_tax === false && !empty($upcoming_shipment['charge_id'])){
-								$total_tax = price_without_trailing_zeroes($schedule->charges()[$upcoming_shipment['charge_id']]['total_tax'] ?? 0);
-							}
+                            if(!empty($upcoming_shipment['charge_id']) && !empty($schedule->charges()[$upcoming_shipment['charge_id']]) && !$schedule->charges([$upcoming_shipment['charge_id']])['skipped']){
+                                $last_unskipped_charge = $schedule->charges()[$upcoming_shipment['charge_id']];
+                            }
 
                             $has_ac_followup = false;
 							$ac_delivered = false;
@@ -312,18 +308,21 @@ print_r($schedule->get());
                                             <?php } ?>
                                         </form>
                                     </div>
-									<?php if(!empty($upcoming_shipment['charge_id'])){ ?>
-                                        <?php if(!empty($shipping_line)){ ?>
+									<?php if(!empty($last_unskipped_charge)){ ?>
+                                        <!-- <?php print_r($last_unskipped_charge) ?> -->
+                                        <?php if(!empty($last_unskipped_charge['shipping_lines']) && !empty($last_unskipped_charge['shipping_lines'][0])){
+                                            $shipping_line = $last_unskipped_charge['shipping_lines'][0];
+                                            ?>
                                             <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                                 <div class="sc-shipping-title"><?=$shipping_line['title']?></div>
                                                 <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
                                             </div>
                                         <?php
                                         }
-                                        if(!empty($total_tax)){ ?>
+                                        if(!empty($last_unskipped_charge)){ ?>
                                             <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                                 <div class="sc-shipping-title">Tax</div>
-                                                <div class="sc-shipping-value">$<?=$total_tax?></div>
+                                                <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($last_unskipped_charge['total_tax']?></div>
                                             </div>
                                         <?php } ?>
                                         <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
