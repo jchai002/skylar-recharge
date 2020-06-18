@@ -306,9 +306,9 @@ print_r($schedule->get());
                                         <form class="sc-add-discount" style="display: none;">
                                             <div><input type="text" name="discount_code" /></div>
                                             <div><input type="submit" value="Apply" class="action_button inverted" /></div>
-                                            <?php if(!empty($upcoming_shipment['charge_id'])){ ?>
-                                                <input type="hidden" name="address_id" value="<?=$schedule->charges()[$upcoming_shipment['charge_id']]['address_id']?>" />
-                                                <input type="hidden" name="charge_id" value="<?=$upcoming_shipment['charge_id']?>" />
+                                            <?php if(!empty($last_unskipped_charge)){ ?>
+                                                <input type="hidden" name="address_id" value="<?=$address_id?>" />
+                                                <input type="hidden" name="charge_id" value="<?=$last_unskipped_charge['id']?>" />
                                             <?php } ?>
                                         </form>
                                     </div>
@@ -330,7 +330,7 @@ print_r($schedule->get());
                                             </div>
                                         <?php } ?>
                                         <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                            Grand Total: $<?= price_without_trailing_zeroes($schedule->charges()[$upcoming_shipment['charge_id']]['total_price']) ?>
+                                            Grand Total: $<?= price_without_trailing_zeroes($last_unskipped_charge['total_price']) ?>
                                         </div>
                                     <?php } else { ?>
                                         <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
