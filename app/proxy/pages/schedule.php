@@ -71,17 +71,10 @@ print_r($schedule->get());
                     $shipment_index = -1;
                     $sc_shipment_index = -1;
                     foreach($schedule->get() as $shipment_list){
-				        $last_unskipped_charge = false;
                         $shipment_index++;
                         foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
+							$last_unskipped_charge = false;
 
-                            echo "<!-- ".print_r($schedule->charges()[$upcoming_shipment['charge_id']], true)." -->";
-                            if(!empty($upcoming_shipment['charge_id']) && !empty($schedule->charges()[$upcoming_shipment['charge_id']]) && $schedule->charges()[$upcoming_shipment['charge_id']]['status'] == 'QUEUED'){
-                                $last_unskipped_charge = $schedule->charges()[$upcoming_shipment['charge_id']];
-                            }
-							echo "<!-- ";
-                            var_dump($last_unskipped_charge);
-                            echo " -->";
 
                             $has_ac_followup = false;
 							$ac_delivered = false;
@@ -89,6 +82,13 @@ print_r($schedule->get());
 							$ac_pushed_up = false;
 							$has_sc = false;
                             foreach($upcoming_shipment['items'] as $item){
+								echo "<!-- ".print_r($schedule->charges()[$item['charge_id']], true)." -->";
+								if(!empty($item['charge_id']) && !empty($schedule->charges()[$item['charge_id']]) && $schedule->charges()[$item['charge_id']]['status'] == 'QUEUED'){
+									$last_unskipped_charge = $schedule->charges()[$item['charge_id']];
+								}
+								echo "<!-- ";
+								var_dump($last_unskipped_charge);
+								echo " -->";
                                 if(is_ac_followup_lineitem($item)){
                                     $has_ac_followup = true;
 									if(is_ac_pushed_back($item)){
