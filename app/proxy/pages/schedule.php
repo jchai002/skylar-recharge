@@ -79,7 +79,9 @@ print_r($schedule->get());
                             if(!empty($upcoming_shipment['charge_id']) && !empty($schedule->charges()[$upcoming_shipment['charge_id']]) && $schedule->charges()[$upcoming_shipment['charge_id']]['status'] == 'QUEUED'){
                                 $last_unskipped_charge = $schedule->charges()[$upcoming_shipment['charge_id']];
                             }
-							echo "<!-- ".var_dump($last_unskipped_charge, true)." -->";
+							echo "<!-- ";
+                            var_dump($last_unskipped_charge, true);
+                            echo " -->";
 
                             $has_ac_followup = false;
 							$ac_delivered = false;
