@@ -75,7 +75,7 @@ print_r($schedule->get());
                         $shipment_index++;
                         foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
 
-                            if(!empty($upcoming_shipment['charge_id']) && !empty($schedule->charges()[$upcoming_shipment['charge_id']]) && !$schedule->charges([$upcoming_shipment['charge_id']])['skipped']){
+                            if(!empty($upcoming_shipment['charge_id']) && !empty($schedule->charges()[$upcoming_shipment['charge_id']]) && !$schedule->charges()[$upcoming_shipment['charge_id']]['skipped']){
                                 $last_unskipped_charge = $schedule->charges()[$upcoming_shipment['charge_id']];
                             }
 
