@@ -305,8 +305,12 @@ print_r($schedule->get());
                                     </div>
                                     <?php if(!empty($upcoming_shipment['charge_id'])){ ?>
                                         <?php if(!empty($schedule->charges()[$upcoming_shipment['charge_id']]['shipping_lines'])){
+                                            $shipping_output = false;
                                             foreach($schedule->charges()[$upcoming_shipment['charge_id']]['shipping_lines'] as $shipping_line){
                                                 if(empty($shipping_line['price']) || $shipping_line['price'] == 0){
+                                                    continue;
+                                                }
+                                                if(empty($all_skipped) && $schedule->charges()[$upcoming_shipment['charge_id']]['shipping_lines']['skipped']){
                                                     continue;
                                                 }
                                                 ?>
