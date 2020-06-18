@@ -80,7 +80,7 @@ print_r($schedule->get());
                                 $last_unskipped_charge = $schedule->charges()[$upcoming_shipment['charge_id']];
                             }
 							echo "<!-- ";
-                            var_dump($last_unskipped_charge, true);
+                            var_dump($last_unskipped_charge);
                             echo " -->";
 
                             $has_ac_followup = false;
