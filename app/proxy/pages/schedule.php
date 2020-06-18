@@ -322,7 +322,7 @@ print_r($schedule->get());
                                         if(!empty($last_unskipped_charge)){ ?>
                                             <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                                 <div class="sc-shipping-title">Tax</div>
-                                                <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($last_unskipped_charge['total_tax']?></div>
+                                                <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($last_unskipped_charge['total_tax'])?></div>
                                             </div>
                                         <?php } ?>
                                         <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
