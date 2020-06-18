@@ -75,6 +75,7 @@ print_r($schedule->get());
                         $shipment_index++;
                         foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
 
+                            echo "<!-- ".print_r($schedule->charges()[$upcoming_shipment['charge_id']], true)." -->";
                             if(!empty($upcoming_shipment['charge_id']) && !empty($schedule->charges()[$upcoming_shipment['charge_id']]) && $schedule->charges()[$upcoming_shipment['charge_id']]['status'] == 'QUEUED'){
                                 $last_unskipped_charge = $schedule->charges()[$upcoming_shipment['charge_id']];
                             }
