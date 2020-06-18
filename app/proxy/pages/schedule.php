@@ -314,7 +314,7 @@ print_r($schedule->get());
                                     </div>
 									<?php if(!empty($last_unskipped_charge)){ ?>
                                         <!-- <?php print_r($last_unskipped_charge) ?> -->
-                                        <?php if(!empty($last_unskipped_charge['shipping_lines']) && !empty($last_unskipped_charge['shipping_lines'][0])){
+                                        <?php if(!empty($last_unskipped_charge['shipping_lines']) && !empty($last_unskipped_charge['shipping_lines'][0]) && $last_unskipped_charge['shipping_lines'][0]['price'] > 0){
                                             $shipping_line = $last_unskipped_charge['shipping_lines'][0];
                                             ?>
                                             <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
