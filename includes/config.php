@@ -366,11 +366,17 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 				$_stmt_cache['iu_sc_variant'] = $db->prepare("INSERT INTO sc_products
 					( date,  variant_id,  live,  ship_date,  public_launch,  member_launch) VALUES
 					(:date, :variant_id, :live, :ship_date, :public_launch, :member_launch)
-				ON DUPLICATE KEY UPDATE date=:date, variant_id=:variant_id, live=:live");
+				ON DUPLICATE KEY UPDATE date=:date, variant_id=:variant_id, live=:live,
+				handle=:handle,
+				ship_date = IF(handle != :handle, :ship_date, ship_date),
+				public_launch = IF(handle != :handle, :public_launch, public_launch),
+				member_launch = IF(handle != :handle, :member_launch, member_launch)
+				");
 			}
 			$_stmt_cache['iu_sc_variant']->execute([
 				'date' => date('Y-m-d', $sc_time),
 				'variant_id' => $last_variant_id,
+				'handle' => $shopify_product['handle'],
 				'live' => time() >= ScentClubSchedule::calculate_public_launch($sc_time) ? 1 : 0,
 				'ship_date' => date('Y-m-d', ScentClubSchedule::calculate_ship_date($sc_time)),
 				'public_launch' => date('Y-m-d', ScentClubSchedule::calculate_public_launch($sc_time)),

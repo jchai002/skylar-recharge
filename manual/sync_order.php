@@ -6,13 +6,16 @@ $page_size = 250;
 
 $retry = 0;
 $url = 'orders.json';
+$orders = $sc->get($url, [
+	'limit' => $page_size,
+	'order' => 'created_at desc',
+	'status' => 'any',
+	'created_at_min' => '2020-06-01',
+	'created_at_max' => '2020-08-01',
+]);
+$url = $sc->last_response_links['next'] ?? false;
 do {
-	$orders = $sc->get($url, [
-		'limit' => $page_size,
-		'order' => 'created_at desc',
-		'status' => 'any',
-		'created_at_min' => '2020-04-14',
-	]);
+	$sc->get($url);
 	if($orders === false){
 		if($retry >= 3){
 			print_r($sc->last_error);
