@@ -366,10 +366,13 @@ ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), title=:title, price=:price, sku=:
 				$_stmt_cache['iu_sc_variant'] = $db->prepare("INSERT INTO sc_products
 					( date,  variant_id,  live,  ship_date,  public_launch,  member_launch) VALUES
 					(:date, :variant_id, :live, :ship_date, :public_launch, :member_launch)
-				ON DUPLICATE KEY UPDATE date=:date, variant_id=:variant_id, live=:live,
+				ON DUPLICATE KEY UPDATE
+				variant_id=:variant_id,
+				live=:live,
 				ship_date = IF(date != :date, :ship_date, ship_date),
 				public_launch = IF(date != :date, :public_launch, public_launch),
-				member_launch = IF(date != :date, :member_launch, member_launch)
+				member_launch = IF(date != :date, :member_launch, member_launch),
+				date=:date
 				");
 			}
 			$_stmt_cache['iu_sc_variant']->execute([
