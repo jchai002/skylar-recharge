@@ -435,7 +435,7 @@ $router->route('/settings$/i', function() {
 	return true;
 });
 
-$admin_customers = [644696211543];
+$admin_customers = [644696211543, 2173805396055];
 function require_customer_id($callback_if_true){
 	global $admin_customers, $is_alias;
 	$customer_id = !empty($_REQUEST['c']) ? $_REQUEST['c'] : 0;
