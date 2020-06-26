@@ -150,7 +150,7 @@ foreach($inventory_items as $inventory_item){
 	$inventory_level = $inventory_levels[$inventory_item['id']];
 	if($inventory_level['sku'] == '13200311-121'){
 		// Hand sani temp override
-		$inventory_level['stock_available_unreserved'] = 2500 - $inventory_level['held_quantity'];
+//		$inventory_level['stock_available_unreserved'] = 2500 - $inventory_level['held_quantity'];
 	}
 	$inventory_level['stock_available_unreserved'] -= $buffer;
 	if($inventory_level['inventory_quantity'] == $inventory_level['stock_available_unreserved']){
