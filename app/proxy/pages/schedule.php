@@ -141,9 +141,9 @@ print_r($schedule->get());
                                     {% endif %}
                                     {% endfor %}
                                     <div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
-                                         data-address-id="<?=$item['address_id']?>"
-                                         data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
-                                         data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
+                                        data-address-id="<?=$item['address_id']?>"
+                                        data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
+                                        data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
                                         <?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
                                             data-master-image="{{ 'sc-logo.svg' | file_url }}"
                                         <?php } else { ?>
@@ -151,13 +151,13 @@ print_r($schedule->get());
                                         <?php } ?>
 										<?=$box_swap_image?>
 										<?=$box_swap_text?>
-                                         data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
-                                         data-subscription-id="<?=$item['subscription_id']?>"
+                                        data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
+                                        data-subscription-id="<?=$item['subscription_id']?>"
                                         <?= !empty($item['charge_id']) ? 'data-charge-id="'.$item['charge_id'].'"' : '' ?>
-                                         data-type="<?=$item['type']?>"
-                                         data-types="<?=implode($item['types'])?>"
+                                        data-type="<?=$item['type']?>"
+                                        data-types="<?=implode($item['types'])?>"
                                         <?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
-                                         data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
+                                        data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
                                         <?= is_ac_followup_lineitem($item) ? 'data-ac' : '' ?>
 										<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
 										<?= is_ac_delivered($item) ? 'data-ac-delivered' : '' ?>
