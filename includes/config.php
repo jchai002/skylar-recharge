@@ -1173,6 +1173,16 @@ function sc_get_monthly_scent_public(PDO $db, $time = null){
 	]);
 	return $stmt->fetch();
 }
+function sc_get_monthly_scent_members(PDO $db, $time = null){
+	if(empty($time)){
+		$time = time();
+	}
+	$stmt = $db->prepare("SELECT * FROM sc_product_info WHERE member_launch <= ? ORDER BY member_launch DESC LIMIT 1;");
+	$stmt->execute([
+		date('Y-m-d', $time),
+	]);
+	return $stmt->fetch();
+}
 function sc_swap_to_monthly(PDO $db, RechargeClient $rc, $address_id, $time, $main_sub = [], $swap_from_id = null){
 	if(empty($main_sub)){
 		$main_sub = sc_get_main_subscription($db, $rc, [

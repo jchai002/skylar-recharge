@@ -161,7 +161,7 @@ print_r($schedule->get());
                                         <?= is_ac_followup_lineitem($item) ? 'data-ac' : '' ?>
 										<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
 										<?= is_ac_delivered($item) ? 'data-ac-delivered' : '' ?>
-                                        <?php if(sc_get_monthly_scent($db, null, is_admin_address($address_id))['shopify_variant_id'] == $item['shopify_variant_id']){ ?>
+                                        <?php if(sc_get_monthly_scent_members($db, null, is_admin_address($address_id))['shopify_variant_id'] == $item['shopify_variant_id']){ ?>
                                             data-sc-current
                                         <?php } ?>
                                         data-ship-time="<?=$upcoming_shipment['ship_date_time']?>"
