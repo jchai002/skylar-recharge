@@ -161,9 +161,9 @@ print_r($schedule->get());
                                         <?= is_ac_followup_lineitem($item) ? 'data-ac' : '' ?>
 										<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
 										<?= is_ac_delivered($item) ? 'data-ac-delivered' : '' ?>
-                                        {% if sc_month_product_members.id = <?=$item['shopify_product_id']?> %}
+                                        <?php if(sc_get_monthly_scent($db, null, is_admin_address($address_id))['shopify_variant_id'] == $item['shopify_variant_id']){ ?>
                                             data-sc-current
-                                        {% endif %}
+                                        <?php } ?>
                                         data-ship-time="<?=$upcoming_shipment['ship_date_time']?>"
                                     >
                                         <?php if(!empty($item['skipped']) && !empty($item['charge_id'])){ ?>
