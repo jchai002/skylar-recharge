@@ -1515,6 +1515,7 @@ function is_discount_allowed_in_account($discount_code){
 		'SELFCARE25',
 		'WELCOME10',
 		'WELCOME50',
+		'FIREWORKS',
 	])){
 		return false;
 	}
