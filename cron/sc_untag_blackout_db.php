@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 require_once(__DIR__.'/../includes/config.php');
 
 $sc_product = sc_get_monthly_scent_public($db);
-
+print_r($sc_product);
 if(
 	(
 		time() < offset_date_skip_weekend(strtotime($sc_product['ship_date'])) - 7*60*60 // Hold until 5 pm the day before

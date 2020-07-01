@@ -9,8 +9,7 @@ $page = 0;
 $scent = null;
 
 
-$cookie_token = '29422|7cbe63b01b7aec3588970e96fec94d101db71f8b0f72623bd7d3d2b87095ca3fcc767803605372a39b2ec76d62438ca4fa918f7b2ee735e6af4efb3505169b49';
-$cookie_session = '.eJw9j0FrgzAYhv_KyHkHzXKZ0IMjKjt8CZVY-XIRu8bFYMpQS2dK__uywnZ74eV5eZ8b6YbZLJZk63wxz6QbTyS7kacjyYjkuAEtXtC9OQzCi6p2Oiap8ivQwwTtwQveJMAnC7T0ItQe1H4Ddxol_2SC50y7_Bs9Bs2txVAksWfaA4XQpIJ_pLKNjEeGAa9xNwCHBGkTWW11VTqpMJXqPZFVPWoFDB2mghYbhnJEJawIEKAtduQev3-Z2fdnc17_bJa1H4buspi5M74fp3812O8eyKP6VSb0lVFK7j-KF1hw.EbY8Qg.hHL0lva-PNmOrswY_yrQMgoOHPg';
+$cookie_session = '.eJxdkUFvozAQhf_KyudWCQZCiBStWhFQDjYicoPsCzIwBAyGCEgTqPrfl3a1PexlDjNv5r1P84GSooehRLuxv8ETSqoc7T7QrxTtEFVUkTiahOJYeNGd6lMTsugu2GtNvWimWNRE-Q3X3CLeuRYqM4Q6GoSda87ImnonzWPyCL2mpKpctFSF7LAmWmjhZSbXB5Oosw7ZSfH4zRSBX3F1eYQBMcPgYFNGK8Iyi2C-JoFoSHDEVPN7GPglmaOl79c0jgwyv-zR55L9Cr2WLbTjP5ps6Itk7Gpof6AEO06C5YvRy52qy8z1ueTzG-bsteHxqRLar4gnKjofbaKyibCm5Jf9t0EPWSn7CyQtPBYPtOrkbSxX8nrtu3dYYWmDkcoUu1DYsLU2kDquWRSQ59LYSgtgi7PcsV3HzTfWNl1vN6lhG2ZhSulaefZbT0PZXatiSvJOy6rda_kO7bNs82d9GwD9lyBJYfgqRdcD2hm2iy3D2TjWExpGWRTJstInsBxqfuhJ9Jfke_T1aoRdC2P0-QekI6uW.Ed3IhQ.R_4_F8eQCT1PdeXLG5p_qXtdyBM';
 
 $start_date = date('Y-m-d', strtotime('-1 day'));
 $end_date = date('Y-m-d', strtotime('+1 day'));
@@ -21,6 +20,7 @@ $total_charges = 0;
 $starttime = microtime(true);
 $rownum=0;
 $retry = false;
+$last_order_id = null;
 do {
 	$page++;
 	// Load month's upcoming queued charges
@@ -55,7 +55,18 @@ do {
 	do_rolling_curl($charges, $cookie_session);
 	$charges = [];
 	// Pause and wait to see if recharge is now releasing charges themselves
-	sleep(60);
+	do {
+		$last_order = $sc->get('orders.json', [
+			'limit' => 1,
+		])[0];
+		$last_order_id = $last_order['id'];
+		echo "Last order ID: $last_order_id, waiting... ";
+		sleep(60);
+		$last_order = $sc->get('orders.json', [
+			'limit' => 1,
+		])[0];
+		echo $last_order['id'].PHP_EOL;
+	} while($last_order['id'] != $last_order_id);
 	//	break;
 } while(count($res['charges']) == 250);
 

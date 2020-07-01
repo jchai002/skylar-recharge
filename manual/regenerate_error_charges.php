@@ -54,23 +54,18 @@ do {
 
 //die();
 
-$cookie_token = '29422|7cbe63b01b7aec3588970e96fec94d101db71f8b0f72623bd7d3d2b87095ca3fcc767803605372a39b2ec76d62438ca4fa918f7b2ee735e6af4efb3505169b49';
-
 $last_charge_id = 0;
 $starttime = microtime(true);
 foreach($charges as $rownum => $charge){
 
 	$charge_id = $charge['id'];
 
-	echo $charge_id.", ".$charge['address_id'].": ";
+	echo $charge_id.", ".$charge['address_id'].": ".PHP_EOL;
 
 	$res = $rc->post('charges/'.$charge['id'].'/change_next_charge_date', [
 		'next_charge_date' => $charge['scheduled_at'],
 	]);
 	print_r($res['error'] ??  false);
-	continue;
-
-	print_r(regenerate_charge($charge_id));
 
 	if($rownum % 20 == 0){
 		echo "Row: $rownum. Time: ".(microtime(true)-$starttime)." seconds | ";
