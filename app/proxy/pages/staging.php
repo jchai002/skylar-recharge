@@ -47,6 +47,7 @@ foreach($schedule->get() as $shipment_list){
 	}
 }
 $next_section_shown = false;
+$previous_month_add_shown = false;
 
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
@@ -359,7 +360,20 @@ print_r($schedule->get());
 				?>
             </div>
         </div>
-        <div class="sc-spacer"></div>
+        <?php
+        $last_month_scent = sc_get_monthly_scent($db, get_month_by_offset(-1));
+        ?>
+        {% assign lastmonth_offer_product = all_products['<?=$last_month_scent['handle']?>'] %}
+        <div class="sc-lastmonth-offer">
+            <div>
+                <img class="lazyload" data-srcset="{{ lastmonth_offer_product | img_url: '100x100' }} 1x, {{ lastmonth_offer_product | img_url: '200x200' }} 2x" />
+            </div>
+            <div>
+                <div>Loved <?=$last_month_scent['variant_title']?>?</div>
+                <div>Get <?=date('j', strtotime($last_month_scent['ship_date']))?>'s Scent Again</div>
+                <div>Add to This Box</div>
+            </div>
+        </div>
         <div class="sc-hr"></div>
         <div class="sc-portal-innercontainer sc-schedule-container">
             <div class="sc-portal-title">Your Upcoming Skylar Box<?= count($schedule->get()) > 2 ? 'es' : '' ?></div>
