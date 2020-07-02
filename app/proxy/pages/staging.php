@@ -361,7 +361,9 @@ print_r($schedule->get());
             </div>
         </div>
         <?php
-        $last_month_scent = sc_get_monthly_scent($db, get_month_by_offset(-1));
+        // Get current month scent
+        // Show as option for the box with the month
+        $last_month_scent = sc_get_monthly_scent($db);
         ?>
         {% assign lastmonth_offer_product = all_products['<?=$last_month_scent['handle']?>'] %}
         <div class="sc-lastmonth-offer">
@@ -369,9 +371,9 @@ print_r($schedule->get());
                 <img class="lazyload" data-srcset="{{ lastmonth_offer_product | img_url: '100x100' }} 1x, {{ lastmonth_offer_product | img_url: '200x200' }} 2x" />
             </div>
             <div>
-                <div>Loved <?=$last_month_scent['variant_title']?>?</div>
-                <div>Get <?=date('j', strtotime($last_month_scent['ship_date']))?>'s Scent Again</div>
-                <div>Add to This Box</div>
+                <div class="sc-item-title">Loved <?=$last_month_scent['variant_title']?>?</div>
+                <div class="sc-item-detail-value">Get <?=date('F', strtotime($last_month_scent['ship_date']))?>'s Scent Again</div>
+                <a class="link link--underlined">Add to This Box</a>
             </div>
         </div>
         <div class="sc-hr"></div>
