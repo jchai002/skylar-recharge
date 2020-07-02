@@ -6,10 +6,21 @@ $reason = !empty($_REQUEST['reason']) ? $_REQUEST['reason'] : '';
 
 if(empty($_REQUEST['charge_id']) && !empty($_REQUEST['unskip']) && !empty($_REQUEST['subscription_id'])){
 	// No charge id unskip = just move the date back
+	// We're assuming here that this can only be done to SC
 	$res = $rc->get('/subscriptions/'.intval($_REQUEST['subscription_id']));
 	$res['line'] = 9;
 	$subscription = $res['subscription'];
-	$next_charge_date = sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
+	if(!empty($_REQUEST['date'])){
+		$next_charge_date = date('Y-m-d', strtotime($_REQUEST['date']));
+		/*
+		$res = $rc->post('/subscriptions/'.$main_sub['id'].'/set_next_charge_date',[
+			'date' => $next_charge_date,
+		]);
+		*/
+		sc_swap_to_monthly($db, $rc, $subscription['address_id'], strtotime($_REQUEST['date']));
+	} else {
+		$next_charge_date = sc_calculate_next_charge_date($db, $rc, $subscription['address_id']);
+	}
 	log_event($db, 'SUBSCRIPTION', $subscription['id'], 'UNSKIP', $reason, 'Unskipped via user account: '.json_encode([$subscription,$res,$next_charge_date]), 'Customer');
 	die(json_encode([
 		'success' => true,

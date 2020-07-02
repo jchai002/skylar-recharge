@@ -167,9 +167,9 @@ print_r($schedule->get());
                                         data-ship-time="<?=$upcoming_shipment['ship_date_time']?>"
                                     >
                                         <?php if(!empty($item['skipped']) && !empty($item['charge_id'])){ ?>
-                                            <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge_id']?>, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+                                            <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge_id']?>, '<?=$item['type']?>', '<?=date('Y-m-d', $upcoming_shipment['ship_date_time'])?>'); return false;"><span>Unskip Box</span></a>
                                         <?php } else if(!empty($item['skipped'])){ ?>
-                                            <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>'); return false;"><span>Unskip Box</span></a>
+                                            <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>', '<?=date('Y-m-d', $upcoming_shipment['ship_date_time'])?>'); return false;"><span>Unskip Box</span></a>
                                         <?php } else if(is_ac_followup_lineitem($item)){ ?>
                                             <a class="ac-item-corner-link ac-cancel-link" href="#"><span>Cancel My Trial</span></a>
 										<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id'])) && !empty($item['properties']['_swap'])){ ?>
