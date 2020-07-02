@@ -70,7 +70,7 @@ $router->route('/schedule/i', function() {
 });
 $router->route('/staging$/i', function() {
 	require_customer_id(function(){
-		require('pages/subscriptions.php');
+		require('pages/staging.php');
 	});
 	return true;
 });
