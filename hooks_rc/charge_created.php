@@ -35,6 +35,7 @@ foreach($charge['line_items'] as $line_item){
 	}
 }
 if(!empty($main_sub) && $has_sc && strtotime($main_sub['created_at']) < time() - 24*60*60){
+	log_event($db, 'duplicate_sc_checkout', $charge['shopify_order_id'], 'checkout');
 //	klaviyo_send_transactional_email($db, $charge['email'], 'duplicate_sc_checkout', ['charge' => $charge]);
 }
 if(empty($main_sub) && empty($promo_sc)){
