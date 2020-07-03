@@ -368,7 +368,7 @@ print_r($schedule->get());
         {% assign lastmonth_offer_product = all_products['<?=$last_month_scent['handle']?>'] %}
         <div class="sc-lastmonth-offer">
             <div>
-                <img class="lazyload" data-srcset="{{ lastmonth_offer_product | img_url: '100x100' }} 1x, {{ lastmonth_offer_product | img_url: '200x200' }} 2x" />
+                <img class="lazyload" data-srcset="{{ lastmonth_offer_product | img_url: '100x100' }} 1x, {{ lastmonth_offer_product | img_url: '200x200' }} 2x" style="display: block;" />
             </div>
             <div>
                 <div class="sc-item-title">Loved <?=$last_month_scent['variant_title']?>?</div>
