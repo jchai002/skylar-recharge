@@ -37,6 +37,7 @@ if($stmt->rowCount() > 1){
 if(!empty($rc_customer_id)){
 	$schedule = new SubscriptionSchedule($db, $rc, $rc_customer_id, strtotime(date('Y-m-t',strtotime("+$months months"))));
 	if(empty($rc_customer_id) || empty($schedule->get())){
+		header('Content-Type: application/json');
 		echo json_encode([
 			'success' => false,
 			'res' => $schedule->get(),
