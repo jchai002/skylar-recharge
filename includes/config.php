@@ -1516,6 +1516,7 @@ function is_discount_allowed_in_account($discount_code){
 		'WELCOME10',
 		'WELCOME50',
 		'FIREWORKS',
+		'SHOWER10',
 	])){
 		return false;
 	}

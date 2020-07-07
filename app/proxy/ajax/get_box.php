@@ -43,6 +43,7 @@ if(!empty($rc_customer_id)){
 			'res' => $schedule->get(),
 			'month' => $month,
 			'res_all' => [$schedule->subscriptions(), $schedule->charges(), $schedule->orders()],
+			'rc_customer_id' => $rc_customer_id,
 		]);
 		exit;
 	}
@@ -68,6 +69,7 @@ if(empty($return_box)){
 		'res' => $schedule->get(),
 		'month' => $month,
 		'res_all' => [$schedule->subscriptions(), $schedule->charges(), $schedule->orders()],
+		'rc_customer_id' => $rc_customer_id,
 	]);
 } else {
 	echo json_encode([
@@ -76,5 +78,6 @@ if(empty($return_box)){
 		'res' => $schedule->get(),
 		'month' => $month,
 		'res_all' => [$schedule->subscriptions(), $schedule->charges(), $schedule->orders()],
+		'rc_customer_id' => $rc_customer_id,
 	]);
 }
