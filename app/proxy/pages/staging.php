@@ -359,22 +359,34 @@ print_r($schedule->get());
 				$next_section_shown = true;
 				?>
             </div>
-        </div>
-        <?php
-        // Get current month scent
-        // Show as option for the box with the month
-        $last_month_scent = sc_get_monthly_scent($db);
-        ?>
-        {% assign lastmonth_offer_product = all_products['<?=$last_month_scent['handle']?>'] %}
-        <div class="sc-lastmonth-offer">
-            <div>
-                <img class="lazyload" data-srcset="{{ lastmonth_offer_product | img_url: '100x100' }} 1x, {{ lastmonth_offer_product | img_url: '200x200' }} 2x" style="display: block;" />
+			<?php
+			// Get current month scent
+			// Show as option for the box with the next month
+			$last_month_scent = sc_get_monthly_scent($db);
+			// If shipment list contains scent club && shipment month is next month
+            if(!$previous_month_add_shown
+                && $has_sc
+                && (
+                    // Years are the same, is the month after this scent's
+                    (date('Y', $shipment_list['ship_date_time']) == date('Y', $last_month_scent['ship_date'])
+                    && date('m', $shipment_list['ship_date_time']) == date('m', $last_month_scent['ship_date'])+1)
+                    // Is next year, this month is december, boxes month is january
+                    || (date('Y', $shipment_list['ship_date_time']) == date('Y', $last_month_scent['ship_date'])+1
+                    && date('m', $shipment_list['ship_date_time']) == 12 && date('m', $last_month_scent['ship_date']) == 1)
+                )
+            ){ ?>
+            {% assign lastmonth_offer_product = all_products['<?=$last_month_scent['handle']?>'] %}
+            <div class="sc-lastmonth-offer">
+                <div>
+                    <img class="lazyload" data-srcset="{{ lastmonth_offer_product | img_url: '100x100' }} 1x, {{ lastmonth_offer_product | img_url: '200x200' }} 2x" style="display: block;" />
+                </div>
+                <div>
+                    <div class="sc-item-title">Loved <?=$last_month_scent['variant_title']?>?</div>
+                    <div class="sc-item-detail-value">Get <?=date('F', strtotime($last_month_scent['ship_date']))?>'s Scent Again</div>
+                    <a class="link link--underlined" data-variant-id="<?=$last_month_scent['shopify_variant_id']?>" data-ship-time="<?=$shipment_list['ship_date_time']?>">Add to This Box</a>
+                </div>
             </div>
-            <div>
-                <div class="sc-item-title">Loved <?=$last_month_scent['variant_title']?>?</div>
-                <div class="sc-item-detail-value">Get <?=date('F', strtotime($last_month_scent['ship_date']))?>'s Scent Again</div>
-                <a class="link link--underlined" data-variant-id="<?=$last_month_scent['shopify_variant_id']?>" data-ship-time="<?=$shipment_list['ship_date_time']?>">Add to This Box</a>
-            </div>
+			<?php } ?>
         </div>
         <div class="sc-hr"></div>
         <div class="sc-portal-innercontainer sc-schedule-container">
