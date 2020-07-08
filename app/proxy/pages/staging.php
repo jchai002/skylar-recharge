@@ -365,6 +365,7 @@ print_r($schedule->get());
 						){
 							$previous_month_add_shown = true;
 							?>
+                            {% unless _ff_previous_scent_readd == false %}
                             {% assign lastmonth_offer_product = all_products['<?=$last_month_scent['handle']?>'] %}
                             <div class="sc-lastmonth-offer">
                                 <div>
@@ -376,6 +377,7 @@ print_r($schedule->get());
                                     <a class="link link--underlined" data-variant-id="<?=$last_month_scent['shopify_variant_id']?>" data-ship-time="<?=$shipment_list['ship_date_time']?>">Add to This Box</a>
                                 </div>
                             </div>
+                            {% endunless %}
 						<?php } ?>
                     </div>
 					<?php
