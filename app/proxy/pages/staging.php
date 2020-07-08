@@ -347,6 +347,9 @@ print_r($schedule->get());
 						$last_month_scent = sc_get_monthly_scent($db);
 						$last_month_scent['ship_date_time'] = strtotime($last_month_scent['ship_date']);
 
+						print_r($last_month_scent);
+						print_r($upcoming_shipment);
+
 						$has_last_sc = array_reduce($upcoming_shipment['items'], function($carry, $item) use($last_month_scent) {
 							return $carry || $item['shopify_variant_id'] == $last_month_scent['shopify_variant_id'];
 						}, false);
