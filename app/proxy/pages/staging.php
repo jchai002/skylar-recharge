@@ -363,18 +363,21 @@ print_r($schedule->get());
 			// Get current month scent
 			// Show as option for the box with the next month
 			$last_month_scent = sc_get_monthly_scent($db);
+			$last_month_scent['ship_date_time'] = strtotime($last_month_scent['ship_date']);
 			// If shipment list contains scent club && shipment month is next month
             if(!$previous_month_add_shown
                 && $has_sc
                 && (
                     // Years are the same, is the month after this scent's
-                    (date('Y', $shipment_list['ship_date_time']) == date('Y', $last_month_scent['ship_date'])
-                    && date('m', $shipment_list['ship_date_time']) == date('m', $last_month_scent['ship_date'])+1)
+                    (date('Y', $shipment_list['ship_date_time']) == date('Y', $last_month_scent['ship_date_time'])
+                    && date('m', $shipment_list['ship_date_time']) == date('m', $last_month_scent['ship_date_time'])+1)
                     // Is next year, this month is december, boxes month is january
-                    || (date('Y', $shipment_list['ship_date_time']) == date('Y', $last_month_scent['ship_date'])+1
-                    && date('m', $shipment_list['ship_date_time']) == 12 && date('m', $last_month_scent['ship_date']) == 1)
+                    || (date('Y', $shipment_list['ship_date_time']) == date('Y', $last_month_scent['ship_date_time'])+1
+                    && date('m', $shipment_list['ship_date_time']) == 12 && date('m', $last_month_scent['ship_date_time']) == 1)
                 )
-            ){ ?>
+            ){
+                $previous_month_add_shown = true;
+            ?>
             {% assign lastmonth_offer_product = all_products['<?=$last_month_scent['handle']?>'] %}
             <div class="sc-lastmonth-offer">
                 <div>
