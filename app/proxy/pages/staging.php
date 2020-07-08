@@ -59,6 +59,7 @@ echo count($schedule->get()).PHP_EOL;
 print_r($schedule->get());
 ?>
 -->
+{% include 'feature-flags' %}
 {% assign portal_page = 'schedule' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
