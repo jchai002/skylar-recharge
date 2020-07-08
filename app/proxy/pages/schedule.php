@@ -20,33 +20,34 @@ if(!empty($rc_customer_id)){
 	$months = $_REQUEST['months'] ?? 4;
 	$schedule = new SubscriptionSchedule($db, $rc, $rc_customer_id, strtotime(date('Y-m-t',strtotime("+$months months"))));
 	if(!empty($is_alias)){
-	    $schedule->is_alias = true;
-    }
+		$schedule->is_alias = true;
+	}
 	if(!empty($_REQUEST['hidden_subs'])){
-	    $schedule->hidden_subscription_ids = $_REQUEST['hidden_subs'];
-    }
+		$schedule->hidden_subscription_ids = $_REQUEST['hidden_subs'];
+	}
 }
 
 if(empty($rc_customer_id) || empty($schedule->get())){
-    require_once(__DIR__.'/no-subscriptions.php');
-    exit;
+	require_once(__DIR__.'/no-subscriptions.php');
+	exit;
 }
 
 $sc_main_sub = sc_get_main_subscription($db, $rc, [
-    'customer_id' => $rc_customer_id,
-    'status' => 'ACTIVE',
+	'customer_id' => $rc_customer_id,
+	'status' => 'ACTIVE',
 ]);
 
 // figure out when to put the add to box section
 $next_section_index = 0;
 $i = -1;
 foreach($schedule->get() as $shipment_list){
-    $i++;
-    if($shipment_list['has_ac_followup']){
-        $next_section_index = $i;
-    }
+	$i++;
+	if($shipment_list['has_ac_followup']){
+		$next_section_index = $i;
+	}
 }
 $next_section_shown = false;
+$previous_month_add_shown = false;
 
 sc_conditional_billing($rc, $_REQUEST['c']);
 ?>
@@ -58,6 +59,7 @@ echo count($schedule->get()).PHP_EOL;
 print_r($schedule->get());
 ?>
 -->
+{% include 'feature-flags' %}
 {% assign portal_page = 'schedule' %}
 {{ 'sc-portal.scss.css' | asset_url | stylesheet_tag }}
 <div class="sc-portal-page sc-portal-{{ portal_page }} sc-portal-container">
@@ -67,309 +69,345 @@ print_r($schedule->get());
             <div class="sc-portal-title">Your Next Skylar Box</div>
             <div class="sc-portal-subtitle">The next box that you'll be charged for</div>
             <div class="sc-upcoming-container">
-                <?php
-                    $shipment_index = -1;
-                    $sc_shipment_index = -1;
-                    foreach($schedule->get() as $shipment_list){
-                        $shipment_index++;
-                        foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
-							$last_unskipped_charge = false;
+				<?php
+				$shipment_index = -1;
+				$sc_shipment_index = -1;
+				foreach($schedule->get() as $shipment_list){
+				$shipment_index++;
+				foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
+					$last_unskipped_charge = false;
 
-
-                            $has_ac_followup = false;
-							$ac_delivered = false;
-							$ac_allow_pushback = true;
-							$ac_pushed_up = false;
-							$has_sc = false;
-                            foreach($upcoming_shipment['items'] as $item){
-								if(!empty($item['charge_id']) && !empty($schedule->charges()[$item['charge_id']]) && $schedule->charges()[$item['charge_id']]['status'] == 'QUEUED'){
-									$last_unskipped_charge = $schedule->charges()[$item['charge_id']];
-								}
-								echo "<!-- ";
-								var_dump($last_unskipped_charge);
-								echo " -->";
-                                if(is_ac_followup_lineitem($item)){
-                                    $has_ac_followup = true;
-									if(is_ac_pushed_back($item)){
-										$ac_allow_pushback = false;
-									}
-									if(is_ac_pushed_up($item)){
-										$ac_allow_pushback = false;
-										$ac_pushed_up = true;
-									}
-                                    if(is_ac_delivered($item)){
-                                        $ac_delivered = true;
-                                    }
-                                }
-                                if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
-                                    $sc_shipment_index++;
-									$has_sc = true;
-                                }
-                            }
-                            ?>
-                            <div class="sc-upcoming-shipment">
-                                <div class="sc-box-info">
-                                    <span class="sc-box-shiplabel">Shipping Date</span>
-									<?php if($has_ac_followup && !$ac_delivered && !$ac_pushed_up){ ?>
-                                        <span class="sc-box-date sc-box-date-pending">Pending Sample Delivery</span>
-									<?php } else if($has_ac_followup && $ac_allow_pushback){ ?>
-                                        <span class="sc-box-date ac-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
-                                    <?php } else if($has_ac_followup){ ?>
-                                        <span class="sc-box-date"><?=date('F j', $shipment_list['ship_date_time']) ?></span>
-                                    <?php } else if($shipment_index == 0 || ($has_sc && $sc_shipment_index == 0)){ ?>
-                                        <span class="sc-box-date sc-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
-                                    <?php } else { ?>
-                                        <span class="sc-box-date"><?=date('F j', $shipment_list['ship_date_time']) ?></span>
-                                    <?php } ?>
-                                </div>
-                                <?php foreach($upcoming_shipment['items'] as $item){
-									$monthly_scent = sc_get_monthly_scent($db, $shipment_list['ship_date_time'], is_admin_address($item['address_id']));
-                                    if(!empty($monthly_scent)){
-                                        $box_swap_image = 'data-swap-image="{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
-                                        $box_swap_text = 'data-swap-text="'.$monthly_scent['variant_title'].'"';
-									} else {
-                                        $box_swap_image = 'data-swap-image="{{ \'sc-logo.svg\' | file_url }}"';
-										$box_swap_text = 'data-swap-text="Monthly Scent"';
-                                    }
-                                    ?>
-                                    {% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
-                                    {% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
-                                    {% assign box_variant = box_product.variants.first %}
-                                    {% for svariant in box_product.variants %}
-                                    {% if svariant.id == picked_variant_id %}
-                                    {% assign box_variant = svariant %}
-                                    {% endif %}
-                                    {% endfor %}
-                                    <div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
-                                        data-address-id="<?=$item['address_id']?>"
-                                        data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
-                                        data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
-                                        <?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
-                                            data-master-image="{{ 'sc-logo.svg' | file_url }}"
-                                        <?php } else { ?>
-                                            data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
-                                        <?php } ?>
-										<?=$box_swap_image?>
-										<?=$box_swap_text?>
-                                        data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
-                                        data-subscription-id="<?=$item['subscription_id']?>"
-                                        <?= !empty($item['charge_id']) ? 'data-charge-id="'.$item['charge_id'].'"' : '' ?>
-                                        data-type="<?=$item['type']?>"
-                                        data-types="<?=implode($item['types'])?>"
-                                        <?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
-                                        data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
-                                        <?= is_ac_followup_lineitem($item) ? 'data-ac' : '' ?>
-										<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
-										<?= is_ac_delivered($item) ? 'data-ac-delivered' : '' ?>
-                                        <?php if(sc_get_monthly_scent_members($db, null, is_admin_address($address_id))['shopify_variant_id'] == $item['shopify_variant_id']){ ?>
-                                            data-sc-current
-                                        <?php } ?>
-                                        data-ship-time="<?=$upcoming_shipment['ship_date_time']?>"
-                                    >
-                                        <?php if(!empty($item['skipped']) && !empty($item['charge_id'])){ ?>
-                                            <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge_id']?>, '<?=$item['type']?>', '<?=date('Y-m-d', $upcoming_shipment['ship_date_time'])?>'); return false;"><span>Unskip Box</span></a>
-                                        <?php } else if(!empty($item['skipped'])){ ?>
-                                            <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>', '<?=date('Y-m-d', $upcoming_shipment['ship_date_time'])?>'); return false;"><span>Unskip Box</span></a>
-                                        <?php } else if(is_ac_followup_lineitem($item)){ ?>
-                                            <a class="ac-item-corner-link ac-cancel-link" href="#"><span>Cancel My Trial</span></a>
-										<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id'])) && !empty($item['properties']['_swap'])){ ?>
-                                            <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
-										<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id'])) && !empty($item['properties']['_swap'])){ ?>
-                                            <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
-										<?php } else if($item['type'] == 'onetime' || in_array('onetime', $item['types'])){ ?>
-                                            <a class="sc-remove-link" href="#"><span>Remove Item</span></a>
-                                        <?php } else if(!empty($item['charge_id'])){ ?>
-                                            <a class="sc-skip-link<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '-club' : '' ?>" href="#"><span>Skip Box</span></a>
-                                        <?php } ?>
-                                        <div class="sc-item-info">
-                                            <div class="sc-item-summary">
-                                                <div class="sc-item-image">
-                                                    <?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
-                                                        <img class="lazyload" data-src="{{ 'sc-logo.svg' | file_url }}" height="100" width="100" />
-                                                    <?php } else { ?>
-                                                        {% if box_variant.image %}
-                                                        <img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
-                                                        {% else %}
-                                                        <img class="lazyload" data-srcset="{{ box_product | img_url: '100x100' }} 1x, {{ box_product | img_url: '200x200' }} 2x" />
-                                                        {% endif %}
-                                                    <?php } ?>
-                                                </div>
-                                                <div>
-                                                    <?php if(is_ac_followup_lineitem($item)){ ?>
-                                                        <div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
-                                                        {% if box_variant.title != 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
-													<?php } else if(is_scent_club_gift(get_product($db, $item['shopify_product_id']))){ ?>
-                                                        <div class="sc-item-title">Scent Club Gift</div>
-                                                        <div class="sc-item-subtitle"><?= $item['index'] + 1 ?> of <?= $item['expire_after_specific_number_of_charges'] ?? "{{ box_product.variants.first.title }}" ?></div>
-                                                        <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" alt="Swap scent icon" /> <span>Swap Scent</span></a></div>
-                                                    <?php } else if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
-                                                        <div class="sc-item-title">Skylar Scent Club</div>
-                                                        <div class="sc-item-subtitle"></div>
-													<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
-                                                        <div class="sc-item-title">Skylar Scent Club</div>
-                                                        <div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
-                                                        <?php if(!empty($item['properties']['_swap']) || !empty($item['swap'])){ ?>
-                                                            <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" alt="Swap scent icon" /> <span>Swap Scent</span></a></div>
-                                                        <?php } ?>
-                                                    <?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
-                                                        <div class="sc-item-title"><?=$item['product_title']?></div>
-                                                        <div class="sc-item-subtitle"><?=$item['variant_title']?></div>
-                                                        <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" alt="Swap scent icon" /> <span>Swap Scent</span></a></div>
-                                                    <?php } else { ?>
-                                                        <div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
-                                                        {% if box_variant.title != 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
-                                                        <?php if($item['type'] != 'onetime'){ ?>
-                                                            <a class="sc-unsub-link" href="#"><span>Remove</span></a>
-                                                        <?php } ?>
-                                                    <?php } ?>
-                                                </div>
-                                            </div>
-                                            <div class="sc-item-details">
-                                                <div>
-                                                    <div class="sc-item-detail-label">Delivery</div>
-                                                    <div class="sc-item-detail-value">
-                                                        <?php if(
-                                                            empty($item['order_interval_frequency'])
-                                                            || (!empty($item['status']) && $item['status'] == 'ONETIME')
-                                                            || !empty($item['onetime'])
-                                                        ){ ?>
-                                                            Once
-                                                        <?php } else if($item['order_interval_frequency'] == '1'){ ?>
-                                                            Every <?=$item['order_interval_unit']?>
-                                                        <?php } else { ?>
-                                                            Every <?=$item['order_interval_frequency']?> <?=$item['order_interval_unit']?>s
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="sc-item-detail-label">Quantity</div>
-                                                    <div class="sc-item-detail-value"><?=$item['quantity'] ?> </div>
-                                                </div>
-                                                <div>
-                                                    <div class="sc-item-detail-label">Total</div>
-                                                    <div class="sc-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <?php if(is_ac_followup_lineitem($item)){ ?>
-                                            <div class="ac-choose-button">
-                                                <img class="ac-swap-icon" src="{{ 'swapscent-black.svg' | file_url }}" alt="swap icon" />
-                                                <span>Change My Scent</span>
-                                                <div class="ac-choose-plus">+</div>
-                                                <div class="ac-choose-minus">-</div>
-                                            </div>
-                                            <form class="ac-choose-container">
-                                                <input type="hidden" name="subscription_id" value="<?=$item['subscription_id']?>" />
-                                                <div class="ac-choose-title">You can change the full-size bottle by choosing any of the options below.</div>
-                                                <div class="ac-scent-options">
-                                                    <?php foreach($ids_by_scent as $handle => $scent_ids){
-                                                        ?>
-                                                        {% assign ac_choose_product = all_products['<?=$handle?>'] %}
-                                                        <label class="ac-scent-option">
-                                                            <input type="radio" name="variant_id" value="{{ ac_choose_product.variants.first.id }}" <?= $item['shopify_product_id'] == $scent_ids['product'] ? 'checked ' : '' ?>/>
-                                                            <div class="ac-scent-image">
-                                                                <img class="lazyload lazypreload ac-check-image" data-srcset="{{ 'ac-checkmark.png' | file_img_url: '52x52' }} 1x, {{ 'ac-checkmark.png' | file_img_url: '104x104' }} 2x" alt="checked" />
-                                                                <img class="lazyload lazypreload" alt="<?=$handle?> product image" data-srcset="{{ ac_choose_product | img_url: '270x270' }} 1x, {{ ac_choose_product | img_url: '540x540' }} 2x" />
-                                                            </div>
-                                                            <div class="ac-scent-title">{{ ac_choose_product.title }}</div>
-                                                            <div class="ac-scent-desc">{{ ac_choose_product.metafields.skylar.scent_tags }}</div>
-                                                        </label>
-                                                    <?php } ?>
-                                                </div>
-                                            </form>
-                                         <?php } ?>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                <?php } ?>
-								<?php if(!$has_ac_followup || $has_sc){ ?>
-									<div class="portal-item-actions">
-										<div class="action_button add-and-save">Add and save!</div>
-									</div>
+					$has_ac_followup = false;
+					$ac_delivered = false;
+					$ac_allow_pushback = true;
+					$ac_pushed_up = false;
+					$has_sc = false;
+					foreach($upcoming_shipment['items'] as $item){
+						if(!empty($item['charge_id']) && !empty($schedule->charges()[$item['charge_id']]) && $schedule->charges()[$item['charge_id']]['status'] == 'QUEUED'){
+							$last_unskipped_charge = $schedule->charges()[$item['charge_id']];
+						}
+						echo "<!-- ";
+						var_dump($last_unskipped_charge);
+						echo " -->";
+						if(is_ac_followup_lineitem($item)){
+							$has_ac_followup = true;
+							if(is_ac_pushed_back($item)){
+								$ac_allow_pushback = false;
+							}
+							if(is_ac_pushed_up($item)){
+								$ac_allow_pushback = false;
+								$ac_pushed_up = true;
+							}
+							if(is_ac_delivered($item)){
+								$ac_delivered = true;
+							}
+						}
+						if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){
+							$sc_shipment_index++;
+							$has_sc = true;
+						}
+					}
+					?>
+                    <div class="sc-upcoming-shipment">
+                        <div class="sc-box-info">
+                            <span class="sc-box-shiplabel">Shipping Date</span>
+							<?php if($has_ac_followup && !$ac_delivered && !$ac_pushed_up){ ?>
+                                <span class="sc-box-date sc-box-date-pending">Pending Sample Delivery</span>
+							<?php } else if($has_ac_followup && $ac_allow_pushback){ ?>
+                                <span class="sc-box-date ac-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
+							<?php } else if($has_ac_followup){ ?>
+                                <span class="sc-box-date"><?=date('F j', $shipment_list['ship_date_time']) ?></span>
+							<?php } else if($shipment_index == 0 || ($has_sc && $sc_shipment_index == 0)){ ?>
+                                <span class="sc-box-date sc-edit-date"><?=date('F j', $shipment_list['ship_date_time']) ?> <img src="{{ 'icon-chevron-down.svg' | file_url }}" /></span>
+							<?php } else { ?>
+                                <span class="sc-box-date"><?=date('F j', $shipment_list['ship_date_time']) ?></span>
+							<?php } ?>
+                        </div>
+						<?php foreach($upcoming_shipment['items'] as $item){
+							$monthly_scent = sc_get_monthly_scent($db, $shipment_list['ship_date_time'], is_admin_address($item['address_id']));
+							if(!empty($monthly_scent)){
+								$box_swap_image = 'data-swap-image="{{ all_products["'.$monthly_scent['handle'].'"].metafields.scent_club.swap_icon | file_img_url: \'30x30\' }}"';
+								$box_swap_text = 'data-swap-text="'.$monthly_scent['variant_title'].'"';
+							} else {
+								$box_swap_image = 'data-swap-image="{{ \'sc-logo.svg\' | file_url }}"';
+								$box_swap_text = 'data-swap-text="Monthly Scent"';
+							}
+							?>
+                            {% assign box_product = all_products['<?=get_product($db, $item['shopify_product_id'])['handle']?>'] %}
+                            {% assign picked_variant_id = <?=$item['shopify_variant_id']?> | plus: 0 %}
+                            {% assign box_variant = box_product.variants.first %}
+                            {% for svariant in box_product.variants %}
+                            {% if svariant.id == picked_variant_id %}
+                            {% assign box_variant = svariant %}
+                            {% endif %}
+                            {% endfor %}
+                            <div class="sc-box-item<?= !empty($item['skipped']) ? ' sc-box-skipped' : '' ?>"
+                                 data-address-id="<?=$item['address_id']?>"
+                                 data-variant-id="<?=empty($item['shopify_variant_id']) ? '{{ box_product.variants.first.id }}' : $item['shopify_variant_id']?>"
+                                 data-date="<?= date('Y-m-d', $upcoming_shipment['ship_date_time'])?>"
+								<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+                                    data-master-image="{{ 'sc-logo.svg' | file_url }}"
+								<?php } else { ?>
+                                    data-master-image="{% if box_variant.image %}{{ box_variant | img_url: 'master' }}{% else %}{{ box_product | img_url: 'master' }}{% endif %}"
 								<?php } ?>
-                                <?php if($shipment_index == 0 && !$has_ac_followup){ ?>
-                                    <div class="sc-box-discounts<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                        <?php foreach($upcoming_shipment['discounts'] as $discount){ ?>
-                                                <div class="sc-box-discount">
-                                                <?php if(strpos($discount['code'], 'ST-10-') === 0){ ?>
-                                                    <div class="sc-discount-title">Discount</div>
-                                                <?php } else if($discount['code'] === 'CSVOS'){ ?>
-                                                    <div class="sc-discount-title">Discount</div>
-                                                <?php } else { ?>
-                                                    <div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
-                                                <?php } ?>
-													<?php if($discount['type'] == 'percentage'){ ?>
-                                                        <div class="sc-discount-value"><?=$discount['amount']?>% (-$<?=price_without_trailing_zeroes($discount['applied_amount'])?>)</div>
-													<?php } else { ?>
-                                                        <div class="sc-discount-value">-$<?=price_without_trailing_zeroes($discount['applied_amount']) ?></div>
-													<?php } ?>
-                                                </div>
-                                        <?php } ?>
-                                        <div class="sc-discount-link" onclick="$('.sc-add-discount').show();$(this).hide();">Got a promo code?</div>
-                                        <form class="sc-add-discount" style="display: none;">
-                                            <div><input type="text" name="discount_code" /></div>
-                                            <div><input type="submit" value="Apply" class="action_button inverted" /></div>
-                                            <?php if(!empty($last_unskipped_charge)){ ?>
-                                                <input type="hidden" name="address_id" value="<?=$address_id?>" />
-                                                <input type="hidden" name="charge_id" value="<?=$last_unskipped_charge['id']?>" />
-                                            <?php } ?>
-                                        </form>
+								<?=$box_swap_image?>
+								<?=$box_swap_text?>
+                                 data-month-text="<?=date('F', $upcoming_shipment['ship_date_time'])?>"
+                                 data-subscription-id="<?=$item['subscription_id']?>"
+								<?= !empty($item['charge_id']) ? 'data-charge-id="'.$item['charge_id'].'"' : '' ?>
+                                 data-type="<?=$item['type']?>"
+                                 data-types="<?=implode($item['types'])?>"
+								<?= is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'data-sc' : ''?>
+                                 data-sc-type="<?= is_scent_club(get_product($db, $item['shopify_product_id'])) ? 'default' : ''?><?= is_scent_club_swap(get_product($db, $item['shopify_product_id'])) ? 'swap' : ''?><?= is_scent_club_month(get_product($db, $item['shopify_product_id'])) ? 'monthly' : ''?><?= !is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? 'none' : ''?>"
+								<?= is_ac_followup_lineitem($item) ? 'data-ac' : '' ?>
+								<?= is_ac_pushed_back($item) ? 'data-ac-pushed-back' : '' ?>
+								<?= is_ac_delivered($item) ? 'data-ac-delivered' : '' ?>
+								<?php if(sc_get_monthly_scent_members($db, null, is_admin_address($address_id))['shopify_variant_id'] == $item['shopify_variant_id']){ ?>
+                                    data-sc-current
+								<?php } ?>
+                                 data-ship-time="<?=$upcoming_shipment['ship_date_time']?>"
+                            >
+								<?php if(!empty($item['skipped']) && !empty($item['charge_id'])){ ?>
+                                    <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge_id']?>, '<?=$item['type']?>', '<?=date('Y-m-d', $upcoming_shipment['ship_date_time'])?>'); return false;"><span>Unskip Box</span></a>
+								<?php } else if(!empty($item['skipped'])){ ?>
+                                    <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, 0, '<?=$item['type']?>', '<?=date('Y-m-d', $upcoming_shipment['ship_date_time'])?>'); return false;"><span>Unskip Box</span></a>
+								<?php } else if(is_ac_followup_lineitem($item)){ ?>
+                                    <a class="ac-item-corner-link ac-cancel-link" href="#"><span>Cancel My Trial</span></a>
+								<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id'])) && !empty($item['properties']['_swap'])){ ?>
+                                    <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
+								<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id'])) && !empty($item['properties']['_swap'])){ ?>
+                                    <a class="sc-skip-link-club" href="#"><span>Skip Box</span></a>
+								<?php } else if($item['type'] == 'onetime' || in_array('onetime', $item['types'])){ ?>
+                                    <a class="sc-remove-link" href="#"><span>Remove Item</span></a>
+								<?php } else if(!empty($item['charge_id'])){ ?>
+                                    <a class="sc-skip-link<?=is_scent_club_any(get_product($db, $item['shopify_product_id'])) ? '-club' : '' ?>" href="#"><span>Skip Box</span></a>
+								<?php } ?>
+                                <div class="sc-item-info">
+                                    <div class="sc-item-summary">
+                                        <div class="sc-item-image">
+											<?php if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+                                                <img class="lazyload" data-src="{{ 'sc-logo.svg' | file_url }}" height="100" width="100" />
+											<?php } else { ?>
+                                                {% if box_variant.image %}
+                                                <img class="lazyload" data-srcset="{{ box_variant | img_url: '100x100' }} 1x, {{ box_variant | img_url: '200x200' }} 2x" />
+                                                {% else %}
+                                                <img class="lazyload" data-srcset="{{ box_product | img_url: '100x100' }} 1x, {{ box_product | img_url: '200x200' }} 2x" />
+                                                {% endif %}
+											<?php } ?>
+                                        </div>
+                                        <div>
+											<?php if(is_ac_followup_lineitem($item)){ ?>
+                                                <div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
+                                                {% if box_variant.title != 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
+											<?php } else if(is_scent_club_gift(get_product($db, $item['shopify_product_id']))){ ?>
+                                                <div class="sc-item-title">Scent Club Gift</div>
+                                                <div class="sc-item-subtitle"><?= $item['index'] + 1 ?> of <?= $item['expire_after_specific_number_of_charges'] ?? "{{ box_product.variants.first.title }}" ?></div>
+                                                <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" alt="Swap scent icon" /> <span>Swap Scent</span></a></div>
+											<?php } else if(is_scent_club(get_product($db, $item['shopify_product_id']))){ ?>
+                                                <div class="sc-item-title">Skylar Scent Club</div>
+                                                <div class="sc-item-subtitle"></div>
+											<?php } else if(is_scent_club_month(get_product($db, $item['shopify_product_id']))){ ?>
+                                                <div class="sc-item-title">Skylar Scent Club</div>
+                                                <div class="sc-item-subtitle">{{ box_product.variants.first.title }}</div>
+												<?php if(!empty($item['properties']['_swap']) || !empty($item['swap'])){ ?>
+                                                    <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" alt="Swap scent icon" /> <span>Swap Scent</span></a></div>
+												<?php } ?>
+											<?php } else if(is_scent_club_swap(get_product($db, $item['shopify_product_id']))){ ?>
+                                                <div class="sc-item-title"><?=$item['product_title']?></div>
+                                                <div class="sc-item-subtitle"><?=$item['variant_title']?></div>
+                                                <div><a class="sc-swap-link" href="#"><img src="{{ 'icon-swap.svg' | file_url }}" alt="Swap scent icon" /> <span>Swap Scent</span></a></div>
+											<?php } else { ?>
+                                                <div class="sc-item-title"><?= empty($item['product_title']) ? $item['title'] : $item['product_title']?></div>
+                                                {% if box_variant.title != 'Default Title' %}<div class="sc-item-subtitle">{{ box_variant.title }}</div>{% endif %}
+												<?php if($item['type'] != 'onetime'){ ?>
+                                                    <a class="sc-unsub-link" href="#"><span>Remove</span></a>
+												<?php } ?>
+											<?php } ?>
+                                        </div>
                                     </div>
-									<?php if(!empty($last_unskipped_charge)){ ?>
-                                        <!-- <?php print_r($last_unskipped_charge) ?> -->
-                                        <?php if(!empty($last_unskipped_charge['shipping_lines']) && !empty($last_unskipped_charge['shipping_lines'][0]) && $last_unskipped_charge['shipping_lines'][0]['price'] > 0){
-                                            $shipping_line = $last_unskipped_charge['shipping_lines'][0];
-                                            ?>
-                                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                                <div class="sc-shipping-title"><?=$shipping_line['title']?></div>
-                                                <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
+                                    <div class="sc-item-details">
+                                        <div>
+                                            <div class="sc-item-detail-label">Delivery</div>
+                                            <div class="sc-item-detail-value">
+												<?php if(
+													empty($item['order_interval_frequency'])
+													|| (!empty($item['status']) && $item['status'] == 'ONETIME')
+													|| !empty($item['onetime'])
+												){ ?>
+                                                    Once
+												<?php } else if($item['order_interval_frequency'] == '1'){ ?>
+                                                    Every <?=$item['order_interval_unit']?>
+												<?php } else { ?>
+                                                    Every <?=$item['order_interval_frequency']?> <?=$item['order_interval_unit']?>s
+												<?php } ?>
                                             </div>
-                                        <?php
-                                        }
-                                        if(!empty($last_unskipped_charge)){ ?>
-                                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                                <div class="sc-shipping-title">Tax</div>
-                                                <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($last_unskipped_charge['total_tax'])?></div>
-                                            </div>
-                                        <?php } ?>
-                                        <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                            Grand Total: $<?= price_without_trailing_zeroes($last_unskipped_charge['total_price']) ?>
                                         </div>
-                                    <?php } else { ?>
-                                        <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                            Grand Total: $<?= price_without_trailing_zeroes(array_sum(array_column($upcoming_shipment['items'], 'price'))) ?>
+                                        <div>
+                                            <div class="sc-item-detail-label">Quantity</div>
+                                            <div class="sc-item-detail-value"><?=$item['quantity'] ?> </div>
                                         </div>
-                                    <?php } ?>
-                                <?php } ?>
+                                        <div>
+                                            <div class="sc-item-detail-label">Total</div>
+                                            <div class="sc-item-detail-value">$<?=price_without_trailing_zeroes($item['price']) ?> </div>
+                                        </div>
+                                    </div>
+                                </div>
+								<?php if(is_ac_followup_lineitem($item)){ ?>
+                                    <div class="ac-choose-button">
+                                        <img class="ac-swap-icon" src="{{ 'swapscent-black.svg' | file_url }}" alt="swap icon" />
+                                        <span>Change My Scent</span>
+                                        <div class="ac-choose-plus">+</div>
+                                        <div class="ac-choose-minus">-</div>
+                                    </div>
+                                    <form class="ac-choose-container">
+                                        <input type="hidden" name="subscription_id" value="<?=$item['subscription_id']?>" />
+                                        <div class="ac-choose-title">You can change the full-size bottle by choosing any of the options below.</div>
+                                        <div class="ac-scent-options">
+											<?php foreach($ids_by_scent as $handle => $scent_ids){
+												?>
+                                                {% assign ac_choose_product = all_products['<?=$handle?>'] %}
+                                                <label class="ac-scent-option">
+                                                    <input type="radio" name="variant_id" value="{{ ac_choose_product.variants.first.id }}" <?= $item['shopify_product_id'] == $scent_ids['product'] ? 'checked ' : '' ?>/>
+                                                    <div class="ac-scent-image">
+                                                        <img class="lazyload lazypreload ac-check-image" data-srcset="{{ 'ac-checkmark.png' | file_img_url: '52x52' }} 1x, {{ 'ac-checkmark.png' | file_img_url: '104x104' }} 2x" alt="checked" />
+                                                        <img class="lazyload lazypreload" alt="<?=$handle?> product image" data-srcset="{{ ac_choose_product | img_url: '270x270' }} 1x, {{ ac_choose_product | img_url: '540x540' }} 2x" />
+                                                    </div>
+                                                    <div class="ac-scent-title">{{ ac_choose_product.title }}</div>
+                                                    <div class="ac-scent-desc">{{ ac_choose_product.metafields.skylar.scent_tags }}</div>
+                                                </label>
+											<?php } ?>
+                                        </div>
+                                    </form>
+								<?php } ?>
+                                <div class="clearfix"></div>
                             </div>
-                        <?php
-                        }
-                        if($next_section_shown){
-                            continue;
-                        }
-                        if($shipment_index < $next_section_index){
-                            continue;
-                        }
-                        if(count($schedule->get()) == 1){
-                            continue;
-                        }
-                        if(empty($sc_main_sub)){
-                            continue;
-                        }
-        				$next_section_shown = true;
-                        ?>
+						<?php } ?>
+						<?php if(!$has_ac_followup || $has_sc){ ?>
+                            <div class="portal-item-actions">
+                                <div class="action_button add-and-save">Add and save!</div>
+                            </div>
+						<?php } ?>
+						<?php if($shipment_index == 0 && !$has_ac_followup){ ?>
+                            <div class="sc-box-discounts<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+								<?php foreach($upcoming_shipment['discounts'] as $discount){ ?>
+                                    <div class="sc-box-discount">
+										<?php if(strpos($discount['code'], 'ST-10-') === 0){ ?>
+                                            <div class="sc-discount-title">Discount</div>
+										<?php } else if($discount['code'] === 'CSVOS'){ ?>
+                                            <div class="sc-discount-title">Discount</div>
+										<?php } else { ?>
+                                            <div class="sc-discount-title"><?=$discount['code']?> <a href="#" class="remove-discount-link">(remove)</a>:</div>
+										<?php } ?>
+										<?php if($discount['type'] == 'percentage'){ ?>
+                                            <div class="sc-discount-value"><?=$discount['amount']?>% (-$<?=price_without_trailing_zeroes($discount['applied_amount'])?>)</div>
+										<?php } else { ?>
+                                            <div class="sc-discount-value">-$<?=price_without_trailing_zeroes($discount['applied_amount']) ?></div>
+										<?php } ?>
+                                    </div>
+								<?php } ?>
+                                <div class="sc-discount-link" onclick="$('.sc-add-discount').show();$(this).hide();">Got a promo code?</div>
+                                <form class="sc-add-discount" style="display: none;">
+                                    <div><input type="text" name="discount_code" /></div>
+                                    <div><input type="submit" value="Apply" class="action_button inverted" /></div>
+									<?php if(!empty($last_unskipped_charge)){ ?>
+                                        <input type="hidden" name="address_id" value="<?=$address_id?>" />
+                                        <input type="hidden" name="charge_id" value="<?=$last_unskipped_charge['id']?>" />
+									<?php } ?>
+                                </form>
+                            </div>
+							<?php if(!empty($last_unskipped_charge)){ ?>
+                                <!-- <?php print_r($last_unskipped_charge) ?> -->
+								<?php if(!empty($last_unskipped_charge['shipping_lines']) && !empty($last_unskipped_charge['shipping_lines'][0]) && $last_unskipped_charge['shipping_lines'][0]['price'] > 0){
+									$shipping_line = $last_unskipped_charge['shipping_lines'][0];
+									?>
+                                    <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+                                        <div class="sc-shipping-title"><?=$shipping_line['title']?></div>
+                                        <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
+                                    </div>
+									<?php
+								}
+								if(!empty($last_unskipped_charge)){ ?>
+                                    <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+                                        <div class="sc-shipping-title">Tax</div>
+                                        <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($last_unskipped_charge['total_tax'])?></div>
+                                    </div>
+								<?php } ?>
+                                <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+                                    Grand Total: $<?= price_without_trailing_zeroes($last_unskipped_charge['total_price']) ?>
+                                </div>
+							<?php } else { ?>
+                                <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+                                    Grand Total: $<?= price_without_trailing_zeroes(array_sum(array_column($upcoming_shipment['items'], 'price'))) ?>
+                                </div>
+							<?php } ?>
+						<?php } ?>
+						<?php
+						// Get current month scent
+						// Show as option for the box with the next month
+						$last_month_scent = sc_get_monthly_scent($db);
+						$last_month_scent['ship_date_time'] = strtotime($last_month_scent['ship_date']);
+
+						$has_last_sc = array_reduce($upcoming_shipment['items'], function($carry, $item) use($last_month_scent) {
+							return $carry || $item['shopify_variant_id'] == $last_month_scent['shopify_variant_id'];
+						}, false);
+
+						if(!$previous_month_add_shown
+							&& !$has_last_sc
+							&& $has_sc
+							&& (
+								// Years are the same, is the month after this scent's
+								(date('Y', $upcoming_shipment['ship_date_time']) == date('Y', $last_month_scent['ship_date_time'])
+									&& date('m', $upcoming_shipment['ship_date_time']) == date('m', $last_month_scent['ship_date_time'])+1)
+								// Is next year, this month is december, boxes month is january
+								|| (date('Y', $upcoming_shipment['ship_date_time']) == date('Y', $last_month_scent['ship_date_time'])+1
+									&& date('m', $upcoming_shipment['ship_date_time']) == 12 && date('m', $last_month_scent['ship_date_time']) == 1)
+							)
+						){
+							$previous_month_add_shown = true;
+							?>
+                            {% unless _ff_previous_scent_readd == false %}
+                            {% assign lastmonth_offer_product = all_products['<?=$last_month_scent['handle']?>'] %}
+                            <div class="sc-lastmonth-offer">
+                                <div>
+                                    <img class="lazyload" data-srcset="{{ lastmonth_offer_product | img_url: '100x100' }} 1x, {{ lastmonth_offer_product | img_url: '200x200' }} 2x" style="display: block;" />
+                                </div>
+                                <div>
+                                    <div class="sc-item-title">Loved <?=$last_month_scent['variant_title']?>?</div>
+                                    <div class="sc-item-detail-value">Get <?=date('F', strtotime($last_month_scent['ship_date']))?>'s Scent Again</div>
+                                    <a class="link link--underlined" data-variant-id="<?=$last_month_scent['shopify_variant_id']?>" data-ship-time="<?=$shipment_list['ship_date_time']?>">Add to This Box</a>
+                                </div>
+                            </div>
+                            {% endunless %}
+						<?php } ?>
                     </div>
-                </div>
-                <div class="sc-spacer"></div>
-                <div class="sc-hr"></div>
-                <div class="sc-portal-innercontainer sc-schedule-container">
-                    <div class="sc-portal-title">Your Upcoming Skylar Box<?= count($schedule->get()) > 2 ? 'es' : '' ?></div>
-                    <div class="sc-portal-box-list">
-                <?php } ?>
+					<?php
+				}
+				if($next_section_shown){
+					continue;
+				}
+				if($shipment_index < $next_section_index){
+					continue;
+				}
+				if(count($schedule->get()) == 1){
+					continue;
+				}
+				if(empty($sc_main_sub)){
+					continue;
+				}
+				$next_section_shown = true;
+				?>
+            </div>
+        </div>
+        <div class="sc-hr"></div>
+        <div class="sc-portal-innercontainer sc-schedule-container">
+            <div class="sc-portal-title">Your Upcoming Skylar Box<?= count($schedule->get()) > 2 ? 'es' : '' ?></div>
+            <div class="sc-portal-box-list">
+				<?php } ?>
             </div>
             <div class="sc-load-more" data-months="<?=$months?>">
-                <?php if(count($schedule->subscriptions()) > 0){ ?>
+				<?php if(count($schedule->subscriptions()) > 0){ ?>
                     <a href="#" class="action_button" onclick="AccountController.load_schedule(<?=$months+3?>); return false;">View More</a>
-                <?php } ?>
+				<?php } ?>
             </div>
         </div>
     </div>
@@ -885,6 +923,10 @@ print_r($schedule->get());
                 variant: 'scent-club',
                 afterOpen: $.noop, // Fix dumb app bug
             });
+        });
+        $('.sc-lastmonth-offer .link').click(function(e){
+            e.preventDefault();
+            AccountController.add_item_at_date($(this).data('variant-id'), $(this).data('ship-time'));
         });
         $('.sc-skip-link').unbind().click(function(e){
             e.preventDefault();
