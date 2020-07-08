@@ -373,7 +373,7 @@ print_r($schedule->get());
             <div>
                 <div class="sc-item-title">Loved <?=$last_month_scent['variant_title']?>?</div>
                 <div class="sc-item-detail-value">Get <?=date('F', strtotime($last_month_scent['ship_date']))?>'s Scent Again</div>
-                <a class="link link--underlined">Add to This Box</a>
+                <a class="link link--underlined" data-variant-id="<?=$last_month_scent['shopify_variant_id']?>" data-ship-time="<?=$shipment_list['ship_date_time']?>">Add to This Box</a>
             </div>
         </div>
         <div class="sc-hr"></div>
@@ -901,6 +901,10 @@ print_r($schedule->get());
                 variant: 'scent-club',
                 afterOpen: $.noop, // Fix dumb app bug
             });
+        });
+        $('.sc-lastmonth-offer .link').click(function(e){
+            e.preventDefault();
+            AccountController.add_item_at_date($(this).data('variant-id'), $(this).data('ship-time'));
         });
         $('.sc-skip-link').unbind().click(function(e){
             e.preventDefault();
