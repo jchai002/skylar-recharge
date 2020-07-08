@@ -364,8 +364,13 @@ print_r($schedule->get());
 			// Show as option for the box with the next month
 			$last_month_scent = sc_get_monthly_scent($db);
 			$last_month_scent['ship_date_time'] = strtotime($last_month_scent['ship_date']);
-			// If shipment list contains scent club && shipment month is next month
+
+			$has_last_sc = array_reduce($shipment_list['items'], function($carry, $item) use($last_month_scent) {
+			    return $carry || $item['shopify_variant_id'] == $last_month_scent['shopify_variant_id'];
+            }, false);
+
             if(!$previous_month_add_shown
+                && !$has_last_sc
                 && $has_sc
                 && (
                     // Years are the same, is the month after this scent's
