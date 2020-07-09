@@ -293,7 +293,7 @@ foreach($order['line_items'] as $line_item){
 			// klaviyo_send_transactional_email($db, $order['email'], 'duplicate_sc_checkout', ['order' => $order]);
 			continue;
 		}
-		$next_charge_date = date('Y-m', strtotime('+1 month')).'-'.$day_of_month.' 00:00:00';
+		$next_charge_date = date('Y-m', strtotime('+1 month')).'-01 00:00:00';
 		echo "scent club product".PHP_EOL;
 		$res = $rc->post('/subscriptions', [
 			'address_id' => $rc_order['address_id'],
