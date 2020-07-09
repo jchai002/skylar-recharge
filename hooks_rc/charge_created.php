@@ -21,6 +21,7 @@ $charge = $res['charge'];
 
 // Scent club creation logic
 // Check if customer already has a subscription
+/*
 $main_sub = sc_get_main_subscription($db, $rc, [
 	'status' => 'ACTIVE',
 	'customer_id' => $charge['customer_id'],
@@ -28,16 +29,6 @@ $main_sub = sc_get_main_subscription($db, $rc, [
 $promo_sc = !empty($charge['discount_codes']) && strpos($charge['discount_codes'][0]['code'], 'PR-SC-') === 0;
 //var_dump($main_sub);
 $day_of_month = empty($main_sub['order_day_of_month']) ? '01' : $main_sub['order_day_of_month'];
-$has_sc = false;
-foreach($charge['line_items'] as $line_item){
-	if(is_scent_club(get_product($db, $line_item['shopify_product_id']))){
-		$has_sc = true;
-	}
-}
-if(!empty($main_sub) && $has_sc && strtotime($main_sub['created_at']) < time() - 24*60*60){
-	log_event($db, 'duplicate_sc_checkout', $charge['shopify_order_id'], 'checkout');
-//	klaviyo_send_transactional_email($db, $charge['email'], 'duplicate_sc_checkout', ['charge' => $charge]);
-}
 if(empty($main_sub) && empty($promo_sc)){
 	echo "no main sub".PHP_EOL;
 	foreach($charge['line_items'] as $line_item){
@@ -58,13 +49,12 @@ if(empty($main_sub) && empty($promo_sc)){
 				'charge_interval_frequency' => '1',
 				'order_day_of_month' => '1',
 			]);
-//			var_dump($res);
+		//			var_dump($res);
 			if(!empty($res['subscription'])){
 				$main_sub = $res['subscription'];
 			}
 			sleep(5);
 			echo "Next Charge Date: ".sc_calculate_next_charge_date($db, $rc, $charge['address_id']).PHP_EOL;
-
 
 			$profile_data = [];
 			$props = [];
@@ -112,6 +102,7 @@ if(empty($main_sub) && empty($promo_sc)){
 		}
 	}
 }
+*/
 
 $stmt = $db->prepare("UPDATE orders SET charge_processed_at = :now WHERE shopify_id = :order_id");
 $stmt->execute([

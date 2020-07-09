@@ -231,7 +231,7 @@ $subscriptions = [];
 foreach($res['subscriptions'] as $subscription){
 	$subscriptions[$subscription['id']] = $subscription;
 	if(is_scent_club(get_product($db, $subscription['shopify_product_id']))){
-		$sc_main_sub = $subscription;
+		$main_sub = $subscription;
 	}
 }
 
@@ -242,8 +242,8 @@ $gift_card_gwp_pricerules = [
 	200 => ['id' => 600148181079, 'prefix' => 'GC40-', 'amount' => 40],
 ];
 $stmt_get_order_line = $db->prepare("SELECT id FROM order_line_items WHERE shopify_id=?");
-if(empty($sc_main_sub)){
-	$sc_main_sub = sc_get_main_subscription($db, $rc, [
+if(empty($main_sub)){
+	$main_sub = sc_get_main_subscription($db, $rc, [
 		'customer_id' => $rc_order['customer_id'],
 		'status' => 'ACTIVE',
 	]);
@@ -284,7 +284,58 @@ foreach($order['line_items'] as $line_item){
 		]]);
 	}
 
-	if($product['type'] == 'Scent Club Gift' && $rc_order['type'] == 'CHECKOUT'){
+	// Handle Scent Club Creation
+	if(is_scent_club($product) && $rc_order['type'] == 'CHECKOUT'){
+		if(!empty($main_sub)){
+			log_event($db, 'duplicate_sc_checkout', $charge['shopify_order_id'], 'checkout');
+			// klaviyo_send_transactional_email($db, $charge['email'], 'duplicate_sc_checkout', ['charge' => $charge]);
+			continue;
+		}
+		$next_charge_date = date('Y-m', strtotime('+1 month')).'-'.$day_of_month.' 00:00:00';
+		echo "scent club product".PHP_EOL;
+		$res = $rc->post('/subscriptions', [
+			'address_id' => $charge['address_id'],
+			'next_charge_scheduled_at' => $next_charge_date,
+			'product_title' => 'Skylar Scent Club',
+			'price' => $line_item['price'],
+			'quantity' => 1,
+			'shopify_variant_id' => $line_item['shopify_variant_id'],
+			'order_interval_unit' => 'month',
+			'order_interval_frequency' => '1',
+			'charge_interval_frequency' => '1',
+			'order_day_of_month' => '1',
+		]);
+		if(!empty($res['subscription'])){
+			$main_sub = $res['subscription'];
+		}
+		sleep(5);
+		echo "Next Charge Date: ".sc_calculate_next_charge_date($db, $rc, $charge['address_id']).PHP_EOL;
+
+		$profile_data = [];
+		$props = [];
+		foreach($line_item['properties'] as $property){
+			$profile_data[str_replace('_sc_preference_', '', $property['name'])] = $property['value'];
+			$props['$'.str_replace('_sc_preference_', '', $property['name'])] = $property['value'];
+		}
+		if(!empty($profile_data)){
+			$stmt = $db->prepare("INSERT INTO sc_profile_data (shopify_customer_id, data_key, data_value) VALUES (:shopify_customer_id, :data_key, :data_value) ON DUPLICATE KEY UPDATE data_value=:data_value");
+			if(empty($shopify_customer_id)){
+				$customer_res = $rc->get('/customers/'.$charge['customer_id']);
+				$shopify_customer_id = $customer_res['customer']['shopify_customer_id'];
+			}
+			foreach($profile_data as $key=>$value){
+				$stmt->execute([
+					'shopify_customer_id' => $shopify_customer_id,
+					'data_key' => $key,
+					'data_value' => $value,
+				]);
+			}
+		}
+	}
+
+	// Handle Scent Club gifts
+	echo "Checking SC gifts... ";
+	if(is_scent_club_gift($product) && $rc_order['type'] == 'CHECKOUT'){
 
 		$months = [
 			30725266440279 => 3,
