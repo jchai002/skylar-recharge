@@ -96,6 +96,7 @@ foreach($fraud_risks as $risk){
 
 echo "Check account activation".PHP_EOL;
 if(!empty($customer) && $customer['state'] != 'enabled'){
+	$shopify_customer_id = $customer['id'];
 	try {
 		$res = $sc->post('/admin/customers/'.$customer['id'].'/account_activation_url.json');
 		if(empty($res)){
@@ -285,16 +286,17 @@ foreach($order['line_items'] as $line_item){
 	}
 
 	// Handle Scent Club Creation
+	echo "Checking SC Main... ";
 	if(is_scent_club($product) && $rc_order['type'] == 'CHECKOUT'){
 		if(!empty($main_sub)){
-			log_event($db, 'duplicate_sc_checkout', $charge['shopify_order_id'], 'checkout');
-			// klaviyo_send_transactional_email($db, $charge['email'], 'duplicate_sc_checkout', ['charge' => $charge]);
+			log_event($db, 'duplicate_sc_checkout', $order['id'], 'checkout');
+			// klaviyo_send_transactional_email($db, $order['email'], 'duplicate_sc_checkout', ['order' => $order]);
 			continue;
 		}
 		$next_charge_date = date('Y-m', strtotime('+1 month')).'-'.$day_of_month.' 00:00:00';
 		echo "scent club product".PHP_EOL;
 		$res = $rc->post('/subscriptions', [
-			'address_id' => $charge['address_id'],
+			'address_id' => $rc_order['address_id'],
 			'next_charge_scheduled_at' => $next_charge_date,
 			'product_title' => 'Skylar Scent Club',
 			'price' => $line_item['price'],
@@ -305,11 +307,12 @@ foreach($order['line_items'] as $line_item){
 			'charge_interval_frequency' => '1',
 			'order_day_of_month' => '1',
 		]);
+		print_r($res);
 		if(!empty($res['subscription'])){
 			$main_sub = $res['subscription'];
 		}
 		sleep(5);
-		echo "Next Charge Date: ".sc_calculate_next_charge_date($db, $rc, $charge['address_id']).PHP_EOL;
+		echo "Next Charge Date: ".sc_calculate_next_charge_date($db, $rc, $rc_order['address_id']).PHP_EOL;
 
 		$profile_data = [];
 		$props = [];
@@ -319,13 +322,9 @@ foreach($order['line_items'] as $line_item){
 		}
 		if(!empty($profile_data)){
 			$stmt = $db->prepare("INSERT INTO sc_profile_data (shopify_customer_id, data_key, data_value) VALUES (:shopify_customer_id, :data_key, :data_value) ON DUPLICATE KEY UPDATE data_value=:data_value");
-			if(empty($shopify_customer_id)){
-				$customer_res = $rc->get('/customers/'.$charge['customer_id']);
-				$shopify_customer_id = $customer_res['customer']['shopify_customer_id'];
-			}
 			foreach($profile_data as $key=>$value){
 				$stmt->execute([
-					'shopify_customer_id' => $shopify_customer_id,
+					'shopify_customer_id' => $shopify_customer_id ?? $order['customer']['id'],
 					'data_key' => $key,
 					'data_value' => $value,
 				]);
