@@ -301,7 +301,7 @@ foreach($order['line_items'] as $line_item){
 			'product_title' => 'Skylar Scent Club',
 			'price' => $line_item['price'],
 			'quantity' => 1,
-			'shopify_variant_id' => $line_item['shopify_variant_id'],
+			'shopify_variant_id' => $line_item['variant_id'],
 			'order_interval_unit' => 'month',
 			'order_interval_frequency' => '1',
 			'charge_interval_frequency' => '1',
