@@ -290,7 +290,7 @@ foreach($order['line_items'] as $line_item){
 	if(is_scent_club($product) && $rc_order['type'] == 'CHECKOUT'){
 		if(!empty($main_sub)){
 			log_event($db, 'duplicate_sc_checkout', $order['id'], 'checkout');
-			// klaviyo_send_transactional_email($db, $order['email'], 'duplicate_sc_checkout', ['order' => $order]);
+			klaviyo_send_transactional_email($db, $order['email'], 'duplicate_sc_checkout', ['order' => $order]);
 			continue;
 		}
 		$next_charge_date = date('Y-m', strtotime('+1 month')).'-01 00:00:00';
