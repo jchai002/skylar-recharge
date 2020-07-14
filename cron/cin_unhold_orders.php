@@ -116,44 +116,20 @@ do {
 				continue 2; // Switch statements are treated as loops
 		}
 		// Salt air sample add
-		$add_salt_air = false;
-		if(count(array_intersect([
-			'70221408-100', // Scent experience
-			'10450506-101', // Sample Palette
-		], array_column($cc_order['lineItems'], 'code'))) > 0){
-			$add_salt_air = true;
-		} else{
-			$stmt_get_prev_order->execute([
-				'email' => $cc_order['email'],
-				'id' => $db_order['id'],
-			]);
-			if($stmt_get_prev_order->rowCount() == 0){
-				$add_salt_air = true;
-			}
-		}
-		if($add_salt_air && !empty(array_intersect(array_column($cc_order['lineItems'], 'code'), [
-			'99238701-112', // Peel
-			'10450504-112', // full size
-			'10450505-112', // rollie
-		]))){
-			$add_salt_air = false;
-		}
+		$add_salt_air = SampleService::order_needs_peel_salt_air($db, $cc_order, $db_order['id']);
+		$add_sun_shower = SampleService::order_needs_peel_sun_shower($db, $cc_order, $db_order['id']);
+		$add_sun_shower = false;
+		$tags = explode(', ', $db_order['tags']);
 		if($add_salt_air){
-			$stmt_get_order_skus->execute([
-				$db_order['id'],
-			]);
-			$order_skus = $stmt_get_order_skus->fetchAll(PDO::FETCH_COLUMN);
-			$missing_skus = array_diff($order_skus, array_column($cc_order['lineItems'], 'code'));
-			if(count($missing_skus) > 0){
-				log_echo_multi("Missing sku ".implode(',', $missing_skus).", sending alert");
-				print_r($cc_order['lineItems']);
-				print_r(send_alert($db, 16, "Order is being held because it is missing line items that are in shopify (".implode(',', $missing_skus)."): https://go.cin7.com/Cloud/TransactionEntry/TransactionEntry.aspx?idCustomerAppsLink=800541&OrderId=" . $cc_order['id'] . " , https://skylar.com/admin/orders/" . $db_order['shopify_id'], 'Skylar Alert - Missing Line Items'));
-				continue;
-			}
 			log_echo_multi(" - Adding salt air to order...");
-			add_salt_air_sample($cc_order);
-			$tags = explode(', ', $db_order['tags']);
+			SampleService::add_peel_salt_air($cc_order);
 			$tags[] = 'Added Salt Air Sample';
+		}
+		if($add_sun_shower){
+			SampleService::add_peel_sun_shower($cc_order);
+			$tags[] = 'Added Sun Shower Sample';
+		}
+		if($add_salt_air || $add_sun_shower){
 			$res = $sc->put('orders/'.$db_order['shopify_id'].'.json', ['order' => ['tags' => implode(', ', array_unique($tags))]]);
 		} else {
 			unset($cc_order['lineItems']);
@@ -188,26 +164,6 @@ function send_cc_updates(GuzzleHttp\Client $cc, $updates){
 		print_r($res->getBody());
 	}
 	return $res;
-}
-
-function add_salt_air_sample(&$cc_order){
-	// Make sure it doesn't already have salt air
-	$sort = array_reduce($cc_order['lineItems'], function($carry, $item){
-		return $item['sort'] > $carry ? $item['sort'] : $carry;
-	}, 1);
-	$sort++;
-	$cc_order['lineItems'][] = [
-		'transactionId' => $cc_order['id'],
-		'productId' => 1494,
-		'productOptionId' => 1495,
-		'sort' => $sort,
-		'code' => '99238701-112',
-		'name' => 'Scent Peel Back Salt Air',
-		'qty' => 1,
-		'styleCode' => '99238701-112',
-		'lineComments' => 'Auto-added by API',
-	];
-	return $cc_order;
 }
 
 function log_echo_multi($line){

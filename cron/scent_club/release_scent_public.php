@@ -30,8 +30,17 @@ $log['test'] = $test_run;
 $new_sku = $scent_info['sku'];
 log_echo($log, "Scent: ".print_r($scent_info, true));
 
-// Get metafields
+// Add new product to Facebook collection
+$collection_id = 136935473239;
+$res = $sc->post('collects.json', [
+	'collect' => [
+		'product_id' => $scent_info['shopify_product_id'],
+		'collection_id' => $collection_id,
+	]
+]);
+print_r($res);
 
+// Get metafields
 $stmt = $db->prepare("SELECT value FROM skylar.metafields
 WHERE owner_resource='product'
 AND namespace='scent_club'
