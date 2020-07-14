@@ -22,7 +22,7 @@ do {
 	/* @var $res JsonAwareResponse */
 	$res = $cc->get('SalesOrders', [
 		'query' => [
-			'fields' => implode(',', ['id', 'email', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems']),
+			'fields' => implode(',', ['id', 'email', 'status', 'reference', 'logisticsStatus', 'freightDescription', 'deliveryPostalCode', 'deliveryCountry', 'lineItems', 'firstName', 'deliveryFirstName', 'lastName', 'deliveryLastName']),
 			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND (stage = 'New' OR stage = 'Fraud Warning')",
 //			'where' => "LogisticsStatus = '9' AND createdDate >= '$cut_on_date' AND createdDate < '$buffer_date' AND status = 'APPROVED' AND stage = 'New' AND id = 220380",
 			'order' => 'CreatedDate DESC',
@@ -157,6 +157,13 @@ do {
 			$res = $sc->put('orders/'.$db_order['shopify_id'].'.json', ['order' => ['tags' => implode(', ', array_unique($tags))]]);
 		} else {
 			unset($cc_order['lineItems']);
+		}
+
+		if(empty($cc_order['firstName'] && !empty($cc_order['deliveryFirstName']))){
+			$cc_order['firstName'] = $cc_order['deliveryFirstName'];
+		}
+		if(empty($cc_order['lastName'] && !empty($cc_order['deliveryLastName']))){
+			$cc_order['lastName'] = $cc_order['deliveryLastName'];
 		}
 
 		$cc_order['logisticsStatus'] = 1;
