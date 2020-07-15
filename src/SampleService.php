@@ -49,7 +49,9 @@ class SampleService {
 		if(self::order_has_sun_shower($cc_order['lineItems'])){
 			return false;
 		}
-		return SampleService::order_has_sample($cc_order['lineItems']) || SampleService::is_first_order($db, $cc_order['email'], $db_order_id);
+		return true;
+		// Phase 2 logic
+//		return SampleService::order_has_sample($cc_order['lineItems']) || SampleService::is_first_order($db, $cc_order['email'], $db_order_id);
 	}
 
 	public static function add_peel_salt_air(&$cc_order){
