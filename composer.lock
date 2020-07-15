@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0e29f59e91936c06df2a00c9a06f5433",
+    "content-hash": "1a0331bb7fde1de06250f246fcfd7d76",
     "packages": [
         {
             "name": "chuyskywalker/rolling-curl",
@@ -1155,6 +1155,45 @@
                 "instantiate"
             ],
             "time": "2019-10-21T16:45:58+00:00"
+        },
+        {
+            "name": "jimbojsb/pseudo",
+            "version": "v0.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jimbojsb/pseudo.git",
+                "reference": "50de1934d53ee73004770ccc7113bd7908ed0661"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jimbojsb/pseudo/zipball/50de1934d53ee73004770ccc7113bd7908ed0661",
+                "reference": "50de1934d53ee73004770ccc7113bd7908ed0661",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Pseudo": "src/"
+                },
+                "files": [
+                    "src/php-sql-parser.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Josh Butts",
+                    "email": "josh@joshbutts.com"
+                }
+            ],
+            "description": "PDO/MySQL Connection Mocking",
+            "time": "2020-03-06T13:22:43+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2568,7 +2607,8 @@
     "platform": {
         "ext-curl": "*",
         "ext-json": "*",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-calendar": "*"
     },
     "platform-dev": []
 }
