@@ -77,7 +77,6 @@ print_r($schedule->get());
 				foreach($shipment_list['addresses'] as $address_id => $upcoming_shipment){
 					$last_unskipped_charge = false;
 
-
 					$has_ac_followup = false;
 					$ac_delivered = false;
 					$ac_allow_pushback = true;
@@ -244,8 +243,13 @@ print_r($schedule->get());
                                             </div>
                                         </div>
                                         <div>
+                                            {% if _ff_previous_scent_readd == false %}
                                             <div class="sc-item-detail-label">Quantity</div>
                                             <div class="sc-item-detail-value"><?=$item['quantity'] ?> </div>
+                                            {% else %}
+                                            <div class="sc-item-detail-label">Quantity</div>
+                                            <div class="sc-item-detail-value"><span class="qty-down">-</span> <span class="qty-value"><?= $item['quantity'] ?></span> <span class="qty-up">+</span> </div>
+                                            {% endif %}
                                         </div>
                                         <div>
                                             <div class="sc-item-detail-label">Total</div>
