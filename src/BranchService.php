@@ -1220,7 +1220,6 @@ class BranchService {
 		'777',
 	];
 	private static $rollie_skus = [];
-	private static $inventory_pulls = [];
 	private static $buffer = 20;
 
 	public static function init(PDO $db){
@@ -1341,6 +1340,16 @@ GROUP BY v.sku;")->fetchAll(PDO::FETCH_COLUMN);
 			log_echo_multi(" - Branch $branch_id can fill sku $sku (Kit)");
 			return true; // Ignore kit skus
 		}
+		if(self::get_sku_available_branch($db, $branch_id, $sku) - self::$buffer >= $quantity){
+			log_echo_multi(" - Branch $branch_id can fill sku $sku ");
+			return true;
+		} else {
+			log_echo_multi(" - Branch $branch_id cannot fill sku $sku ");
+			return false;
+		}
+	}
+
+	public static function get_sku_available_branch(PDO $db, $branch_id, $sku){
 		global $_stmt_cache;
 		if(empty($_stmt_cache['cin_branch_stock_check'])){
 			$_stmt_cache['cin_branch_stock_check'] = $db->prepare("
@@ -1356,32 +1365,12 @@ AND cin_branch_id = :branch_id;");
 			'branch_id' => $branch_id,
 		]);
 		if($_stmt_cache['cin_branch_stock_check']->rowCount() == 0){
-			self::$inventory_pulls[] = [
-				'branch_id' => $branch_id,
-				'sku' => $sku,
-				'rowcount' => $_stmt_cache['cin_branch_stock_check']->rowCount(),
-				'errorinfo' => $db->errorInfo(),
-			];
 			log_echo_multi(" - Branch $branch_id cannot fill sku $sku ");
-			return false;
+			return 0;
 		}
-		$res = $_stmt_cache['cin_branch_stock_check']->fetchColumn();
-		self::$inventory_pulls[] = [
-			'branch_id' => $branch_id,
-			'sku' => $sku,
-			'res' => $res,
-			'rowcount' => $_stmt_cache['cin_branch_stock_check']->rowCount(),
-			'errorinfo' => $db->errorInfo(),
-			'buffer' => self::$buffer,
-		];
-		if($res-self::$buffer >= $quantity){
-			log_echo_multi(" - Branch $branch_id can fill sku $sku ");
-			return true;
-		} else {
-			log_echo_multi(" - Branch $branch_id cannot fill sku $sku ");
-			return false;
-		}
+		return $_stmt_cache['cin_branch_stock_check']->fetchColumn();
 	}
+
 }
 
 if(!function_exists('log_echo_multi')){

@@ -1,12 +1,12 @@
 <?php
 require_once(__DIR__.'/../includes/config.php');
 
-$start_from = 500;
-$num_to_generate = 500;
+$start_from = 0;
+$num_to_generate = 2000;
 //$model_after = "GET20-*****";
 // For now just use this:
-$price_rule_template = 612618928215;
-$prefix = "RS-20-";
+$price_rule_template = 687796158551;
+$prefix = "MCSP720-";
 $batch_mode = true;
 
 mt_srand($price_rule_template);
@@ -35,12 +35,6 @@ if($batch_mode){
 		$batch = $sc->post('/admin/api/2019-10/price_rules/'.$price_rule_template."/batch.json", [
 			'discount_codes' => $batch_codes,
 		]);
-		if($i == 0){
-			fputcsv($outstream, array_keys($batch[0]));
-		}
-		foreach($batch as $batch_code){
-			fputcsv($outstream, $batch_code);
-		}
 
 		print_r($batch);
 	}

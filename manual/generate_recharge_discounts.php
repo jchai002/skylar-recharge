@@ -2,9 +2,9 @@
 require_once(__DIR__.'/../includes/config.php');
 
 $start_from = 0;
-$num_to_generate = 30;
-$discount_template_id = 22178881;
-$prefix = "PR-SC-20-";
+$num_to_generate = 2000;
+$discount_template_id = 29969131;
+$prefix = "MCSP720-";
 
 $res = $rc->get('/discounts/'.$discount_template_id);
 print_r($res);
@@ -28,7 +28,7 @@ if($prefix == 'RT-20-'){
 	unset($discount_template['applies_to_product_type']);
 }
 
-mt_srand($discount_template_id);
+mt_srand(687796158551);
 
 // GENERATE CODES
 $codes = [];
