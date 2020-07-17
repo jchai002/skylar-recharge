@@ -11,7 +11,7 @@ if(empty($res['subscription']) || $res['subscription']['status'] == 'ONETIME'){
 	]);
 } else {
 	$res = $this_res = $rc->post('/subscriptions/'.intval($_REQUEST['id']).'/cancel',[
-		'cancellation_reason' => $_REQUEST['reason'] ?? 'Item removed from customer account',
+		'cancellation_reason' => empty($_REQUEST['reason']) ? 'Item removed from customer account' : $_REQUEST['reason'],
 		'send_email' => 'false',
 		'commit_update' => true,
 	]);
