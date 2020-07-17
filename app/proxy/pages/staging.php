@@ -969,7 +969,7 @@ print_r($schedule->get());
             AccountController.selected_box_item = $(this).closest('.sc-box-item');
             AccountController.update_item_quantity(
                 AccountController.selected_box_item.data('subscription-id'),
-                AccountController.selected_box_item.data('quantity') + ($(this.hasClass('qty-up') ? 1 : -1) )
+                AccountController.selected_box_item.data('quantity') + ( $(this).hasClass('qty-up') ? 1 : -1 )
             );
         });
         $('.ac-choose-container').on('change submit', function(e){
