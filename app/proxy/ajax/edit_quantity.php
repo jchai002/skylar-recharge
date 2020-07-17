@@ -9,7 +9,7 @@ $quantity = intval($_REQUEST['quantity']);
 $subscription = get_rc_subscription($db, $subscription_id, $rc, $sc);
 $subscription_uri = $subscription['status'] == 'ONETIME' ? 'onetime' : 'subscription';
 
-if($quantity < 0){
+if($quantity <= 0){
 	if(empty($subscription) || $subscription['status'] == 'ONETIME'){
 		$res = $rc->delete('/onetimes/'.intval($_REQUEST['id']));
 		$stmt = $db->prepare("UPDATE rc_subscriptions SET deleted_at=? WHERE recharge_id=?");
