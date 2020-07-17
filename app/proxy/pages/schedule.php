@@ -244,7 +244,7 @@ print_r($schedule->get());
                                             </div>
                                         </div>
                                         <div>
-											<?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+											<?php if(is_scent_club_any(get_product($db, $item['shopify_product_id'])) && $item['price'] <= 20){ ?>
                                                 <div class="sc-item-detail-label">Quantity</div>
                                                 <div class="sc-item-detail-value">
                                                     <span class="qty-value"><?= $item['quantity'] ?></span>
