@@ -166,6 +166,7 @@ print_r($schedule->get());
                                     data-sc-current
 								<?php } ?>
                                  data-ship-time="<?=$upcoming_shipment['ship_date_time']?>"
+                                 data-quantity="<?=$item['quantity']?>"
                             >
 								<?php if(!empty($item['skipped']) && !empty($item['charge_id'])){ ?>
                                     <a class="sc-unskip-link" href="#" onclick="$(this).addClass('disabled'); AccountController.unskip_charge(<?=$item['subscription_id']?>, <?=$item['charge_id']?>, '<?=$item['type']?>', '<?=date('Y-m-d', $upcoming_shipment['ship_date_time'])?>'); return false;"><span>Unskip Box</span></a>
@@ -243,8 +244,26 @@ print_r($schedule->get());
                                             </div>
                                         </div>
                                         <div>
-                                            <div class="sc-item-detail-label">Quantity</div>
-                                            <div class="sc-item-detail-value"><?=$item['quantity'] ?> </div>
+											<?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+                                                <div class="sc-item-detail-label">Quantity</div>
+                                                <div class="sc-item-detail-value">
+                                                    <span class="qty-value"><?= $item['quantity'] ?></span>
+                                                </div>
+											<?php } else { ?>
+                                                {% if _ff_previous_scent_readd == false %}
+                                                <div class="sc-item-detail-label">Quantity</div>
+                                                <div class="sc-item-detail-value">
+                                                    <span class="qty-value"><?= $item['quantity'] ?></span>
+                                                </div>
+                                                {% else %}
+                                                <div class="sc-item-detail-label">Quantity</div>
+                                                <div class="sc-item-detail-value">
+                                                    <span class="qty-down">-</span>
+                                                    <span class="qty-value"><?= $item['quantity'] ?></span>
+                                                    <span class="qty-up">+</span>
+                                                </div>
+                                                {% endif %}
+											<?php } ?>
                                         </div>
                                         <div>
                                             <div class="sc-item-detail-label">Total</div>
@@ -944,6 +963,14 @@ print_r($schedule->get());
                 variant: 'scent-club',
                 afterOpen: $.noop, // Fix dumb app bug
             });
+        });
+        $('.sc-item-detail-value .qty-down, .sc-item-detail-value .qty-up').click(function(e){
+            e.preventDefault();
+            AccountController.selected_box_item = $(this).closest('.sc-box-item');
+            AccountController.update_item_quantity(
+                AccountController.selected_box_item.data('subscription-id'),
+                AccountController.selected_box_item.data('quantity') + ( $(this).hasClass('qty-up') ? 1 : -1 )
+            );
         });
         $('.ac-choose-container').on('change submit', function(e){
             e.preventDefault();
