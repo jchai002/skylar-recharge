@@ -246,11 +246,15 @@ print_r($schedule->get());
                                         <div>
                                             <?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
                                                 <div class="sc-item-detail-label">Quantity</div>
-                                                <div class="sc-item-detail-value"><?=$item['quantity'] ?> </div>
+                                                <div class="sc-item-detail-value">
+                                                    <span class="qty-value"><?= $item['quantity'] ?></span>
+                                                </div>
                                             <?php } else { ?>
                                                 {% if _ff_previous_scent_readd == false %}
                                                     <div class="sc-item-detail-label">Quantity</div>
-                                                    <div class="sc-item-detail-value"><?=$item['quantity'] ?> </div>
+                                                    <div class="sc-item-detail-value">
+                                                        <span class="qty-value"><?= $item['quantity'] ?></span>
+                                                    </div>
                                                 {% else %}
                                                     <div class="sc-item-detail-label">Quantity</div>
                                                     <div class="sc-item-detail-value">
