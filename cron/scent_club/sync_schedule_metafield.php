@@ -43,6 +43,7 @@ foreach($sc_info as $index => $sc_info_row){
 echo "Checking shop metafield... ";
 $row = $db->query("SELECT shopify_id, value FROM metafields WHERE owner_resource='shop' AND namespace='scent_club' AND `key`='products' AND deleted_at IS NULL")->fetch();
 if(empty($row)){
+	echo "Not in DB, updating".PHP_EOL;
 	$res = $sc->post('/admin/metafields.json', ['metafield'=> [
 		'namespace' => 'scent_club',
 		'key' => 'products',
@@ -50,6 +51,9 @@ if(empty($row)){
 		'value_type' => 'json_string'
 	]]);
 	print_r($res);
+	if(!empty($res)){
+		print_r(insert_update_metafield($db, $res));
+	}
 	send_alert($db, 8,
 		"Finished pushing SC metafield",
 		"SC Metafield Pushed",
@@ -57,11 +61,15 @@ if(empty($row)){
 		['log' => $res, 'smother' => false]
 	);
 } else if($row['value'] != json_encode($sc_info)) {
-	$res = $sc->put('/admin/api/2019-10/metafields/'.$row['shopify_id'].'.json', [ 'metafield' => [
+	echo "Doesn't match DB, updating".PHP_EOL;
+	$res = $sc->put('metafields/'.$row['shopify_id'].'.json', [ 'metafield' => [
 		'id' => $row['shopify_id'],
 		'value' => json_encode($sc_info),
 	]]);
 	print_r($res);
+	if(!empty($res)){
+		print_r(insert_update_metafield($db, $res));
+	}
 	send_alert($db, 8,
 		"Finished pushing SC metafield",
 		"SC Metafield Pushed",
