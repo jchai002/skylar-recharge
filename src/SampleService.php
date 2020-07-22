@@ -35,6 +35,7 @@ class SampleService {
 			'99238701-121', // Peel
 			'10450504-121', // full size
 			'10213910-121', // rollie
+			'13200311-121', // Hand sani
 		]));
 	}
 

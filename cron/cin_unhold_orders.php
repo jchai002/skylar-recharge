@@ -118,14 +118,14 @@ do {
 		// Salt air sample add
 		$add_salt_air = SampleService::order_needs_peel_salt_air($db, $cc_order, $db_order['id']);
 		$add_sun_shower = SampleService::order_needs_peel_sun_shower($db, $cc_order, $db_order['id']);
-		$add_sun_shower = false;
 		$tags = explode(', ', $db_order['tags']);
 		if($add_salt_air){
-			log_echo_multi(" - Adding salt air to order...");
+			log_echo_multi(" - Adding salt air peel to order...");
 			SampleService::add_peel_salt_air($cc_order);
 			$tags[] = 'Added Salt Air Sample';
 		}
 		if($add_sun_shower){
+			log_echo_multi(" - Adding sun shower peel to order...");
 			SampleService::add_peel_sun_shower($cc_order);
 			$tags[] = 'Added Sun Shower Sample';
 		}
