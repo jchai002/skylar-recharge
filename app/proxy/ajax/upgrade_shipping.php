@@ -11,7 +11,8 @@ $new_shipping_lines = empty($_REQUEST['expedited']) ? null : [
 ];
 
 $res = $rc->put('addresses/'.$address_id, [
-	'shipping_lines_override' => $new_shipping_lines
+	'shipping_lines_override' => $new_shipping_lines,
+	'commit_update' => true,
 ]);
 
 if(!empty($res['error'])){
