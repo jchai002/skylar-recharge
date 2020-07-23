@@ -347,11 +347,18 @@ print_r($schedule->get());
                             if($shipping_line['price'] == 0){
                                 $shipping_line['title'] = 'Members-only Free Shipping';
                             }
+                            $shipping_is_expedited = $shipping_line['code'] == 'Standard Scent Club';
 							?>
-                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>" data-expedited="<?=$shipping_line['code'] == 'Standard Scent Club' ? 0 : 1 ?>">
+                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>" data-expedited="<?=$shipping_is_expedited ? 0 : 1 ?>">
                                 <div class="sc-shipping-title">
                                     <div><?=$shipping_line['title']?></div>
-                                    <a href="#" class="sc-shipping-link"><span>Upgrade to Expedited ($8)</span></a>
+                                    <a href="#" class="sc-shipping-link">
+                                        <?php if($shipping_is_expedited){ ?>
+                                            <span>Switch to Standard (Free)</span>
+										<?php } else { ?>
+                                            <span>Upgrade to Expedited ($8)</span>
+					                    <?php } ?>
+                                    </a>
                                 </div>
                                 <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
                             </div>
