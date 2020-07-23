@@ -351,7 +351,7 @@ print_r($schedule->get());
                             <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                 <div class="sc-shipping-title">
                                     <div><?=$shipping_line['title']?></div>
-                                    <a href="#">Upgrade to Expedited ($8)</a>
+                                    <a href="#" class="sc-shipping-link">Upgrade to Expedited ($8)</a>
                                 </div>
                                 <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
                             </div>
