@@ -265,6 +265,27 @@ $router->route('/subscriptions\/update-discount/i', function() use(&$json_output
 	require('ajax/update_discount.php');
 	return true;
 });
+$router->route('/upgrade-shipping/i', function() use(&$json_output) {
+	$json_output = true;
+	if(empty($_REQUEST['c'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	}
+	if(empty($_REQUEST['address_id'])){
+		echo json_encode([
+			'success' => false,
+			'error' => 'Missing customer ID. Please refresh.',
+		]);
+		return true;
+	} else {
+		$address_id = intval($_REQUEST['address_id']);
+	}
+	require('ajax/upgrade_shipping.php');
+	return true;
+});
 $router->route('/subscriptions\/skip/i', function() use(&$json_output) {
 	$json_output = true;
 	if(empty($_REQUEST['c'])){

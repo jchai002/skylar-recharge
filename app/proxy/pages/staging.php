@@ -348,7 +348,7 @@ print_r($schedule->get());
                                 $shipping_line['title'] = 'Members-only Free Shipping';
                             }
 							?>
-                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>" data-expedited="<?=$shipping_line['code'] == 'Standard Scent Club' ? 0 : 1 ?>">
                                 <div class="sc-shipping-title">
                                     <div><?=$shipping_line['title']?></div>
                                     <a href="#" class="sc-shipping-link"><span>Upgrade to Expedited ($8)</span></a>
@@ -917,6 +917,11 @@ print_r($schedule->get());
                     }
                 }
             });
+        });
+        $('.sc-shipping-link').unbind().click(function(e){
+            e.preventDefault();
+            AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
+            AccountController.expedite_shipping(AccountController.selected_box_item.data('address-id'), $(this).closest('.sc-box-shipping').data('expedited') === "1" ? 0 : 1);
         });
 
 
