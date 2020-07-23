@@ -928,7 +928,7 @@ print_r($schedule->get());
         $('.sc-shipping-link').unbind().click(function(e){
             e.preventDefault();
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
-            AccountController.expedite_shipping(AccountController.selected_box_item.data('address-id'), $(this).closest('.sc-box-shipping').data('expedited') === "1" ? 0 : 1);
+            AccountController.expedite_shipping(AccountController.selected_box_item.data('address-id'), $(this).closest('.sc-box-shipping').data('expedited') == 1 ? 0 : 1);
         });
 
 
