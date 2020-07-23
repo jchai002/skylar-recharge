@@ -334,23 +334,20 @@ print_r($schedule->get());
 									<?php } ?>
                                 </form>
                             </div>
-							<?php if(!empty($last_unskipped_charge)){ ?>
-                                <!-- <?php print_r($last_unskipped_charge) ?> -->
-								<?php if(!empty($last_unskipped_charge['shipping_lines']) && !empty($last_unskipped_charge['shipping_lines'][0]) && $last_unskipped_charge['shipping_lines'][0]['price'] > 0){
-									$shipping_line = $last_unskipped_charge['shipping_lines'][0];
-									?>
-                                    <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                        <div class="sc-shipping-title"><?=$shipping_line['title']?></div>
-                                        <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
-                                    </div>
-									<?php
-								}
-								if(!empty($last_unskipped_charge)){ ?>
-                                    <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                        <div class="sc-shipping-title">Tax</div>
-                                        <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($last_unskipped_charge['total_tax'])?></div>
-                                    </div>
-								<?php } ?>
+    						<?php
+                            if(empty($last_unskipped_charge) || empty($last_unskipped_charge['shipping_lines']) || empty($last_unskipped_charge['shipping_lines'][0])){
+    						   $shipping_line = [
+                                   'price' => '0.00',
+                                   'title' => 'Standard Shipping (3-7 business days)',
+                                   'code' => 'Standard Scent Club',
+                               ];
+							}
+							?>
+                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
+                                <div class="sc-shipping-title"><?=$shipping_line['title']?></div>
+                                <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
+                            </div>
+                            <?php if(empty($last_unskipped_charge)){ ?>
                                 <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                     Grand Total: $<?= price_without_trailing_zeroes($last_unskipped_charge['total_price']) ?>
                                 </div>
