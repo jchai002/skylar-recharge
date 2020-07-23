@@ -341,7 +341,9 @@ print_r($schedule->get());
                                    'title' => 'Standard Shipping (3-7 business days)',
                                    'code' => 'Standard Scent Club',
                                ];
-							}
+							} else {
+                                $shipping_line = $last_unskipped_charge['shipping_lines'][0];
+                            }
 							?>
                             <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                 <div class="sc-shipping-title"><?=$shipping_line['title']?></div>
