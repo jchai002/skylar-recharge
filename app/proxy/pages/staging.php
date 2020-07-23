@@ -344,9 +344,15 @@ print_r($schedule->get());
 							} else {
                                 $shipping_line = $last_unskipped_charge['shipping_lines'][0];
                             }
+                            if($shipping_line['price'] == 0){
+                                $shipping_line['title'] = 'Members-only Free Shipping';
+                            }
 							?>
                             <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                <div class="sc-shipping-title"><?=$shipping_line['title']?></div>
+                                <div class="sc-shipping-title">
+                                    <?=$shipping_line['title']?>
+                                    <a href="#">Upgrade to Expedited ($8)</a>
+                                </div>
                                 <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
                             </div>
                             <?php if(empty($last_unskipped_charge)){ ?>
