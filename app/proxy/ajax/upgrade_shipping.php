@@ -10,7 +10,7 @@ $new_shipping_lines = empty($_REQUEST['expedited']) ? null : [
 	]
 ];
 
-$res = $rc->put('address/'.$address_id, [
+$res = $rc->put('addresses/'.$address_id, [
 	'shipping_lines_override' => $new_shipping_lines
 ]);
 
