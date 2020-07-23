@@ -347,9 +347,9 @@ print_r($schedule->get());
                             if($shipping_line['price'] == 0){
                                 $shipping_line['title'] = 'Members-only Free Shipping';
                             }
-                            $shipping_is_expedited = $shipping_line['code'] == 'Standard Scent Club';
+                            $shipping_is_expedited = $shipping_line['code'] == 'US 2 Day';
 							?>
-                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>" data-expedited="<?=$shipping_is_expedited ? 0 : 1 ?>">
+                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>" data-expedited="<?=$shipping_is_expedited ? 1 : 0 ?>">
                                 <div class="sc-shipping-title">
                                     <div><?=$shipping_line['title']?></div>
                                     <a href="#" class="sc-shipping-link">
