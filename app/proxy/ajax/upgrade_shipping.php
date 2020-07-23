@@ -23,7 +23,7 @@ if(!empty($res['error'])){
 	]);
 } else {
 	echo json_encode([
-		'shipping_lines' => $res['address']['shipping_lines'],
+		'address' => $res['address'],
 		'success' => true,
 		'res' => $res,
 	]);
