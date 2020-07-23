@@ -244,26 +244,26 @@ print_r($schedule->get());
                                             </div>
                                         </div>
                                         <div>
-                                            <?php if(is_scent_club_any(get_product($db, $item['shopify_product_id']))){ ?>
+											<?php if(is_scent_club_any(get_product($db, $item['shopify_product_id'])) && $item['price'] <= 20){ ?>
                                                 <div class="sc-item-detail-label">Quantity</div>
                                                 <div class="sc-item-detail-value">
                                                     <span class="qty-value"><?= $item['quantity'] ?></span>
                                                 </div>
-                                            <?php } else { ?>
+											<?php } else { ?>
                                                 {% if _ff_previous_scent_readd == false %}
-                                                    <div class="sc-item-detail-label">Quantity</div>
-                                                    <div class="sc-item-detail-value">
-                                                        <span class="qty-value"><?= $item['quantity'] ?></span>
-                                                    </div>
+                                                <div class="sc-item-detail-label">Quantity</div>
+                                                <div class="sc-item-detail-value">
+                                                    <span class="qty-value"><?= $item['quantity'] ?></span>
+                                                </div>
                                                 {% else %}
-                                                    <div class="sc-item-detail-label">Quantity</div>
-                                                    <div class="sc-item-detail-value">
-                                                        <span class="qty-down">-</span>
-                                                        <span class="qty-value"><?= $item['quantity'] ?></span>
-                                                        <span class="qty-up">+</span>
-                                                    </div>
+                                                <div class="sc-item-detail-label">Quantity</div>
+                                                <div class="sc-item-detail-value">
+                                                    <span class="qty-down">-</span>
+                                                    <span class="qty-value"><?= $item['quantity'] ?></span>
+                                                    <span class="qty-up">+</span>
+                                                </div>
                                                 {% endif %}
-                                            <?php } ?>
+											<?php } ?>
                                         </div>
                                         <div>
                                             <div class="sc-item-detail-label">Total</div>
@@ -359,6 +359,9 @@ print_r($schedule->get());
                                     Grand Total: $<?= price_without_trailing_zeroes(array_sum(array_column($upcoming_shipment['items'], 'price'))) ?>
                                 </div>
 							<?php } ?>
+                            <div class="portal-nextbox-notice">
+                                Our shipping carriers are currently experiencing transit delays and orders may be delivered after the estimated delivery date. <a href="https://support.skylar.com/hc/en-us#360003697514" target="_blank">Click here to learn more.</a>
+                            </div>
 						<?php } ?>
 						<?php
 						// Get current month scent
