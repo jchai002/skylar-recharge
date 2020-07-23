@@ -2,7 +2,7 @@
 
 global $rc;
 
-$new_shipping_lines = !empty($_REQUEST['expedited']) ? null : [
+$new_shipping_lines = empty($_REQUEST['expedited']) ? null : [
 	[
 		'price' => '8.00',
 		'title' => 'Member-only Expedited Shipping',
