@@ -14,6 +14,7 @@ $res = $rc->put('addresses/'.$address_id, [
 	'shipping_lines_override' => $new_shipping_lines,
 	'commit_update' => true,
 ]);
+sleep(5);
 
 if(!empty($res['error'])){
 	echo json_encode([
