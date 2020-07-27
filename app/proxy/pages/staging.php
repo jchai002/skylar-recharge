@@ -349,7 +349,7 @@ print_r($schedule->get());
                             }
                             $shipping_is_expedited = $shipping_line['code'] == 'US 2 Day';
 							?>
-                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>" data-expedited="<?=$shipping_is_expedited ? 1 : 0 ?>">
+                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>" data-expedited="<?=$shipping_is_expedited ? 1 : 0 ?>"<?= !empty($last_unskipped_charge) ? 'data-charge-id="'.$last_unskipped_charge['id'].'"' : '' ?>>
                                 <div class="sc-shipping-title">
                                     <div><?=$shipping_line['title']?></div>
                                     <a href="#" class="sc-shipping-link">
@@ -928,7 +928,7 @@ print_r($schedule->get());
         $('.sc-shipping-link').unbind().click(function(e){
             e.preventDefault();
             AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
-            AccountController.expedite_shipping(AccountController.selected_box_item.data('address-id'), $(this).closest('.sc-box-shipping').data('expedited') == 1 ? 0 : 1);
+            AccountController.expedite_shipping(AccountController.selected_box_item.data('address-id'), $(this).closest('.sc-box-shipping').data('expedited') == 1 ? 0 : 1, $(this).closest('.sc-box-shipping').data('charge-id'));
         });
 
 
