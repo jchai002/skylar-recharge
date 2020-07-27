@@ -31,7 +31,7 @@ if(!empty($_REQUEST['charge_id'])){
 			]);
 			$charge = $res['charge'];
 			sleep(1);
-		} while($tries < 3 && $charge['shipping_lines'][0]['code'] != $new_shipping_lines[0]['code']);
+		} while($tries < 7 && $charge['shipping_lines'][0]['code'] != $new_shipping_lines[0]['code']);
 	}
 }
 if(empty($charge)){
