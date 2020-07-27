@@ -14,7 +14,19 @@ $res = $rc->put('addresses/'.$address_id, [
 	'shipping_lines_override' => $new_shipping_lines,
 	'commit_update' => true,
 ]);
-sleep(6);
+$address = $res['address'];
+$charge = null;
+if(!empty($_REQUEST['charge_id'])){
+	$res = $rc->get('charges/'.intval($_REQUEST['charge_id']));
+	if(!empty($res['charge'])){
+		$res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
+			'next_charge_date' => $res['charge']['scheduled_at'],
+		]);
+	}
+}
+if(empty($charge)){
+	sleep(6);
+}
 
 if(!empty($res['error'])){
 	echo json_encode([
@@ -25,7 +37,8 @@ if(!empty($res['error'])){
 	]);
 } else {
 	echo json_encode([
-		'address' => $res['address'],
+		'address' => $address,
+		'charge' => $charge,
 		'success' => true,
 		'res' => $res,
 	]);
