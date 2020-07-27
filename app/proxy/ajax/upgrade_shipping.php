@@ -22,6 +22,7 @@ if(!empty($_REQUEST['charge_id'])){
 		$res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
 			'next_charge_date' => $res['charge']['scheduled_at'],
 		]);
+		$charge = $res['charge'];
 	}
 }
 if(empty($charge)){
