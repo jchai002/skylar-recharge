@@ -19,14 +19,18 @@ $charge = null;
 if(!empty($_REQUEST['charge_id'])){
 	$res_all[] = $res = $rc->get('charges/'.intval($_REQUEST['charge_id']));
 	if(!empty($res['charge'])){
-		$ship_date_time = strtotime($res['charge']['scheduled_at']);
-		$res_all[] = $res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
-			'next_charge_date' => date('Y-m-d', strtotime('+1 day', $ship_date_time)),
-		]);
-		$res_all[] = $res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
-			'next_charge_date' => date('Y-m-d', $ship_date_time),
-		]);
-		$charge = $res['charge'];
+		$tries = 0;
+		do {
+			$tries++;
+			$ship_date_time = strtotime($res['charge']['scheduled_at']);
+			$res_all[] = $res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
+				'next_charge_date' => date('Y-m-d', strtotime('+1 day', $ship_date_time)),
+			]);
+			$res_all[] = $res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
+				'next_charge_date' => date('Y-m-d', $ship_date_time),
+			]);
+			$charge = $res['charge'];
+		} while($tries <3 && $charge['shipping_lines'][0]['code'] == $new_shipping_lines[0]['code']);
 	}
 }
 if(empty($charge)){
