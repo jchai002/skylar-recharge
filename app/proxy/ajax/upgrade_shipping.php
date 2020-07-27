@@ -19,8 +19,12 @@ $charge = null;
 if(!empty($_REQUEST['charge_id'])){
 	$res = $rc->get('charges/'.intval($_REQUEST['charge_id']));
 	if(!empty($res['charge'])){
+		$ship_date_time = strtotime($res['charge']['scheduled_at']);
 		$res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
-			'next_charge_date' => $res['charge']['scheduled_at'],
+			'next_charge_date' => date('Y-m-d', strtotime('+1 day', $ship_date_time)),
+		]);
+		$res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
+			'next_charge_date' => date('Y-m-d', $ship_date_time),
 		]);
 		$charge = $res['charge'];
 	}
