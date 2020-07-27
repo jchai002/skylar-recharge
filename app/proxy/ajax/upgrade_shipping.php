@@ -9,21 +9,21 @@ $new_shipping_lines = empty($_REQUEST['expedited']) ? null : [
 		'code' => 'US 2 Day',
 	]
 ];
-$res_all = [];
-$res_all = $res = $rc->put('addresses/'.$address_id, [
+$res_all[] = [];
+$res_all[] = $res = $rc->put('addresses/'.$address_id, [
 	'shipping_lines_override' => $new_shipping_lines,
 	'commit_update' => true,
 ]);
 $address = $res['address'];
 $charge = null;
 if(!empty($_REQUEST['charge_id'])){
-	$res_all = $res = $rc->get('charges/'.intval($_REQUEST['charge_id']));
+	$res_all[] = $res = $rc->get('charges/'.intval($_REQUEST['charge_id']));
 	if(!empty($res['charge'])){
 		$ship_date_time = strtotime($res['charge']['scheduled_at']);
-		$res_all = $res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
+		$res_all[] = $res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
 			'next_charge_date' => date('Y-m-d', strtotime('+1 day', $ship_date_time)),
 		]);
-		$res_all = $res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
+		$res_all[] = $res = $rc->post('charges/'.$res['charge']['id'].'/change_next_charge_date', [
 			'next_charge_date' => date('Y-m-d', $ship_date_time),
 		]);
 		$charge = $res['charge'];
