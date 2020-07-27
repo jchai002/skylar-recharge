@@ -89,11 +89,15 @@ do {
 
 	$cc_stock_units = $res->getJson();
 	log_event($db, 'API_RESPONSE', json_encode($cc_stock_units), 'CIN7_STOCK', 'COUNT: '.count($cc_stock_units)." SUM: ".array_sum(array_column($cc_stock_units, 'available')));
+	/*
 	if(count($cc_stock_units) > 1 && array_sum(array_column($cc_stock_units, 'available')) == 0){
+		print_r($cc_stock_units);
 		echo "Got all zeros back from cin7 on stock, alerting";
 		send_alert($db, 18, "Got all zeros back from cin7 on stock, response: ".print_r($cc_stock_units, true), 'Skylar Alert: Bad CC Stock Unit Response');
 		die();
 	}
+	*/
+	// No longer useful as we have too many branches
 	if(empty($cc_stock_units)){
 		break;
 	}
@@ -103,15 +107,17 @@ do {
 			'product_option_id' => $cc_stock_unit['productOptionId'],
 		]);
 		$existing_stock = $stmt_existing_stock->fetch();
-		if(empty($cc_stock_unit['available']) && $existing_stock['available'] > 50){
-			echo "Got suspicious zero back from cin7 on stock, alerting";
-			send_alert($db, 18, "Got suspicious zero back from cin7 on stock, response: ".print_r($cc_stock_units, true), 'Skylar Alert: Bad CC Stock Unit Response');
-			continue;
-		}
-		if(empty($cc_stock_unit['virtual']) && $existing_stock['virtual'] > 50){
-			echo "Got suspicious zero back from cin7 on stock, alerting";
-			send_alert($db, 18, "Got suspicious zero back from cin7 on stock, response: ".print_r($cc_stock_units, true), 'Skylar Alert: Bad CC Stock Unit Response');
-			continue;
+		if(in_array($cc_stock_unit['branchId'], [3, 23755])){
+			if(empty($cc_stock_unit['available']) && $existing_stock['available'] > 50){
+				echo "Got suspicious zero back from cin7 on stock, alerting";
+				send_alert($db, 18, "Got suspicious zero back from cin7 on stock, response: ".print_r($cc_stock_units, true), 'Skylar Alert: Bad CC Stock Unit Response');
+				continue;
+			}
+			if(empty($cc_stock_unit['virtual']) && $existing_stock['virtual'] > 50){
+				echo "Got suspicious zero back from cin7 on stock, alerting";
+				send_alert($db, 18, "Got suspicious zero back from cin7 on stock, response: ".print_r($cc_stock_units, true), 'Skylar Alert: Bad CC Stock Unit Response');
+				continue;
+			}
 		}
 		echo implode('-',insert_update_cin_stock_unit($db, $cc_stock_unit)).": ".($cc_stock_unit['available']+$cc_stock_unit['virtual']).PHP_EOL;
 	}
