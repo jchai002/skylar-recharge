@@ -30,7 +30,7 @@ if(!empty($_REQUEST['charge_id'])){
 				'next_charge_date' => date('Y-m-d', $ship_date_time),
 			]);
 			$charge = $res['charge'];
-		} while($tries <3 && $charge['shipping_lines'][0]['code'] == $new_shipping_lines[0]['code']);
+		} while($tries < 3 && $charge['shipping_lines'][0]['code'] != $new_shipping_lines[0]['code']);
 	}
 }
 if(empty($charge)){
