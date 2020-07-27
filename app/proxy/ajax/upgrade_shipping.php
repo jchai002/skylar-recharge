@@ -9,7 +9,7 @@ $new_shipping_lines = empty($_REQUEST['expedited']) ? null : [
 		'code' => 'US 2 Day',
 	]
 ];
-$res_all[] = [];
+$res_all = [];
 $res_all[] = $res = $rc->put('addresses/'.$address_id, [
 	'shipping_lines_override' => $new_shipping_lines,
 	'commit_update' => true,
