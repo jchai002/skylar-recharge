@@ -363,6 +363,14 @@ print_r($schedule->get());
                                 <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
                             </div>
                             <?php if(!empty($last_unskipped_charge)){ ?>
+                                <?php if(!empty($last_unskipped_charge['total_tax'])){ ?>
+                                    <div class="sc-box-shipping">
+                                        <div class="sc-shipping-title">
+                                            <div>Tax</div>
+                                        </div>
+                                        <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($last_unskipped_charge['total_tax'])?></div>
+                                    </div>
+                                <?php } ?>
                                 <div class="sc-box-total<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
                                     Grand Total: $<?= price_without_trailing_zeroes($last_unskipped_charge['total_price']) ?>
                                 </div>
