@@ -334,20 +334,40 @@ print_r($schedule->get());
 									<?php } ?>
                                 </form>
                             </div>
+							<?php
+							if(empty($last_unskipped_charge) || empty($last_unskipped_charge['shipping_lines']) || empty($last_unskipped_charge['shipping_lines'][0])){
+								$shipping_line = [
+									'price' => '0.00',
+									'title' => 'Standard Shipping (3-7 business days)',
+									'code' => 'Standard Scent Club',
+								];
+							} else {
+								$shipping_line = $last_unskipped_charge['shipping_lines'][0];
+							}
+							if($shipping_line['price'] == 0){
+								$shipping_line['title'] = 'Members-only Free Shipping';
+							}
+							$shipping_is_expedited = $shipping_line['code'] == 'US 2 Day';
+							?>
+                            <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>" data-expedited="<?=$shipping_is_expedited ? 1 : 0 ?>"<?= !empty($last_unskipped_charge) ? 'data-charge-id="'.$last_unskipped_charge['id'].'"' : '' ?>>
+                                <div class="sc-shipping-title">
+                                    <div><?=$shipping_line['title']?></div>
+                                    <a href="#" class="sc-shipping-link">
+										<?php if($shipping_is_expedited){ ?>
+                                            <span>Switch to Standard (Applies to All Boxes) - Free</span>
+										<?php } else { ?>
+                                            <span>Upgrade to Expedited 2-4 Days Shipping (Applies to All Boxes) - $8</span>
+										<?php } ?>
+                                    </a>
+                                </div>
+                                <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
+                            </div>
 							<?php if(!empty($last_unskipped_charge)){ ?>
-                                <!-- <?php print_r($last_unskipped_charge) ?> -->
-								<?php if(!empty($last_unskipped_charge['shipping_lines']) && !empty($last_unskipped_charge['shipping_lines'][0]) && $last_unskipped_charge['shipping_lines'][0]['price'] > 0){
-									$shipping_line = $last_unskipped_charge['shipping_lines'][0];
-									?>
-                                    <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                        <div class="sc-shipping-title"><?=$shipping_line['title']?></div>
-                                        <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
-                                    </div>
-									<?php
-								}
-								if(!empty($last_unskipped_charge)){ ?>
-                                    <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>">
-                                        <div class="sc-shipping-title">Tax</div>
+								<?php if(!empty($last_unskipped_charge['total_tax'])){ ?>
+                                    <div class="sc-box-shipping">
+                                        <div class="sc-shipping-title">
+                                            <div>Tax</div>
+                                        </div>
                                         <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($last_unskipped_charge['total_tax'])?></div>
                                     </div>
 								<?php } ?>
@@ -359,6 +379,9 @@ print_r($schedule->get());
                                     Grand Total: $<?= price_without_trailing_zeroes(array_sum(array_column($upcoming_shipment['items'], 'price'))) ?>
                                 </div>
 							<?php } ?>
+                            <div class="portal-nextbox-notice">
+                                Our shipping carriers are currently experiencing transit delays and ground shipping orders may be delivered after the estimated delivery date. <a href="https://support.skylar.com/hc/en-us#360003697514" target="_blank" class="link">Click here to learn more.</a>
+                            </div>
 						<?php } ?>
 						<?php
 						// Get current month scent
@@ -909,6 +932,11 @@ print_r($schedule->get());
                     }
                 }
             });
+        });
+        $('.sc-shipping-link').unbind().click(function(e){
+            e.preventDefault();
+            AccountController.selected_box_item = $(this).closest('.sc-upcoming-shipment').find('.sc-box-item').eq(0);
+            AccountController.expedite_shipping(AccountController.selected_box_item.data('address-id'), $(this).closest('.sc-box-shipping').data('expedited') == 1 ? 0 : 1, $(this).closest('.sc-box-shipping').data('charge-id'));
         });
 
 
