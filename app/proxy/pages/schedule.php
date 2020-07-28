@@ -380,7 +380,7 @@ print_r($schedule->get());
                                 </div>
 							<?php } ?>
                             <div class="portal-nextbox-notice">
-                                Our shipping carriers are currently experiencing transit delays and ground shipping orders may be delivered after the estimated delivery date. <a href="https://support.skylar.com/hc/en-us#360003697514" target="_blank" class="link">Click here to learn more.</a>
+                                Our shipping carriers are experiencing transit delays for ground shipment. <a href="https://support.skylar.com/hc/en-us#360003697514" target="_blank" class="link">Click here to learn more.</a>
                             </div>
 						<?php } ?>
 						<?php
