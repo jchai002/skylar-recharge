@@ -31,14 +31,20 @@ $new_sku = $scent_info['sku'];
 log_echo($log, "Scent: ".print_r($scent_info, true));
 
 // Add new product to Facebook collection
-$collection_id = 136935473239;
-$res = $sc->post('collects.json', [
-	'collect' => [
-		'product_id' => $scent_info['shopify_product_id'],
-		'collection_id' => $collection_id,
-	]
-]);
-print_r($res);
+if(!$test_run){
+	try {
+		$collection_id = 136935473239;
+		$res = $sc->post('collects.json', [
+			'collect' => [
+				'product_id' => $scent_info['shopify_product_id'],
+				'collection_id' => $collection_id,
+			]
+		]);
+		print_r($res);
+	} catch (\GuzzleHttp\Exception\ClientException $e){
+		print_r($e);
+	}
+}
 
 // Get metafields
 $stmt = $db->prepare("SELECT value FROM skylar.metafields
@@ -143,8 +149,8 @@ foreach($products_to_update as $product){
 
 
 print_r(send_alert($db, 8,
-	($log['test'] ? '[TEST] ' : '')."Finished releasing SC Public Scent" . ($log['error'] ? ' with errors' : ''),
 	"SC Public Scent Release" . ($log['error'] ? ' ERROR' : ' Log'),
+	($log['test'] ? '[TEST] ' : '')."Finished releasing SC Public Scent" . ($log['error'] ? ' with errors' : ''),
 	['tim@skylar.com', 'julie@skylar.com'],
 	['smother' => false]
 ));
