@@ -356,7 +356,7 @@ print_r($schedule->get());
 										<?php if($shipping_is_expedited){ ?>
                                             <span>Switch to Standard (Applies to All Boxes) - Free</span>
 										<?php } else { ?>
-                                            <span>Upgrade to Expedited 2-4 Days Shipping (Applies to All Boxes) - $8</span>
+                                            <span>Upgrade to Expedited 2-4 Day Shipping (Applies to All Boxes) - $8</span>
 										<?php } ?>
                                     </a>
                                 </div>
