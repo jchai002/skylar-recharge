@@ -354,9 +354,9 @@ print_r($schedule->get());
                                     <div><?=$shipping_line['title']?></div>
                                     <a href="#" class="sc-shipping-link">
                                         <?php if($shipping_is_expedited){ ?>
-                                            <span>Switch to Standard (Free)</span>
+                                            <span>Switch to Standard (Applies to All Boxes) - Free</span>
 										<?php } else { ?>
-                                            <span>Upgrade to Expedited 2-4 Days Shipping ($8)</span>
+                                            <span>Upgrade to Expedited 2-4 Days Shipping (Applies to All Boxes) - $8</span>
 					                    <?php } ?>
                                     </a>
                                 </div>
@@ -380,7 +380,7 @@ print_r($schedule->get());
                                 </div>
 							<?php } ?>
                             <div class="portal-nextbox-notice">
-                                Our shipping carriers are currently experiencing transit delays and orders may be delivered after the estimated delivery date. <a href="https://support.skylar.com/hc/en-us#360003697514" target="_blank" class="link">Click here to learn more.</a>
+                                Our shipping carriers are currently experiencing transit delays and ground shipping orders may be delivered after the estimated delivery date. <a href="https://support.skylar.com/hc/en-us#360003697514" target="_blank" class="link">Click here to learn more.</a>
                             </div>
 						<?php } ?>
 						<?php
