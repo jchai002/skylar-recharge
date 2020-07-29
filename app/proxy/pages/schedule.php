@@ -352,6 +352,10 @@ print_r($schedule->get());
                             <div class="sc-box-shipping<?= !empty($all_skipped) ? ' sc-box-skipped' : '' ?>" data-expedited="<?=$shipping_is_expedited ? 1 : 0 ?>"<?= !empty($last_unskipped_charge) ? 'data-charge-id="'.$last_unskipped_charge['id'].'"' : '' ?>>
                                 <div class="sc-shipping-title">
                                     <div><?=$shipping_line['title']?></div>
+                                    <?php if(!empty($last_unskipped_charge)
+										&& in_array($last_unskipped_charge['shipping_address']['country'], ['US', 'USA', 'United States'])
+										&& !in_array($last_unskipped_charge['shipping_address']['province'], ['Alaska', 'Hawaii'])
+                                    ){ ?>
                                     <a href="#" class="sc-shipping-link">
 										<?php if($shipping_is_expedited){ ?>
                                             <span>Switch to Standard (Applies to All Boxes) - Free</span>
@@ -359,6 +363,7 @@ print_r($schedule->get());
                                             <span>Upgrade to Expedited 2-4 Day Shipping (Applies to All Boxes) - $8</span>
 										<?php } ?>
                                     </a>
+                                    <?php } ?>
                                 </div>
                                 <div class="sc-shipping-value">$<?=price_without_trailing_zeroes($shipping_line['price'])?></div>
                             </div>
